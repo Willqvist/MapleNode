@@ -11,9 +11,15 @@ class MapleCharacterGenerator extends ImageBuilder
         this.mysql = mysql;
         this.canvas = new Canvas(96,96);
         this.fileLoader = new FileLoader();
-        this.offsetX = 28;
-        this.offsetY = 15;
+        this.offsetX = 44;
+        this.offsetY = 23;
         this.parts ={};
+
+        this.headPosition = {x:-14,y:-11};
+        this.prefixes = 
+        {
+            hairShade:".0"
+        };
         this.body = 
         {
             stand1:
@@ -22,17 +28,17 @@ class MapleCharacterGenerator extends ImageBuilder
                     {
                         part:"body",
                         image:"stand1.0.body.png",
-                        position:{x:7,y:33}
+                        position:{x:7+this.headPosition.x,y:33+this.headPosition.y}
                     },
                     {
                         part:"head",
                         image:"front.head.png",
-                        position:{x:0,y:0}
+                        position:this.headPosition
                     },
                     {
                         type:"arm",
                         image:"stand1.0.arm.png",
-                        position:{x:22,y:34}
+                        position:{x:22+this.headPosition.x,y:34+this.headPosition.y}
                     },
                 ]
             },
@@ -42,22 +48,22 @@ class MapleCharacterGenerator extends ImageBuilder
                     {
                         part:"body",
                         image:"stand2.0.body.png",
-                        position:{x:7,y:33}
+                        position:{x:8+this.headPosition.x,y:33+this.headPosition.y}
                     },
                     {
                         part:"head",
                         image:"front.head.png",
-                        position:{x:0,y:0}
+                        position:this.headPosition
                     },
                     {
                         part:"arm",
                         image:"stand2.0.arm.png",
-                        position:{x:19,y:35}
+                        position:{x:20+this.headPosition.x,y:35+this.headPosition.y}
                     },
                     {
                         part:"hand",
                         image:"stand2.0.hand.png",
-                        position:{x:4,y:37}
+                        position:{x:6+this.headPosition.x,y:37+this.headPosition.y}
                     }
                 ]
             }
@@ -80,14 +86,6 @@ class MapleCharacterGenerator extends ImageBuilder
             }
             callback(arr);
         }); 
-    }
-    loadPartInformation(file,callback)
-    {
-        this.loadImage(file.path+file.file,(image)=>
-        {
-            let fileInfo = this.fileLoader.parseXML(file.path+"coord.xml");
-            callback(image,fileInfo);
-        });
     }
     /*
     loadItem(directory,callback)
@@ -175,11 +173,37 @@ class MapleCharacterGenerator extends ImageBuilder
         });
         */
     }
-    setEyes(id)
+    setHair(id,z,callback)
     {
-        let file = new DOMParser().parseFromString(this.fs.readFileSync("MapleCharacterGenerator/items/Coat/000"+id+".img/coord.xml"));
-        let position = file;
-        position.x = file.root.children[0]
+        let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Hair/000"+id+".img/coord.xml","utf8"),"text/xml");
+        let hair = file.getElementsByTagName("_"+z)[0];
+        let prefix = "";
+        if(typeof this.prefixes[z] !== "undefined")
+            prefix = this.prefixes[z];
+
+        if(hair == null) return;
+        let x = hair.getElementsByTagName("x")[0].firstChild.data;
+        let y = hair.getElementsByTagName("y")[0].firstChild.data;
+        this.loadImage("MapleCharacterGenerator/items/Hair/000"+id+".img/default."+(z+prefix)+".png",(image)=>
+        {
+            this.canvas.drawImage(image,this.offsetX + parseInt(x),this.offsetY + parseInt(y));
+            console.log(this.offsetX + parseInt(x) + 4,this.offsetY + parseInt(y));
+            callback();
+        });
+    }
+    setFace(self,parameters,next)
+    {
+        let id = parameters.id;
+        console.log("this: " , parameters);
+        let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Face/000"+id+".img/coord.xml","utf8"),"text/xml");
+        let x = file.getElementsByTagName("x")[0].firstChild.data;
+        let y = file.getElementsByTagName("y")[0].firstChild.data;
+        self.loadImage("MapleCharacterGenerator/items/Face/000"+id+".img/default.face.png",(image)=>
+        {
+            self.canvas.drawImage(image,self.offsetX + parseInt(x),self.offsetY + parseInt(y));
+            console.log(self.offsetX + parseInt(x) + 4,self.offsetY + parseInt(y));
+            next();
+        });
     }
     setBody(ids, pos,callback){
         this.loadBodyInformation(ids.skin, pos,(parts)=>
@@ -189,12 +213,75 @@ class MapleCharacterGenerator extends ImageBuilder
                 this.canvas.drawImage(part.image,this.offsetX + part.position.x, this.offsetY + part.position.y);
             }
             this.getFace(ids.face,()=>{});
-            this.loadPartInformation({path:"MapleCharacterGenerator/items/Face/000"+ids.face+".img/",file:"default.face.png"},(image)=>
+            this.loadImage("MapleCharacterGenerator/items/Face/000"+ids.face+".img/default.face.png",(image)=>
             {
                 callback();
             });
         });
     }
+    setCap(self,id,z,callback)
+    {
+
+    }
+    setMask(self,id,z,callback)
+    {
+
+    }
+    setEars(id,z,callback)
+    {
+
+    }
+    setCoat(self,id,z,callback)
+    {
+
+    }
+    setPants(self,id,z,callback)
+    {
+
+    }
+    setShoes(self,id,z,callback)
+    {
+
+    }
+    setGloves(self,id,z,callback)
+    {
+
+    }
+    setCape(self,id,z,callback)
+    {
+
+    }  
+    setShield(self,id,z,callback)
+    {
+
+    }
+    setTorso(self,parameters,next)
+    {
+        let id = parameters.id;
+        self.loadImage("MapleCharacterGenerator/items/Skin/0000"+id+".img/stand"+self.parts.stand+".0.body.png",(image)=>
+        {
+            let position = self.body["stand"+self.parts.stand].parts[0].position;
+            self.canvas.drawImage(image,self.offsetX + position.x,self.offsetY + position.y);
+            next();
+        });
+    }
+    setHands()
+    {
+
+    }
+    equipItems(items,callback,index=0)
+    {
+        let self = this;
+        items[index].method(self,items[index].parameters,()=>
+        {
+            console.log("index: " + index);
+            if(index >= items.length - 1){
+                callback();
+                return;
+            }
+            this.equipItems(items,callback,index+1);
+        });
+    }    
     generatePlayer(name,callback)
     {
         this.mysql.query("SELECT id, face, hair,skincolor FROM characters WHERE name=?",[name],(err,results)=>
@@ -231,14 +318,37 @@ class MapleCharacterGenerator extends ImageBuilder
                         }break;
                     }
                 }
+                console.log(this.parts);
+                this.equipItems(
+                    [
+                        {method:this.setTorso,parameters:{id:this.parts.skincolor+2000}},
+                        {method:this.setFace,parameters:{id:this.parts.face}}
+                    ],
+                    ()=>
+                    {
+                        this.outputImage(this.canvas,__dirname + "/newfile.png",()=>
+                        {
+                            callback();
+                        });
+                    }
+                );
+                /*
                 this.setBody({skin:this.parts.skincolor+2000, face: this.parts.face}, this.body["stand" + this.parts.stand],()=>
                 {
-                    this.setEyes(this.parts.eyes);
-                    this.outputImage(this.canvas,__dirname + "/newfile.png",()=>
+                    this.setFace(this.parts.face,()=>
                     {
-                        callback();
+                        this.setHair(this.parts.hair,"hairShade",()=>
+                        {
+                            this.setHair(this.parts.hair,"hair",()=>
+                            {
+                                this.setHair(this.parts.hair,"hairOverHead",()=>
+                                {
+                                });
+                            });
+                        });
                     });
                 });
+                */
             });
         });
     }
