@@ -1,0 +1,21 @@
+{
+  "name": "maplenode",
+  "version": "1.0.0",
+  "description": "Backend for a maplestory website",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "William Lundqvist",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "fs": "0.0.1-security",
+    "mysql": "^2.15.0",
+    "node-png": "^0.4.3",
+    "pngjs": "^3.3.2",
+    "pngjs2": "^2.0.0",
+    "xml-parser": "^1.2.1",
+    "xmldom": "^0.1.27"
+  }
+}
