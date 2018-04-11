@@ -15,7 +15,7 @@ class MapleCharacterGenerator extends ImageBuilder
         this.offsetY = 23;
         this.parts ={};
 
-        this.headPosition = {x:-14,y:-11};
+        this.headPosition = {x:-15,y:-11};
         this.prefixes = 
         {
             hairShade:".0"
@@ -69,139 +69,41 @@ class MapleCharacterGenerator extends ImageBuilder
             }
         }
     }
-    loadBodyInformation(skinID,pos,callback)
+    setHair(self,parameters,next)
     {
-        this.loadMultibleImages(pos.parts.map(a=>"MapleCharacterGenerator/items/Skin/0000"+skinID+".img/" + a.image),(images)=>
-        {
-            let bodyArr = pos.parts;
-            let arr = [];
-            for(let i = 0; i < images.length; i++)
-            {
-                arr.push(
-                    {
-                        image:images[i],
-                        position:bodyArr[i].position
-                    }
-                );
-            }
-            callback(arr);
-        }); 
-    }
-    /*
-    loadItem(directory,callback)
-    {
-        let file = this.fileLoader.parseXML(directory + "/coord.xml");
-        let files = [];
-        for(let i = 0; i < file.root.children.length; i++){
-            let child = file.root.children[i];
-            if(file.root.children[i].name == "_info") continue;
-            for(let j = 0; j < child.children.length; j++){
-                let subChild = child;
-                let subname = "default";
-                let subsubname = "";
-                let middleName = child.name.replace("_","");                
-                if(child.children[j].name.includes("stand"))
-                {
-                    let name = child.children[j].name.replace("_","");
-                    //console.log(file.root.children[child.children.length]);
-                    if(file.root.children[child.children.length].name == "_info")
-                        for(let k = 0; k < file.root.children[child.children.length].children.length; k++)
-                        {
-                            if(file.root.children[child.children.length].children[k].name.replace("_","") == name)
-                            {
-                                console.log("INCLUDED:");
-                                subsubname = file.root.children[child.children.length].children[k].children[0].content + ".";
-                                break;
-                            }  
-                        }
-                    subname = subsubname +""+ name+".0";
-                    //console.log(subname);
-                    subChild = child.children[j];
-                }
-                let fileName = subname + "." + middleName + ".png";
-                if(!fs.existsSync(directory + "/" + fileName))
-                {
-                    subname.replace(subsubname,"");
-                    fileName = subname + "." + middleName + ".png";
-                    if(!fs.existsSync(directory + "/" + fileName)){
-                        subname = "default";
-                        fileName = subname + "." + middleName + ".png"
-                        if(!fs.existsSync(directory + "/" + fileName)){
-                            continue;
-                        }
-                    }
-                }
-                let position = {x:subChild.children[0].content,y:subChild.children[1].content};
-                files.push(
-                    {
-                        directory:directory,
-                        filename:fileName,
-                        position:position
-                    }
-                );
-                console.log(fileName,position);
-            }
-        }
-        console.log(files.map(a=> a.directory + "/" + a.filename));
-        this.loadMultibleImages(files.map(a=> a.directory + "/" + a.filename),((images)=>
-        {
-            for(let i = 0; i < files.length; i++)
-            {
-              files[i].image = images[i];
-            }
-            callback(files);
-        }).bind(files));
-    }
-    */
-    getHat(id,callback){
-
-    }
-    getBody(id,callback){}
-    getWeapon(id,callback){}
-    getFace(id,callback)
-    {
-        //let file = this.fileLoader.parseXML("MapleCharacterGenerator/items/Coat/01040000.img/coord.xml");
-        /*
-        this.loadItem("MapleCharacterGenerator/items/Accessory/01010001.img",(items)=>
-        {
-            console.log(items);
-            for(let i = 0; i < items.length; i++){
-                let item = items[i];
-                console.log((12 + item.position.x),item.position.y);
-                this.canvas.drawImage(item.image,12 + parseInt(item.position.x),parseInt(item.position.y));
-            }
-        });
-        */
-    }
-    setHair(id,z,callback)
-    {
+        let z = parameters.z;
+        let id = parameters.id;
+        if(typeof self.parts.cap !== "undefined" && z == "hairOverHead") return;
         let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Hair/000"+id+".img/coord.xml","utf8"),"text/xml");
-        let hair = file.getElementsByTagName("_"+z)[0];
+        let hair = file.getElementsByTagName("_"+z);
+        if(hair.length == 0){
+            next();
+            return;
+        }
+        console.log(z);    
+        hair = hair[0];
         let prefix = "";
-        if(typeof this.prefixes[z] !== "undefined")
-            prefix = this.prefixes[z];
+        if(typeof self.prefixes[z] !== "undefined")
+            prefix = self.prefixes[z];
 
         if(hair == null) return;
         let x = hair.getElementsByTagName("x")[0].firstChild.data;
         let y = hair.getElementsByTagName("y")[0].firstChild.data;
-        this.loadImage("MapleCharacterGenerator/items/Hair/000"+id+".img/default."+(z+prefix)+".png",(image)=>
+        self.loadImage("MapleCharacterGenerator/items/Hair/000"+id+".img/default."+(z+prefix)+".png",(image)=>
         {
-            this.canvas.drawImage(image,this.offsetX + parseInt(x),this.offsetY + parseInt(y));
-            console.log(this.offsetX + parseInt(x) + 4,this.offsetY + parseInt(y));
-            callback();
+            self.canvas.drawImage(image,self.offsetX + parseInt(x),self.offsetY + parseInt(y));
+            next();
         });
     }
     setFace(self,parameters,next)
     {
         let id = parameters.id;
-        console.log("this: " , parameters);
         let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Face/000"+id+".img/coord.xml","utf8"),"text/xml");
         let x = file.getElementsByTagName("x")[0].firstChild.data;
         let y = file.getElementsByTagName("y")[0].firstChild.data;
         self.loadImage("MapleCharacterGenerator/items/Face/000"+id+".img/default.face.png",(image)=>
         {
             self.canvas.drawImage(image,self.offsetX + parseInt(x),self.offsetY + parseInt(y));
-            console.log(self.offsetX + parseInt(x) + 4,self.offsetY + parseInt(y));
             next();
         });
     }
@@ -219,41 +121,156 @@ class MapleCharacterGenerator extends ImageBuilder
             });
         });
     }
-    setCap(self,id,z,callback)
+    setCap(self,parameters,next)
+    {
+        let id = parameters.id;
+        let z = parameters.z;
+        let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Cap/0"+id+".img/coord.xml","utf8"),"text/xml");
+        let zElem = this.getZElement(file,z);
+        let x = zElem.getElementsByTagName("x")[0].firstChild.data;
+        let y = zElem.getElementsByTagName("y")[0].firstChild.data;
+        self.loadImage("MapleCharacterGenerator/items/Face/000"+id+".img/default.face.png",(image)=>
+        {
+            let position = self.body["stand"+self.parts.stand].parts[0].position;
+            self.canvas.drawImage(image,self.offsetX + parseInt(x),position.y + self.offsetY + parseInt(y));
+            next();
+        });
+    }
+    setMask(self,parameters,next)
     {
 
     }
-    setMask(self,id,z,callback)
+    setEars(id,parameters,next)
     {
 
     }
-    setEars(id,z,callback)
+    setCoat(self,parameters,next)
+    {
+        let id = parameters.id;
+        let z = parameters.z;
+        let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Coat/0"+id+".img/coord.xml","utf8"),"text/xml");
+        let elements = file.getElementsByTagName("z");
+        let zElem;
+        let nodeName;
+        for(let i = 0; i < elements.length; i++)
+        {
+            console.log(elements[i].parentNode.nodeName == "stand"+self.parts.stand,elements[i].firstChild.data == z);
+            if(elements[i].parentNode.nodeName == "stand"+self.parts.stand && elements[i].firstChild.data == z)
+            {
+                nodeName = elements[i].parentNode.parentNode.nodeName.replace("_","");
+                zElem = elements[i].parentNode;
+                break;
+            }
+        }
+        let x = zElem.getElementsByTagName("x")[0].firstChild.data;
+        let y = zElem.getElementsByTagName("y")[0].firstChild.data;
+        self.loadImage("MapleCharacterGenerator/items/Coat/0"+id+".img/stand"+self.parts.stand+".0."+nodeName+".png",(image)=>
+        {
+            let position = self.body["stand"+self.parts.stand].parts[0].position;
+            self.canvas.drawImage(image,self.offsetX + parseInt(x),position.y + self.offsetY + parseInt(y));
+            next();
+        }); 
+    }
+    setPants(self,parameters,next)
+    {
+        let id = parameters.id;
+        let z = parameters.z;
+        let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Pants/0"+id+".img/coord.xml","utf8"),"text/xml");
+        let elements = file.getElementsByTagName("z");
+        let zElem;
+        for(let i = 0; i < elements.length; i++)
+        {
+            if(elements[i].parentNode.nodeName.includes("stand"+self.parts.stand) && elements[i].firstChild.data == z)
+            {
+                zElem = elements[i].parentNode;
+                break;
+            }
+        }
+        let x = zElem.getElementsByTagName("x")[0].firstChild.data;
+        let y = zElem.getElementsByTagName("y")[0].firstChild.data;
+        self.loadImage("MapleCharacterGenerator/items/Pants/0"+id+".img/stand"+self.parts.stand+".0.pants.png",(image)=>
+        {
+            let position = self.body["stand"+self.parts.stand].parts[0].position;
+            self.canvas.drawImage(image,self.offsetX + parseInt(x),position.y + self.offsetY + parseInt(y));
+            next();
+        }); 
+    }
+    setShoes(self,parameters,next)
+    {
+        let id = parameters.id;
+        let z = parameters.z;
+        let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Shoes/0"+id+".img/coord.xml","utf8"),"text/xml");
+        let elements = file.getElementsByTagName("z");
+        let zElem;
+        for(let i = 0; i < elements.length; i++)
+        {
+            if(elements[i].parentNode.nodeName.includes("stand"+self.parts.stand) && elements[i].firstChild.data == z)
+            {
+                zElem = elements[i].parentNode;
+                break;
+            }
+        }
+        let x = zElem.getElementsByTagName("x")[0].firstChild.data;
+        let y = zElem.getElementsByTagName("y")[0].firstChild.data;
+        self.loadImage("MapleCharacterGenerator/items/Shoes/0"+id+".img/stand"+self.parts.stand+".0.shoes.png",(image)=>
+        {
+            let position = self.body["stand"+self.parts.stand].parts[0].position;
+            self.canvas.drawImage(image,self.offsetX + parseInt(x),position.y + self.offsetY + parseInt(y));
+            next();
+        });
+    }
+    setGloves(self,parameters,next)
     {
 
     }
-    setCoat(self,id,z,callback)
-    {
-
-    }
-    setPants(self,id,z,callback)
-    {
-
-    }
-    setShoes(self,id,z,callback)
-    {
-
-    }
-    setGloves(self,id,z,callback)
-    {
-
-    }
-    setCape(self,id,z,callback)
+    setCape(self,parameters,next)
     {
 
     }  
-    setShield(self,id,z,callback)
+    setShield(self,parameters,next)
     {
 
+    }
+    setWeapon(self,parameters,next)
+    {
+        let id = parameters.id; 
+        let z = parameters.z;
+        let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Weapon/0"+id+".img/coord.xml","utf8"),"text/xml");
+        let zElem = self.getZElement(file,z);
+        let nodeName = zElem.parentNode.nodeName;
+        console.log(z,zElem.parentNode.getElementsByTagName("x")[0].firstChild.data,zElem.parentNode.nodeName);
+        let prefix = "";
+        let infoStand = file.getElementsByTagName("_info")[0].getElementsByTagName(nodeName.replace("_",""))[0];
+        if(parseInt(nodeName.replace("_stand","")) != self.parts.stand)
+        {
+            next();
+            return;
+        }
+        let x = zElem.parentNode.getElementsByTagName("x")[0].firstChild.data;
+        let y = zElem.parentNode.getElementsByTagName("y")[0].firstChild.data;
+        console.log(x,y);
+        if(infoStand.getElementsByTagName("NUM")[0] != null)
+        {
+            prefix = infoStand.getElementsByTagName("NUM")[0].firstChild.data;
+        }
+        self.loadImage("MapleCharacterGenerator/items/Weapon/0"+id+".img/"+prefix+".stand"+self.parts.stand+".0.weapon.png",(image)=>
+        {
+            let position = self.body["stand"+self.parts.stand].parts[0].position;
+            self.canvas.drawImage(image,self.offsetX +  parseInt(x),position.y + self.offsetY + parseInt(y));
+            next();
+        });
+    }
+    getZElement(dom,z)
+    {
+        let zObj = dom.getElementsByTagName("z");
+        for(let i= 0; i < zObj.length; i++)
+        {
+            if(zObj[i].firstChild.data == z)
+            {
+                return zObj[i];
+            }
+        }
+        return -1;
     }
     setTorso(self,parameters,next)
     {
@@ -265,23 +282,65 @@ class MapleCharacterGenerator extends ImageBuilder
             next();
         });
     }
-    setHands()
+    setHead(self,parameters,next)
     {
-
+        let id = parameters.id;
+        self.loadImage("MapleCharacterGenerator/items/Skin/0000"+id+".img/front.head.png",(image)=>
+        {
+            let position = self.body["stand"+self.parts.stand].parts[1].position;
+            self.canvas.drawImage(image,self.offsetX + position.x,self.offsetY + position.y);
+            next();
+        });
+    }
+    setHands(self,parameters,next)
+    {
+        let id = parameters.id;
+        let file = "MapleCharacterGenerator/items/Skin/0000"+id+".img/stand"+self.parts.stand+".0.hand.png";
+        if(!fs.existsSync(file))
+        {
+            next();
+            return;
+        }
+        self.loadImage(file,(image)=>
+        {
+            let position = self.body["stand"+self.parts.stand].parts[3].position;
+            self.canvas.drawImage(image,self.offsetX + position.x,self.offsetY + position.y);
+            next();
+        });
+    }
+    setArm(self,parameters,next)
+    {
+        let id = parameters.id;
+        self.loadImage("MapleCharacterGenerator/items/Skin/0000"+id+".img/stand"+self.parts.stand+".0.arm.png",(image)=>
+        {
+            let position = self.body["stand"+self.parts.stand].parts[2].position;
+            self.canvas.drawImage(image,self.offsetX + position.x,self.offsetY + position.y);
+            next();
+        });  
     }
     equipItems(items,callback,index=0)
     {
         let self = this;
+        if(typeof items[index].parameters.id === "undefined")
+        {
+            this.equipItems(items,callback,++index);
+            return;
+        }
         items[index].method(self,items[index].parameters,()=>
         {
-            console.log("index: " + index);
             if(index >= items.length - 1){
                 callback();
                 return;
             }
-            this.equipItems(items,callback,index+1);
+            this.equipItems(items,callback,++index);
         });
     }    
+    setWeaponInfo(id)
+    {
+        let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Weapon/0"+id+".img/coord.xml","utf8"),"text/xml");
+        let info = file.getElementsByTagName("_info")[0].getElementsByTagName("stand")[0].getElementsByTagName("value")[0].firstChild.data;
+        this.parts.stand = parseInt(info);
+    }
     generatePlayer(name,callback)
     {
         this.mysql.query("SELECT id, face, hair,skincolor FROM characters WHERE name=?",[name],(err,results)=>
@@ -312,7 +371,7 @@ class MapleCharacterGenerator extends ImageBuilder
                         {
                             this.parts.weapon = results[i].itemid;
                             if(this.parts.weapon < 1700000)
-                                this.parts.stand = 2;
+                                this.setWeaponInfo(this.parts.weapon);
                             else
                                 this.parts.stand = 1;
                         }break;
@@ -321,8 +380,20 @@ class MapleCharacterGenerator extends ImageBuilder
                 console.log(this.parts);
                 this.equipItems(
                     [
-                        {method:this.setTorso,parameters:{id:this.parts.skincolor+2000}},
-                        {method:this.setFace,parameters:{id:this.parts.face}}
+                        {method:this.setTorso,parameters:{id:this.parts.skincolor+2000,z:"skincolor"}},
+                        {method:this.setHead,parameters:{id:this.parts.skincolor+2000,z:"skincolor"}},
+                        {method:this.setFace,parameters:{id:this.parts.face,z:"face"}},
+                        {method:this.setHair,parameters:{id:this.parts.hair,z:"hair"}},
+                        {method:this.setPants,parameters:{id:this.parts.pants,z:"pants"}},
+                        {method:this.setCoat,parameters:{id:this.parts.coat,z:"mailChest"}},
+                        {method:this.setCoat,parameters:{id:this.parts.coat,z:"mailArm"}},
+                        {method:this.setShoes,parameters:{id:this.parts.shoes,z:"shoes"}},
+                        {method:this.setHair,parameters:{id:this.parts.hair,z:"hairOverHead"}},
+                        {method:this.setCap,parameters:{id:this.parts.cap,z:"cap"}},
+                        {method:this.setWeapon,parameters:{id:this.parts.weapon,z:"weapon"}},
+                        {method:this.setArm,parameters:{id:this.parts.skincolor+2000}},
+                        {method:this.setWeapon,parameters:{id:this.parts.weapon,z:"weaponOverArm"}},
+                        {method:this.setHands,parameters:{id:this.parts.skincolor+2000}},
                     ],
                     ()=>
                     {
@@ -332,23 +403,6 @@ class MapleCharacterGenerator extends ImageBuilder
                         });
                     }
                 );
-                /*
-                this.setBody({skin:this.parts.skincolor+2000, face: this.parts.face}, this.body["stand" + this.parts.stand],()=>
-                {
-                    this.setFace(this.parts.face,()=>
-                    {
-                        this.setHair(this.parts.hair,"hairShade",()=>
-                        {
-                            this.setHair(this.parts.hair,"hair",()=>
-                            {
-                                this.setHair(this.parts.hair,"hairOverHead",()=>
-                                {
-                                });
-                            });
-                        });
-                    });
-                });
-                */
             });
         });
     }
