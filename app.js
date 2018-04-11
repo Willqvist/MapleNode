@@ -8,13 +8,17 @@ let mysqlCon = mysql.createConnection(
         host:"localhost",
         user:"root",
         password:"",
-        database:"xiuzsource"
+        database:"leaderms"
     }
 );
 let mcg = new MapleCharacterGenerator(mysqlCon);
-app.get("/",(req,res)=>
+app.get("/*",(req,res)=>
 {
-    mcg.generatePlayer("XiuzSource",()=>{
+    mcg.generatePlayer(req.url.replace("/",""),(req)=>{
+        if(!req.success)
+        {
+            console.log(req.reason);
+        }
         res.contentType('image/png');
         res.sendFile("MapleCharacterGenerator/newfile.png",{root:__dirname});
     });

@@ -11,10 +11,10 @@ class MapleCharacterGenerator extends ImageBuilder
         this.mysql = mysql;
         this.canvas = new Canvas(96,96);
         this.fileLoader = new FileLoader();
-        this.offsetX = 44;
-        this.offsetY = 23;
+        this.offsetX = 45;
+        this.offsetY = 35;
         this.parts ={};
-
+        this.clothOffset = {x:0,y:10};
         this.headPosition = {x:-15,y:-11};
         this.prefixes = 
         {
@@ -73,24 +73,32 @@ class MapleCharacterGenerator extends ImageBuilder
     {
         let z = parameters.z;
         let id = parameters.id;
-        if(typeof self.parts.cap !== "undefined" && z == "hairOverHead") return;
+        if(typeof self.parts.cap !== "undefined" && z == "hairOverHead")
+        {
+            next();
+            return;
+        }
         let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Hair/000"+id+".img/coord.xml","utf8"),"text/xml");
         let hair = file.getElementsByTagName("_"+z);
         if(hair.length == 0){
             next();
             return;
         }
-        console.log(z);    
+        
         hair = hair[0];
         let prefix = "";
         if(typeof self.prefixes[z] !== "undefined")
             prefix = self.prefixes[z];
-
-        if(hair == null) return;
+        if(hair == null)
+        {
+            console.log("Hair is null");
+            next();
+            return;
+        }
         let x = hair.getElementsByTagName("x")[0].firstChild.data;
         let y = hair.getElementsByTagName("y")[0].firstChild.data;
         self.loadImage("MapleCharacterGenerator/items/Hair/000"+id+".img/default."+(z+prefix)+".png",(image)=>
-        {
+        { 
             self.canvas.drawImage(image,self.offsetX + parseInt(x),self.offsetY + parseInt(y));
             next();
         });
@@ -126,10 +134,26 @@ class MapleCharacterGenerator extends ImageBuilder
         let id = parameters.id;
         let z = parameters.z;
         let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Cap/0"+id+".img/coord.xml","utf8"),"text/xml");
-        let zElem = this.getZElement(file,z);
+        let zElem;
+        let nodeName;
+        let elements = file.getElementsByTagName("z");
+        for(let i = 0; i < elements.length; i++)
+        {
+            if(elements[i].parentNode.nodeName.replace("_","") == "stand"+self.parts.stand && elements[i].firstChild.data == z)
+            {
+                nodeName = elements[i].parentNode.parentNode.nodeName.replace("_","");
+                zElem = elements[i].parentNode;
+                break;
+            }
+        }
+        if(zElem == null)
+        {
+            next();
+            return;
+        }
         let x = zElem.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
-        self.loadImage("MapleCharacterGenerator/items/Face/000"+id+".img/default.face.png",(image)=>
+        self.loadImage("MapleCharacterGenerator/items/Face/000"+id+".img/default."+nodeName+".png",(image)=>
         {
             let position = self.body["stand"+self.parts.stand].parts[0].position;
             self.canvas.drawImage(image,self.offsetX + parseInt(x),position.y + self.offsetY + parseInt(y));
@@ -154,7 +178,6 @@ class MapleCharacterGenerator extends ImageBuilder
         let nodeName;
         for(let i = 0; i < elements.length; i++)
         {
-            console.log(elements[i].parentNode.nodeName == "stand"+self.parts.stand,elements[i].firstChild.data == z);
             if(elements[i].parentNode.nodeName == "stand"+self.parts.stand && elements[i].firstChild.data == z)
             {
                 nodeName = elements[i].parentNode.parentNode.nodeName.replace("_","");
@@ -162,12 +185,18 @@ class MapleCharacterGenerator extends ImageBuilder
                 break;
             }
         }
+        if(zElem == null)
+        {
+            next();
+            return;
+        }
         let x = zElem.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
         self.loadImage("MapleCharacterGenerator/items/Coat/0"+id+".img/stand"+self.parts.stand+".0."+nodeName+".png",(image)=>
         {
+            console.log("caoted");
             let position = self.body["stand"+self.parts.stand].parts[0].position;
-            self.canvas.drawImage(image,self.offsetX + parseInt(x),position.y + self.offsetY + parseInt(y));
+            self.canvas.drawImage(image,self.clothOffset.x + self.offsetX + parseInt(x),self.clothOffset.y + position.y + self.offsetY + parseInt(y));
             next();
         }); 
     }
@@ -186,12 +215,19 @@ class MapleCharacterGenerator extends ImageBuilder
                 break;
             }
         }
+        if(zElem == null)
+        {
+            next();
+            return;
+        }
         let x = zElem.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
-        self.loadImage("MapleCharacterGenerator/items/Pants/0"+id+".img/stand"+self.parts.stand+".0.pants.png",(image)=>
+        let stand = 1;
+        self.loadImage("MapleCharacterGenerator/items/Pants/0"+id+".img/stand"+stand+".0.pants.png",(image)=>
         {
+            console.log("panted");
             let position = self.body["stand"+self.parts.stand].parts[0].position;
-            self.canvas.drawImage(image,self.offsetX + parseInt(x),position.y + self.offsetY + parseInt(y));
+            self.canvas.drawImage(image,self.clothOffset.x + self.offsetX + parseInt(x),self.clothOffset.y + position.y + self.offsetY + parseInt(y));
             next();
         }); 
     }
@@ -204,7 +240,7 @@ class MapleCharacterGenerator extends ImageBuilder
         let zElem;
         for(let i = 0; i < elements.length; i++)
         {
-            if(elements[i].parentNode.nodeName.includes("stand"+self.parts.stand) && elements[i].firstChild.data == z)
+            if(elements[i].parentNode.nodeName.includes("stand1") && elements[i].firstChild.data == z)
             {
                 zElem = elements[i].parentNode;
                 break;
@@ -212,10 +248,10 @@ class MapleCharacterGenerator extends ImageBuilder
         }
         let x = zElem.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
-        self.loadImage("MapleCharacterGenerator/items/Shoes/0"+id+".img/stand"+self.parts.stand+".0.shoes.png",(image)=>
+        self.loadImage("MapleCharacterGenerator/items/Shoes/0"+id+".img/stand1.0.shoes.png",(image)=>
         {
             let position = self.body["stand"+self.parts.stand].parts[0].position;
-            self.canvas.drawImage(image,self.offsetX + parseInt(x),position.y + self.offsetY + parseInt(y));
+            self.canvas.drawImage(image,self.clothOffset.x + self.offsetX + parseInt(x),self.clothOffset.y + position.y + self.offsetY + parseInt(y));
             next();
         });
     }
@@ -236,27 +272,38 @@ class MapleCharacterGenerator extends ImageBuilder
         let id = parameters.id; 
         let z = parameters.z;
         let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Weapon/0"+id+".img/coord.xml","utf8"),"text/xml");
-        let zElem = self.getZElement(file,z);
-        let nodeName = zElem.parentNode.nodeName;
-        console.log(z,zElem.parentNode.getElementsByTagName("x")[0].firstChild.data,zElem.parentNode.nodeName);
         let prefix = "";
-        let infoStand = file.getElementsByTagName("_info")[0].getElementsByTagName(nodeName.replace("_",""))[0];
-        if(parseInt(nodeName.replace("_stand","")) != self.parts.stand)
+        let zElem;
+        let elements = file.getElementsByTagName("z");
+        let nodeName;
+        for(let i = 0; i < elements.length; i++)
+        {
+            console.log("PARENT:",elements[i].parentNode.nodeName);
+            if(elements[i].parentNode.nodeName.includes("stand" + self.parts.stand) && elements[i].firstChild.data == z)
+            {
+                nodeName = elements[i].parentNode.nodeName;
+                zElem = elements[i].parentNode;
+                break;
+            }
+        }
+        if(zElem == null)
         {
             next();
             return;
         }
+        let infoStand = file.getElementsByTagName("_info")[0].getElementsByTagName(nodeName.replace("_",""))[0];
         let x = zElem.parentNode.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.parentNode.getElementsByTagName("y")[0].firstChild.data;
         console.log(x,y);
+        if(infoStand != null)
         if(infoStand.getElementsByTagName("NUM")[0] != null)
         {
-            prefix = infoStand.getElementsByTagName("NUM")[0].firstChild.data;
+            prefix = infoStand.getElementsByTagName("NUM")[0].firstChild.data + ".";
         }
-        self.loadImage("MapleCharacterGenerator/items/Weapon/0"+id+".img/"+prefix+".stand"+self.parts.stand+".0.weapon.png",(image)=>
+        self.loadImage("MapleCharacterGenerator/items/Weapon/0"+id+".img/"+prefix+"stand"+self.parts.stand+".0.weapon.png",(image)=>
         {
             let position = self.body["stand"+self.parts.stand].parts[0].position;
-            self.canvas.drawImage(image,self.offsetX +  parseInt(x),position.y + self.offsetY + parseInt(y));
+            self.canvas.drawImage(image,self.clothOffset.x + self.offsetX + parseInt(x),self.clothOffset.y + position.y + self.offsetY + parseInt(y));
             next();
         });
     }
@@ -320,6 +367,7 @@ class MapleCharacterGenerator extends ImageBuilder
     }
     equipItems(items,callback,index=0)
     {
+        console.log("at index:",index);
         let self = this;
         if(typeof items[index].parameters.id === "undefined")
         {
@@ -346,6 +394,11 @@ class MapleCharacterGenerator extends ImageBuilder
         this.mysql.query("SELECT id, face, hair,skincolor FROM characters WHERE name=?",[name],(err,results)=>
         {
             if(err) throw err;
+            if(results.length == 0)
+            {
+                callback({success:false,reason:"cant find player: " + name});
+                return;
+            }
             this.canvas.fillColor = 0xFFFFFF;
             this.canvas.drawRect(0,0,180,180);
             this.parts.face = results[0].face;
@@ -373,7 +426,7 @@ class MapleCharacterGenerator extends ImageBuilder
                             if(this.parts.weapon < 1700000)
                                 this.setWeaponInfo(this.parts.weapon);
                             else
-                                this.parts.stand = 1;
+                                this.parts.stand = 2;
                         }break;
                     }
                 }
@@ -381,13 +434,16 @@ class MapleCharacterGenerator extends ImageBuilder
                 this.equipItems(
                     [
                         {method:this.setTorso,parameters:{id:this.parts.skincolor+2000,z:"skincolor"}},
-                        {method:this.setHead,parameters:{id:this.parts.skincolor+2000,z:"skincolor"}},
-                        {method:this.setFace,parameters:{id:this.parts.face,z:"face"}},
-                        {method:this.setHair,parameters:{id:this.parts.hair,z:"hair"}},
-                        {method:this.setPants,parameters:{id:this.parts.pants,z:"pants"}},
+                        {method:this.setCoat,parameters:{id:this.parts.coat,z:"mailChestBelowPants"}},
+                        {method:this.setPants,parameters:{id:this.parts.pants,z:"pants"}},                        
                         {method:this.setCoat,parameters:{id:this.parts.coat,z:"mailChest"}},
                         {method:this.setCoat,parameters:{id:this.parts.coat,z:"mailArm"}},
+                        {method:this.setPants,parameters:{id:this.parts.pants,z:"pantsBelowShoes"}},
                         {method:this.setShoes,parameters:{id:this.parts.shoes,z:"shoes"}},
+                        {method:this.setHead,parameters:{id:this.parts.skincolor+2000,z:"skincolor"}},
+                        {method:this.setFace,parameters:{id:this.parts.face,z:"face"}},
+                        {method:this.setHair,parameters:{id:this.parts.hair,z:"hairShade"}},
+                        {method:this.setHair,parameters:{id:this.parts.hair,z:"hair"}},
                         {method:this.setHair,parameters:{id:this.parts.hair,z:"hairOverHead"}},
                         {method:this.setCap,parameters:{id:this.parts.cap,z:"cap"}},
                         {method:this.setWeapon,parameters:{id:this.parts.weapon,z:"weapon"}},
@@ -399,7 +455,7 @@ class MapleCharacterGenerator extends ImageBuilder
                     {
                         this.outputImage(this.canvas,__dirname + "/newfile.png",()=>
                         {
-                            callback();
+                            callback({success:true});
                         });
                     }
                 );

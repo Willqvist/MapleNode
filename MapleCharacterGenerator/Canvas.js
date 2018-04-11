@@ -31,6 +31,7 @@ class Canvas
     }
     drawImage(image,x,y)
     {
+        if(image == null) return;
         for(let i = x; i < Math.min(x+image.width,this.width); i++)
         {
             for(let j = y; j < Math.min(y+image.height,this.height); j++)
@@ -38,10 +39,17 @@ class Canvas
                 let loadedImagePosition = ((i-x+(j-y)*image.width) << 2);
                 if(image.data[loadedImagePosition+3] == 0) continue;
                 let position = (i+j*this.width) << 2;
-                this.canvas.data[position + this.ColorIndex.RED] = image.data[loadedImagePosition+this.ColorIndex.RED];
-                this.canvas.data[position + this.ColorIndex.GREEN] = image.data[loadedImagePosition+this.ColorIndex.GREEN];
-                this.canvas.data[position + this.ColorIndex.BLUE] = image.data[loadedImagePosition+this.ColorIndex.BLUE];
-                this.canvas.data[position + this.ColorIndex.ALPHA] = image.data[loadedImagePosition+this.ColorIndex.ALPHA];
+                let col =
+                {
+                    red:image.data[loadedImagePosition+this.ColorIndex.RED],
+                    green:image.data[loadedImagePosition+this.ColorIndex.GREEN],
+                    blue:image.data[loadedImagePosition+this.ColorIndex.BLUE],
+                    alpha:image.data[loadedImagePosition+this.ColorIndex.ALPHA]/255
+                }
+                this.canvas.data[position + this.ColorIndex.RED] = col.red * col.alpha + this.canvas.data[position + this.ColorIndex.RED] * (1-col.alpha);
+                this.canvas.data[position + this.ColorIndex.GREEN] = col.green * col.alpha + this.canvas.data[position + this.ColorIndex.GREEN] * (1-col.alpha);
+                this.canvas.data[position + this.ColorIndex.BLUE] = col.blue * col.alpha + this.canvas.data[position + this.ColorIndex.BLUE] * (1-col.alpha);
+                this.canvas.data[position + this.ColorIndex.ALPHA] = 0xFF;
             }  
         }
     }

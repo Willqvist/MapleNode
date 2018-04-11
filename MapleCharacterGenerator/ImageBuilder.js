@@ -5,6 +5,11 @@ class ImageBuilder
 {
     loadImage(image,callback)
     {
+        if(!fs.existsSync(image))
+        {
+            callback(null);
+            return;
+        }
         fs.createReadStream(image)
         .pipe(new PNG())
         .on('parsed',function()
