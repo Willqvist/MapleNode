@@ -8,18 +8,19 @@ let mysqlCon = mysql.createConnection(
         host:"localhost",
         user:"root",
         password:"",
-        database:"leaderms"
+        database:"xiuzsource"
     }
 );
-let mcg = new MapleCharacterGenerator(mysqlCon);
-app.get("/*",(req,res)=>
+let mcg = new MapleCharacterGenerator(mysqlCon,60*5);
+app.get("/Characters/*.chr",(req,res)=>
 {
-    mcg.generatePlayer(req.url.replace("/",""),(req)=>{
+    let name = req.url.replace("/Characters/","").replace(".chr","");
+    mcg.generatePlayer(name,(req)=>{
         if(!req.success)
         {
             console.log(req.reason);
         }
         res.contentType('image/png');
-        res.sendFile("MapleCharacterGenerator/newfile.png",{root:__dirname});
+        res.sendFile("MapleCharacterGenerator/Characters/"+name+".png",{root:__dirname});
     });
 });
