@@ -13,39 +13,47 @@
                 <h1>Website Setup</h1>
                 <form id="form" method="POST" action="">
                     <div class="inputWrapper">
-                        <input id="host" required name="host" placeholder="MapleNode">
-                        <label for="host">Server Name</label>
+                        <input id="serverName" required name="serverName" placeholder="MapleNode">
+                        <label for="serverName">Server Name</label>
+                    </div>
+                     <div class="inputWrapper">
+                        <input id="version" name="version" placeholder="v62">
+                        <label for="version">Version</label>               
                     </div>
                     <div class="inputWrapper">
-                        <input id="password" name="password" placeholder="">
-                        <label for="password">Download Link</label>               
+                        <input id="downloadSetup" name="downloadSetup" placeholder="">
+                        <label for="downloadSetup">Download Setup</label>               
                     </div>
                     <div class="inputWrapper">
-                        <input id="database" required name="database" placeholder="10x">
-                        <label for="database">Exp Rate</label>                
+                        <input id="downloadClient" name="downloadClient" placeholder="">
+                        <label for="downloadClient">Download Client</label>               
                     </div>
                     <div class="inputWrapper">
-                        <input id="prefix" required name="prefix" placeholder="10x">
-                        <label for="prefix">Drop Rate</label>
+                        <input id="exp" required name="exp" placeholder="10x">
+                        <label for="exp">Exp Rate</label>                
                     </div>
                     <div class="inputWrapper">
-                        <input id="prefix" required name="prefix" placeholder="10x">
-                        <label for="prefix">Meso Rate</label>
+                        <input id="drop" required name="drop" placeholder="10x">
+                        <label for="drop">Drop Rate</label>
                     </div>
                     <div class="inputWrapper">
-                        <input id="prefix" required name="prefix" placeholder="MN_">
-                        <label for="prefix">NX column</label>
+                        <input id="meso" required name="meso" placeholder="10x">
+                        <label for="meso">Meso Rate</label>
+                    </div>
+                    <div class="inputWrapper">
+                        <input id="nx" required name="nx" placeholder="MN_">
+                        <label for="nx">NX column</label>
                         <p><span>?</span>What column in the database that stores the NX</p>
   
                     </div>
                     <div class="inputWrapper">
-                        <input id="prefix" required name="prefix" placeholder="MN_">
-                        <label for="prefix">Vote Point column</label>
+                        <input id="vp" required name="vp" placeholder="MN_">
+                        <label for="vp">Vote Point column</label>
                         <p><span>?</span>What column in the database that stores the votepoints</p>
                     </div>
                     <div class="inputWrapper">
-                        <input id="prefix" required name="prefix" placeholder="MN_">
-                        <label for="prefix">GameMaster panel</label>
+                        <input id="gmLevel" required name="gmLevel" placeholder="MN">
+                        <label for="gmLevel">GameMaster panel</label>
                         <p><span>?</span>What level an gm has to be to access the panel 2-5</p>
                     </div>
                 </form>
@@ -66,19 +74,20 @@
         var submitForm = document.getElementById("submitForm");
         var fillField = document.getElementById("fillField");
         var size = fillField.getBoundingClientRect();
-        let middle = (size.bottom - size.top) / 2;
+        var middle = (size.bottom - size.top) / 2;
+        var inputs = form.getElementsByTagName("input");
         submitForm.addEventListener("click",function()
         {
             var canSend = true;
-            var inputs = form.getElementsByTagName("input");
             for(var i = 0; i < inputs.length; i++)
             {
                 if(inputs[i].value.length == 0 && inputs[i].getAttribute("required") != null)
                 {
-                    let pos = inputs[i].getBoundingClientRect();
+                    console.log(inputs[i]);
+                    var pos = inputs[i].getBoundingClientRect();
                     //console.log(pos.);
                     fillField.style.left = "calc("+pos.right + "px + 2em)";
-                    fillField.style.top = pos.top - middle + ((pos.bottom - pos.top) / 2) + "px";
+                    fillField.style.top = pos.top - middle + ((pos.bottom - pos.top) / 2) + window.pageYOffset + "px";
                     canSend = false;
                     break;
                 }

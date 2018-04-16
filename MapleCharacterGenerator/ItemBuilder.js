@@ -1,5 +1,4 @@
 const Canvas = require("./Canvas");
-const FileLoader = require("./FileLoader");
 const fs = require("fs");
 const DOMParser = require('xmldom').DOMParser;
 const ImageBuilder = require("./ImageBuilder");

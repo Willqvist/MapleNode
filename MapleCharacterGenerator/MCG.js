@@ -6,7 +6,6 @@ class MapleCharacterGenerator
 {   
     constructor(mysql,cooldown)
     {
-        this.mysql = mysql;
         this.cooldown = cooldown;
         this.parts = {};
         this.error =
@@ -15,7 +14,7 @@ class MapleCharacterGenerator
             CANT_FIND_ITEM:1
         }
     }
-    generatePlayer(name,callback)
+    generatePlayer(mysql,name,callback)
     {
         if(fs.existsSync(__dirname + "/Characters/"+name+".png"))
         {
@@ -28,7 +27,7 @@ class MapleCharacterGenerator
         }
         this.builder = new ItemBuilder();
         this.builder.parts = this.parts;
-        this.mysql.query("SELECT id, face, hair,skincolor FROM characters WHERE name=?",[name],(err,results)=>
+        mysql.query("SELECT id, face, hair,skincolor FROM characters WHERE name=?",[name],(err,results)=>
         {
             if(err) throw err;
             if(results.length == 0)
@@ -36,7 +35,7 @@ class MapleCharacterGenerator
             this.parts.face = results[0].face;
             this.parts.hair = results[0].hair;
             this.parts.skincolor = results[0].skincolor;
-            this.mysql.query("SELECT inventoryitems.itemid, inventoryitems.position FROM inventoryequipment INNER JOIN inventoryitems ON inventoryequipment.inventoryitemid = inventoryitems.inventoryitemid WHERE inventoryitems.characterid = ? AND inventoryitems.inventorytype = '-1'",[results[0].id],(err,results)=>
+            mysql.query("SELECT inventoryitems.itemid, inventoryitems.position FROM inventoryequipment INNER JOIN inventoryitems ON inventoryequipment.inventoryitemid = inventoryitems.inventoryitemid WHERE inventoryitems.characterid = ? AND inventoryitems.inventorytype = '-1'",[results[0].id],(err,results)=>
             {         
                 if(err) throw err;
                 for(let i = 0; i < results.length; i++)

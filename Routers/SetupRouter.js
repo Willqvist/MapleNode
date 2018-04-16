@@ -1,41 +1,44 @@
 const express = require("express");
 const router = express.Router();
-const app = require("../app");
-const mysql = require("mysql");
 const InstallationHandler = require("../Tools/InstallationHandler");
-const MNHandler = require("../Tools/MNHandler");
-
-let mnHandler = new MNHandler();
-let installHandler = new InstallationHandler(app.mysql);
-router.all("/*",(req,res)=>
+const mnHandler = require("../Tools/MNHandler");
+const mysql = require("../Tools/mysql").getMysql();
+let installHandler = new InstallationHandler(mysql.mysql);
+router.all("/*",(req,res,next)=>
 {
-    let split = req.url.split("/").filter(n=> n !== '');
-    let number = parseInt(split[0]);
-    console.log(number);
+    installHandler.installationComplete((done,data)=>
+    {
+      if(done)
+        return res.redirect("/");
+      return next();
+    });
+});
+router.all("/:id/",(req,res,next)=>
+{
+    let number = parseInt(req.params.id);
+    if(!number || number > 2) return next();
     if(number)
     {
-        if(number)
-            console.log(number);
         if(req.method == "POST")
         {
             switch(number)
             {
                 case 1:
                     let data = {};
+                    let prefix = req.body.prefix;
                     data.user = req.body.user;
                     data.password = req.body.password;
                     data.host = req.body.host;
-                    let prefix = req.body.prefix;
                     data.database = req.body.database;
-                    console.log(app.mysql);
-                    mysqlCon = mysql.createConnection(data);
-                    mysqlCon.connect((err)=>
+                    mysql.setConnection(mysql.getHandler().createConnection(data));
+                    mysql.connection.connect((err)=>
                     {
                         if(err)
                             return res.render("setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
                         mnHandler.saveMysql(data,(err)=>
                         {
-                            installHandler.setMysqlSetupComplete((err)=>
+                            data.prefix = prefix;
+                            installHandler.setMysqlSetupComplete(data,(err)=>
                             {
                                 return res.redirect(number+1);    
                             });
@@ -43,24 +46,30 @@ router.all("/*",(req,res)=>
                     });
                 break;
                 case 2:
-                    let dat = {};
-                    installHandler.setSetupComplete(dat,(err)=>
+                    installHandler.setSetupComplete(req.body,(err)=>
                     {
-                        return res.redirect("../"); 
+                        if(err) return res.redirect("setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
+                        return res.redirect("/"); 
                     });
                 break;
                 default:
-                    return res.render("setup/error",{page:number,error:{reason:"something went wrong"}});  
+                    return res.render("error",{page:number,error:{reason:"something went wrong"}});  
                 break;
             }
         }
         else{
+            if(number == 2 && mysql.connection.state === "disconnected")
+                return res.redirect("1");
             return res.render("setup/setup_"+number);
         }
     }
     else
     {
-        return res.render("setup/index");
+        return res.redirect("/");
     }
+});
+router.all(["/","index"],(req,res)=>
+{
+    return res.render("setup/index");
 });
 module.exports = router;

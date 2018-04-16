@@ -1,10 +1,11 @@
 const fs = require("fs");
 const async = require("async");
+const mysql = require("./mysql").getMysql();
+const constants = require("./Constants");
 class InstallationHandler
 {
     constructor(mysql)
     {
-        this.mysql = mysql;
     }
     installationComplete(callback)
     {
@@ -29,34 +30,133 @@ class InstallationHandler
             }
         });
     }
-    setMysqlSetupComplete(callback)
+    setMysqlSetupComplete(userData,callback)
     {
-        this.getInstallerObject((data)=>
-        {
-            data.mysqlSetupComplete = true; 
-            this.saveInstallerObject(data,(err)=>
+        async.waterfall(
+        [
+            //saving settings
+            (callback)=>
             {
-                callback(err);
-            });
-        });
+                this.getInstallerObject((data)=>
+                {
+                    data.mysqlSetupComplete = true;
+                    data.prefix = userData.prefix; 
+                    constants.setConstant("prefix",userData.prefix);
+                    this.saveInstallerObject(data,(err,data)=>
+                    {
+                        callback(err,data);
+                    });
+                });
+            },
+            //creating prefix tables
+            (data,callback)=>
+            {
+                console.log(`DROP TABLE mn_scheme`);
+                mysql.connection.query(`DROP TABLE IF EXISTS ${userData.prefix}_Scheme`,(err,result)=>{
+                    if(err) throw err;
+                    mysql.connection.query(`CREATE TABLE ${userData.prefix}_Scheme
+                    (
+                    ID int NOT NULL AUTO_INCREMENT,
+                    mainColor int(8),
+                    secondaryColor int(8),
+                    fontColorLight int(8),
+                    fontColorDark int(8),
+                    highlightColor int(8),
+                    PRIMARY KEY(ID) 
+                    )`,(err,result)=>
+                    {
+                        if(err) throw err;
+                        console.log(result);
+                        callback(err,result);
+                    });
+                });
+            },
+            //creating prefix tables
+            (data,callback)=>
+            {
+                mysql.connection.query(`DROP TABLE IF EXISTS ${userData.prefix}_Settings`,(err,result)=>{
+                    if(err) throw err;
+                    mysql.connection.query(`CREATE TABLE ${userData.prefix}_Settings
+                    (
+                        ID int NOT NULL AUTO_INCREMENT,
+                        serverName varchar(255),
+                        downloadLinks varchar(255),
+                        version varchar(8),
+                        expRate varchar(8),
+                        dropRate varchar(8),
+                        mesoRate varchar(8),
+                        nxColumn varchar(8),
+                        vpColumn varchar(8),
+                        gmLevel int(1),
+                        PRIMARY KEY(ID) 
+                    )`,(err,result)=>
+                    {
+                        if(err) throw err;
+                        callback(err,result);
+                    });
+                });
+            }           
+
+        ]
+        ,(err,result)=>
+        {
+            callback(err);
+        }    
+        );
     }
-    setSetupComplete(info,callback)
+    setSetupComplete(userData,callback)
     {
-        console.log("MYSQL",this.mysql);
-        this.getInstallerObject((data)=>
-        {
-            data.done=true; 
-            this.saveInstallerObject(data,(err)=>
+
+        console.log("CREATE TABLE ",userData);
+        userData.downloadLinks = userData.downloadSetup + ";" + userData.downloadClient;
+       async.waterfall(
+        [
+            (callback)=>
             {
-                callback(err);
-            });
-        });
+                mysql.connection.query(`
+                INSERT INTO ${constants.getConstant("prefix")}_settings
+                (serverName,downloadLinks,version,expRate,dropRate,mesoRate,nxColumn,vpColumn,gmLevel)
+                VALUES(
+                    '${userData.serverName}',
+                    '${userData.downloadLinks};',
+                    '${userData.version}',
+                    '${userData.exp}',
+                    '${userData.drop}',
+                    '${userData.meso}',
+                    '${userData.nx}',
+                    '${userData.vp}',
+                    '${userData.gmLevel}'
+                )
+                `,
+                (err,result)=>
+                {
+                    if(err) throw err;
+                    callback(err,result);
+                });
+            },
+            (result,callback)=>
+            {
+                this.getInstallerObject((data)=>
+                {
+                    data.done=true; 
+                    this.saveInstallerObject(data,(err,data)=>
+                    {
+                        callback(err,data);
+                    });
+                });
+            }    
+        ]
+        ,(err,result)=>
+        {
+            callback(err);
+        }    
+        );
     }
     saveInstallerObject(data,callback)
     {
         fs.writeFile("settings/setup.MN",JSON.stringify(data),(err)=>
         {
-            callback(err);
+            callback(err,data);
         });
     }
     getInstallerObject(callback)

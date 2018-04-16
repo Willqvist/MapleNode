@@ -29,6 +29,8 @@ body
     box-shadow:0px 2.5em 4em rgba(32,6,59,0.05);
     border:1px solid #69dc9e;
     position:relative;
+    margin-top:2em;
+    margin-bottom:2em;
 }
 #container h4, #container h1{
     font-weight:400;

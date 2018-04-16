@@ -10,7 +10,7 @@ class MNHandler
             callback(err);  
         });
     }
-    isDatabaseSetup()
+    isDatabaseSetup() 
     {
         return fs.existsSync("settings/database.MN");
     }
@@ -19,4 +19,4 @@ class MNHandler
         return JSON.parse(fs.readFileSync("settings/database.MN","utf8"));
     }
 }
-module.exports = MNHandler;
+module.exports = new MNHandler();
