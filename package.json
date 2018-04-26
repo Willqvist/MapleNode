@@ -9,16 +9,19 @@
   "author": "William Lundqvist",
   "license": "ISC",
   "dependencies": {
+    
     "async": "^2.6.0",
     "body-parser": "^1.18.2",
     "ejs": "^2.5.8",
     "express": "^4.16.3",
     "fs": "0.0.1-security",
+    "helmet": "^3.12.0",
     "mysql": "^2.15.0",
     "node-png": "^0.4.3",
     "pngjs": "^3.3.2",
     "pngjs2": "^2.0.0",
     "xml-parser": "^1.2.1",
     "xmldom": "^0.1.27"
+    
   }
 }

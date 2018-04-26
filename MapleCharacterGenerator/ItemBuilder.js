@@ -9,7 +9,6 @@ class ItemBuilder extends ImageBuilder
     constructor(){
         super();
         this.canvas = new Canvas(96,96);
-        this.fileLoader = new FileLoader();
         this.offsetX = 44;
         this.offsetY = 33;
         this.parts ={};

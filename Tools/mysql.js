@@ -19,7 +19,7 @@ class MySQL{
         }
         else
         {
-            callback(true); 
+            callback(false); 
         }
     }
     getConnection()

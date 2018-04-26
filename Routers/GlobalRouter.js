@@ -4,6 +4,7 @@ const MapleCharacterGenerator = require("../MapleCharacterGenerator/MCG");
 const mysql = require("../Tools/mysql").getMysql();
 const InstallHandler = require("../Tools/InstallationHandler");
 const constants = require("../Tools/Constants");
+const Rules = require("../Tools/Rules");
 let mcg = new MapleCharacterGenerator(mysql.connection,60*5);
 let installHandler = new InstallHandler(mysql.mysql);
 router.get("/Characters/*.chr",(req,res)=>
@@ -24,8 +25,17 @@ router.get("/Characters/*.chr",(req,res)=>
         res.sendFile("/MapleCharacterGenerator/Characters/"+name+".png",{root:realPath});
     });
 });
+router.all("*",(req,res,next)=>
+{
+    if(!constants.getConstant("prefix"))
+        return res.redirect("/setup")
+    return next();
+});
 router.get(["/","/index"],(req,res)=>
 {
-    return res.render("index");   
+    mysql.connection.query(`SELECT expRate,dropRate,mesoRate,serverName FROM ${constants.getConstant("prefix")}_settings`,(err,results)=>
+    {
+        return res.render("index",{settings:results[0]});  
+    }); 
 });
 module.exports = router;

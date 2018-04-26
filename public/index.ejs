@@ -1,0 +1,225 @@
+<%
+if(!isset(typeof settings))
+{
+    settings = {};
+}
+%>
+<!doctype html>
+<html>
+    <head>
+        <style>
+        @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+            *{
+                padding:0;
+                margin:0;
+            }
+            body{
+                background:#d3f3ee;
+            }
+            .maxWidth{
+                max-width:120em;
+                width:90%;
+                margin:auto;
+            }
+            #header{
+                width:100%;
+                height:40em;
+                background:url(images/headerImage.png);
+                background-size:cover;
+                background-position:50% 50%;
+                position:Relative;
+            }
+            #fade
+            {
+                content:"";
+                background:linear-gradient(transparent,#20063B 120%);
+                position:Absolute;
+                width:100%;
+                height:100%;
+                top:0;
+                left:0;
+                z-index:0;
+            }
+            #headerContent
+            {
+                display:flex;
+                align-items:flex-end;
+                height:100%;
+                box-sizing:border-box;
+                padding:0 8em;
+                padding-bottom:6em;
+                z-index:4;
+                position:Relative;
+            }
+            #headerContent::after{
+                content:"";
+                background:#FFF;
+                position:Absolute;
+                width:100%;
+                height:2em;
+                bottom:0;
+                left:0;
+            }
+            #headerInfo{
+                color:#FFF;
+                font-family: 'Montserrat', sans-serif;
+            }
+            #headerInfo h1{
+                font-weight:700;
+                font-size:4em;
+            }
+            #headerInfo p{
+                font-weight:400;
+                margin-top:0.3em;
+                font-size:1.1em;
+            }
+            #content{
+                background:#FFF;
+                height:100vh;
+                z-index:2;
+                position:Relative;
+            }
+            #mushroom,#stump,#snail
+            {
+                position:Absolute;  
+                bottom:0; 
+            }
+            #stump{
+                width:20em;
+                height:20em;
+                background:url(images/stump.png) no-repeat;
+                background-size:contain;
+                background-position:50% 50%;
+                right:22em;
+                z-index:-2;
+            }
+            #snail{
+                width:12em;
+                height:12em;
+                background:url(images/snail.png) no-repeat;
+                background-size:contain;
+                background-position:50% 50%;
+                right:38em;
+                bottom:-1em;
+                z-index:-1;
+            }
+            #mushroom{
+                width:28em;
+                height:28em;
+                background:url(images/mushroom.png) no-repeat;
+                background-size:contain;
+                background-position:100% 50%;
+                right:0em;
+                bottom:-2em;
+                z-index:5;
+            }
+            .btn{
+                width:8em;
+                height:2.6em;
+                padding-left:1em;
+                line-height:2.6em;
+                border-radius:0.5em;
+                background:red;
+                display:inline-block; 
+                margin-right:2em;
+                transition:Ease 0.3s;
+                box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
+            }
+            .btn:hover{
+                box-shadow:0px 0em 1em rgba(32,6,59,0.1);
+                transform:translateY(0.2em);
+            }
+            .btn a{
+                text-decoration:none;
+                color:#FFF;
+                font-size:0.98em;
+                width:100%;
+                height:100%;
+                display:block;
+            }
+            .btn-green
+            {
+                background:#69dc9e;
+            }
+            .btn-green:hover
+            {
+                background:#44ec92;
+            }
+            .btn-blue
+            {
+                background:#3e78b2;
+            }
+            .btn-blue:hover
+            {
+                background:#287fd5;
+            }
+            #header .btn{
+                margin-top:2em;
+            }
+        </style>
+    </head>
+    <body>
+    <header id="header">
+        <div id="fade"></div>
+        <div id="headerContent" class="maxWidth">
+            <div id="headerInfo">
+                <h1><%= settings.serverName %></h1>
+                <p>V83 Maplestory private serverName</p>
+                <div class="btn btn-green"><a href="#">Play</a></div>
+                <div class="btn btn-blue"><a href="#">Register</a></div>
+            </div>
+            <div id="snail"></div> 
+            <div id="stump"></div>
+            <div id="mushroom"></div>
+        </div>
+    </header>
+    <section id="content" class="maxWidth">
+    </section>
+    <script>
+        let mushroom = document.getElementById("mushroom");
+        let stump = document.getElementById("stump");
+        let snail = document.getElementById("snail");
+        let header = document.getElementById("header");
+        let moveables = {mushroom:mushroom,stump:stump,snail:snail};
+        let objectPositions = {mushroom:{x:0,y:0},snail:{x:0,y:0},stump:{x:0,y:0}};
+        let keys = Object.keys(moveables);
+        for(let i in keys)
+        {
+            let key = keys[i];
+            let object = moveables[key];
+            let rect = moveables[key].getBoundingClientRect();
+            objectPositions[key] = {x:rect.left,y:rect.top};
+        }
+        let height = header.clientHeight;
+        let positions = {start:0,end:-3};
+        let scaler = {stump:0.1,mushroom:0.5,snail:0.05};
+        let offset;
+        let oldPosition = {mushroom:{x:0,y:0},snail:{x:0,y:0},stump:{x:0,y:0}};
+        let mousePos = {x:0,y:0};
+        let offsetTop = 0;
+        document.addEventListener("mousemove",(e)=>
+        {
+            mousePos.x = e.screenX;
+            mousePos.y = e.screenY;
+            updateMouse();
+        },false);
+        function updateMouse()
+        {
+            for(let i in keys)
+            {
+                let key = keys[i];
+                let object = moveables[key];
+                let scale = scaler[key];
+                let rect = moveables[key].getBoundingClientRect();
+                let normalizedX = (mousePos.x - objectPositions[key].x) / window.innerWidth;
+                let normalizedY = (mousePos.y - objectPositions[key].y) / window.innerHeight;
+                object.style.transform = stringBuilder("translate(",normalizedX*2*scaler[key],"em,",normalizedY*2*scaler[key],"em)");
+            }
+        }
+        function stringBuilder()
+        {
+            return Array.prototype.join.call(arguments, '');
+        }
+    </script>
+    </body>
+</html>

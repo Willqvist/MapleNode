@@ -3,13 +3,14 @@ const router = express.Router();
 const InstallationHandler = require("../Tools/InstallationHandler");
 const mnHandler = require("../Tools/MNHandler");
 const mysql = require("../Tools/mysql").getMysql();
+const constants = require("../Tools/Constants");
 let installHandler = new InstallationHandler(mysql.mysql);
 router.all("/*",(req,res,next)=>
 {
     installHandler.installationComplete((done,data)=>
     {
       if(done)
-        return res.redirect("/");
+        return res.status(403).render('error/404',{errCode:403});
       return next();
     });
 });
@@ -33,8 +34,7 @@ router.all("/:id/",(req,res,next)=>
                     mysql.setConnection(mysql.getHandler().createConnection(data));
                     mysql.connection.connect((err)=>
                     {
-                        if(err)
-                            return res.render("setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
+                        if(err) return res.render("setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
                         mnHandler.saveMysql(data,(err)=>
                         {
                             data.prefix = prefix;
@@ -58,8 +58,7 @@ router.all("/:id/",(req,res,next)=>
             }
         }
         else{
-            if(number == 2 && mysql.connection.state === "disconnected")
-                return res.redirect("1");
+            if(number == 2 && mysql.connection.state === "disconnected") return res.redirect("1");
             return res.render("setup/setup_"+number);
         }
     }
