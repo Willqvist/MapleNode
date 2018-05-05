@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">   
+    <link rel="stylesheet" type="text/css" href="CSS/status.css">             
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/tabIcon.png">
+    <title>Status</title>
+    </head>
+    <body>
+        <header id="header">
+            <div id="fade"></div>
+            <div id="headerContent" class="maxWidth">
+                <div id="headerInfo">
+                    <h1>Server Status</h1>
+                </div>
+            </div>
+        </header>
+            <section id="content" class="maxWidth">
+            <div class="block smallBlock">
+                <h3 class="blockHeader">Server Status</h3>
+                <div class="status">
+                    <h2 class="beforeTitle" data-beforeTitleContent="MapleNode is">ONLINE</h2>
+                </div>
+            </div>
+            <div class="block middleBlock">
+                <h3 class="blockHeader">Server runtime</h3>
+                <div class="runtime">
+                    <div class="statusBlockHolder">
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                    </div>
+                    <div class="runtimeInfo">
+                    <h2>20 days ago</h2>
+                    <h3><span>Uptime 100%</span></h3>
+                    <h2>Today</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="block halfBlock">
+                <h3 class="blockHeader">Vote Status</h3>
+                <div class="voteStatus">
+                    <canvas id="voteCanvas"></canvas>
+                </div>
+            </div>
+        </section>
+        <script src="JS/HttpHandler.js"></script>
+        <script>
+            let chart = new LineChart("voteCanvas",0,0);
+            chart.setFont({size:"1em",font:"Montserrat"});
+            chart.setupChart();
+        </script>
+    </body>
+</html>

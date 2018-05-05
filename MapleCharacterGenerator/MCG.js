@@ -16,13 +16,13 @@ class MapleCharacterGenerator
     }
     generatePlayer(mysql,name,callback)
     {
+        this.parts = {}; 
         if(fs.existsSync(__dirname + "/Characters/"+name+".png"))
         {
             let stat = fs.statSync(__dirname + "/Characters/"+name+".png");
             let date = new Date(util.inspect(stat.mtime));
             let dateNow = new Date();
-            console.log((dateNow-date)/1000, this.cooldown);
-            if((dateNow-date)/1000 < 0)
+            if((dateNow-date)/1000 <  this.cooldown)
                 return callback({success:true});
         }
         this.builder = new ItemBuilder();
@@ -36,7 +36,8 @@ class MapleCharacterGenerator
             this.parts.hair = results[0].hair;
             this.parts.skincolor = results[0].skincolor;
             mysql.query("SELECT inventoryitems.itemid, inventoryitems.position FROM inventoryequipment INNER JOIN inventoryitems ON inventoryequipment.inventoryitemid = inventoryitems.inventoryitemid WHERE inventoryitems.characterid = ? AND inventoryitems.inventorytype = '-1'",[results[0].id],(err,results)=>
-            {         
+            {      
+  
                 if(err) throw err;
                 for(let i = 0; i < results.length; i++)
                 {
@@ -61,6 +62,10 @@ class MapleCharacterGenerator
                         }break;
                     }
                 }
+                if(this.parts.coat == null)
+                    this.parts.coat = 1040006;
+                //1062051
+                //1060002
                 console.log(this.parts);
                 this.builder.equipItems(
                     [
@@ -69,11 +74,14 @@ class MapleCharacterGenerator
                         {method:this.builder.setCap,parameters:{id:this.parts.cap,z:"capAccessoryBelowBody"}},
                         {method:this.builder.setTorso,parameters:{id:this.parts.skincolor+2000,z:"skincolor"}},
                         {method:this.builder.setCoat,parameters:{id:this.parts.coat,z:"mailChestBelowPants"}},
-                        {method:this.builder.setPants,parameters:{id:this.parts.pants,z:"pants"}},
-                        {method:this.builder.setLongCoat,parameters:{id:this.parts.coat,z:"mailChestOverPants"}},                        
-                        {method:this.builder.setCoat,parameters:{id:this.parts.coat,z:"mailChest"}},
+                        {method:this.builder.setLongCoat,parameters:{id:this.parts.coat,z:"mailChestBelowPants"}},
                         {method:this.builder.setPants,parameters:{id:this.parts.pants,z:"pantsBelowShoes"}},
                         {method:this.builder.setShoes,parameters:{id:this.parts.shoes,z:"shoes"}},
+                        {method:this.builder.setPants,parameters:{id:this.parts.pants,z:"pants"}},
+                        {method:this.builder.setShoes,parameters:{id:this.parts.shoes,z:"shoesOverPants"}},
+                        {method:this.builder.setLongCoat,parameters:{id:this.parts.coat,z:"mailChestOverPants"}},                        
+                        {method:this.builder.setCoat,parameters:{id:this.parts.coat,z:"mailChest"}},
+                        {method:this.builder.setLongCoat,parameters:{id:this.parts.coat,z:"mailChest"}},
                         {method:this.builder.setLongCoat,parameters:{id:this.parts.coat,z:"mailChestOverHighest"}},
                         {method:this.builder.setHead,parameters:{id:this.parts.skincolor+2000,z:"skincolor"}},
                         {method:this.builder.setAccessory,parameters:{id:this.parts.ears,z:"accessoryEar"}},

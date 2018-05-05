@@ -1,0 +1,107 @@
+
+.ranking
+{
+    display:flex;
+}
+.rankingSide
+{
+    width:50%;
+    flex:1;
+    display:flex;
+    flex-direction: column;
+}
+#rankingDisplay
+{
+    background:url(../images/playerBG.png);
+    background-size:30em;
+    height:35em;
+    position:relative;
+}
+#playerImage
+{
+    position:Absolute;
+    background:url(http://localhost:8081/Characters/matolo.chr) no-repeat;
+    background-size:contain;
+    background-position:50% 100%;
+    width:12em;
+    height:12em;
+    margin:auto;
+    left:0;right:0;top:0;bottom:0;
+    top:7em;
+}
+.rankingPlayer
+{
+    flex:1;
+    display:flex;
+    width:100%;
+    box-sizing:border-box;
+    padding:0 2em;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+    box-shadow:inset 0px -0.2em 0em rgba(0, 0, 0, 0.08);
+    transition:Ease 0.2s;
+    cursor:pointer;
+}
+.rankingPlayer h3
+{
+    font-weight:700;
+    font-family: 'Montserrat', sans-serif;   
+    color:#322239;   
+    font-size:1.2em;
+    margin:auto 0;
+    position:relative;
+    padding-top:0.65em;   
+    min-width:2em;
+}
+
+.rankingPlayer h5
+{
+    position:Absolute;
+    left:0;
+    right:0;
+    margin:auto;
+    text-align:center;
+    bottom:0.5em;
+    font-size:0.9em;
+    font-family: 'Montserrat', sans-serif;   
+    color:#322239;
+    font-weight:400;
+    padding-bottom:0.6em;
+    opacity:0.6;
+    transition:Ease 0.2s;
+}
+.rankingPlayer h3::before
+{
+    content:attr(data-beforeContent);
+    position:Absolute;
+    left:0;
+    top:0;
+    font-family: 'Montserrat', sans-serif;   
+    color:#322239;
+    font-weight:400;
+    opacity:0.6; 
+    font-size:0.7em;
+}
+.playerExpBar
+{
+    position: absolute;
+    bottom:0;
+    height:0.2em;
+    background:#3e78b2;
+    margin-left:-2em;
+    transition:Ease 0.2s;
+}
+.rankingPlayer:hover{
+    min-height:0em;
+    padding-left:2.4em;
+}
+.rankingPlayer:hover .playerExpBar
+{
+    margin-left:-2.4em;
+}
+.rankingPlayer:hover h5
+{
+    padding-bottom:0.6em;
+    opacity:0.8;
+}

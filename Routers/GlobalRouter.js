@@ -27,15 +27,8 @@ router.get("/Characters/*.chr",(req,res)=>
 });
 router.all("*",(req,res,next)=>
 {
-    if(!constants.getConstant("prefix"))
+    if(!constants.getConstant("prefix") || constants.getConstant("setup-status") == -1)
         return res.redirect("/setup")
     return next();
-});
-router.get(["/","/index"],(req,res)=>
-{
-    mysql.connection.query(`SELECT expRate,dropRate,mesoRate,serverName FROM ${constants.getConstant("prefix")}_settings`,(err,results)=>
-    {
-        return res.render("index",{settings:results[0]});  
-    }); 
 });
 module.exports = router;

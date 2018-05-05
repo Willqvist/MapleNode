@@ -1,5 +1,3 @@
-import { constants } from "fs";
-
 const express = require("express");
 const router = express.Router();
 const InstallationHandler = require("../Tools/InstallationHandler");
@@ -11,7 +9,7 @@ router.all("/*",(req,res,next)=>
     installHandler.installationComplete((done,data)=>
     {
       if(done)
-        return res.redirect("/");
+        return res.status(403).send('403 - access denied');
       return next();
     });
 });
@@ -50,7 +48,7 @@ router.all("/:id/",(req,res,next)=>
                 case 2:
                     installHandler.setSetupComplete(req.body,(err)=>
                     {
-                        if(err) return res.redirect("setup/error",page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
+                        if(err) return res.redirect("setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
                         return res.redirect("/"); 
                     });
                 break;

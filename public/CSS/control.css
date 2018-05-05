@@ -1,0 +1,51 @@
+#control
+{
+    box-sizing: border-box;
+    position: relative;
+}
+#control form
+{
+    padding:2.5em;
+}
+#control form .fill
+{
+    width:100%;
+    height:4.5em;
+    padding:1em;
+    box-sizing: border-box;
+    border:none;
+    outline:none;
+    box-shadow:inset 0px -0.2em 0 #3e78b2,inset 0px 0em 0 0.2em #f1f2f5;
+    transition:ease 0.2s;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom:2.2em;
+}
+#control form input
+{
+    border:none;
+    margin:0;
+    text-align:left;
+}
+#form-btn-holder
+{
+    display:flex;
+    width:100%;
+    justify-content: space-between;
+    margin-top:1em;
+}
+#control form label
+{
+    font-family: 'Montserrat', sans-serif;
+    font-weight:700; 
+    display:block;  
+    margin-bottom:0.5em;
+    color:#413b4f;
+}
+#control form .fill:focus
+{
+    box-shadow:inset 0px 0em 0 0em #3e78b2,inset 0px 0em 0 0.2em #3e78b2;
+}
+#control form .fill:valid
+{
+    box-shadow:inset 0px 0em 0 0em #69dc9e,inset 0px 0em 0 0.2em #69dc9e;
+}

@@ -8,245 +8,13 @@ if(!isset(typeof settings))
 <html>
     <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="CSS/index.css">    
+    <link rel="stylesheet" type="text/css" href="CSS/status.css">  
+    <link rel="stylesheet" type="text/css" href="CSS/ranking.css"> 
+    <link rel="stylesheet" type="text/css" href="CSS/control.css">            
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/tabIcon.png">
     <title><%= settings.serverName %></title>
-
-        <style>
-        @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
-            *{
-                padding:0;
-                margin:0;
-            }
-            body{
-                background:#d3f3ee;
-            }
-            .maxWidth{
-                max-width:120em;
-                width:90%;
-                margin:auto;
-            }
-            #header{
-                width:100%;
-                height:40em;
-                background:url(images/headerImage.png);
-                background-size:cover;
-                background-position:50% 50%;
-                position:Relative;
-            }
-            #fade
-            {
-                content:"";
-                background:linear-gradient(transparent,#20063B 120%);
-                position:Absolute;
-                width:100%;
-                height:100%;
-                top:0;
-                left:0;
-                z-index:0;
-            }
-            #headerContent
-            {
-                display:flex;
-                align-items:flex-end;
-                height:100%;
-                box-sizing:border-box;
-                padding:0 8em;
-                padding-bottom:6em;
-                z-index:4;
-                position:Relative;
-            }
-            #headerContent::after{
-                content:"";
-                background:#FFF;
-                position:Absolute;
-                width:100%;
-                height:2em;
-                bottom:0;
-                left:0;
-            }
-            #headerInfo{
-                color:#FFF;
-                font-family: 'Montserrat', sans-serif;
-            }
-            #headerInfo h1{
-                font-weight:700;
-                font-size:4em;
-            }
-            #headerInfo p{
-                font-weight:400;
-                margin-top:0.3em;
-                font-size:1.1em;
-            }
-            #mushroom,#stump,#snail
-            {
-                position:Absolute;  
-                bottom:0; 
-            }
-            #stump{
-                width:20em;
-                height:20em;
-                background:url(images/stump.png) no-repeat;
-                background-size:contain;
-                background-position:50% 50%;
-                right:22em;
-                z-index:-2;
-            }
-            #snail{
-                width:12em;
-                height:12em;
-                background:url(images/snail.png) no-repeat;
-                background-size:contain;
-                background-position:50% 50%;
-                right:38em;
-                bottom:-1em;
-                z-index:-1;
-            }
-            #mushroom{
-                width:28em;
-                height:28em;
-                background:url(images/mushroom.png) no-repeat;
-                background-size:contain;
-                background-position:100% 50%;
-                right:0em;
-                bottom:-2em;
-                z-index:5;
-            }
-            .btn{
-                width:8em;
-                height:2.6em;
-                padding-left:1em;
-                line-height:2.6em;
-                border-radius:0.5em;
-                background:red;
-                display:inline-block; 
-                margin-right:2em;
-                transition:Ease 0.3s;
-                box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
-            }
-            .btn:hover{
-                box-shadow:0px 0em 1em rgba(32,6,59,0.1);
-                transform:translateY(0.2em);
-            }
-            .btn a{
-                text-decoration:none;
-                color:#FFF;
-                font-size:0.98em;
-                width:100%;
-                height:100%;
-                display:block;
-            }
-            .btn-green
-            {
-                background:#69dc9e;
-            }
-            .btn-green:hover
-            {
-                background:#44ec92;
-            }
-            .btn-blue
-            {
-                background:#3e78b2;
-            }
-            .btn-blue:hover
-            {
-                background:#287fd5;
-            }
-            #header .btn{
-                margin-top:2em;
-            }
-            /*##CONTENT##*/
-            /*
-            #content{
-                background:#FFF;
-                z-index:2;
-                position:Relative;
-                display:flex;
-                box-sizing:border-box;
-                padding:2em 5em;
-                justify-content:space-between;
-                flex-flow:wrap;
-                align-content: flex-start;
-            }
-            .block
-            {
-                background:red;
-                margin: 0;
-                padding:0;
-                margin:0 auto;
-                margin-bottom:3.5em;
-            }            
-            .block-small
-            {
-                width:30%;
-                min-width:20em;
-                height:15em;
-            }
-            .block-fill
-            {
-                flex-grow:1;
-                min-width:20em;
-                height:10em;
-            }
-            .block-medium
-            {
-                width:65%;
-                min-width:20em;
-                height:10em;
-            }
-            .block-full
-            {
-                width:100%;
-                min-width:20em;
-                height:10em;
-            }  
-            */
-            #content{
-                background:#FFF;
-                z-index:2;
-                position:Relative;
-                display:grid;
-                box-sizing:border-box;
-                padding:8em 5em;
-                grid-gap:2.5em;
-                grid-template-columns:repeat(6,minmax(0em, 0.33fr));
-                grid-auto-columns:minmax(10em,auto);
-            }
-            .block
-            {
-                height:25em;
-                background:#fcfbfd;    
-            }
-            .b1{
-                grid-column:1/3;
-            }
-            .b2{
-                grid-column:3/5;
-            }
-            .b3{
-                grid-column:5/7;
-            }              
-            .b4
-            {
-                grid-column:1/4;
-            }
-            .b5
-            {
-                grid-column:4/7;
-            }
-            .blockHeader{
-                background:#FFF;
-                width:100%;
-                line-height:3em;
-                height:3em;
-                box-sizing:border-box;
-                padding-left:1.5em;
-                font-weight:400;
-                font-family: 'Montserrat', sans-serif;   
-                box-shadow:0px 0.2em 0 #69dc9e;
-                color:#322239;             
-            }                     
-        </style>
     </head>
     <body>
     <header id="header">
@@ -264,20 +32,23 @@ if(!isset(typeof settings))
         </div>
     </header>
     <section id="content" class="maxWidth">
-        <div class="block b1">
+        <div class="block smallBlock">
             <h3 class="blockHeader">Server Status</h3>
+            <% include panels/status.ejs %>
         </div>
-        <div class="block b2">
+        <div class="block smallBlock">
             <h3 class="blockHeader">Control Panel</h3>
+            <% include panels/control.ejs %>
         </div>
-        <div class="block b3">
+        <div class="block smallBlock">
             <h3 class="blockHeader">Discord</h3>
         </div> 
-        <div class="block b4">
+        <div class="block halfBlock">
             <h3 class="blockHeader">News</h3>
         </div>
-        <div class="block b5">
+        <div class="block halfBlock">
             <h3 class="blockHeader">Ranking</h3>
+            <% include panels/ranking.ejs %>
         </div>      
     </section>
     <script>
@@ -318,7 +89,13 @@ if(!isset(typeof settings))
                 let rect = moveables[key].getBoundingClientRect();
                 let normalizedX = (mousePos.x - objectPositions[key].x) / window.innerWidth;
                 let normalizedY = (mousePos.y - objectPositions[key].y) / window.innerHeight;
-                object.style.transform = stringBuilder("translate(",normalizedX*2*scaler[key],"em,",normalizedY*2*scaler[key],"em)");
+                object.style.transform = stringBuilder(
+                                            "translate(",
+                                            normalizedX*2*scaler[key],
+                                            "em,",
+                                            normalizedY*2*scaler[key],
+                                            "em)"
+                                        );
             }
         }
         function stringBuilder()

@@ -197,7 +197,6 @@ class ItemBuilder extends ImageBuilder
             if(elements[i].parentNode.nodeName == "stand"+self.parts.stand && elements[i].firstChild.data == z)
             {
                 nodeName = elements[i].parentNode.parentNode.nodeName.replace("_","");
-                console.log("PARENT NODE NAME, ",elements[i].parentNode.nodeName);
                 zElem = elements[i].parentNode;
                 break;
             }
@@ -206,6 +205,7 @@ class ItemBuilder extends ImageBuilder
             return next();
         let x = zElem.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
+        console.log("MapleCharacterGenerator/items/"+type+"/0"+id+".img/stand"+self.parts.stand+".0."+nodeName+".png");
         self.loadImage("MapleCharacterGenerator/items/"+type+"/0"+id+".img/stand"+self.parts.stand+".0."+nodeName+".png",(image)=>
         {
             console.log("caoted");
@@ -256,6 +256,7 @@ class ItemBuilder extends ImageBuilder
     }
     setShoes(self,parameters,next)
     {
+        console.log("shoes id: ",parameters.id);
         let id = parameters.id;
         let z = parameters.z;
         let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Shoes/0"+id+".img/coord.xml","utf8"),"text/xml");
@@ -269,6 +270,8 @@ class ItemBuilder extends ImageBuilder
                 break;
             }
         }
+        if(zElem == null)
+           return next();
         let x = zElem.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
         self.loadImage("MapleCharacterGenerator/items/Shoes/0"+id+".img/stand1.0.shoes.png",(image)=>
