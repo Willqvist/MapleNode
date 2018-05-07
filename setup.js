@@ -8,6 +8,7 @@ function setup(setupListeners){
     console.log("║ launching...                ║");
     mysql.instantiate((err)=>
     {
+
         if(err){console.log("║ \x1b[31m-mysql connection failed...\x1b[0m ║ \r\n║ \x1b[31m-exiting process","\x1b[0m           ║\r\n╚═════════════════════════════╝"); process.exit(1);}
         else    console.log("║ \x1b[32m-mysql connected","\x1b[0m           ║");
         let installer = new InstallationHandler();

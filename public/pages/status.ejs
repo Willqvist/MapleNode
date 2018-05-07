@@ -3,7 +3,8 @@
     <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">   
-    <link rel="stylesheet" type="text/css" href="CSS/status.css">             
+    <link rel="stylesheet" type="text/css" href="CSS/status.css">  
+    <link rel="stylesheet" type="text/css" href="CSS/media.css">             
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/tabIcon.png">
     <title>Status</title>
@@ -59,15 +60,24 @@
             <div class="block halfBlock">
                 <h3 class="blockHeader">Vote Status</h3>
                 <div class="voteStatus">
+                    <ul>
+                        <li class="beforeTitle" data-beforeTitleContent="Votes this week">1200</li>
+                        <li class="beforeTitle" data-beforeTitleContent="Votes last week">1000</li>
+                    </ul>
                     <canvas id="voteCanvas"></canvas>
                 </div>
             </div>
+            <div class="block halfBlock">
+                    <h3 class="blockHeader">Server News</h3>
+                </div>            
         </section>
         <script src="JS/HttpHandler.js"></script>
         <script>
-            let chart = new LineChart("voteCanvas",0,0);
-            chart.setFont({size:"1em",font:"Montserrat"});
-            chart.setupChart();
+            document.body.onload = function(){
+                let chart = new BarChart("voteCanvas",0,0);
+                chart.setFont({size:"0.8em",font:"Montserrat"});
+                chart.renderChart();
+            }
         </script>
     </body>
 </html>

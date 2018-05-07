@@ -1,0 +1,41 @@
+@media only screen and (max-width:120em)
+{
+    #content
+    {
+        padding:4em 5em;
+        font-size:0.8em;
+    }
+    #headerContent
+    {
+        font-size:0.8em;
+        margin:0;
+        width:100%;
+        padding-left:5em;
+        padding-bottom:6em;
+    }
+    .maxWidth
+    {
+        max-width:100%;
+        width:100%;
+    }
+}
+@media only screen and (max-height:55em)
+{
+    #header{
+        width:100%;
+        height:32em;
+        background:url(../images/headerImage.png);
+        background-size:cover;
+        background-position:50% 50%;
+        position:Relative;
+    }
+    #headerContent::after{
+        content:"";
+        background:#FFF;
+        position:Absolute;
+        width:100%;
+        height:2em;
+        bottom:0;
+        left:0;
+    }
+}  

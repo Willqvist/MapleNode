@@ -90,7 +90,7 @@ class ErrorElement
         return this.isShown;
     }
 }
-class LineChart
+class BarChart
 {
     constructor(canvasID,xData,yData)
     {
@@ -107,7 +107,12 @@ class LineChart
             RIGHT:this.canvas.width,
             BOTTOM:this.canvas.height, 
         }
-
+        this.bar = 
+        {
+            width:25,
+            color:"red",
+            maxHeight:120
+        }
     }
     getPosition(x,y)
     {
@@ -136,16 +141,74 @@ class LineChart
     {
         this.ctx.font = fontInfo.size + " " + fontInfo.font;
     }
-    setupChart()
+    getMinMax(data)
     {
-        this.align({x:this.directions.LEFT,y:this.directions.BOTTOM});
-        let padding = 20;
-        let max = this.canvas.width - padding;
-        let scaler = (max - padding - this.ctx.measureText("wew5").width) / 4;
-        for(let i = 0; i < 5; i++)
+        let max = 0;
+        let min = 0;
+        for(let key in data)
         {
-            let textPosition = this.getTextPosition("wewi",20+i*scaler,20);
-            this.ctx.fillText(textPosition.text,textPosition.x,textPosition.y);   
+            if(data[key] > max)
+                max = data[key];
+            if(data[key] < min)
+                min = data[key];    
         }
+        return {min:min,max:max};
+    }
+    renderBar(textPosition,data,minMax,maxLineHeight)
+    {
+        let barRealHeight = (textPosition.y - 20) - maxLineHeight;
+        let height = (data/minMax.max)* barRealHeight;
+        this.ctx.fillRect(textPosition.x + this.ctx.measureText(textPosition.text).width/2 - this.bar.width/2,textPosition.y - 20,this.bar.width,-height);
+    }
+    renderChart(data)
+    {
+        let days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+        let maxLineHeight = 0;
+        data = [123,4,234,5344,234,13,2435];
+        data = 
+        {
+            Mon:123,
+            Tue:1243,
+            Wed:1543,
+            Thu:43,
+            Fri:5322,
+            Sat:122,
+            Fri:435,
+            Sun:243,
+        }
+        let minMax = this.getMinMax(data);
+        minMax.min = 0;
+        this.align({x:this.directions.LEFT,y:this.directions.BOTTOM});
+        let paddingX = 50;
+        let paddingY = 20;
+        let maxWidth = this.canvas.width - paddingX;
+        let maxHeight = this.canvas.height - paddingY;
+        let scalerX = (maxWidth - paddingX - this.ctx.measureText("Tue").width) / 6;
+        let scalerY = (maxHeight - paddingY*3) / 3;
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = "rgba(32,6,59,1)";
+        this.ctx.fillStyle = "#3e78b2";
+        //this.ctx.fillRect(50,20,this.canvas.width-70,25+3*scalerY);
+        let deltaMinMax = (minMax.max - minMax.min) / 3;
+        this.ctx.strokeStyle = "rgba(32,6,59,0.2)";
+        for(let i = 0; i <= 3; i++)
+        {
+            let textPosition = this.getTextPosition(minMax.min + Math.floor(i*deltaMinMax),20,35+i*scalerY);
+            this.ctx.fillText(textPosition.text,textPosition.x,textPosition.y-3);
+            this.ctx.moveTo(24+ this.ctx.measureText(minMax.max).width,textPosition.y - 6);
+            this.ctx.lineTo(this.canvas.width-20,textPosition.y - 6);
+            if(i == 3)
+                maxLineHeight = textPosition.y - 6;
+            //this.ctx.   
+        }
+        for(let i = 0; i <= 6; i++)
+        {
+            let textPosition = this.getTextPosition(days[i],40+this.ctx.measureText(minMax.max).width+i*scalerX,20);
+            //this.ctx.moveTo(textPosition.x + this.ctx.measureText(textPosition.text).width/2,textPosition.y - 10);
+            //this.ctx.lineTo(textPosition.x + this.ctx.measureText(textPosition.text).width/2,20);
+            this.ctx.fillText(textPosition.text,textPosition.x,textPosition.y + 4); 
+            this.renderBar(textPosition,data[days[i]],minMax,maxLineHeight);  
+        }
+        this.ctx.stroke();
     }
 }

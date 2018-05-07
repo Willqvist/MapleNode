@@ -4,6 +4,7 @@ const InstallationHandler = require("../Tools/InstallationHandler");
 const mnHandler = require("../Tools/MNHandler");
 const mysql = require("../Tools/mysql").getMysql();
 let installHandler = new InstallationHandler(mysql.mysql);
+const constants = require("../Tools/Constants");
 router.all("/*",(req,res,next)=>
 {
     installHandler.installationComplete((done,data)=>
@@ -49,6 +50,7 @@ router.all("/:id/",(req,res,next)=>
                     installHandler.setSetupComplete(req.body,(err)=>
                     {
                         if(err) return res.redirect("setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
+                        constants.setConstant("setup-status",1);
                         return res.redirect("/"); 
                     });
                 break;
