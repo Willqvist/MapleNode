@@ -1,3 +1,6 @@
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+
 //libaries
 const express = require("express");
 const fs = require("fs");
@@ -29,7 +32,12 @@ function setupListeners(){
     app.use((req, res, next)=>res.status(404).render('error/404'));
     app.use((err, req, res, next)=>res.status(500).send('Something went wrong!'));
 }
-
+process.stdin.on('data', function (text) {
+    if (text.trim() === 'exit' || text.trim() === '!e') {
+    console.log("exiting...");
+      process.exit();
+    }
+});
 //EJS functions
 app.locals.printStatement = function(statement,callback)
 {

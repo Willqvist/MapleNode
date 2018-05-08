@@ -9,7 +9,7 @@ router.get("/status",(req,res)=>
 { 
     return res.render("pages/status");
 });
-router.get(["/","/index"],(req,res)=>
+router.get(["/","/index","/main"],(req,res)=>
 {
     mysql.connection.query(`SELECT expRate,dropRate,mesoRate,serverName FROM ${constants.getConstant("prefix")}_settings`,(err,results)=>
     {
@@ -19,5 +19,9 @@ router.get(["/","/index"],(req,res)=>
             return res.render("index",{settings:results[0],players:players}); 
         }); 
     }); 
+});
+router.get("/ranking",(req,res)=>
+{ 
+    return res.render("pages/ranking");
 });
 module.exports = router;

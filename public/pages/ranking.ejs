@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">
+    <link rel="stylesheet" type="text/css" href="CSS/rankingPage.css">    
+    <link rel="stylesheet" type="text/css" href="CSS/media.css">             
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/tabIcon.png">
+    <title>Ranking</title>
+    </head>
+    <body>
+        <header id="header">
+            <div id="fade"></div>
+            <div id="headerContent" class="maxWidth">
+                <div id="headerInfo">
+                    <h1>Ranking</h1>
+                </div>
+            </div>
+        </header>
+            <section id="content" class="maxWidth">
+            <div class="block fullBlock" id="settings">
+                <form>
+                    <input id="searchBar" />
+                    <div id="searchBtn">
+                        <svg id="icon-search" viewBox="0 0 32 32">
+                            <title>search</title>
+                            <path d="M19.427 20.427c-1.39 0.99-3.090 1.573-4.927 1.573-4.694 0-8.5-3.806-8.5-8.5s3.806-8.5 8.5-8.5c4.694 0 8.5 3.806 8.5 8.5 0 1.837-0.583 3.537-1.573 4.927l5.585 5.585c0.55 0.55 0.546 1.431-0 1.976l-0.023 0.023c-0.544 0.544-1.431 0.546-1.976 0l-5.585-5.585zM14.5 20c3.59 0 6.5-2.91 6.5-6.5s-2.91-6.5-6.5-6.5c-3.59 0-6.5 2.91-6.5 6.5s2.91 6.5 6.5 6.5v0z"></path>
+                        </svg>
+                    </div>
+                </form>
+            </div>
+            <div class="block fullBlock">
+                <ul class="blockHeader">
+                    <li>Rank</li>
+                    <li class="character">Character/Name</li>
+                    <li>Job</li>
+                    <li>Level</li>
+                </ul>
+                <div id="usersWrapper">
+                    <div class="loader" id="rankLoader">
+                        <p>Loading</p>    
+                    </div>
+                    <div id="users">
+
+                    </div>
+                </div>
+            </div>
+            <div id="next"></div>                     
+        </section>
+        <script src="JS/HttpHandler.js"></script>
+        <script>
+            let loader = new Loader("rankLoader");
+            let userElement = new DOMCompiler("<div class=\"user\">\r\n<h3 class=\"rank\">{{rank}}</h3>\r\n<div class=\"character\">\r\n<div class=\"characterImage\"></div>\r\n<h3>{{name}}</h3>\r\n</div>\r\n<h3 class=\"job\">{{job}}</h3>\r\n<h3 class=\"level\">{{level}}</h3>\r\n</div>");
+            let page = 0;
+            let userWrapper = document.getElementById("users");
+            //userElement.setVariable({variable:"rank",data:1});
+            goToPage(0);
+            function goToPage(page){
+                loader.show();
+                let url = new Url("/IO/ranking",{page:page});
+                HttpHandler.postData(url,(response)=>
+                {
+                    userWrapper.innerHTML = "";
+                    console.log(response);
+                    for(let i = 0; i < response.length; i++){
+                        let user = response[i]; 
+                        userElement.setVariable({variable:"rank",data:((i+1)+page*5).toString()});
+                        userElement.setVariable({variable:"name",data:user.name});
+                        userElement.setVariable({variable:"job",data:user.job.toString()});
+                        userElement.setVariable({variable:"level",data:user.level.toString()});
+                        let element = userElement.compileDOM();
+                        let image = element.getElementsByClassName("characterImage")[0];
+                        image.style.background="url(Characters/"+user.name+".chr)";
+                        image.style.backgroundSize="contain";
+                        image.style.backgroundPosition="50% 50%";
+                        console.log(userElement.compileString());
+                        console.log(element);
+                        userWrapper.appendChild(element);
+                    }
+                    loader.hide();
+                });
+            }
+            next.addEventListener("click",()=>
+            {
+                page ++;
+                goToPage(page);
+            },false);
+
+
+            //##SEARCH 
+
+            let searchBtn = document.getElementById("searchBtn");
+            let searchBar = document.getElementById("searchBar");
+            searchBar.addEventListener("keyup",function()
+            {
+                console.log(this.value);
+                if(this.value.length > 0)
+                {
+                    searchBtn.style.background = "#3e78b2";
+                }
+                else
+                {
+                   searchBtn.style.background = "#d9dbe1"; 
+                }
+            },false);
+        </script>
+    </body>
+</html>

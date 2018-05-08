@@ -204,11 +204,64 @@ class BarChart
         for(let i = 0; i <= 6; i++)
         {
             let textPosition = this.getTextPosition(days[i],40+this.ctx.measureText(minMax.max).width+i*scalerX,20);
-            //this.ctx.moveTo(textPosition.x + this.ctx.measureText(textPosition.text).width/2,textPosition.y - 10);
-            //this.ctx.lineTo(textPosition.x + this.ctx.measureText(textPosition.text).width/2,20);
             this.ctx.fillText(textPosition.text,textPosition.x,textPosition.y + 4); 
             this.renderBar(textPosition,data[days[i]],minMax,maxLineHeight);  
         }
         this.ctx.stroke();
+    }
+}
+class DOMCompiler
+{
+    constructor(domString)
+    {
+        this.domString = domString;
+        this.variables = {};
+        this.regex = /\{{(.*?)}}/g;
+    }
+    setVariable({variable = "NULL",data = -1})
+    {
+        this.variables[variable] = data;
+    }
+    compileString()
+    {
+        let data;
+        let matches;
+        let rawText = this.domString;
+        this.domString.replace(this.regex,(g1,g2)=>
+        {
+            if(this.variables[g2])
+                rawText = rawText.replace(g1,this.variables[g2].toString());
+        });
+        return rawText;
+    }
+    compileDOM()
+    {
+        let compiledText = this.compileString();
+        let div = document.createElement("div");
+        div.innerHTML = compiledText;
+        return div.firstChild;
+    }
+}
+class Loader
+{
+    constructor(id)
+    {
+        this.loaderElement = document.getElementById(id);
+    }
+    show()
+    {
+        this.loaderElement.style.display="flex";
+        setTimeout(()=>
+        {
+            this.loaderElement.style.opacity = "1";
+        },10);
+    }
+    hide()
+    {
+        this.loaderElement.style.opacity = "0";
+        setTimeout(()=>
+        {
+            this.loaderElement.style.display="none";
+        },240);
     }
 }

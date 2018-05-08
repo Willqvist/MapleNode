@@ -23,6 +23,18 @@ router.post("/login",(req,res)=>
             }
             res.send(JSON.stringify(data)); 
         });
+    },00);
+});
+router.post("/ranking",(req,res)=>
+{
+    setTimeout(()=>
+    {
+        mysql.connection.query("SELECT name,level,job,exp FROM characters ORDER BY level DESC, name LIMIT 5 OFFSET ?",[parseInt(req.body.page)*5],(err,result)=>
+        {
+            if(err)
+                throw err;
+            res.send(JSON.stringify(result));    
+        })
     },2000);
 });
 module.exports = router;

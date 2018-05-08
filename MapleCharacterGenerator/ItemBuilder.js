@@ -454,12 +454,12 @@ class ItemBuilder extends ImageBuilder
             next();
         });  
     }
-    equipItems(items,callback,index=0)
+    equipItems(player,items,callback,index=0)
     {
         let self = this;
         if(index >= items.length - 1)
         {
-            return callback();
+            return callback(player);
         }
         if(typeof items[index].parameters.id === "undefined")
         {
@@ -469,18 +469,18 @@ class ItemBuilder extends ImageBuilder
                 items[index].parameters.z = "mailChest";
                 items[index].method = this.setCoat;
             }else{
-                return this.equipItems(items,callback,++index);
+                return this.equipItems(player,items,callback,++index);
             }
         }
         if(index >= items.length - 1){
-            return callback();
+            return callback(player);
         }
         items[index].method(self,items[index].parameters,()=>
         {
             if(index >= items.length - 1){
-                return callback();
+                return callback(player);
             }
-            this.equipItems(items,callback,++index);
+            this.equipItems(player,items,callback,++index);
         });
     } 
     setWeaponInfo(id)
