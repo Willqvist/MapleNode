@@ -25,20 +25,20 @@ class MapleCharacterGenerator
         }
         return null;
     }
-    addToQue(player)
+    addToQueue(player)
     {
             
         this.que.push(player);
         if(this.que.length == 1)
             this.buildPlayer(player);
     }
-    goToNextInQue()
+    goToNextInQueue()
     {
-        this.removeFromQue(0);
+        this.removeFromQueue(0);
         if(this.que.length == 0) return;
         this.buildPlayer(this.que[0]);
     }
-    removeFromQue(index)
+    removeFromQueue(index)
     {
         this.que.splice(index,1);
     }
@@ -67,7 +67,7 @@ class MapleCharacterGenerator
             {   
                 if(err) throw err;  
                 player.items = results;
-                this.addToQue(player);
+                this.addToQueue(player);
             }).bind(player));
         }).bind(player));
     }
@@ -144,7 +144,7 @@ class MapleCharacterGenerator
                 this.builder.outputImage(this.builder.canvas,__dirname + "/Characters/"+player.name+".png",()=>
                 {
                     player.callback({success:true});
-                    this.goToNextInQue();
+                    this.goToNextInQueue();
                 });
             }
         );

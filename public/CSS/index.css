@@ -203,6 +203,7 @@ body{
 .block
 {
     min-height:10em;
+    margin-top:2em;
     background:#fbf9fd;
     display:flex; 
     flex-direction: column;

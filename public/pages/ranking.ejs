@@ -21,7 +21,8 @@
             <section id="content" class="maxWidth">
             <div class="block fullBlock" id="settings">
                 <form>
-                    <input id="searchBar" />
+                    <div class="dropdown filterBtn" data-dropdownContent="searchSettings"><span>Search filter</span></div>
+                    <input placeholder="Search..." id="searchBar" />
                     <div id="searchBtn">
                         <svg id="icon-search" viewBox="0 0 32 32">
                             <title>search</title>
@@ -33,7 +34,7 @@
             <div class="block fullBlock">
                 <ul class="blockHeader">
                     <li>Rank</li>
-                    <li class="character">Character/Name</li>
+                    <li class="characterMenu"><span>Character</span><span>Name</span></li>
                     <li>Job</li>
                     <li>Level</li>
                 </ul>
@@ -53,6 +54,7 @@
             let loader = new Loader("rankLoader");
             let userElement = new DOMCompiler("<div class=\"user\">\r\n<h3 class=\"rank\">{{rank}}</h3>\r\n<div class=\"character\">\r\n<div class=\"characterImage\"></div>\r\n<h3>{{name}}</h3>\r\n</div>\r\n<h3 class=\"job\">{{job}}</h3>\r\n<h3 class=\"level\">{{level}}</h3>\r\n</div>");
             let page = 0;
+            let length = 5;
             let userWrapper = document.getElementById("users");
             //userElement.setVariable({variable:"rank",data:1});
             goToPage(0);
@@ -72,11 +74,16 @@
                         let element = userElement.compileDOM();
                         let image = element.getElementsByClassName("characterImage")[0];
                         image.style.background="url(Characters/"+user.name+".chr)";
-                        image.style.backgroundSize="contain";
+                        image.style.backgroundSize="18em";
                         image.style.backgroundPosition="50% 50%";
                         console.log(userElement.compileString());
                         console.log(element);
                         userWrapper.appendChild(element);
+                        if(response.length < length)
+                        {
+                            length = response.length;
+                            userWrapper.style.minHeight = (8 * length) + "em";
+                        }
                     }
                     loader.hide();
                 });
@@ -97,11 +104,11 @@
                 console.log(this.value);
                 if(this.value.length > 0)
                 {
-                    searchBtn.style.background = "#3e78b2";
+                    searchBtn.style.boxShadow = "inset 0px -4.5em 0 #3e78b2";
                 }
                 else
                 {
-                   searchBtn.style.background = "#d9dbe1"; 
+                   searchBtn.style.boxShadow = "inset 0px -0em 0 #3e78b2"; 
                 }
             },false);
         </script>

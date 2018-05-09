@@ -13,7 +13,8 @@
 #rankingDisplay
 {
     background:url(../images/playerBG.png);
-    background-size:30em;
+    background-size:40em;
+    background-position: 50% 50%;
     height:35em;
     position:relative;
 }
@@ -27,7 +28,7 @@
     height:12em;
     margin:auto;
     left:0;right:0;top:0;bottom:0;
-    top:7em;
+    top:5.5em;
 }
 .rankingPlayer
 {
