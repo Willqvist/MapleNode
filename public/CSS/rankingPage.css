@@ -13,7 +13,7 @@ ul.blockHeader li
 }
 #users
 {
-    min-height:48em;
+    min-height:40em;
     transition: ease 0.4s;
 }
 .user
@@ -22,10 +22,19 @@ ul.blockHeader li
     display:flex;
     justify-content: space-Around;
     box-shadow:inset 0px -1px 0px rgba(42, 34, 60, 0.2);
+    transition: ease 0.2s;
 }
 .user:nth-child(even)
 {
     background:#f3eef7;
+}
+.user:hover
+{
+    background:#ede4f5;
+}
+.user:nth-child(even):hover
+{
+    background:#ebe0f5;
 }
 .user h3
 {
@@ -34,6 +43,17 @@ ul.blockHeader li
     color:#2a223c;
     font-weight:400;
     font-family: 'Montserrat', sans-serif;
+}
+.user .job
+{
+    display:flex;
+    flex-direction: column;
+}
+.user .job span
+{
+    font-size:0.8em;
+    opacity:0.8;
+    margin-bottom:0.2em;
 }
 .user > h3,.user div
 {
@@ -68,12 +88,6 @@ ul.blockHeader li
 .user .character h3{
     flex:1;
     text-align:center;
-}
-#next
-{
-    width:5em;
-    height:3em;
-    background:red;
 }
 #usersWrapper
 {
@@ -116,29 +130,53 @@ ul.blockHeader li
     padding-top:2em;
     font-family: 'Montserrat', sans-serif;
     color:#2a223c;  
+}
+.tab{
+    font-size:0.7em;
+    display:flex;
+    flex-flow: wrap row;
 }   
 #settings
 {
-    display:flex;
     background: none;
+    width:100%;
+    margin-top:8em;
+    justify-content: flex-start;
+}
+.block{
+    margin-top:2em;
 }
 #settings form
-{
-   align-self: flex-end; 
+{    
    display:flex;
-   font-size:0.8em;
 }
-#searchBtn
+#searchBtn,#reloadSearch
 {
     width:4.5em;
     height:4.5em;
-    background:#aab7e0;
+    background:#3e78b2;
     position: relative;
     fill:#FFF;
     box-shadow:inset 0px -0em 0 #3e78b2;
     transition: ease 0.2s;
-    border-top-right-radius: 0.4em;
+    border-radius: 0.4em;
     border-bottom-right-radius: 0.4em;
+    cursor: pointer;
+}
+#reloadSearch
+{
+    background:#3e78b2;
+    margin-right:1em;
+    cursor:pointer;
+    box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
+}
+#reloadSearch:hover svg
+{
+    transform: rotateZ(180deg) !important;
+}
+.dropdownBtn
+{
+    position: relative;
 }
 .filterBtn
 {
@@ -148,13 +186,14 @@ ul.blockHeader li
     display:flex;
     font-family: 'Montserrat', sans-serif;
     color:#FFF;
-    margin:auto;
     justify-content:center;
     align-content: center;
     align-items:center;
     border-radius:0.4em;
     cursor:pointer;
     transition: ease 0.2s;
+    margin-right:1em;
+    box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
 }
 .filterBtn:hover
 {
@@ -168,7 +207,7 @@ ul.blockHeader li
 {
     margin-right:2em;
 }
-#searchBtn svg
+#searchBtn svg,#reloadSearch svg
 {
     display:block;
     position: absolute;
@@ -179,6 +218,12 @@ ul.blockHeader li
     margin:auto;
     height:70%;
     width:70%;
+    transition: ease 0.4s;
+}
+#reloadSearch svg
+{
+    height:50%;
+    width:50%;
 }
 #settings form input
 {
@@ -189,17 +234,100 @@ ul.blockHeader li
     box-sizing: border-box;
     border:none;
     outline:none;
-    box-shadow:inset 0px -0.2em 0 transparent,inset 0px 0em 0 0.2em #aab7e0;
+    box-shadow:inset 0px -0.2em 0 transparent,inset 0px 0em 0 0.2em #3e78b2,0px 0.2em 1em rgba(32,6,59,0.1);;
     transition:ease 0.2s;
     font-family: 'Montserrat', sans-serif;
     margin-bottom:2.2em;
     border:none;
     margin:0;
     text-align:left;
-    border-top-left-radius: 0.4em;
-    border-bottom-left-radius: 0.4em;
+    border-radius: 0.4em;
+    margin-right:1em;
 }
 #settings form input:focus
 {
     box-shadow:inset 0px 0em 0 0em transparent,inset 0px 0em 0 0.2em #3e78b2;
+}
+#settingsBtns
+{
+    flex:1;
+    display:flex;
+}
+.dropdownContent
+{
+    display:none;
+    transition: ease 0.4s;
+    background:#FFF;
+    border-radius:0.4em;
+    position: absolute;
+    left:0;
+    top:5.6em;
+    border:0.1em solid rgb(228, 221, 235);
+    flex-direction: column;
+    padding:0.5em 0;
+    z-index:999;
+    box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
+}
+.dropdownContent li
+{
+    list-style:none;
+    padding:0.6em 1.4em;
+    font-size:1.25em;
+    white-space: nowrap;
+    color:#20063B;
+    transition:Ease 0.2s;
+}
+.dropdownContent li:hover
+{
+    background:rgb(248, 243, 252);
+}
+.dropdownContent::before,.dropdownContent::after
+{
+    content:"";
+    width:0;
+    height:0;
+    position: absolute;
+    left:0.6em;
+    top:-1.2em;
+    border:0.6em solid transparent;
+    border-bottom-color: #FFF;
+}
+.dropdownContent::before
+{
+    left:0.5em;
+    top:-1.4em;
+    border:0.7em solid transparent;
+    border-bottom-color: rgb(228, 221, 235);
+}
+.pageTab
+{
+    margin:auto;
+    margin-top:2em;
+    font-family: 'Montserrat', sans-serif;
+}
+.pageTab .filterBtn
+{
+    margin:0;
+}
+#pageInfo
+{
+    padding:0em 1.5em;
+    display:flex;
+    align-content: center;
+    align-items: center;
+}
+#pageInfo h3
+{
+    margin:auto;
+    font-size:1.5em;
+    color:#2a223c;  
+}
+.noSelect
+{
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* no prefix */
 }

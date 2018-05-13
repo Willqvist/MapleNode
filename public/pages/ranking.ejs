@@ -19,9 +19,35 @@
             </div>
         </header>
             <section id="content" class="maxWidth">
-            <div class="block fullBlock" id="settings">
+            <div id="settings" class="tab">
+                <div id="settingsBtns">
+                    <div class="dropdownBtn filterBtn noSelect" data-dropdownContent="searchSettings"><span>&dtrif; Overall</span>
+                        <ul id="searchSettings"class="noSelect dropdownContent">
+                            <%
+                            for(let key in jobs)
+                            {
+                            %>
+                            <li data-id="<%=key%>" data-select="<%=jobs[key]%>"><%= jobs[key]%></li>
+                            <%
+                            }
+                            %>
+                        </ul>
+                    </div>
+                    <div class="dropdownBtn filterBtn noSelect" data-dropdownContent="searchRankingSettings"><span>&dtrif; Level</span>
+                        <ul id="searchRankingSettings" class="noSelect dropdownContent">
+                            <li data-select="Level">Level</li>
+                            <li data-select="Fame">Fame</li>
+                        </ul>
+                    </div>
+                    <div id="reloadSearch">
+                    <svg id="icon-search" viewBox="0 0 32 32">
+                        <title>search</title>
+                        <path d="M27.802 5.197c-2.925-3.194-7.13-5.197-11.803-5.197-8.837 0-16 7.163-16 16h3c0-7.18 5.82-13 13-13 3.844 0 7.298 1.669 9.678 4.322l-4.678 4.678h11v-11l-4.198 4.197z"></path>
+                        <path d="M29 16c0 7.18-5.82 13-13 13-3.844 0-7.298-1.669-9.678-4.322l4.678-4.678h-11v11l4.197-4.197c2.925 3.194 7.13 5.197 11.803 5.197 8.837 0 16-7.163 16-16h-3z"></path>
+                    </svg>
+                </div>
+                </div>
                 <form>
-                    <div class="dropdown filterBtn" data-dropdownContent="searchSettings"><span>Search filter</span></div>
                     <input placeholder="Search..." id="searchBar" />
                     <div id="searchBtn">
                         <svg id="icon-search" viewBox="0 0 32 32">
@@ -33,10 +59,10 @@
             </div>
             <div class="block fullBlock">
                 <ul class="blockHeader">
-                    <li>Rank</li>
-                    <li class="characterMenu"><span>Character</span><span>Name</span></li>
-                    <li>Job</li>
-                    <li>Level</li>
+                    <li class="title">Level Rank</li>
+                    <li class="characterMenu"><span class="title">Character</span><span class="title">Name</span></li>
+                    <li class="title">Job / Job rank</li>
+                    <li class="title">Level</li>
                 </ul>
                 <div id="usersWrapper">
                     <div class="loader" id="rankLoader">
@@ -47,37 +73,145 @@
                     </div>
                 </div>
             </div>
-            <div id="next"></div>                     
+            <div  class="tab pageTab">
+                <div id="prev" class="filterBtn noSelect"><span>Previous Page</span></div>  
+                <div id="pageInfo"><h3 id="pageNumber">0</h3></div>
+                <div id="next" class="filterBtn noSelect"><span>Next Page</span></div>
+            </div>                     
         </section>
         <script src="JS/HttpHandler.js"></script>
         <script>
+           let jobs = "-1";
+           let rank = "Level";
+           let dropdowns = {};
+           let activeDropdowns = []; 
+           let dropdownBtns = document.getElementsByClassName("dropdownBtn");
+           let reload = document.getElementById("reloadSearch");
+           let titles = document.getElementsByClassName("title");
+           let title =
+           {
+               ORDER:0,
+               CHARACTER:1,
+               NAME:2,
+               JOB:3,
+               RANK:4,
+           }
+           dropdownClickHandler(dropdownBtns[0],changeJob);
+           dropdownClickHandler(dropdownBtns[1],changeRank);
+           function changeJob(data,dataId)
+           {
+               jobs = dataId;
+           }
+           function changeRank(data,dataId)
+           {
+               rank = data;
+           }
+           //####DROPDOWN####
+           for(let i = 0; i < dropdownBtns.length; i++)
+           {
+               dropdownBtns[i].addEventListener("click",function(e)
+               {
+                   let attribute;
+                   if((attribute = e.target.getAttribute("data-select")))
+                   {
+                       this.firstChild.innerHTML = "&dtrif; "+attribute;
+                       dropdowns[this.getAttribute("data-dropdowncontent")](attribute,e.target.getAttribute("data-id"));
+                   }
+                   let element = document.getElementById(this.getAttribute("data-dropdownContent"));
+                   let toggled = element.getAttribute("data-toggled") === "true";
+                   toggleDropdown(dropdownBtns[i],element,!toggled);
+               },false);
+           }
+           document.addEventListener("click",function(e)
+            {
+                let element;
+                for(let i = 0; i < activeDropdowns.length; i++)
+                {
+                    element = activeDropdowns[i];
+                    if(!element.parent.contains(e.target))
+                        toggleDropdown(element.parent,element.element,false);
+                }
+            },false);
+
+            function toggleDropdown(parent,element,toggled)
+            {
+                element.setAttribute("data-toggled",toggled);
+                if(toggled)
+                {
+                    element.style.display = "flex";
+                    activeDropdowns.push({parent:parent,element:element});
+                }
+                else
+                {
+                    element.style.display = "none";
+                    activeDropdowns.splice(activeDropdowns.indexOf(element),1);
+                }
+            }
+
+
+            function dropdownClickHandler(object,method)
+            {
+                dropdowns[object.getAttribute("data-dropdowncontent")] = method;
+            }
+
+
+            //###RELOAD####
+            reload.addEventListener("click",()=>
+            {
+                console.log("wew");
+                reloadPage();
+                //reload.childNodes[1].style.transform = "rotateZ(180deg) !important";
+            },false);
+        </script>
+        <script>
             let loader = new Loader("rankLoader");
-            let userElement = new DOMCompiler("<div class=\"user\">\r\n<h3 class=\"rank\">{{rank}}</h3>\r\n<div class=\"character\">\r\n<div class=\"characterImage\"></div>\r\n<h3>{{name}}</h3>\r\n</div>\r\n<h3 class=\"job\">{{job}}</h3>\r\n<h3 class=\"level\">{{level}}</h3>\r\n</div>");
+            let userElement = new DOMCompiler("<div class=\"user\">\r\n<h3 class=\"rank\">{{placement}}</h3>\r\n<div class=\"character\">\r\n<div class=\"characterImage\"></div>\r\n<h3>{{name}}</h3>\r\n</div>\r\n<h3 class=\"job\"><span>({{jobRank}})</span>{{job}}</h3>\r\n<h3 class=\"level\">{{rank}}</h3>\r\n</div>");
             let page = 0;
             let length = 5;
+            let search;
+            let isLoading = false;
+            let next = document.getElementById("next");
+            let prev = document.getElementById("prev");
             let userWrapper = document.getElementById("users");
+            let pageNumer = document.getElementById("pageNumber");
             //userElement.setVariable({variable:"rank",data:1});
             goToPage(0);
+            prevButton();
+            function isset(variable)
+            {
+                return typeof variable !== 'undefined'
+            }
             function goToPage(page){
+                pageNumer.innerHTML = page;
+                isLoading= true;
                 loader.show();
-                let url = new Url("/IO/ranking",{page:page});
+                console.log(jobs,rank);
+                let url = new Url("/IO/ranking",{page:page,job:jobs,rank:rank,search:search});
                 HttpHandler.postData(url,(response)=>
                 {
                     userWrapper.innerHTML = "";
                     console.log(response);
                     for(let i = 0; i < response.length; i++){
                         let user = response[i]; 
-                        userElement.setVariable({variable:"rank",data:((i+1)+page*5).toString()});
+                        userElement.setVariable({variable:"placement",data:user.rank.toString()});
                         userElement.setVariable({variable:"name",data:user.name});
                         userElement.setVariable({variable:"job",data:user.job.toString()});
-                        userElement.setVariable({variable:"level",data:user.level.toString()});
+                        userElement.setVariable({variable:"jobRank",data:user.jobRank.toString()});
+                        if(isset(user.level))
+                        {
+                            userElement.setVariable({variable:"rank",data:user.level.toString()});
+                            titles[title.RANK].innerHTML = "Level";
+                        }
+                        else if(isset(user.fame))
+                        {
+                            userElement.setVariable({variable:"rank",data:user.fame.toString()});
+                            titles[title.RANK].innerHTML = "Fame";
+                        }
                         let element = userElement.compileDOM();
                         let image = element.getElementsByClassName("characterImage")[0];
                         image.style.background="url(Characters/"+user.name+".chr)";
                         image.style.backgroundSize="18em";
                         image.style.backgroundPosition="50% 50%";
-                        console.log(userElement.compileString());
-                        console.log(element);
                         userWrapper.appendChild(element);
                         if(response.length < length)
                         {
@@ -86,14 +220,48 @@
                         }
                     }
                     loader.hide();
+                    isLoading = false;
                 });
             }
-            next.addEventListener("click",()=>
+            console.log(usersWrapper);
+            next.addEventListener("click",goNext,false);
+            prev.addEventListener("click",goPrev,false);
+            function goNext()
             {
+                if(!canChangePage()) return;
                 page ++;
                 goToPage(page);
-            },false);
-
+                prevButton();
+            }
+            function prevButton()
+            {
+                if(page == 0)
+                {
+                    prev.style.background="#bdc0c4";
+                    prev.style.cursor = "not-allowed";
+                }
+                else
+                {
+                    prev.style.background="#3e78b2";
+                    prev.style.cursor = "pointer";
+                }
+            }
+            function goPrev()
+            {
+                if(!canChangePage() || page == 0)  return;
+                page --;
+                goToPage(page);  
+                prevButton();         
+            }
+            function canChangePage()
+            {
+                return !isLoading;
+            }
+            function reloadPage()
+            {
+                if(isLoading) return;
+                goToPage(0);
+            }
 
             //##SEARCH 
 
@@ -102,6 +270,7 @@
             searchBar.addEventListener("keyup",function()
             {
                 console.log(this.value);
+                search = this.value;
                 if(this.value.length > 0)
                 {
                     searchBtn.style.boxShadow = "inset 0px -4.5em 0 #3e78b2";
@@ -110,6 +279,11 @@
                 {
                    searchBtn.style.boxShadow = "inset 0px -0em 0 #3e78b2"; 
                 }
+            },false);
+
+            searchBtn.addEventListener("click",function()
+            {
+                reloadPage();
             },false);
         </script>
     </body>

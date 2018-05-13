@@ -6,7 +6,7 @@ const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
-
+const constants = require("./Tools/Constants");
 //routers
 const SetupRouter = require("./Routers/setupRouter");
 const GlobalRouter = require("./Routers/GlobalRouter");
@@ -38,6 +38,23 @@ process.stdin.on('data', function (text) {
       process.exit();
     }
 });
+
+//instansiating constants
+constants.setConstant("jobs",
+{
+    '-1':"Overall",
+    '100':"Mage",
+    '0':"Beginner",
+    '200':"Warrior",
+});
+constants.setConstant("jobMethod",(jobs,name)=>
+{   
+    for(let key in jobs)
+    {
+        if(jobs[key] === name) return key;
+    }
+    return -1;
+});
 //EJS functions
 app.locals.printStatement = function(statement,callback)
 {
@@ -45,7 +62,7 @@ app.locals.printStatement = function(statement,callback)
     return callback();
   return "";  
 }
-
+app.locals.jobs = constants.getConstant("jobs");
 app.locals.isset = function(variable)
 {
     return variable !== "undefined";
