@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="../CSS/dashboardGM.css">
+    <link rel="stylesheet" type="text/css" href="../CSS/media.css">   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/tabIcon.png">
+    <title>Dashboard GM</title>
+    </head>
+    <body>
+        <div id="categoryMenu">
+            <div class="categoryMenu_item" id="dashboard-title">
+                <h3>Dashboard GM</h3>
+            </div>
+            <h2 class="subTitle"><span>Main</span></h2>
+            <div class="categoryMenu_item">
+                <h3>Dashboard</h3>
+            </div>
+            <div class="categoryMenu_item">
+                <h3>General</h3>
+            </div>
+            <div class="categoryMenu_item">
+                <h3>Voting</h3>
+            </div>
+            <h2 class="subTitle"><span>Style</span></h2>
+            <div class="categoryMenu_item">
+                <h3>Design</h3>
+            </div>
+            <div class="categoryMenu_item">
+                <h3>Layout</h3>
+            </div>
+        </div>
+        <div id="content">
+            <div id="menu"></div>
+            <div id="pages">
+            <div class="page" id="vote">
+                <h4>Voting</h4>
+                <div class="voteSiteHolder">
+                    <div class="voteSite" data-site="gtop.com">
+                        <div class="edit">
+                            <svg id="icon-pencil2" viewBox="0 0 24 24">
+                                <title>pencil2</title>
+                                <path d="M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z"></path>
+                            </svg>
+                        </div>
+                        <h5>GTOP.COM</h5>
+                        <h6 data-beforeContent="Nx per vote">2000</h6>
+                        <h6 data-beforeContent="Vote interval">6h</h6>
+                    </div>
+                    <div class="voteSite" data-site="top100">
+                        <div class="edit">
+                            <svg id="icon-pencil2" viewBox="0 0 24 24">
+                                <title>pencil2</title>
+                                <path d="M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z"></path>
+                            </svg>
+                        </div>
+                        <h5>Top100.COM</h5>
+                        <h6 data-beforeContent="Nx per vote">2000</h6>
+                        <h6 data-beforeContent="Vote interval">6h</h6>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <script src="../JS/onload.js"></script>
+        <script src="../JS/HttpHandler.js"></script>
+        <script>
+            let form = new FormPopup("changeVote");
+            let edits = document.getElementsByClassName("edit");
+            for(let i = 0; i < edits.length; i++)
+            {
+                edits[i].addEventListener("click",function()
+                {
+                    form.setSetting({name:"site",value:this.parentNode.getAttribute("data-site")});
+                    form.show();
+                },false);
+            }
+            form.addInput({id:"nx",value:"2000"});
+            form.addInput({id:"time",value:"6"});
+            form.addButton({type:"submit",value:"Apply"});
+            form.appendDom();
+            form.onSubmit((data)=>
+            {
+                console.log(data.fields,data.settings);
+                form.hide();
+            });
+        </script>
+    </body>
+</html>

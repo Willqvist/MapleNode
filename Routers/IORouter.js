@@ -10,7 +10,7 @@ let installHandler = new InstallHandler(mysql.mysql);
 router.post("/login",(req,res)=>
 {
     setTimeout(()=>{
-        mysql.connection.query(`SELECT * FROM accounts WHERE name = ? AND password = ?`,[req.body.username,req.body.password],(err, result, fields)=>
+        mysql.connection.query(`SELECT id,name,gm FROM accounts WHERE name = ? AND password = ?`,[req.body.username,req.body.password],(err, result, fields)=>
         {
             let data = {};
             data.success = true;
@@ -20,6 +20,11 @@ router.post("/login",(req,res)=>
             {
                 data.loggedin = true;
                 data.reason = "You have successfully loggedin!";
+                console.log(req.session);
+                req.session.user = {name:result[0].name,id:result[0].id,gm:result[0].gm};
+                let hour = 3600000/2;
+                req.session.cookie.expires = new Date(Date.now() + hour);
+                req.session.cookie.maxAge = hour;
             }
             res.send(JSON.stringify(data)); 
         });

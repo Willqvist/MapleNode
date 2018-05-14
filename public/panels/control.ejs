@@ -1,4 +1,8 @@
 <div id="control">
+    <%
+    if(!isset(typeof user))
+    {
+    %>
     <div class="loader" id="loginLoader" id="loginLoader">
         <p>Loading</p>    
     </div>
@@ -26,7 +30,7 @@
         {
             loader.style.opacity="1";
         }, 10);
-        let url = new Url("IO/login",{username:body.username,password:body.password});
+        let url = new Url("/IO/login",{username:body.username,password:body.password});
         HttpHandler.postData(url,(response)=>
         {
             console.log(response);
@@ -46,7 +50,17 @@
                 return;
             }
             error.success({reason:response.reason});
+            window.location.href = "/dashboard";
             console.log(response.loggedin);
         });
     });
 </script>
+    <%
+    }
+    else
+    {
+    %>
+    </div>
+    <%
+    }
+    %>

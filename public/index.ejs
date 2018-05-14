@@ -25,7 +25,7 @@ if(!isset(typeof settings))
                 <h1><%= settings.serverName %></h1>
                 <p>V83 Maplestory private serverName</p>
                 <div class="btn btn-green"><a href="#">Play</a></div>
-                <div class="btn btn-blue"><a href="#">Register</a></div>
+                <% if(!isset(typeof user)){ %><div class="btn btn-blue"><a href="#">Register</a></div><% } %>
             </div>
             <div id="snail"></div> 
             <div id="stump"></div>

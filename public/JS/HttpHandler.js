@@ -265,3 +265,79 @@ class Loader
         },240);
     }
 }
+class FormPopup
+{
+    constructor(name)
+    {
+        this.fields = {};
+        this.inputs = []; 
+        this.settings = {};
+        this.callback = function(){};
+        this.form = document.createElement("form");
+        this.form.id = name;
+        this.form.className += "popupForm";
+        this.isAppended = false;
+    }
+    setSetting({name="null",value=-1})
+    {
+        this.settings[name] = value;
+    }
+    appendDom(element=document.body)
+    {
+        if(!this.isAppended)
+            element.appendChild(this.form);
+        this.isAppended = true;
+    }
+    show()
+    {
+        if(!this.isAppended) this.appendDom();
+        this.form.style.display="flex";
+    }
+    hide()
+    {
+        this.form.style.display="none";
+    }
+    addInput({type="text",id=-1,value=""})
+    {
+        if(id == -1) return;
+        let input = document.createElement("input");
+        input.value = value;
+        input.id = this.form.id + "_" + id;
+        let label = document.createElement("label");
+        label.setAttribute("for",input.id);
+        input.setAttribute("name",id);
+        input.setAttribute("type",type);
+        label.innerHTML = id;
+        this.inputs.push(input);
+        this.form.appendChild(label);
+        this.form.appendChild(input);
+    }
+    getFields()
+    {
+        for(let i = 0; i < this.inputs.length; i++)
+        {
+            let input = this.inputs[i];
+            this.fields[input.name] = input.value;
+        }
+        return this.fields;
+    }
+    addButton({type="submit",value="Save"})
+    {
+        let button = document.createElement("input");
+        button.setAttribute("type","button");
+        button.value = value;
+        this.form.appendChild(button);
+        if(type=="submit")
+        {
+            let self = this;
+            button.addEventListener("click",(()=>
+            {
+                self.callback({settings:this.settings,fields:self.getFields()});
+            }).bind(self),false);
+        }
+    }
+    onSubmit(callback)
+    {
+        this.callback = callback;
+    }
+}

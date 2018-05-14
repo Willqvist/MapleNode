@@ -1,0 +1,241 @@
+*
+{
+    margin:0;
+    padding:0;
+}
+.preload * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+  }
+body
+{
+    display:flex;
+}
+#categoryMenu
+{
+    width:22em;
+    min-height:100vh;
+    background:#20063B;
+}
+.categoryMenu_item
+{
+    transition:background ease 0.2s; 
+    height:2em;
+    display:flex;
+    box-sizing:border-box;
+    padding:1.6em 3.5em;
+    justify-content: space-between;
+    align-items: center;
+    font-size:1em;
+    cursor:pointer;
+    font-size:0.9em;
+    color:#D6D1DB;
+    font-weight:400; 
+}
+.categoryMenu_item:hover
+{
+    background:#341C4C;
+}
+.categoryMenu_item h3{
+    font-family: 'Montserrat', sans-serif;
+    font-weight:400; 
+}
+#dashboard-title
+{
+    transition:none; 
+    height:6em;
+    font-size:1em;
+    background:#69DC9E;
+    color:#FFF;
+    font-weight:700;
+}
+#dashboard-title h3
+{
+    font-weight:700;
+}
+#dashboard-title:hover
+{
+    background:#69DC9E;
+}
+.subTitle{
+    padding-left:3.5em;
+    font-size:0.9em;
+    font-family: 'Montserrat', sans-serif;
+    font-weight:700;
+    margin-top:5em;
+    margin-bottom:0.2em;
+    color:#5C4970;
+}
+.subTitle span
+{
+    font-size:1.4em;
+}
+#content{
+ flex:1; 
+ display:flex;
+ flex-direction: column;  
+}
+#menu
+{
+    width:100%;
+    height:6em;
+    background:#FFF;
+    box-shadow:inset 0px -1px 0px #BAEFD2;
+}
+#pages
+{
+    flex:1;
+}
+.page
+{
+    width:100%;
+    min-height:100%;
+    box-sizing: border-box;
+    padding:5em;
+}
+.page h4{
+    font-size:3em;
+    font-family: 'Montserrat', sans-serif;
+    font-weight:700;
+    color:#341C4C;
+}
+.voteSite
+{
+    width:30em;
+    box-sizing: border-box;
+    padding:3.2em;
+    margin-top:3em;
+    box-shadow:inset 0px 0.2em 0 #69dc9e, 0px 0em 0em rgb(25, 6, 46,0.12);
+    color:#341C4C;
+    background:#F3FBFA;
+    margin-right:2em;
+    position: relative;
+    transition:box-shadow ease 0.2s,transform ease 0.2s;
+}
+.voteSite:hover
+{
+    transform: translateY(-0.5em);
+    box-shadow:inset 0px 0.2em 0 #69dc9e, 0px 0.5em 2.5em rgb(25, 6, 46,0.12);
+}
+.voteSite h5
+{
+    font-size:2em;
+    font-family: 'Montserrat', sans-serif;
+    font-weight:700;
+}
+.voteSite h6
+{
+    font-size:1.3em;
+    margin-top:2em;
+    font-family: 'Montserrat', sans-serif;
+    font-weight:400;
+    position: relative;
+    display:inline-block;
+    width:45%;
+}
+.voteSite h6::before
+{
+    content:attr(data-beforeContent);
+    font-family: 'Montserrat', sans-serif;
+    font-weight:400;
+    position:absolute;
+    font-size:0.8em;
+    opacity:0.5;
+    top:-1em;
+}
+.voteSite .edit
+{
+    position: absolute;
+    right:1em;
+    top:1em;
+    width:1.5em;
+    height:1.5em;
+    border-radius:50%;
+    fill:#6190C0;
+    padding:0.5em;
+    transition:background ease 0.2s,fill ease 0.2s;
+    cursor:pointer;
+}
+.voteSite .edit svg
+{
+    width:100%;
+    height:100%;
+    display:block;
+    margin:auto;
+}
+.voteSiteHolder
+{
+    display:flex;
+}
+.voteSite .edit:hover
+{
+    background:#6190c0;
+    fill:#FFF;
+}
+
+
+
+
+/* POPUP */
+
+.popupForm
+{
+    position: fixed;
+    left:0;
+    right:0;
+    top:0;
+    bottom:0;
+    margin:auto;
+    width:30em;
+    height:24em;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+    align-content: center;
+    box-shadow:0px 0px 0px 300vw rgb(52, 29, 59,0.5);
+    display:none;
+    background:#FFF;
+}
+.popupForm input
+{
+    width:20em;
+    padding:0.8em;
+    font-size:1em;
+    outline:none;
+    border:none;
+    box-shadow:0px 0px 0px 1px #34689c,0px 0.2em 1em rgba(32,6,59,0.1);
+    border-radius:0.4em;
+}
+.popupForm label
+{
+    width:21em;
+    margin-top:1.2em;
+    margin-bottom:0.5em;
+}
+.popupForm input,.popupForm label
+{
+    font-family: 'Montserrat', sans-serif;
+    font-weight:400;
+    color:#341C4C;
+}
+.popupForm input[type="button"]
+{
+    border:none;
+    width:auto;
+    font-size:1em;
+    margin-top:2em;
+    padding:0.8em 1.2em;
+    background:#3e78b2;
+    box-shadow:none;
+    color:#FFF;
+    border-radius:0.4em;
+    cursor:pointer;
+    transition: ease 0.2s;
+    box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
+}
+.popupForm input[type="button"]:hover
+{
+    background:#34689c;
+}

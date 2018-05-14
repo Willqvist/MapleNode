@@ -3,6 +3,7 @@ process.stdin.setEncoding('utf8');
 
 //libaries
 const express = require("express");
+const session = require('express-session');
 const fs = require("fs");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
@@ -12,6 +13,7 @@ const SetupRouter = require("./Routers/setupRouter");
 const GlobalRouter = require("./Routers/GlobalRouter");
 const IORouter = require("./Routers/IORouter");
 const PagesRouter = require("./Routers/PagesRouter");
+const DashboardRouter = require("./Routers/DashboardRouter");
 //setup
 let app = express();
 app.listen(8081);
@@ -23,14 +25,22 @@ app.use(helmet());
 require("./setup")(setupListeners);
 //listeners
 function setupListeners(){
+    app.use(session(
+        {
+            secret:"XCDGREV34432",
+            resave:false,
+            saveUninitialized: true,
+        }
+    ));
     app.get("*.ejs",(req,res)=>res.status(404).render("error/404"));
     app.use(express.static(__dirname+"/public"));
     app.use("/setup",SetupRouter);
     app.use("/",GlobalRouter);
     app.use("/",PagesRouter);
+    app.use("/dashboard/",DashboardRouter);
     app.use("/IO/",IORouter);
     app.use((req, res, next)=>res.status(404).render('error/404'));
-    app.use((err, req, res, next)=>res.status(500).send('Something went wrong!'));
+    //app.use((err, req, res, next)=>res.status(500).send('Something went wrong!'));
 }
 process.stdin.on('data', function (text) {
     if (text.trim() === 'exit' || text.trim() === '!e') {
