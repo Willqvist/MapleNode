@@ -312,6 +312,20 @@ class FormPopup
         this.form.appendChild(label);
         this.form.appendChild(input);
     }
+    getInputByName(name)
+    {
+        for(let i = 0; i < this.inputs.length; i++)
+        {
+            if(this.inputs[i].name == name) return this.inputs[i];
+        }
+        return false;
+    }
+    setValue({id=-1,value="NULL"})
+    {
+        let field = this.getInputByName(id);
+        if(!field) return;
+        field.value = value;
+    }
     getFields()
     {
         for(let i = 0; i < this.inputs.length; i++)

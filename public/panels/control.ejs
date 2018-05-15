@@ -50,7 +50,9 @@
                 return;
             }
             error.success({reason:response.reason});
-            window.location.href = "/dashboard";
+            let site = "/dashboard";
+            <% if(isset(typeof site)) { %> site = "<% site %>" <% } %>
+            window.location.href = site;
             console.log(response.loggedin);
         });
     });

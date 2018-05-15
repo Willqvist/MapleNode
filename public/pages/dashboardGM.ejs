@@ -3,7 +3,6 @@
     <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="../CSS/dashboardGM.css">
-    <link rel="stylesheet" type="text/css" href="../CSS/media.css">   
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/tabIcon.png">
     <title>Dashboard GM</title>
@@ -48,7 +47,7 @@
                         <h6 data-beforeContent="Nx per vote">2000</h6>
                         <h6 data-beforeContent="Vote interval">6h</h6>
                     </div>
-                    <div class="voteSite" data-site="top100">
+                    <div class="voteSite" data-site="top100.com">
                         <div class="edit">
                             <svg id="icon-pencil2" viewBox="0 0 24 24">
                                 <title>pencil2</title>
@@ -66,18 +65,26 @@
         <script src="../JS/onload.js"></script>
         <script src="../JS/HttpHandler.js"></script>
         <script>
+            //VOTE SCRIPT
             let form = new FormPopup("changeVote");
+            let sites = {
+                "gtop.com":{name:"GTOP100",nx:2000,time:"12h"},
+                "top100.com":{name:"GTOP100",nx:1000,time:"6h"}
+            };
             let edits = document.getElementsByClassName("edit");
             for(let i = 0; i < edits.length; i++)
             {
                 edits[i].addEventListener("click",function()
                 {
-                    form.setSetting({name:"site",value:this.parentNode.getAttribute("data-site")});
+                    let site = this.parentNode.getAttribute("data-site");
+                    form.setSetting({name:"site",value:site});
+                    form.setValue({id:"nx",value:sites[site].nx});
+                    form.setValue({id:"time",value:sites[site].time});
                     form.show();
                 },false);
             }
-            form.addInput({id:"nx",value:"2000"});
-            form.addInput({id:"time",value:"6"});
+            form.addInput({id:"nx"});
+            form.addInput({id:"time"});
             form.addButton({type:"submit",value:"Apply"});
             form.appendDom();
             form.onSubmit((data)=>
