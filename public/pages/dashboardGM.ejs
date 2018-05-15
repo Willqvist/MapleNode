@@ -36,7 +36,7 @@
             <div class="page" id="vote">
                 <h4>Voting</h4>
                 <div class="voteSiteHolder">
-                    <div class="voteSite" data-site="gtop.com">
+                    <div class="voteSite" data-site="gtop.com" id="gtop.com">
                         <div class="edit">
                             <svg id="icon-pencil2" viewBox="0 0 24 24">
                                 <title>pencil2</title>
@@ -44,10 +44,10 @@
                             </svg>
                         </div>
                         <h5>GTOP.COM</h5>
-                        <h6 data-beforeContent="Nx per vote">2000</h6>
-                        <h6 data-beforeContent="Vote interval">6h</h6>
+                        <h6 data-beforeContent="Nx per vote" class="nx">2000</h6>
+                        <h6 data-beforeContent="Vote interval" class="time">12h</h6>
                     </div>
-                    <div class="voteSite" data-site="top100.com">
+                    <div class="voteSite" data-site="top100.com" id="top100.com">
                         <div class="edit">
                             <svg id="icon-pencil2" viewBox="0 0 24 24">
                                 <title>pencil2</title>
@@ -55,8 +55,8 @@
                             </svg>
                         </div>
                         <h5>Top100.COM</h5>
-                        <h6 data-beforeContent="Nx per vote">2000</h6>
-                        <h6 data-beforeContent="Vote interval">6h</h6>
+                        <h6 data-beforeContent="Nx per vote" class="nx">1000</h6>
+                        <h6 data-beforeContent="Vote interval" class="time">6h</h6>
                     </div>
                 </div>
             </div>
@@ -65,33 +65,63 @@
         <script src="../JS/onload.js"></script>
         <script src="../JS/HttpHandler.js"></script>
         <script>
-            //VOTE SCRIPT
-            let form = new FormPopup("changeVote");
-            let sites = {
-                "gtop.com":{name:"GTOP100",nx:2000,time:"12h"},
-                "top100.com":{name:"GTOP100",nx:1000,time:"6h"}
-            };
-            let edits = document.getElementsByClassName("edit");
-            for(let i = 0; i < edits.length; i++)
+            let saved =
             {
-                edits[i].addEventListener("click",function()
-                {
-                    let site = this.parentNode.getAttribute("data-site");
-                    form.setSetting({name:"site",value:site});
-                    form.setValue({id:"nx",value:sites[site].nx});
-                    form.setValue({id:"time",value:sites[site].time});
-                    form.show();
-                },false);
+                vote:{isSaved:true,method:onVoteLoad},
+                design:{isSaved:true,method:onVoteLoad},
+                layout:{isSaved:true,method:onVoteLoad}
             }
-            form.addInput({id:"nx"});
-            form.addInput({id:"time"});
-            form.addButton({type:"submit",value:"Apply"});
-            form.appendDom();
-            form.onSubmit((data)=>
+            loadPage(saved.vote);
+            function onVoteLoad(page)
             {
-                console.log(data.fields,data.settings);
-                form.hide();
-            });
+                //VOTE SCRIPT
+                let form = new FormPopup("changeVote");
+                let site1 = document.getElementById("gtop.com");
+                let site2 = document.getElementById("gtop.com");
+                let sites = {
+                    "gtop.com":{element:site1,name:"GTOP100",nx:2000,time:"12h"},
+                    "top100.com":{element:site2,name:"GTOP100",nx:1000,time:"6h"}
+                };
+                let edits = document.getElementsByClassName("edit");
+                for(let i = 0; i < edits.length; i++)
+                {
+                    edits[i].addEventListener("click",function()
+                    {
+                        let site = this.parentNode.getAttribute("data-site");
+                        form.setSetting({name:"site",value:site});
+                        form.setValue({id:"nx",value:sites[site].nx});
+                        form.setValue({id:"time",value:sites[site].time});
+                        form.show();
+                    },false);
+                }
+                form.addInput({id:"nx"});
+                form.addInput({id:"time"});
+                form.addButton({type:"submit",value:"Apply"});
+                form.appendDom();
+                form.onSubmit((data)=>
+                {
+                    console.log(data.fields,data.settings,self);
+                    let site = sites[data.settings.site];
+                    if(site.nx != data.fields.nx || site.time != data.fields.time)
+                        setUnsaved(page);
+                    site.nx = data.fields.nx;
+                    site.time = data.fields.time;
+                    site.element.getElementsByClassName("nx")[0].innerHTML = data.fields.nx;
+                    site.element.getElementsByClassName("time")[0].innerHTML = data.fields.time;
+                    form.hide();
+
+                });
+            }
+
+            function setUnsaved(page)
+            {
+                console.log("unsaved");
+                page.isSaved = false;
+            }
+            function loadPage(page)
+            {
+                page.method(page);
+            }
         </script>
     </body>
 </html>
