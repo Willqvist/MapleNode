@@ -4,7 +4,7 @@ class HttpHandler
     {
         let http = new XMLHttpRequest();
         http.open("POST",url.getFullUrl(),true);
-        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.setRequestHeader("Content-type", "application/json");
         http.onreadystatechange = function()
         {
             if(http.readyState == XMLHttpRequest.DONE && http.status == 200)
@@ -12,7 +12,7 @@ class HttpHandler
             else if(http.readyState == XMLHttpRequest.DONE && http.status == 404)
                 callback({success:false,http:{status:http.status}});
         }
-        http.send(url.parametersToString());
+        http.send(JSON.stringify(url.getParamters()));
     }
 }
 class Url
@@ -25,6 +25,10 @@ class Url
     getFullUrl()
     {
         return this.url;
+    }
+    getParamters()
+    {
+        return this.parameters;
     }
     parametersToString()
     {
@@ -277,6 +281,18 @@ class FormPopup
         this.form.id = name;
         this.form.className += "popupForm";
         this.isAppended = false;
+    }
+    setCloseable()
+    {
+        let div = document.createElement("div");
+        div.className += "close";
+        this.form.appendChild(div);
+        let form = this;
+        console.log(this);
+        div.addEventListener("click",(()=>
+        {
+            form.hide();
+        }).bind(form),false);
     }
     setSetting({name="null",value=-1})
     {

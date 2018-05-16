@@ -37,7 +37,7 @@ function setupListeners(){
     app.use("/setup",SetupRouter);
     app.use("/",GlobalRouter);
     app.use("/",PagesRouter);
-    app.use("/dashboard/",DashboardRouter);
+    app.use("/dashboard",DashboardRouter);
     app.use("/IO/",IORouter);
     app.use((req, res, next)=>res.status(404).render('error/404'));
     //app.use((err, req, res, next)=>res.status(500).send('Something went wrong!'));

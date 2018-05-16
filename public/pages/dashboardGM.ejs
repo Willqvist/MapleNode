@@ -15,6 +15,7 @@
             <h2 class="subTitle"><span>Main</span></h2>
             <div class="categoryMenu_item">
                 <h3>Dashboard</h3>
+                <div id="vote_saved" class="saved"></div>
             </div>
             <div class="categoryMenu_item">
                 <h3>General</h3>
@@ -35,29 +36,25 @@
             <div id="pages">
             <div class="page" id="vote">
                 <h4>Voting</h4>
+                <div class="save">save</div>
                 <div class="voteSiteHolder">
-                    <div class="voteSite" data-site="gtop.com" id="gtop.com">
+                    <% for(let i = 0; i < votes.length; i++)
+                    {
+                        let vote = votes[i];
+                    %>
+                    <div class="voteSite" data-site="<%= vote.name %>" id="<%= vote.name %>">
                         <div class="edit">
                             <svg id="icon-pencil2" viewBox="0 0 24 24">
                                 <title>pencil2</title>
                                 <path d="M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z"></path>
                             </svg>
                         </div>
-                        <h5>GTOP.COM</h5>
-                        <h6 data-beforeContent="Nx per vote" class="nx">2000</h6>
-                        <h6 data-beforeContent="Vote interval" class="time">12h</h6>
+                        <h5 class="name"><%= vote.name %></h5>
+                        <h6 data-beforeContent="Nx per vote" class="nx"><%= vote.nx %></h6>
+                        <h6 data-beforeContent="Vote interval" class="time"><%= vote.time %></h6>
+                        <h6 data-beforeContent="Full url" class="url"><%= vote.url %></h6>
                     </div>
-                    <div class="voteSite" data-site="top100.com" id="top100.com">
-                        <div class="edit">
-                            <svg id="icon-pencil2" viewBox="0 0 24 24">
-                                <title>pencil2</title>
-                                <path d="M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z"></path>
-                            </svg>
-                        </div>
-                        <h5>Top100.COM</h5>
-                        <h6 data-beforeContent="Nx per vote" class="nx">1000</h6>
-                        <h6 data-beforeContent="Vote interval" class="time">6h</h6>
-                    </div>
+                    <% } %>
                 </div>
             </div>
             </div>
@@ -65,23 +62,35 @@
         <script src="../JS/onload.js"></script>
         <script src="../JS/HttpHandler.js"></script>
         <script>
-            let saved =
+            let vote = document.getElementById("vote");
+            let pages =
             {
-                vote:{isSaved:true,method:onVoteLoad},
-                design:{isSaved:true,method:onVoteLoad},
-                layout:{isSaved:true,method:onVoteLoad}
+                vote:{id:"vote",isSaved:true,page:vote,method:onVoteLoad},
+                design:{id:"design",isSaved:true,page:vote,method:onVoteLoad},
+                layout:{id:"layout",isSaved:true,page:vote,method:onVoteLoad}
             }
-            loadPage(saved.vote);
+            setSaveButton(pages.vote,pages.vote.page.getElementsByClassName("save")[0]);
+            //setCancelSaveButton(pages.vote,document.getElementById("gtop.com"));
+            loadPage(pages.vote);
             function onVoteLoad(page)
             {
                 //VOTE SCRIPT
                 let form = new FormPopup("changeVote");
-                let site1 = document.getElementById("gtop.com");
-                let site2 = document.getElementById("gtop.com");
-                let sites = {
-                    "gtop.com":{element:site1,name:"GTOP100",nx:2000,time:"12h"},
-                    "top100.com":{element:site2,name:"GTOP100",nx:1000,time:"6h"}
-                };
+                let site1 = document.getElementById("gtop");
+                let site2 = document.getElementById("top100");
+                if(!isUnsaved(page)){
+                    let sites = {
+                        <% for(let i = 0; i < votes.length; i++)
+                        {
+                            let vote = votes[i];
+                        %>
+                        "<%= vote.name %>":{element:document.getElementById("<%= vote.name %>"),name:"<%= vote.name %>",nx:<%=vote.nx%>,time:"<%= vote.time %>",url:"<%= vote.url %>"},
+                        <% } %>
+                    };
+                    page.originalValues = copyObject(sites);
+                    page.newValues = sites;
+                }
+                let sites = page.newValues;
                 let edits = document.getElementsByClassName("edit");
                 for(let i = 0; i < edits.length; i++)
                 {
@@ -91,32 +100,93 @@
                         form.setSetting({name:"site",value:site});
                         form.setValue({id:"nx",value:sites[site].nx});
                         form.setValue({id:"time",value:sites[site].time});
+                        form.setValue({id:"name",value:sites[site].name});
+                        form.setValue({id:"url",value:sites[site].url});
                         form.show();
                     },false);
                 }
+                form.addInput({id:"name"});
                 form.addInput({id:"nx"});
                 form.addInput({id:"time"});
+                form.addInput({id:"url"});
                 form.addButton({type:"submit",value:"Apply"});
+                form.setCloseable();
                 form.appendDom();
                 form.onSubmit((data)=>
                 {
                     console.log(data.fields,data.settings,self);
                     let site = sites[data.settings.site];
-                    if(site.nx != data.fields.nx || site.time != data.fields.time)
+                    if(site.nx != data.fields.nx || site.time != data.fields.time || site.url != data.fields.url || site.name != data.fields.name)
                         setUnsaved(page);
-                    site.nx = data.fields.nx;
+                    site.nx = parseInt(data.fields.nx);
                     site.time = data.fields.time;
+                    site.url = data.fields.url;
+                    site.name = data.fields.name;
                     site.element.getElementsByClassName("nx")[0].innerHTML = data.fields.nx;
                     site.element.getElementsByClassName("time")[0].innerHTML = data.fields.time;
+                    site.element.getElementsByClassName("name")[0].innerHTML = data.fields.name;
+                    site.element.getElementsByClassName("url")[0].innerHTML = data.fields.url;
                     form.hide();
-
+                    console.log(page);
+                });
+                page.onCancelSave = function(page)
+                {
+                }
+                page.onSave = function(page)
+                {
+                    if(!page.isSaved)
+                    {
+                        let url = new Url("/dashboard/votes/update",{newValue:page.newValues,originalValue:page.originalValues});
+                        HttpHandler.postData(url,((data)=>
+                        {
+                            console.log(data);
+                            if(data.success)
+                            {
+                                page.originalValues = page.originalValues = copyObject(page.newValues);
+                                setSaved(page);
+                            }
+                        }).bind(page));
+                    }
+                }
+            }
+            //PAGE HANDLER
+            function setSaveButton(page,button)
+            {
+                button.addEventListener("click",()=>
+                {
+                    page.onSave(page);
                 });
             }
-
+            function setCancelSaveButton(page,button)
+            {
+                button.addEventListener("click",()=>
+                {
+                    page.onCancelSave(page);
+                });                
+            }
             function setUnsaved(page)
             {
-                console.log("unsaved");
-                page.isSaved = false;
+               page.isSaved = false;
+               document.getElementById(page.id+"_saved").style.opacity="1";
+            }
+            function setSaved(page)
+            {
+                page.isSaved = true;
+                document.getElementById(page.id+"_saved").style.opacity="0";
+            }
+            function isUnsaved(page)
+            {
+                return !page.isSaved;
+            }
+            function copyObject(object)
+            {
+                let obj = Object.assign({},object);
+                for(let key in obj)
+                {
+                    if(typeof obj[key] == "object")
+                        obj[key] = Object.assign({},object[key]);
+                }
+                return obj;
             }
             function loadPage(page)
             {

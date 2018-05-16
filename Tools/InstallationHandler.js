@@ -51,7 +51,6 @@ class InstallationHandler
             //creating prefix tables
             (data,callback)=>
             {
-                console.log(`DROP TABLE mn_scheme`);
                 mysql.connection.query(`DROP TABLE IF EXISTS ${userData.prefix}_Scheme`,(err,result)=>{
                     if(err) throw err;
                     mysql.connection.query(`CREATE TABLE ${userData.prefix}_Scheme
@@ -66,7 +65,6 @@ class InstallationHandler
                     )`,(err,result)=>
                     {
                         if(err) throw err;
-                        console.log(result);
                         callback(err,result);
                     });
                 });
@@ -95,10 +93,28 @@ class InstallationHandler
                         callback(err,result);
                     });
                 });
+            },
+            (data,callback)=>
+            {
+                mysql.connection.query(`DROP TABLE IF EXISTS ${userData.prefix}_Vote`,(err,result)=>{
+                    if(err) throw err;
+                    mysql.connection.query(`CREATE TABLE ${userData.prefix}_Vote
+                    (
+                        ID int NOT NULL AUTO_INCREMENT,
+                        name varchar(255),
+                        nx int(20),
+                        time varchar(255),
+                        url varchar(255),
+                        PRIMARY KEY(ID)  
+                    )`,(err,result)=>
+                    {
+                        if(err) throw err;
+                        callback(err,result);
+                    });
+                });
             }           
-
-        ]
-        ,(err,result)=>
+        ],
+        (err,result)=>
         {
             callback(err);
         }    

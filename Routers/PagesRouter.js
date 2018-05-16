@@ -25,22 +25,4 @@ router.get("/ranking",(req,res)=>
 { 
     return res.render("pages/ranking");
 });
-router.get("/dashboard",(req,res)=>
-{ 
-    if(!isLoggedIn(req)) return res.render("pages/login");
-    let user = getUser(req);
-    console.log(req.session.cookie.maxAge);
-    if(user.gm == 0)
-        return res.render("pages/dashboardUser");
-    else if(user.gm >= 1)
-        return res.render("pages/dashboardGM");    
-});
-function isLoggedIn(req)
-{
-    return req.session.user;
-}
-function getUser(req)
-{
-    return req.session.user;
-}
 module.exports = router;

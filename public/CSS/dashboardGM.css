@@ -189,7 +189,7 @@ body
     bottom:0;
     margin:auto;
     width:30em;
-    height:24em;
+    height:35em;
     flex-direction: column;
     justify-content:center;
     align-items: center;
@@ -238,4 +238,28 @@ body
 .popupForm input[type="button"]:hover
 {
     background:#34689c;
+}
+.popupForm .close
+{
+    position: absolute;
+    right:1em;
+    top:1em;
+    height:2em;
+    width:2em;
+    background:red;
+}
+.saved
+{
+    width:1.5em;
+    height:1.5em;
+    border-radius:50%;
+    background:Red;
+    opacity:0;
+}
+@media only screen and (max-height:120em)
+{
+    body
+    {
+        font-size:0.8em;
+    }
 }
