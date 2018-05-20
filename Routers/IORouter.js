@@ -39,7 +39,7 @@ router.post("/ranking",(req,res)=>
     let queryData = [];
     let orderBy = "Level";
     console.log("JOB",job,req.body.job);
-    if(req.body.search !== 'undefined')
+    if(typeof req.body.search !== 'undefined')
     {
         whereString += ` ${whereStatement} name LIKE ?`;
         queryData.push("%" + req.body.search + "%");

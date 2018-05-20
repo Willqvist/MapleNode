@@ -2,6 +2,17 @@
 <html>
     <head>
     <meta charset="utf-8">
+    <style>
+    :root
+    {
+        --mainColor:#69DC9E;
+        --secondaryMainColor:#3E78B2;
+        --LightFontColor:#D3F3EE;
+        --FontColorDark:#20063B;
+        --FillColor:#CC3363;
+    }
+    </style>
+    <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
     <link rel="stylesheet" type="text/css" href="../CSS/dashboardGM.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/tabIcon.png">
@@ -13,65 +24,167 @@
                 <h3>Dashboard GM</h3>
             </div>
             <h2 class="subTitle"><span>Main</span></h2>
-            <div class="categoryMenu_item">
+            <div class="categoryMenu_item" data-page="dashboard">
                 <h3>Dashboard</h3>
-                <div id="vote_saved" class="saved"></div>
+                <div id="dashboard_saved" class="saved">
+                    <svg id="icon-notice" viewBox="0 0 32 32">
+                        <title>notice</title>
+                        <path d="M15.5 3.5c-7.18 0-13 5.82-13 13s5.82 13 13 13 13-5.82 13-13-5.82-13-13-13zM15.5 23.875c-0.829 0-1.5-0.672-1.5-1.5s0.671-1.5 1.5-1.5c0.828 0 1.5 0.672 1.5 1.5s-0.672 1.5-1.5 1.5zM17 17.375c0 0.828-0.672 1.5-1.5 1.5-0.829 0-1.5-0.672-1.5-1.5v-7c0-0.829 0.671-1.5 1.5-1.5 0.828 0 1.5 0.671 1.5 1.5v7z"></path>
+                    </svg>
+                </div>
             </div>
-            <div class="categoryMenu_item">
+            <div class="categoryMenu_item" data-page="general">
                 <h3>General</h3>
+                <div id="general_saved" class="saved">
+                    <svg id="icon-notice" viewBox="0 0 32 32">
+                        <title>notice</title>
+                        <path d="M15.5 3.5c-7.18 0-13 5.82-13 13s5.82 13 13 13 13-5.82 13-13-5.82-13-13-13zM15.5 23.875c-0.829 0-1.5-0.672-1.5-1.5s0.671-1.5 1.5-1.5c0.828 0 1.5 0.672 1.5 1.5s-0.672 1.5-1.5 1.5zM17 17.375c0 0.828-0.672 1.5-1.5 1.5-0.829 0-1.5-0.672-1.5-1.5v-7c0-0.829 0.671-1.5 1.5-1.5 0.828 0 1.5 0.671 1.5 1.5v7z"></path>
+                    </svg>
+                </div>
             </div>
-            <div class="categoryMenu_item">
+            <div class="categoryMenu_item" data-page="vote">
                 <h3>Voting</h3>
+                <div id="vote_saved" class="saved">
+                    <svg id="icon-notice" viewBox="0 0 32 32">
+                        <title>notice</title>
+                        <path d="M15.5 3.5c-7.18 0-13 5.82-13 13s5.82 13 13 13 13-5.82 13-13-5.82-13-13-13zM15.5 23.875c-0.829 0-1.5-0.672-1.5-1.5s0.671-1.5 1.5-1.5c0.828 0 1.5 0.672 1.5 1.5s-0.672 1.5-1.5 1.5zM17 17.375c0 0.828-0.672 1.5-1.5 1.5-0.829 0-1.5-0.672-1.5-1.5v-7c0-0.829 0.671-1.5 1.5-1.5 0.828 0 1.5 0.671 1.5 1.5v7z"></path>
+                    </svg>
+                </div>
             </div>
             <h2 class="subTitle"><span>Style</span></h2>
-            <div class="categoryMenu_item">
+            <div class="categoryMenu_item" data-page="design">
                 <h3>Design</h3>
+                <div id="design_saved" class="saved">
+                     <svg id="icon-notice" viewBox="0 0 32 32">
+                        <title>notice</title>
+                        <path d="M15.5 3.5c-7.18 0-13 5.82-13 13s5.82 13 13 13 13-5.82 13-13-5.82-13-13-13zM15.5 23.875c-0.829 0-1.5-0.672-1.5-1.5s0.671-1.5 1.5-1.5c0.828 0 1.5 0.672 1.5 1.5s-0.672 1.5-1.5 1.5zM17 17.375c0 0.828-0.672 1.5-1.5 1.5-0.829 0-1.5-0.672-1.5-1.5v-7c0-0.829 0.671-1.5 1.5-1.5 0.828 0 1.5 0.671 1.5 1.5v7z"></path>
+                    </svg>
+                </div>
             </div>
-            <div class="categoryMenu_item">
+            <div class="categoryMenu_item" data-page="layout">
                 <h3>Layout</h3>
+                <div id="layout_saved" class="saved">
+                    <svg id="icon-notice" viewBox="0 0 32 32">
+                        <title>notice</title>
+                        <path d="M15.5 3.5c-7.18 0-13 5.82-13 13s5.82 13 13 13 13-5.82 13-13-5.82-13-13-13zM15.5 23.875c-0.829 0-1.5-0.672-1.5-1.5s0.671-1.5 1.5-1.5c0.828 0 1.5 0.672 1.5 1.5s-0.672 1.5-1.5 1.5zM17 17.375c0 0.828-0.672 1.5-1.5 1.5-0.829 0-1.5-0.672-1.5-1.5v-7c0-0.829 0.671-1.5 1.5-1.5 0.828 0 1.5 0.671 1.5 1.5v7z"></path>
+                    </svg>
+                </div>
             </div>
         </div>
         <div id="content">
             <div id="menu"></div>
             <div id="pages">
-            <div class="page" id="vote">
-                <h4>Voting</h4>
-                <div class="save">save</div>
-                <div class="voteSiteHolder">
-                    <% for(let i = 0; i < votes.length; i++)
-                    {
-                        let vote = votes[i];
-                    %>
-                    <div class="voteSite" data-site="<%= vote.name %>" id="<%= vote.name %>">
-                        <div class="edit">
-                            <svg id="icon-pencil2" viewBox="0 0 24 24">
-                                <title>pencil2</title>
-                                <path d="M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z"></path>
-                            </svg>
-                        </div>
-                        <h5 class="name"><%= vote.name %></h5>
-                        <h6 data-beforeContent="Nx per vote" class="nx"><%= vote.nx %></h6>
-                        <h6 data-beforeContent="Vote interval" class="time"><%= vote.time %></h6>
-                        <h6 data-beforeContent="Full url" class="url"><%= vote.url %></h6>
+                <section class="page" id="dashboard">
+                    <div class="pageHeader">
+                        <h4>Dashboard</h4>
+                        <div class="save btn"><span>save</span></div>
                     </div>
-                    <% } %>
-                </div>
-            </div>
+                </section>
+                <section class="page" id="vote">
+                    <div class="pageHeader">
+                        <h4>Voting</h4>
+                        <div class="save btn"><span>save</span></div>
+                    </div>
+                    <div class="voteSiteHolder">
+                        <% for(let i = 0; i < votes.length; i++)
+                        {
+                            let vote = votes[i];
+                        %>
+                        <div class="voteSite" data-site="<%= vote.name %>" id="<%= vote.name %>">
+                            <div class="edit">
+                                <svg id="icon-pencil2" viewBox="0 0 24 24">
+                                    <title>pencil2</title>
+                                    <path d="M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z"></path>
+                                </svg>
+                            </div>
+                            <h5 class="name"><%= vote.name %></h5>
+                            <h6 data-beforeContent="Nx per vote" class="nx before"><%= vote.nx %></h6>
+                            <h6 data-beforeContent="Vote interval" class="time before"><%= vote.time %></h6>
+                            <h6 data-beforeContent="Full url" class="url before"><%= vote.url %></h6>
+                        </div>
+                        <% } %>
+                    </div>
+                </section>
+                <section class="page" id="design">
+                    <div class="pageHeader">
+                        <h4>Design</h4>
+                        <div class="save btn"><span>save</span></div>
+                    </div>
+                    <div class="voteSiteHolder">
+                        <div class="voteSite" id="palette">
+                            <div class="edit">
+                                <svg id="icon-pencil2" viewBox="0 0 24 24">
+                                    <title>pencil2</title>
+                                    <path d="M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z"></path>
+                                </svg>
+                            </div>
+                            <h5 data-beforeContent="Color palette" class="name before">Happy Green</h5>
+                            <div class="colorPlatteHolder">
+                                <div class="colorPallete SecondaryMainColor"></div>
+                                <div class="colorPallete LightFontColor"></div>
+                                <div class="colorPallete FillColor"></div>
+                                <div class="colorPallete MainColor"></div>
+                                <div class="colorPallete FontColorDark"></div> 
+                            </div>                                                                                   
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
         <script src="../JS/onload.js"></script>
         <script src="../JS/HttpHandler.js"></script>
         <script>
+
+            let pageVisible;
+
             let vote = document.getElementById("vote");
+            let dashboard = document.getElementById("dashboard");
+            let design = document.getElementById("design");
             let pages =
             {
                 vote:{id:"vote",isSaved:true,page:vote,method:onVoteLoad},
-                design:{id:"design",isSaved:true,page:vote,method:onVoteLoad},
-                layout:{id:"layout",isSaved:true,page:vote,method:onVoteLoad}
+                design:{id:"design",isSaved:true,page:design,method:onDesignLoad},
+                //design:{id:"design",isSaved:true,page:vote,method:onVoteLoad},
+                //layout:{id:"layout",isSaved:true,page:vote,method:onVoteLoad},
+                dashboard:{id:"dashboard",isSaved:true,page:dashboard,method:onDashboardLoad},
             }
             setSaveButton(pages.vote,pages.vote.page.getElementsByClassName("save")[0]);
             //setCancelSaveButton(pages.vote,document.getElementById("gtop.com"));
-            loadPage(pages.vote);
+            
+            loadPage(pages.dashboard);
+            function onDashboardLoad(page)
+            {
+            }
+            function getEditButtonsClick(page,callback,shouldPageBeLoaded = true)
+            {
+             if(!page.hasLoaded || !shouldPageBeLoaded)
+                {
+                    let edits = page.page.getElementsByClassName("edit");
+                    for(let i = 0; i < edits.length; i++)
+                    {
+                        edits[i].addEventListener("click",function()
+                        {
+                            callback(this);
+                        },false);
+                    }
+                }
+            }
+            function onDesignLoad(page)
+            {
+                let form = new FormPopup("colorP");
+                form.setCloseable();
+                form.appendDom();
+                getEditButtonsClick(page,(self)=>
+                {
+                    form.show();
+                },true);
+                form.addButton({type:"submit",value:"Change"});
+                form.onSubmit((data)=>
+                {
+                    console.log(data);
+                    form.hide();
+                });
+            }
             function onVoteLoad(page)
             {
                 //VOTE SCRIPT
@@ -91,20 +204,18 @@
                     page.newValues = sites;
                 }
                 let sites = page.newValues;
-                let edits = document.getElementsByClassName("edit");
-                for(let i = 0; i < edits.length; i++)
+                getEditButtonsClick(page,(self)=>
                 {
-                    edits[i].addEventListener("click",function()
-                    {
-                        let site = this.parentNode.getAttribute("data-site");
+                    if(!form.isActive()){
+                        let site = self.parentNode.getAttribute("data-site");
                         form.setSetting({name:"site",value:site});
                         form.setValue({id:"nx",value:sites[site].nx});
                         form.setValue({id:"time",value:sites[site].time});
                         form.setValue({id:"name",value:sites[site].name});
                         form.setValue({id:"url",value:sites[site].url});
                         form.show();
-                    },false);
-                }
+                    }
+                },true);
                 form.addInput({id:"name"});
                 form.addInput({id:"nx"});
                 form.addInput({id:"time"});
@@ -167,11 +278,14 @@
             function setUnsaved(page)
             {
                page.isSaved = false;
+               console.log(page.page.getElementsByClassName("save")[0]);
+               page.page.getElementsByClassName("save")[0].style.background="#3e78b2";
                document.getElementById(page.id+"_saved").style.opacity="1";
             }
             function setSaved(page)
             {
                 page.isSaved = true;
+                page.page.getElementsByClassName("save")[0].style.background="#c4c4c4";
                 document.getElementById(page.id+"_saved").style.opacity="0";
             }
             function isUnsaved(page)
@@ -190,8 +304,26 @@
             }
             function loadPage(page)
             {
+                if(pageVisible)
+                    pageVisible.page.style.display="none";
+                page.page.style.display="block";
+                pageVisible = page;
                 page.method(page);
+                page.hasLoaded = true;
             }
+
+
+            let menu = document.getElementsByClassName("categoryMenu_item");
+            for(let i = 0; i < menu.length; i++)
+            {
+                menu[i].addEventListener("click",function()
+                {
+                    let page = pages[this.getAttribute("data-page")];
+                    if(page)
+                        loadPage(page);
+                },false);
+            }
+
         </script>
     </body>
 </html>

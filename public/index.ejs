@@ -12,7 +12,8 @@ if(!isset(typeof settings))
     <link rel="stylesheet" type="text/css" href="CSS/status.css">  
     <link rel="stylesheet" type="text/css" href="CSS/ranking.css"> 
     <link rel="stylesheet" type="text/css" href="CSS/control.css">
-    <link rel="stylesheet" type="text/css" href="CSS/media.css">            
+    <link rel="stylesheet" type="text/css" href="CSS/media.css">    
+    <link rel="stylesheet" type="text/css" href="CSS/menu.css">            
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/tabIcon.png">
     <title><%= settings.serverName %></title>
@@ -24,8 +25,8 @@ if(!isset(typeof settings))
             <div id="headerInfo">
                 <h1><%= settings.serverName %></h1>
                 <p>V83 Maplestory private serverName</p>
-                <div class="btn btn-green"><a href="#">Play</a></div>
-                <% if(!isset(typeof user)){ %><div class="btn btn-blue"><a href="#">Register</a></div><% } %>
+                <div class="btn-tilted btn-green"><a href="#">Play</a></div>
+                <% if(!isset(typeof user)){ %><div class="btn-tilted btn-blue"><a href="#">Register</a></div><% } %>
             </div>
             <div id="snail"></div> 
             <div id="stump"></div>

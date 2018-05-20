@@ -178,31 +178,6 @@ ul.blockHeader li
 {
     position: relative;
 }
-.filterBtn
-{
-    padding:0 2em;
-    height:4.5em;
-    background:#3e78b2;
-    display:flex;
-    font-family: 'Montserrat', sans-serif;
-    color:#FFF;
-    justify-content:center;
-    align-content: center;
-    align-items:center;
-    border-radius:0.4em;
-    cursor:pointer;
-    transition: ease 0.2s;
-    margin-right:1em;
-    box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
-}
-.filterBtn:hover
-{
-    background:#34689c;  
-}
-.filterBtn span
-{
-    font-size:1.4em;
-}
 #settings form .filterBtn
 {
     margin-right:2em;
@@ -305,7 +280,7 @@ ul.blockHeader li
     margin-top:2em;
     font-family: 'Montserrat', sans-serif;
 }
-.pageTab .filterBtn
+.pageTab .btn
 {
     margin:0;
 }

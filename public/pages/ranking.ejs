@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">
     <link rel="stylesheet" type="text/css" href="CSS/rankingPage.css">    
-    <link rel="stylesheet" type="text/css" href="CSS/media.css">             
+    <link rel="stylesheet" type="text/css" href="CSS/media.css">   
+    <link rel="stylesheet" type="text/css" href="CSS/menu.css">             
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/tabIcon.png">
     <title>Ranking</title>
@@ -21,7 +22,7 @@
             <section id="content" class="maxWidth">
             <div id="settings" class="tab">
                 <div id="settingsBtns">
-                    <div class="dropdownBtn filterBtn noSelect" data-dropdownContent="searchSettings"><span>&dtrif; Overall</span>
+                    <div class="dropdownBtn btn noSelect" data-dropdownContent="searchSettings"><span>&dtrif; Overall</span>
                         <ul id="searchSettings"class="noSelect dropdownContent">
                             <%
                             for(let key in jobs)
@@ -33,7 +34,7 @@
                             %>
                         </ul>
                     </div>
-                    <div class="dropdownBtn filterBtn noSelect" data-dropdownContent="searchRankingSettings"><span>&dtrif; Level</span>
+                    <div class="dropdownBtn btn noSelect" data-dropdownContent="searchRankingSettings"><span>&dtrif; Level</span>
                         <ul id="searchRankingSettings" class="noSelect dropdownContent">
                             <li data-select="Level">Level</li>
                             <li data-select="Fame">Fame</li>
@@ -74,9 +75,9 @@
                 </div>
             </div>
             <div  class="tab pageTab">
-                <div id="prev" class="filterBtn noSelect"><span>Previous Page</span></div>  
+                <div id="prev" class="btn noSelect"><span>Previous Page</span></div>  
                 <div id="pageInfo"><h3 id="pageNumber">0</h3></div>
-                <div id="next" class="filterBtn noSelect"><span>Next Page</span></div>
+                <div id="next" class="btn noSelect"><span>Next Page</span></div>
             </div>                     
         </section>
         <script src="JS/HttpHandler.js"></script>

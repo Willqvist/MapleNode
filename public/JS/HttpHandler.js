@@ -281,6 +281,7 @@ class FormPopup
         this.form.id = name;
         this.form.className += "popupForm";
         this.isAppended = false;
+        this.active = false;
     }
     setCloseable()
     {
@@ -308,10 +309,16 @@ class FormPopup
     {
         if(!this.isAppended) this.appendDom();
         this.form.style.display="flex";
+        this.active = true;
     }
     hide()
     {
         this.form.style.display="none";
+        this.active = false;
+    }
+    isActive()
+    {
+        return this.active;
     }
     addInput({type="text",id=-1,value=""})
     {

@@ -94,9 +94,10 @@ body
     min-height:100%;
     box-sizing: border-box;
     padding:5em;
+    display:none;
 }
-.page h4{
-    font-size:3em;
+.pageHeader h4{
+    font-size:4em;
     font-family: 'Montserrat', sans-serif;
     font-weight:700;
     color:#341C4C;
@@ -124,6 +125,7 @@ body
     font-size:2em;
     font-family: 'Montserrat', sans-serif;
     font-weight:700;
+    position: relative;
 }
 .voteSite h6
 {
@@ -135,15 +137,15 @@ body
     display:inline-block;
     width:45%;
 }
-.voteSite h6::before
+.before::before
 {
     content:attr(data-beforeContent);
     font-family: 'Montserrat', sans-serif;
     font-weight:400;
     position:absolute;
-    font-size:0.8em;
+    font-size:1.1rem;
     opacity:0.5;
-    top:-1em;
+    top:-1.1rem;
 }
 .voteSite .edit
 {
@@ -174,10 +176,42 @@ body
     background:#6190c0;
     fill:#FFF;
 }
-
-
-
-
+.colorPlatteHolder
+{
+    display:flex;
+    margin-top:2em;
+    width:calc(100% + 6.4em);
+    margin-left:-3.2em;
+}
+.colorPallete
+{
+    height:4em;
+    flex:1;
+}
+#design #palette
+{
+    padding-bottom:0;
+}
+.MainColor
+{
+    background:var(--mainColor);
+}
+.SecondaryMainColor
+{
+    background:var(--secondaryMainColor);
+}
+.LightFontColor
+{
+    background:var(--LightFontColor);
+}
+.FontColorDark
+{
+    background:var(--FontColorDark);
+}
+.FillColor
+{
+    background:var(--FillColor);
+}
 /* POPUP */
 
 .popupForm
@@ -252,11 +286,28 @@ body
 {
     width:1.5em;
     height:1.5em;
-    border-radius:50%;
-    background:Red;
+    border-radius:50%;  
     opacity:0;
 }
-@media only screen and (max-height:120em)
+.saved svg
+{
+    display:block;
+    width:100%;
+    height:100%;
+    fill:#FFF;
+}
+.pageHeader
+{
+    display:flex;
+    align-items: center;
+    font-size:0.8em;
+}
+.save{
+    margin-left:2em;
+    height:4em !important;
+    background:#c4c4c4;
+}
+@media only screen and (max-height:55em)
 {
     body
     {
