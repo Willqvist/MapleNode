@@ -358,6 +358,10 @@ class FormPopup
         }
         return this.fields;
     }
+    addElement(element)
+    {
+        this.form.appendChild(element);
+    }
     addButton({type="submit",value="Save"})
     {
         let button = document.createElement("input");
@@ -376,5 +380,13 @@ class FormPopup
     onSubmit(callback)
     {
         this.callback = callback;
+    }
+}
+class InteractiveElement
+{
+    constructor(element)
+    {
+        if(!(element instanceof HTMLElement) || element.getAttribute("data-interactiveElement"))
+            throw "is not a html element";
     }
 }

@@ -17,7 +17,7 @@ body
 {
     width:22em;
     min-height:100vh;
-    background:#20063B;
+    background:var(--fontColorDark);
 }
 .categoryMenu_item
 {
@@ -31,12 +31,14 @@ body
     font-size:1em;
     cursor:pointer;
     font-size:0.9em;
-    color:#D6D1DB;
+    color:var(--fontColorLight);
     font-weight:400; 
+    opacity:1;
 }
 .categoryMenu_item:hover
 {
-    background:#341C4C;
+    background:var(--fontColorDark);
+    opacity:0.5;
 }
 .categoryMenu_item h3{
     font-family: 'Montserrat', sans-serif;
@@ -47,8 +49,8 @@ body
     transition:none; 
     height:6em;
     font-size:1em;
-    background:#69DC9E;
-    color:#FFF;
+    background:var(--mainColor);
+    color:var(--fontColorLight);
     font-weight:700;
 }
 #dashboard-title h3
@@ -57,7 +59,7 @@ body
 }
 #dashboard-title:hover
 {
-    background:#69DC9E;
+    background:var(--mainColor);
 }
 .subTitle{
     padding-left:3.5em;
@@ -100,7 +102,7 @@ body
     font-size:4em;
     font-family: 'Montserrat', sans-serif;
     font-weight:700;
-    color:#341C4C;
+    color:var(--fontColorDark);
 }
 .voteSite
 {
@@ -108,9 +110,9 @@ body
     box-sizing: border-box;
     padding:3.2em;
     margin-top:3em;
-    box-shadow:inset 0px 0.2em 0 #69dc9e, 0px 0em 0em rgb(25, 6, 46,0.12);
-    color:#341C4C;
-    background:#F3FBFA;
+    box-shadow:inset 0px 0.2em 0 var(--mainColor), 0px 0em 0em rgb(25, 6, 46,0.12);
+    color:var(--fontColorDark);
+    background:rgb(247, 247, 247);
     margin-right:2em;
     position: relative;
     transition:box-shadow ease 0.2s,transform ease 0.2s;
@@ -118,7 +120,7 @@ body
 .voteSite:hover
 {
     transform: translateY(-0.5em);
-    box-shadow:inset 0px 0.2em 0 #69dc9e, 0px 0.5em 2.5em rgb(25, 6, 46,0.12);
+    box-shadow:inset 0px 0.2em 0 var(--mainColor), 0px 0.5em 2.5em rgb(25, 6, 46,0.12);
 }
 .voteSite h5
 {
@@ -155,7 +157,7 @@ body
     width:1.5em;
     height:1.5em;
     border-radius:50%;
-    fill:#6190C0;
+    fill:var(--secondaryMainColor);
     padding:0.5em;
     transition:background ease 0.2s,fill ease 0.2s;
     cursor:pointer;
@@ -173,7 +175,7 @@ body
 }
 .voteSite .edit:hover
 {
-    background:#6190c0;
+    background:var(--secondaryMainColor);
     fill:#FFF;
 }
 .colorPlatteHolder
@@ -202,11 +204,11 @@ body
 }
 .LightFontColor
 {
-    background:var(--LightFontColor);
+    background:var(--fontColorLight);
 }
 .FontColorDark
 {
-    background:var(--FontColorDark);
+    background:var(--fontColorDark);
 }
 .FillColor
 {
@@ -239,7 +241,7 @@ body
     font-size:1em;
     outline:none;
     border:none;
-    box-shadow:0px 0px 0px 1px #34689c,0px 0.2em 1em rgba(32,6,59,0.1);
+    box-shadow:0px 0px 0px 1px var(--secondaryMainColor),0px 0.2em 1em rgba(32,6,59,0.1);
     border-radius:0.4em;
 }
 .popupForm label
@@ -252,7 +254,7 @@ body
 {
     font-family: 'Montserrat', sans-serif;
     font-weight:400;
-    color:#341C4C;
+    color:var(--fontColorDark);
 }
 .popupForm input[type="button"]
 {
@@ -261,9 +263,9 @@ body
     font-size:1em;
     margin-top:2em;
     padding:0.8em 1.2em;
-    background:#3e78b2;
+    background:var(--secondaryMainColor);
     box-shadow:none;
-    color:#FFF;
+    color:var(--fontColorLight);
     border-radius:0.4em;
     cursor:pointer;
     transition: ease 0.2s;
@@ -271,7 +273,7 @@ body
 }
 .popupForm input[type="button"]:hover
 {
-    background:#34689c;
+    background:var(--secondaryMainColor);
 }
 .popupForm .close
 {
@@ -306,6 +308,33 @@ body
     margin-left:2em;
     height:4em !important;
     background:#c4c4c4;
+}
+.colorPaletteChoose
+{
+    box-shadow:0px 0.2em 1em rgba(32,6,59,0.25);
+}
+.colorPaletteChoose
+{
+    font-size:0.8em;
+}
+.colorPaletteChoose ul li
+{
+    font-size:1.5em;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+}
+.colorPaletteChoose ul li .allPalettes
+{
+    width:8em;
+    height:1em;
+    display:flex;
+    margin-left:1em;
+    max-width:5em;
+}
+.colorPaletteChoose ul li .allPalettes div
+{
+    flex:1;
 }
 @media only screen and (max-height:55em)
 {

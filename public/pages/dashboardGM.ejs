@@ -3,17 +3,18 @@
     <head>
     <meta charset="utf-8">
     <style>
-    :root
+    body
     {
-        --mainColor:#69DC9E;
-        --secondaryMainColor:#3E78B2;
-        --LightFontColor:#D3F3EE;
-        --FontColorDark:#20063B;
-        --FillColor:#CC3363;
+        --mainColor:<%= palettes.active.mainColor %>;
+        --secondaryMainColor:<%= palettes.active.secondaryMainColor %>;
+        --fontColorLight:<%= palettes.active.lightFontColor %>;
+        --fontColorDark:<%= palettes.active.fontColorDark %>;
+        --fillColor:<%= palettes.active.fillColor %>;
     }
     </style>
     <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
     <link rel="stylesheet" type="text/css" href="../CSS/dashboardGM.css">
+    <link rel="stylesheet" type="text/css" href="../CSS/dropdown.css">             
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/tabIcon.png">
     <title>Dashboard GM</title>
@@ -118,25 +119,63 @@
                                     <path d="M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z"></path>
                                 </svg>
                             </div>
-                            <h5 data-beforeContent="Color palette" class="name before">Happy Green</h5>
+                            <h5 data-beforeContent="Color palette" class="name before"><%= palettes.active.name %></h5>
                             <div class="colorPlatteHolder">
-                                <div class="colorPallete SecondaryMainColor"></div>
-                                <div class="colorPallete LightFontColor"></div>
-                                <div class="colorPallete FillColor"></div>
-                                <div class="colorPallete MainColor"></div>
-                                <div class="colorPallete FontColorDark"></div> 
+                                <div class="colorPallete" style="background:<%= palettes.active.mainColor %>"></div>
+                                <div class="colorPallete" style="background:<%= palettes.active.lightFontColor %>"></div>
+                                <div class="colorPallete" style="background:<%= palettes.active.fillColor %>"></div>
+                                <div class="colorPallete" style="background:<%= palettes.active.secondaryMainColor %>"></div>
+                                <div class="colorPallete" style="background:<%= palettes.active.fontColorDark %>"></div> 
                             </div>                                                                                   
                         </div>
                     </div>
                 </section>
             </div>
         </div>
+        <div class="dropdownBtn btn noSelect colorPaletteChoose" id="dropdown" data-dropdowncontent="searchRankingSettings">
+            <span>▾ Happy Green</span>
+            <ul id="searchRankingSettings" class="noSelect dropdownContent">
+                <%
+                for(let i = 0; i < palettes.all.length; i++)
+                {
+                %>
+                    <li data-select="<%= palettes.all[i].name %>"><%= palettes.all[i].name %>
+                        <div class="allPalettes">
+                            <div style="background:<%= palettes.all[i].mainColor %>"></div>
+                            <div style="background:<%= palettes.all[i].lightFontColor %>"></div>
+                            <div style="background:<%= palettes.all[i].fillColor %>"></div>
+                            <div style="background:<%= palettes.all[i].secondaryMainColor %>"></div>
+                            <div style="background:<%= palettes.all[i].fontColorDark %>"></div> 
+                        </div>
+                    </li>
+                <%
+                }
+                %>
+            </ul>
+        </div>
         <script src="../JS/onload.js"></script>
         <script src="../JS/HttpHandler.js"></script>
+        <script src="../JS/dropdown.js"></script>
         <script>
-
             let pageVisible;
-
+            let palettes = 
+            {
+                <%
+                for(let i = 0; i < palettes.all.length; i++)
+                {
+                %>
+                "<%= palettes.all[i].name %>":
+                {
+                 mainColor:"<%= palettes.all[i].mainColor %>",
+                 fontColorLight:"<%= palettes.all[i].lightFontColor %>",
+                 fillColor:"<%= palettes.all[i].fillColor %>",
+                 secondaryMainColor:"<%= palettes.all[i].secondaryMainColor %>",
+                 fontColorDark:"<%= palettes.all[i].fontColorDark %>"
+                },
+                <%
+                }
+                %>
+            }
             let vote = document.getElementById("vote");
             let dashboard = document.getElementById("dashboard");
             let design = document.getElementById("design");
@@ -171,18 +210,39 @@
             }
             function onDesignLoad(page)
             {
-                let form = new FormPopup("colorP");
+                let dropdownTemplate = new DOMCompiler("<div class=\"dropdownBtn btn noSelect\" id=\"dropdown\" data-dropdownContent=\"searchRankingSettings\"><span>&dtrif; Happy Green</span><ul id=\"searchRankingSettings\" class=\"noSelect dropdownContent\"><li data-select=\"Happy Green\">HG</li><li data-select=\"Deep Blue\">DB</li></ul></div>").compileDOM();
+                dropdownTemplate = document.getElementById("dropdown");
+                console.log("template",dropdownTemplate);
+                console.log(dropdowns.length);
+                let form = new FormPopup("colorPalette");
+                dropdownClickHandler(dropdownTemplate,(self,attribute,target)=>
+                {
+                    self.childNodes[1].innerHTML = "&dtrif; "+attribute;
+                    form.setSetting({name:"paletteName",value:attribute});
+                    form.setSetting({name:"palette",value:palettes[attribute]})
+                });
                 form.setCloseable();
                 form.appendDom();
                 getEditButtonsClick(page,(self)=>
                 {
                     form.show();
                 },true);
+                form.addElement(dropdownTemplate);
                 form.addButton({type:"submit",value:"Change"});
                 form.onSubmit((data)=>
                 {
-                    console.log(data);
+                    console.log(data.settings);
+                    document.body.style.setProperty("--mainColor",data.settings.palette.mainColor);
+                    document.body.style.setProperty("--secondaryMainColor",data.settings.palette.secondaryMainColor);
+                    document.body.style.setProperty("--fontColorLight",data.settings.palette.fontColorLight);
+                    document.body.style.setProperty("--fontColorDark",data.settings.palette.fontColorDark);
+                    document.body.style.setProperty("--fillColor",data.settings.palette.fillColor);
+                    let url = new Url("dashboard/palette/update",{name:data.settings.paletteName,palette:data.settings.palette});
                     form.hide();
+                    HttpHandler.postData(url,(response)=>
+                    {
+                        console.log(response);
+                    });
                 });
             }
             function onVoteLoad(page)

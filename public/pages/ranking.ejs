@@ -5,7 +5,8 @@
     <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">
     <link rel="stylesheet" type="text/css" href="CSS/rankingPage.css">    
     <link rel="stylesheet" type="text/css" href="CSS/media.css">   
-    <link rel="stylesheet" type="text/css" href="CSS/menu.css">             
+    <link rel="stylesheet" type="text/css" href="CSS/menu.css"> 
+    <link rel="stylesheet" type="text/css" href="CSS/dropdown.css">             
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/tabIcon.png">
     <title>Ranking</title>
@@ -81,12 +82,10 @@
             </div>                     
         </section>
         <script src="JS/HttpHandler.js"></script>
+        <script src="JS/dropdown.js"></script>
         <script>
            let jobs = "-1";
            let rank = "Level";
-           let dropdowns = {};
-           let activeDropdowns = []; 
-           let dropdownBtns = document.getElementsByClassName("dropdownBtn");
            let reload = document.getElementById("reloadSearch");
            let titles = document.getElementsByClassName("title");
            let title =
@@ -99,63 +98,16 @@
            }
            dropdownClickHandler(dropdownBtns[0],changeJob);
            dropdownClickHandler(dropdownBtns[1],changeRank);
-           function changeJob(data,dataId)
+           function changeJob(self,data,dataId)
            {
+               self.firstChild.innerHTML = "&dtrif; "+data;
                jobs = dataId;
            }
-           function changeRank(data,dataId)
+           function changeRank(self,data,dataId)
            {
+               self.firstChild.innerHTML = "&dtrif; "+data;
                rank = data;
            }
-           //####DROPDOWN####
-           for(let i = 0; i < dropdownBtns.length; i++)
-           {
-               dropdownBtns[i].addEventListener("click",function(e)
-               {
-                   let attribute;
-                   if((attribute = e.target.getAttribute("data-select")))
-                   {
-                       this.firstChild.innerHTML = "&dtrif; "+attribute;
-                       dropdowns[this.getAttribute("data-dropdowncontent")](attribute,e.target.getAttribute("data-id"));
-                   }
-                   let element = document.getElementById(this.getAttribute("data-dropdownContent"));
-                   let toggled = element.getAttribute("data-toggled") === "true";
-                   toggleDropdown(dropdownBtns[i],element,!toggled);
-               },false);
-           }
-           document.addEventListener("click",function(e)
-            {
-                let element;
-                for(let i = 0; i < activeDropdowns.length; i++)
-                {
-                    element = activeDropdowns[i];
-                    if(!element.parent.contains(e.target))
-                        toggleDropdown(element.parent,element.element,false);
-                }
-            },false);
-
-            function toggleDropdown(parent,element,toggled)
-            {
-                element.setAttribute("data-toggled",toggled);
-                if(toggled)
-                {
-                    element.style.display = "flex";
-                    activeDropdowns.push({parent:parent,element:element});
-                }
-                else
-                {
-                    element.style.display = "none";
-                    activeDropdowns.splice(activeDropdowns.indexOf(element),1);
-                }
-            }
-
-
-            function dropdownClickHandler(object,method)
-            {
-                dropdowns[object.getAttribute("data-dropdowncontent")] = method;
-            }
-
-
             //###RELOAD####
             reload.addEventListener("click",()=>
             {
