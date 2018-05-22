@@ -122,7 +122,7 @@
                             <h5 data-beforeContent="Color palette" class="name before"><%= palettes.active.name %></h5>
                             <div class="colorPlatteHolder">
                                 <div class="colorPallete" style="background:<%= palettes.active.mainColor %>"></div>
-                                <div class="colorPallete" style="background:<%= palettes.active.lightFontColor %>"></div>
+                                <div class="colorPallete" style="background:<%= palettes.active.fontColorLight %>"></div>
                                 <div class="colorPallete" style="background:<%= palettes.active.fillColor %>"></div>
                                 <div class="colorPallete" style="background:<%= palettes.active.secondaryMainColor %>"></div>
                                 <div class="colorPallete" style="background:<%= palettes.active.fontColorDark %>"></div> 
@@ -142,7 +142,7 @@
                     <li data-select="<%= palettes.all[i].name %>"><%= palettes.all[i].name %>
                         <div class="allPalettes">
                             <div style="background:<%= palettes.all[i].mainColor %>"></div>
-                            <div style="background:<%= palettes.all[i].lightFontColor %>"></div>
+                            <div style="background:<%= palettes.all[i].fontColorLight %>"></div>
                             <div style="background:<%= palettes.all[i].fillColor %>"></div>
                             <div style="background:<%= palettes.all[i].secondaryMainColor %>"></div>
                             <div style="background:<%= palettes.all[i].fontColorDark %>"></div> 
@@ -167,7 +167,7 @@
                 "<%= palettes.all[i].name %>":
                 {
                  mainColor:"<%= palettes.all[i].mainColor %>",
-                 fontColorLight:"<%= palettes.all[i].lightFontColor %>",
+                 fontColorLight:"<%= palettes.all[i].fontColorLight %>",
                  fillColor:"<%= palettes.all[i].fillColor %>",
                  secondaryMainColor:"<%= palettes.all[i].secondaryMainColor %>",
                  fontColorDark:"<%= palettes.all[i].fontColorDark %>"

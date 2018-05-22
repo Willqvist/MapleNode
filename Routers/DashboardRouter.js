@@ -40,7 +40,7 @@ router.post("/palette/update",(req,res)=>
     mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_palettes SET active='0' WHERE active='1'`,(err,result)=>
     {
         if(err) throw err;
-        mysql.connection.query(`REPLACE INTO ${constants.getConstant("prefix")}_palettes SET name='${name}', mainColor='${palette.maiColor}', secondaryMainColor='${palette.secondaryMainColor}',fontColorDark='${palette.fontColorDark}',lightFontColor='${palette.fontColorLight}',fillColor='${palette.fillColor},active='1' WHERE name='${name}'`,(err,result)=>
+        mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_palettes (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES ('${name}','${palette.maiColor}','${palette.secondaryMainColor}','${palette.fontColorDark}','${palette.fontColorLight}','${palette.fillColor},1)`,(err,result)=>
         {
             if(err) throw err;
             return res.send(JSON.stringify({success:true}));

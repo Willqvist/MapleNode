@@ -119,19 +119,18 @@ class InstallationHandler
                     if(err) throw err;
                     mysql.connection.query(`CREATE TABLE ${userData.prefix}_palettes
                     (
-                        ID int NOT NULL AUTO_INCREMENT,
                         name varchar(255),
                         mainColor varchar(20),
                         secondaryMainColor varchar(20),
-                        lightFontColor varchar(20),
+                        fontColorLight varchar(20),
                         fontColorDark varchar(20),
                         fillColor varchar(20),
                         active int(1),
-                        PRIMARY KEY(ID)  
+                        PRIMARY KEY(name)  
                     )`,(err,result)=>
                     {
                         if(err) throw err;
-                        mysql.connection.query(`INSERT INTO ${userData.prefix}_palettes (name, mainColor,secondaryMainColor, lightFontColor, fontColorDark, fillColor,active) VALUES('Happy Green','#69DC9E','#3E78B2','#D3F3EE','#20063B','#CC3363','1')`,(err,result)=>
+                        mysql.connection.query(`INSERT INTO ${userData.prefix}_palettes (name, mainColor,secondaryMainColor, fontColorLight, fontColorDark, fillColor,active) VALUES('Happy Green','#69DC9E','#3E78B2','#D3F3EE','#20063B','#CC3363','1')`,(err,result)=>
                         {
                             if(err) throw err;
                             callback(err,result);
