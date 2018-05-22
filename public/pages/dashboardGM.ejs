@@ -7,7 +7,7 @@
     {
         --mainColor:<%= palettes.active.mainColor %>;
         --secondaryMainColor:<%= palettes.active.secondaryMainColor %>;
-        --fontColorLight:<%= palettes.active.lightFontColor %>;
+        --fontColorLight:<%= palettes.active.fontColorLight %>;
         --fontColorDark:<%= palettes.active.fontColorDark %>;
         --fillColor:<%= palettes.active.fillColor %>;
     }
@@ -85,6 +85,7 @@
                     <div class="pageHeader">
                         <h4>Voting</h4>
                         <div class="save btn"><span>save</span></div>
+                        <div class="add btn"><span>add</span></div>
                     </div>
                     <div class="voteSiteHolder">
                         <% for(let i = 0; i < votes.length; i++)
@@ -121,11 +122,11 @@
                             </div>
                             <h5 data-beforeContent="Color palette" class="name before"><%= palettes.active.name %></h5>
                             <div class="colorPlatteHolder">
-                                <div class="colorPallete" style="background:<%= palettes.active.mainColor %>"></div>
-                                <div class="colorPallete" style="background:<%= palettes.active.fontColorLight %>"></div>
-                                <div class="colorPallete" style="background:<%= palettes.active.fillColor %>"></div>
-                                <div class="colorPallete" style="background:<%= palettes.active.secondaryMainColor %>"></div>
-                                <div class="colorPallete" style="background:<%= palettes.active.fontColorDark %>"></div> 
+                                <div class="colorPallete MainColor"></div>
+                                <div class="colorPallete SecondaryMainColor"></div>
+                                <div class="colorPallete FontColorLight"></div>
+                                <div class="colorPallete FontColorDark"></div>
+                                <div class="colorPallete FillColor"></div> 
                             </div>                                                                                   
                         </div>
                     </div>
@@ -188,6 +189,7 @@
                 dashboard:{id:"dashboard",isSaved:true,page:dashboard,method:onDashboardLoad},
             }
             setSaveButton(pages.vote,pages.vote.page.getElementsByClassName("save")[0]);
+            setSaveButton(pages.design,pages.design.page.getElementsByClassName("save")[0]);
             //setCancelSaveButton(pages.vote,document.getElementById("gtop.com"));
             
             loadPage(pages.dashboard);
@@ -232,25 +234,32 @@
                 form.onSubmit((data)=>
                 {
                     console.log(data.settings);
+                    page.design = {name:data.settings.paletteName,colors:data.settings.palette};
                     document.body.style.setProperty("--mainColor",data.settings.palette.mainColor);
                     document.body.style.setProperty("--secondaryMainColor",data.settings.palette.secondaryMainColor);
                     document.body.style.setProperty("--fontColorLight",data.settings.palette.fontColorLight);
                     document.body.style.setProperty("--fontColorDark",data.settings.palette.fontColorDark);
                     document.body.style.setProperty("--fillColor",data.settings.palette.fillColor);
-                    let url = new Url("dashboard/palette/update",{name:data.settings.paletteName,palette:data.settings.palette});
+                    setUnsaved(page);
                     form.hide();
+                });
+                page.onSave = function(page)
+                { 
+                    if(page.isSaved) return;
+                    console.log(page.design);
+                    let url = new Url("dashboard/palette/update",{name:page.design.name,palette:page.design.colors});
                     HttpHandler.postData(url,(response)=>
                     {
                         console.log(response);
+                        setSaved(page);
                     });
-                });
+                }
             }
             function onVoteLoad(page)
             {
                 //VOTE SCRIPT
                 let form = new FormPopup("changeVote");
-                let site1 = document.getElementById("gtop");
-                let site2 = document.getElementById("top100");
+                let add = page.page.getElementsByClassName("add")[0];
                 if(!isUnsaved(page)){
                     let sites = {
                         <% for(let i = 0; i < votes.length; i++)
@@ -319,6 +328,21 @@
                         }).bind(page));
                     }
                 }
+                //add vote site
+                console.log("FORM",form);
+                let addNewVoteForm = form.copy("newForm");
+                addNewVoteForm.setCloseable();
+                addNewVoteForm.appendDom();
+                addNewVoteForm.onSubmit((data)=>
+                {
+                    console.log("wew");
+                });
+                addNewVoteForm.addButton({type:"submit",value:"Apply"}); 
+                add.addEventListener("click",function()
+                {
+                    addNewVoteForm.show();
+                },false);
+
             }
             //PAGE HANDLER
             function setSaveButton(page,button)

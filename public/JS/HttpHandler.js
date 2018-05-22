@@ -283,6 +283,15 @@ class FormPopup
         this.isAppended = false;
         this.active = false;
     }
+    copy(id)
+    {
+        let form = new FormPopup(id);
+        form.fields = this.fields;
+        form.settings = this.settings;
+        form.form = this.form;
+        form.submit = this.submit;
+        return form;
+    }
     setCloseable()
     {
         let div = document.createElement("div");
@@ -367,10 +376,12 @@ class FormPopup
         let button = document.createElement("input");
         button.setAttribute("type","button");
         button.value = value;
-        this.form.appendChild(button);
+        if(!this.submit && type=="submit")
+            this.form.appendChild(button);
         if(type=="submit")
         {
             let self = this;
+            this.submit = button;
             button.addEventListener("click",(()=>
             {
                 self.callback({settings:this.settings,fields:self.getFields()});

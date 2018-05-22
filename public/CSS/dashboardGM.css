@@ -68,7 +68,8 @@ body
     font-weight:700;
     margin-top:5em;
     margin-bottom:0.2em;
-    color:#5C4970;
+    color:var(--fontColorLight);
+    opacity:0.25;
 }
 .subTitle span
 {
@@ -202,7 +203,7 @@ body
 {
     background:var(--secondaryMainColor);
 }
-.LightFontColor
+.FontColorLight
 {
     background:var(--fontColorLight);
 }
@@ -212,7 +213,7 @@ body
 }
 .FillColor
 {
-    background:var(--FillColor);
+    background:var(--fillColor);
 }
 /* POPUP */
 
@@ -304,10 +305,15 @@ body
     align-items: center;
     font-size:0.8em;
 }
-.save{
+.save,.add{
     margin-left:2em;
     height:4em !important;
     background:#c4c4c4;
+}
+.add
+{
+    margin-left:0;
+    background:var(--secondaryMainColor);
 }
 .colorPaletteChoose
 {
