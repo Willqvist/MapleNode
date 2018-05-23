@@ -22,7 +22,7 @@ router.post("/votes/update",(req,res)=>
     async.forEachOf(req.body.newValue,(page,key,callback)=>
         {
             let name = req.body.originalValue[key].name;
-            mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_Vote SET nx='${page.nx}', name='${page.name}', url='${page.url}', time='${page.time}' WHERE name='${name}'`,(err,result)=>
+            mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_Vote (nx,name,url,time) VALUES ('${page.nx}','${page.name}','${page.url}','${page.time}') ON DUPLICATE KEY UPDATE nx='${page.nx}', name='${page.name}', url='${page.url}', time='${page.time}'`,(err,result)=>
             {
                return callback(err);
             });

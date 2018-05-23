@@ -287,9 +287,12 @@ class FormPopup
     {
         let form = new FormPopup(id);
         form.fields = this.fields;
+        form.inputs = this.inputs;
         form.settings = this.settings;
-        form.form = this.form;
+        let clonedForm = this.form.cloneNode(true);
         form.submit = this.submit;
+        form.inputs = clonedForm.getElementsByTagName("input");
+        form.form = clonedForm;
         return form;
     }
     setCloseable()
@@ -371,20 +374,33 @@ class FormPopup
     {
         this.form.appendChild(element);
     }
+    removeElementWithAttribute(attr,value)
+    {
+        let children = this.form.childNodes;
+        for(let i = 0; i < children.length; i++)
+        {
+            if(children[i].getAttribute(attr) || children[i].getAttribute(attr) === value){
+                this.form.removeChild(children[i]);
+                return;
+            }
+        }
+    }
     addButton({type="submit",value="Save"})
     {
         let button = document.createElement("input");
         button.setAttribute("type","button");
         button.value = value;
-        if(!this.submit && type=="submit")
-            this.form.appendChild(button);
+        if(this.submit)
+            this.removeElementWithAttribute("data-submit");
+        this.form.appendChild(button);
         if(type=="submit")
         {
             let self = this;
             this.submit = button;
+            button.setAttribute("data-submit",true); 
             button.addEventListener("click",(()=>
             {
-                self.callback({settings:this.settings,fields:self.getFields()});
+                self.callback({settings:self.settings,fields:self.getFields()});
             }).bind(self),false);
         }
     }

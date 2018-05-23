@@ -273,8 +273,9 @@
                     page.newValues = sites;
                 }
                 let sites = page.newValues;
-                getEditButtonsClick(page,(self)=>
+                let loadBtns = function(self)
                 {
+                    console.log(form);
                     if(!form.isActive()){
                         let site = self.parentNode.getAttribute("data-site");
                         form.setSetting({name:"site",value:site});
@@ -284,7 +285,8 @@
                         form.setValue({id:"url",value:sites[site].url});
                         form.show();
                     }
-                },true);
+                };
+                getEditButtonsClick(page,loadBtns,true);
                 form.addInput({id:"name"});
                 form.addInput({id:"nx"});
                 form.addInput({id:"time"});
@@ -307,7 +309,6 @@
                     site.element.getElementsByClassName("name")[0].innerHTML = data.fields.name;
                     site.element.getElementsByClassName("url")[0].innerHTML = data.fields.url;
                     form.hide();
-                    console.log(page);
                 });
                 page.onCancelSave = function(page)
                 {
@@ -329,18 +330,36 @@
                     }
                 }
                 //add vote site
-                console.log("FORM",form);
+
+                let voteSiteElement = new DOMCompiler("<div class=\"voteSite\" data-site=\"{{name}}\" id=\"{{name}}\"><div class=\"edit\"><svg id=\"icon-pencil2\" viewBox=\"0 0 24 24\"><title>pencil2</title><path d=\"M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z\"></path></svg></div><h5 class=\"name\">{{name}}</h5><h6 data-beforeContent=\"Nx per vote\" class=\"nx before\">{{nx}}</h6><h6 data-beforeContent=\"Vote interval\" class=\"time before\">{{time}}</h6><h6 data-beforeContent=\"Full url\" class=\"url before\">{{url}}</h6></div>");
+                let voteSiteHolder = document.getElementsByClassName("voteSiteHolder")[0];
                 let addNewVoteForm = form.copy("newForm");
                 addNewVoteForm.setCloseable();
                 addNewVoteForm.appendDom();
                 addNewVoteForm.onSubmit((data)=>
                 {
-                    console.log("wew");
+                    console.log("wew",data);
+                    voteSiteElement.setVariable({variable:"name",data:data.fields.name});
+                    voteSiteElement.setVariable({variable:"nx",data:data.fields.nx});
+                    voteSiteElement.setVariable({variable:"time",data:data.fields.time});
+                    voteSiteElement.setVariable({variable:"url",data:data.fields.url});
+                    let element = voteSiteElement.compileDOM();
+                    voteSiteHolder.appendChild(element);
+                    console.log(element);
+                    let site = {element:element,name:data.fields.name,nx:data.fields.nx,time:data.fields.time,url:data.fields.url};
+                    sites[data.fields.name] = site;
+                    page.originalValues[data.fields.name] = site;
+                    getEditButtonsClick(page,loadBtns,false);
+                    addNewVoteForm.hide();
+                    form.hide();
+                    setUnsaved(page);
                 });
                 addNewVoteForm.addButton({type:"submit",value:"Apply"}); 
                 add.addEventListener("click",function()
                 {
-                    addNewVoteForm.show();
+                    if(!form.isActive()){
+                        addNewVoteForm.show();
+                    }
                 },false);
 
             }
@@ -392,7 +411,8 @@
                     pageVisible.page.style.display="none";
                 page.page.style.display="block";
                 pageVisible = page;
-                page.method(page);
+                if(!page.hasLoaded)
+                    page.method(page);
                 page.hasLoaded = true;
             }
 

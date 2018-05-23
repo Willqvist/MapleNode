@@ -105,7 +105,7 @@ class InstallationHandler
                         nx int(20),
                         time varchar(255),
                         url varchar(255),
-                        PRIMARY KEY(ID)  
+                        PRIMARY KEY(name)  
                     )`,(err,result)=>
                     {
                         if(err) throw err;
