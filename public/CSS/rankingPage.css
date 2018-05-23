@@ -40,7 +40,7 @@ ul.blockHeader li
 {
     font-size:1.2em;
     margin:auto 0;
-    color:#2a223c;
+    color:var(--fontColorDark);
     font-weight:400;
     font-family: 'Montserrat', sans-serif;
 }
@@ -129,7 +129,7 @@ ul.blockHeader li
     position: relative;
     padding-top:2em;
     font-family: 'Montserrat', sans-serif;
-    color:#2a223c;  
+    color:var(--fontColorDark);  
 }
 .tab{
     font-size:0.7em;
@@ -154,10 +154,10 @@ ul.blockHeader li
 {
     width:4.5em;
     height:4.5em;
-    background:#3e78b2;
+    background:var(--secondaryMainColor);
     position: relative;
-    fill:#FFF;
-    box-shadow:inset 0px -0em 0 #3e78b2;
+    fill:var(--fontColorLight);
+    box-shadow:inset 0px -0em 0 var(--secondaryMainColor);
     transition: ease 0.2s;
     border-radius: 0.4em;
     border-bottom-right-radius: 0.4em;
@@ -165,7 +165,7 @@ ul.blockHeader li
 }
 #reloadSearch
 {
-    background:#3e78b2;
+    background:var(--secondaryMainColor);
     margin-right:1em;
     cursor:pointer;
     box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
@@ -205,7 +205,7 @@ ul.blockHeader li
     box-sizing: border-box;
     border:none;
     outline:none;
-    box-shadow:inset 0px -0.2em 0 transparent,inset 0px 0em 0 0.2em #3e78b2,0px 0.2em 1em rgba(32,6,59,0.1);;
+    box-shadow:inset 0px -0.2em 0 transparent,inset 0px 0em 0 0.2em var(--secondaryMainColor),0px 0.2em 1em rgba(32,6,59,0.1);
     transition:ease 0.2s;
     font-family: 'Montserrat', sans-serif;
     margin-bottom:2.2em;
@@ -217,7 +217,7 @@ ul.blockHeader li
 }
 #settings form input:focus
 {
-    box-shadow:inset 0px 0em 0 0em transparent,inset 0px 0em 0 0.2em #3e78b2;
+    box-shadow:inset 0px 0em 0 0em transparent,inset 0px 0em 0 0.2em var(--secondaryMainColor);
 }
 #settingsBtns
 {
@@ -245,7 +245,7 @@ ul.blockHeader li
 {
     margin:auto;
     font-size:1.5em;
-    color:#2a223c;  
+    color:var(--fontColorDark);  
 }
 .noSelect
 {

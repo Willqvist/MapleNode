@@ -8,12 +8,7 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const constants = require("./Tools/Constants");
-//routers
-const SetupRouter = require("./Routers/setupRouter");
-const GlobalRouter = require("./Routers/GlobalRouter");
-const IORouter = require("./Routers/IORouter");
-const PagesRouter = require("./Routers/PagesRouter");
-const DashboardRouter = require("./Routers/DashboardRouter");
+
 //setup
 let app = express();
 app.listen(8081);
@@ -22,7 +17,14 @@ app.set("views",__dirname+"/public");
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(helmet()); 
-require("./setup")(setupListeners);
+require("./setup")(setupListeners,setupComplete);
+
+//routers
+const SetupRouter = require("./Routers/setupRouter");
+const GlobalRouter = require("./Routers/GlobalRouter");
+const IORouter = require("./Routers/IORouter");
+const PagesRouter = require("./Routers/PagesRouter");
+const DashboardRouter = require("./Routers/DashboardRouter")(app);
 //listeners
 function setupListeners(){
     app.use(session(
@@ -41,6 +43,10 @@ function setupListeners(){
     app.use("/IO/",IORouter);
     app.use((req, res, next)=>res.status(404).render('error/404'));
     //app.use((err, req, res, next)=>res.status(500).send('Something went wrong!'));
+}
+function setupComplete()
+{
+    app.locals.palette = constants.getConstant("palette");
 }
 process.stdin.on('data', function (text) {
     if (text.trim() === 'exit' || text.trim() === '!e') {

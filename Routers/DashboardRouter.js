@@ -6,6 +6,7 @@ const InstallHandler = require("../Tools/InstallationHandler");
 const constants = require("../Tools/Constants");
 const Rules = require("../Tools/Rules");
 const async = require("async");
+let app;
 router.get("/",(req,res)=>
 { 
     if(!isLoggedIn(req)) return res.render("pages/login");
@@ -45,6 +46,7 @@ router.post("/palette/update",(req,res)=>
         `,(err,result)=>
         {
             if(err) throw err;
+            app.locals.palette = palette;
             return res.send(JSON.stringify({success:true}));
         });
     });
@@ -86,4 +88,8 @@ function renderDashboard(req,res)
 {
     res.render("pages/dashboardUser");
 }
-module.exports = router;
+module.exports = function(applet)
+{
+    app = applet;
+    return router;
+};

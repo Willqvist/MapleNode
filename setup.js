@@ -3,7 +3,7 @@ const mysql = require("./Tools/mysql.js").getMysql();
 const constants = require("./Tools/Constants");
 const Rules = require("./Tools/Rules");
 
-function setup(setupListeners){
+function setup(setupListeners,setupComplete){
     console.log("╔═════════════════════════════╗");
     console.log("║ launching...                ║");
     mysql.instantiate((err)=>
@@ -33,7 +33,13 @@ function setup(setupListeners){
                         let stringLen = 18 - results[0].serverName.length;
                         let a = " ".repeat(stringLen);
                         constants.setConstant("settings",results[0]);
-                        console.log(`║ \x1b[32m-setup complete \x1b[37m            ║\r\n║ ${results[0].serverName} is Online${a}║ \r\n╚═════════════════════════════╝ `,"\x1b[0m");
+                        mysql.connection.query(`SELECT * FROM ${data.prefix}_palettes WHERE active='1'`,(err,result)=>
+                        {
+                            if(err) throw err;
+                            constants.setConstant("palette",result[0]);
+                            setupComplete();
+                            console.log(`║ \x1b[32m-setup complete \x1b[37m            ║\r\n║ ${results[0].serverName} is Online${a}║ \r\n╚═════════════════════════════╝ `,"\x1b[0m");
+                        });
                     });
                 }
                 else{
