@@ -172,7 +172,6 @@ body
     height:1.5em;
     border-radius:50%;
     fill:var(--secondaryMainColor);
-    stroke:var(--secondaryMainColor);
     padding:0.5em;
     transition:background ease 0.2s,fill ease 0.2s;
     cursor:pointer;
@@ -192,7 +191,6 @@ body
 {
     background:var(--secondaryMainColor);
     fill:#FFF;
-    stroke:#FFF;
 }
 .colorPlatteHolder
 {
