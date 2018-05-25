@@ -163,7 +163,21 @@ body
     transition:background ease 0.2s,fill ease 0.2s;
     cursor:pointer;
 }
-.voteSite .edit svg
+.voteSite .close
+{
+    position: absolute;
+    left:1em;
+    top:1em;
+    width:1.5em;
+    height:1.5em;
+    border-radius:50%;
+    fill:var(--secondaryMainColor);
+    stroke:var(--secondaryMainColor);
+    padding:0.5em;
+    transition:background ease 0.2s,fill ease 0.2s;
+    cursor:pointer;
+}
+.voteSite .edit svg,.voteSite .close svg
 {
     width:100%;
     height:100%;
@@ -174,10 +188,11 @@ body
 {
     display:flex;
 }
-.voteSite .edit:hover
+.voteSite .edit:hover,.voteSite .close:hover
 {
     background:var(--secondaryMainColor);
     fill:#FFF;
+    stroke:#FFF;
 }
 .colorPlatteHolder
 {
@@ -219,14 +234,14 @@ body
 
 .popupForm
 {
-    position: fixed;
+    position: absolute;
     left:0;
     right:0;
     top:0;
     bottom:0;
     margin:auto;
-    width:30em;
-    height:35em;
+    width:100%;
+    height:30em;
     flex-direction: column;
     justify-content:center;
     align-items: center;
@@ -237,7 +252,7 @@ body
 }
 .popupForm input
 {
-    width:20em;
+    width:25em;
     padding:0.8em;
     font-size:1em;
     outline:none;
@@ -247,7 +262,7 @@ body
 }
 .popupForm label
 {
-    width:21em;
+    width:26em;
     margin-top:1.2em;
     margin-bottom:0.5em;
 }
@@ -305,12 +320,12 @@ body
     align-items: center;
     font-size:0.8em;
 }
-.save,.add{
+.save,.headerBtnAdd{
     margin-left:2em;
     height:4em !important;
     background:#c4c4c4;
 }
-.add
+.headerBtnAdd
 {
     margin-left:0;
     background:var(--secondaryMainColor);

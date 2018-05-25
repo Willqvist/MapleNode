@@ -21,15 +21,34 @@ router.post("/votes/update",(req,res)=>
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
     async.forEachOf(req.body.newValue,(page,key,callback)=>
         {
+            if(!req.body.originalValue[key]) return callback();
             let name = req.body.originalValue[key].name;
             mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_Vote (nx,name,url,time) VALUES ('${page.nx}','${page.name}','${page.url}','${page.time}') ON DUPLICATE KEY UPDATE nx='${page.nx}', name='${page.name}', url='${page.url}', time='${page.time}'`,(err,result)=>
             {
-               return callback(err);
+                return callback(err);
             });
         },(err)=>
         {
             if(err) throw err;
-            res.send(JSON.stringify({success:true}));
+            if(req.body.remove)
+            {
+                async.forEachOf(req.body.remove,(page,key,callback)=>
+                {
+                    console.log(req.body.remove,key);
+                    mysql.connection.query(`DELETE FROM ${constants.getConstant("prefix")}_Vote WHERE name='${req.body.remove[key]}'`,(err,result)=>
+                    {
+                        callback(err);
+                    })
+                },(err)=>
+                {
+                    if(err) throw err;
+                    res.send(JSON.stringify({success:true})); 
+                });
+            }
+            else
+            {
+                res.send(JSON.stringify({success:true}));
+            }
         });
 });
 router.post("/palette/update",(req,res)=>

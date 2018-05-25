@@ -85,7 +85,7 @@
                     <div class="pageHeader">
                         <h4>Voting</h4>
                         <div class="save btn"><span>save</span></div>
-                        <div class="add btn"><span>add</span></div>
+                        <div class="headerBtnAdd add btn"><span>add</span></div>
                     </div>
                     <div class="voteSiteHolder">
                         <% for(let i = 0; i < votes.length; i++)
@@ -97,6 +97,14 @@
                                 <svg id="icon-pencil2" viewBox="0 0 24 24">
                                     <title>pencil2</title>
                                     <path d="M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z"></path>
+                                </svg>
+                            </div>
+                            <div class="close">
+                                <svg id="icon-pencil2" viewBox="0 0 24 24">
+                                    <title>close</title>
+                                    <path d="M21 5h-4v-1c0-1.7-1.3-3-3-3h-4c-1.7 0-3 1.3-3 3v1h-4c-0.6 0-1 0.4-1 1s0.4 1 1 1h1v13c0 1.7 1.3 3 3 3h10c1.7 0 3-1.3 3-3v-13h1c0.6 0 1-0.4 1-1s-0.4-1-1-1zM9 4c0-0.6 0.4-1 1-1h4c0.6 0 1 0.4 1 1v1h-6v-1zM18 20c0 0.6-0.4 1-1 1h-10c-0.6 0-1-0.4-1-1v-13h12v13z"></path>
+                                    <path d="M10 10c-0.6 0-1 0.4-1 1v6c0 0.6 0.4 1 1 1s1-0.4 1-1v-6c0-0.6-0.4-1-1-1z"></path>
+                                    <path d="M14 10c-0.6 0-1 0.4-1 1v6c0 0.6 0.4 1 1 1s1-0.4 1-1v-6c0-0.6-0.4-1-1-1z"></path>
                                 </svg>
                             </div>
                             <h5 class="name"><%= vote.name %></h5>
@@ -111,6 +119,14 @@
                     <div class="pageHeader">
                         <h4>Design</h4>
                         <div class="save btn"><span>save</span></div>
+                        <div class="dropdownBtn btn noSelect" id="addDesignDropdown" data-dropdowncontent="addDesign">
+                            <span>▾ Add Option</span>
+                            <ul id="addDesign" class="noSelect dropdownContent">
+                                <li data-select="Palette" class="add">Palette</li>
+                                <li data-select="Font" class="add">Font</li>
+                                <li data-select="Header Image" class="add">Header Image</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="voteSiteHolder">
                         <div class="voteSite" id="palette">
@@ -182,7 +198,7 @@
             let design = document.getElementById("design");
             let pages =
             {
-                vote:{id:"vote",isSaved:true,page:vote,method:onVoteLoad},
+                vote:{id:"vote",isSaved:true,page:vote,method:onVoteLoad,remove:{}},
                 design:{id:"design",isSaved:true,page:design,method:onDesignLoad},
                 //design:{id:"design",isSaved:true,page:vote,method:onVoteLoad},
                 //layout:{id:"layout",isSaved:true,page:vote,method:onVoteLoad},
@@ -210,8 +226,23 @@
                     }
                 }
             }
+            function getRemoveButtonsClick(page,callback,shouldPageBeLoaded = true)
+            {
+                if(!page.hasLoaded || !shouldPageBeLoaded)
+                {
+                    let close = page.page.getElementsByClassName("close");
+                    for(let i = 0; i < close.length; i++)
+                    {
+                        close[i].addEventListener("click",function()
+                        {
+                            callback(this);
+                        },false);
+                    }
+                }  
+            }
             function onDesignLoad(page)
             {
+                let adds = page.page.getElementsByClassName("add");
                 let dropdownTemplate = new DOMCompiler("<div class=\"dropdownBtn btn noSelect\" id=\"dropdown\" data-dropdownContent=\"searchRankingSettings\"><span>&dtrif; Happy Green</span><ul id=\"searchRankingSettings\" class=\"noSelect dropdownContent\"><li data-select=\"Happy Green\">HG</li><li data-select=\"Deep Blue\">DB</li></ul></div>").compileDOM();
                 dropdownTemplate = document.getElementById("dropdown");
                 console.log("template",dropdownTemplate);
@@ -220,6 +251,11 @@
                 dropdownClickHandler(dropdownTemplate,(self,attribute,target)=>
                 {
                     self.childNodes[1].innerHTML = "&dtrif; "+attribute;
+                    form.setSetting({name:"paletteName",value:attribute});
+                    form.setSetting({name:"palette",value:palettes[attribute]})
+                });
+                dropdownClickHandler(document.getElementById("addDesignDropdown"),(self,attribute,target)=>
+                {
                     form.setSetting({name:"paletteName",value:attribute});
                     form.setSetting({name:"palette",value:palettes[attribute]})
                 });
@@ -254,12 +290,32 @@
                         setSaved(page);
                     });
                 }
+                adds[0].addEventListener("click",()=>
+                {
+                    let form = new FormPopup("addPaletteForm");
+                    form.addInput({id:"name"});
+                    form.addInput({id:"Main color"});
+                    form.addInput({id:"Secondary main color"});
+                    form.addInput({id:"Font color dark"});
+                    form.addInput({id:"Font color light"});
+                    form.addInput({id:"Fill Color"});
+                    form.setHeight(FormPopup.BIG);
+                    form.appendDom();
+                    form.setCloseable();
+                    form.addButton({type:"submit",value:"Add"});
+                    form.onSubmit((data)=>
+                    {
+                        form.hide();
+                    });
+                    form.show();
+                },false);
             }
             function onVoteLoad(page)
             {
                 //VOTE SCRIPT
                 let form = new FormPopup("changeVote");
                 let add = page.page.getElementsByClassName("add")[0];
+                page.added = {};
                 if(!isUnsaved(page)){
                     let sites = {
                         <% for(let i = 0; i < votes.length; i++)
@@ -286,6 +342,23 @@
                         form.show();
                     }
                 };
+                let loadCloseBtns = function(self)
+                {
+                    console.log(self.parentNode);
+                    self.parentNode.parentNode.removeChild(self.parentNode);
+                    console.log(page.originalValues);
+                    if(page.added[self.parentNode.id])
+                    {
+                        sites[self.parentNode.id] = null;
+                        page.originalValues[self.parentNode.id] = null;
+                        page.added[self.parentNode.id] = null;
+                         return;
+                    }
+                    page.remove[self.parentNode.id] = self.parentNode.id;
+                    console.log(page.remove); 
+                    setUnsaved(page);
+                };
+                getRemoveButtonsClick(page,loadCloseBtns,true);
                 getEditButtonsClick(page,loadBtns,true);
                 form.addInput({id:"name"});
                 form.addInput({id:"nx"});
@@ -317,7 +390,8 @@
                 {
                     if(!page.isSaved)
                     {
-                        let url = new Url("/dashboard/votes/update",{newValue:page.newValues,originalValue:page.originalValues});
+                        console.log(page.remove);
+                        let url = new Url("/dashboard/votes/update",{newValue:page.newValues,originalValue:page.originalValues,remove:page.remove});
                         HttpHandler.postData(url,((data)=>
                         {
                             console.log(data);
@@ -331,7 +405,7 @@
                 }
                 //add vote site
 
-                let voteSiteElement = new DOMCompiler("<div class=\"voteSite\" data-site=\"{{name}}\" id=\"{{name}}\"><div class=\"edit\"><svg id=\"icon-pencil2\" viewBox=\"0 0 24 24\"><title>pencil2</title><path d=\"M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z\"></path></svg></div><h5 class=\"name\">{{name}}</h5><h6 data-beforeContent=\"Nx per vote\" class=\"nx before\">{{nx}}</h6><h6 data-beforeContent=\"Vote interval\" class=\"time before\">{{time}}</h6><h6 data-beforeContent=\"Full url\" class=\"url before\">{{url}}</h6></div>");
+                let voteSiteElement = new DOMCompiler("<div class=\"voteSite\" data-site=\"{{name}}\" id=\"{{name}}\"> <div class=\"close\"> <svg id=\"icon-pencil2\" viewBox=\"0 0 24 24\"> <title>close</title> <path d=\"M21 5h-4v-1c0-1.7-1.3-3-3-3h-4c-1.7 0-3 1.3-3 3v1h-4c-0.6 0-1 0.4-1 1s0.4 1 1 1h1v13c0 1.7 1.3 3 3 3h10c1.7 0 3-1.3 3-3v-13h1c0.6 0 1-0.4 1-1s-0.4-1-1-1zM9 4c0-0.6 0.4-1 1-1h4c0.6 0 1 0.4 1 1v1h-6v-1zM18 20c0 0.6-0.4 1-1 1h-10c-0.6 0-1-0.4-1-1v-13h12v13z\"></path> <path d=\"M10 10c-0.6 0-1 0.4-1 1v6c0 0.6 0.4 1 1 1s1-0.4 1-1v-6c0-0.6-0.4-1-1-1z\"></path> <path d=\"M14 10c-0.6 0-1 0.4-1 1v6c0 0.6 0.4 1 1 1s1-0.4 1-1v-6c0-0.6-0.4-1-1-1z\"></path> </svg> </div><div class=\"edit\"><svg id=\"icon-pencil2\" viewBox=\"0 0 24 24\"><title>pencil2</title><path d=\"M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z\"></path></svg></div><h5 class=\"name\">{{name}}</h5><h6 data-beforeContent=\"Nx per vote\" class=\"nx before\">{{nx}}</h6><h6 data-beforeContent=\"Vote interval\" class=\"time before\">{{time}}</h6><h6 data-beforeContent=\"Full url\" class=\"url before\">{{url}}</h6></div>");
                 let voteSiteHolder = document.getElementsByClassName("voteSiteHolder")[0];
                 let addNewVoteForm = form.copy("newForm");
                 addNewVoteForm.setCloseable();
@@ -349,7 +423,9 @@
                     let site = {element:element,name:data.fields.name,nx:data.fields.nx,time:data.fields.time,url:data.fields.url};
                     sites[data.fields.name] = site;
                     page.originalValues[data.fields.name] = site;
+                    page.added[data.fields.name] = site;
                     getEditButtonsClick(page,loadBtns,false);
+                    getRemoveButtonsClick(page,loadCloseBtns,false);
                     addNewVoteForm.hide();
                     form.hide();
                     setUnsaved(page);

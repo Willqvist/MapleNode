@@ -328,6 +328,10 @@ class FormPopup
         this.form.style.display="none";
         this.active = false;
     }
+    setHeight(height)
+    {
+        this.form.style.height = height;
+    }
     isActive()
     {
         return this.active;
@@ -409,11 +413,6 @@ class FormPopup
         this.callback = callback;
     }
 }
-class InteractiveElement
-{
-    constructor(element)
-    {
-        if(!(element instanceof HTMLElement) || element.getAttribute("data-interactiveElement"))
-            throw "is not a html element";
-    }
-}
+FormPopup.BIG = "45em";
+FormPopup.NORMAL = "30em";
+FormPopup.SMALL = "15em";
