@@ -20,6 +20,7 @@
     <title>Dashboard GM</title>
     </head>
     <body>
+
         <div id="categoryMenu">
             <div class="categoryMenu_item" id="dashboard-title">
                 <h3>Dashboard GM</h3>
@@ -170,6 +171,8 @@
                 %>
             </ul>
         </div>
+        <div class="palettePreview" id="newPalettePreview">
+        </div>
         <script src="../JS/onload.js"></script>
         <script src="../JS/HttpHandler.js"></script>
         <script src="../JS/dropdown.js"></script>
@@ -299,12 +302,17 @@
                     form.addInput({id:"Font color dark"});
                     form.addInput({id:"Font color light"});
                     form.addInput({id:"Fill Color"});
-                    form.setHeight(FormPopup.BIG);
+                    form.addElement(document.getElementById("newPalettePreview"));
                     form.appendDom();
                     form.setCloseable();
                     form.addButton({type:"submit",value:"Add"});
                     form.onSubmit((data)=>
                     {
+                        let url = new Url("dashboard/palette/add",{palette:data.fields});
+                        HttpHandler.postData(url,(data)=>
+                        {
+                            console.log(data);
+                        });
                         form.hide();
                     });
                     form.show();

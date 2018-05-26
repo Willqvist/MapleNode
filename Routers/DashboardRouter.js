@@ -51,6 +51,16 @@ router.post("/votes/update",(req,res)=>
             }
         });
 });
+router.post("/palette/add",(req,res)=>
+{
+    if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
+    let palette = req.body.palette;
+    mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_palettes (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES('${palette["name"]}','${palette["Main color"]}','${palette["Secondary main color"]}','${palette["Font color dark"]}','${palette["Font color light"]}','${palette["Fill Color"]}','0')`,(err,result)=>
+    {
+       if(err) return res.send(JSON.stringify({success:false})); 
+       return res.send(JSON.stringify({success:true}));
+    });
+});
 router.post("/palette/update",(req,res)=>
 {
     console.log("wew");

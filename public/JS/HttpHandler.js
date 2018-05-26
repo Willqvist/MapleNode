@@ -278,10 +278,15 @@ class FormPopup
         this.settings = {};
         this.callback = function(){};
         this.form = document.createElement("form");
+        this.parent = document.createElement("div");
+        this.parent.className += "popupWrapper";
+        this.parent.appendChild(this.form);
         this.form.id = name;
         this.form.className += "popupForm";
         this.isAppended = false;
         this.active = false;
+        this.formSetting = {};
+        this.formSetting.isCloseable = false;
     }
     copy(id)
     {
@@ -289,19 +294,29 @@ class FormPopup
         form.fields = this.fields;
         form.inputs = this.inputs;
         form.settings = this.settings;
+        form.formSetting = this.formSetting;
+        let clonedParent = this.parent.cloneNode(true);
         let clonedForm = this.form.cloneNode(true);
+        clonedParent.innerHTML = "";
+        clonedParent.appendChild(clonedForm);
         form.submit = this.submit;
         form.inputs = clonedForm.getElementsByTagName("input");
         form.form = clonedForm;
+        form.parent = clonedParent;
+        form.form.id = id;
+        console.log("FORM PARENT", form.form == this.form);
         return form;
     }
     setCloseable()
     {
+        if(this.formSetting.isCloseable)
+            this.form.removeChild(this.form.getElementsByClassName("close")[0]);
         let div = document.createElement("div");
         div.className += "close";
         this.form.appendChild(div);
+        this.formSetting.isCloseable = true;
         let form = this;
-        console.log(this);
+        console.log("CLOSABLE!!!!!!!!!!!!!!!!!!!",div, this.form.id);
         div.addEventListener("click",(()=>
         {
             form.hide();
@@ -313,24 +328,26 @@ class FormPopup
     }
     appendDom(element=document.body)
     {
+        console.log("APPENDED PARENT",this.form.id);
         if(!this.isAppended)
-            element.appendChild(this.form);
+            element.appendChild(this.parent);
         this.isAppended = true;
     }
     show()
     {
         if(!this.isAppended) this.appendDom();
-        this.form.style.display="flex";
+        console.log("SHOW",this.form.id);
+        this.parent.style.display="flex";
         this.active = true;
     }
     hide()
     {
-        this.form.style.display="none";
+        this.parent.style.display="none";
         this.active = false;
     }
     setHeight(height)
     {
-        this.form.style.height = height;
+        this.form.style.minHeight = height;
     }
     isActive()
     {
@@ -413,6 +430,7 @@ class FormPopup
         this.callback = callback;
     }
 }
+FormPopup.FULLSCREEN = "100vh";
 FormPopup.BIG = "45em";
 FormPopup.NORMAL = "30em";
 FormPopup.SMALL = "15em";
