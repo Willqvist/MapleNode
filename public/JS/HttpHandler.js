@@ -130,7 +130,6 @@ class BarChart
     getTextPosition(text,x,y)
     {
         let dimensions = this.ctx.measureText(text);
-        console.log(dimensions);
         let position = this.getPosition(x,y);
         if(this.alignment.x == this.directions.RIGHT)
         position.x -= dimensions.width;
@@ -269,22 +268,46 @@ class Loader
         },240);
     }
 }
-class FormPopup
+class AppendableElement
+{
+    constructor()
+    {
+        this.isAppended = false;
+        this.active = false;
+    }
+    appendDom(element=document.body)
+    {
+        if(!this.isAppended)
+            element.appendChild(this.element);
+        this.isAppended = true;
+    }
+    show()
+    {
+        if(!this.isAppended) this.appendDom();
+        this.element.style.display="flex";
+        this.active = true;
+    }
+    hide()
+    {
+        this.element.style.display="none";
+        this.active = false;
+    }
+}
+class FormPopup extends AppendableElement
 {
     constructor(name)
     {
+        super();
         this.fields = {};
         this.inputs = []; 
         this.settings = {};
         this.callback = function(){};
         this.form = document.createElement("form");
-        this.parent = document.createElement("div");
-        this.parent.className += "popupWrapper";
-        this.parent.appendChild(this.form);
+        this.element = document.createElement("div");
+        this.element.className += "popupWrapper";
+        this.element.appendChild(this.form);
         this.form.id = name;
         this.form.className += "popupForm";
-        this.isAppended = false;
-        this.active = false;
         this.formSetting = {};
         this.formSetting.isCloseable = false;
     }
@@ -295,16 +318,15 @@ class FormPopup
         form.inputs = this.inputs;
         form.settings = this.settings;
         form.formSetting = this.formSetting;
-        let clonedParent = this.parent.cloneNode(true);
+        let clonedElement = this.element.cloneNode(true);
         let clonedForm = this.form.cloneNode(true);
-        clonedParent.innerHTML = "";
-        clonedParent.appendChild(clonedForm);
+        clonedElement.innerHTML = "";
+        clonedElement.appendChild(clonedForm);
         form.submit = this.submit;
         form.inputs = clonedForm.getElementsByTagName("input");
         form.form = clonedForm;
-        form.parent = clonedParent;
+        form.element = clonedElement;
         form.form.id = id;
-        console.log("FORM PARENT", form.form == this.form);
         return form;
     }
     setCloseable()
@@ -313,10 +335,10 @@ class FormPopup
             this.form.removeChild(this.form.getElementsByClassName("close")[0]);
         let div = document.createElement("div");
         div.className += "close";
+        div.appendChild(new DOMCompiler("<svg id=\"icon-cancel\" viewBox=\"0 0 32 32\"><title>cancel</title><path d=\"M19.587 16.001l6.096 6.096c0.396 0.396 0.396 1.039 0 1.435l-2.151 2.151c-0.396 0.396-1.038 0.396-1.435 0l-6.097-6.096-6.097 6.096c-0.396 0.396-1.038 0.396-1.434 0l-2.152-2.151c-0.396-0.396-0.396-1.038 0-1.435l6.097-6.096-6.097-6.097c-0.396-0.396-0.396-1.039 0-1.435l2.153-2.151c0.396-0.396 1.038-0.396 1.434 0l6.096 6.097 6.097-6.097c0.396-0.396 1.038-0.396 1.435 0l2.151 2.152c0.396 0.396 0.396 1.038 0 1.435l-6.096 6.096z\"></path></svg>").compileDOM());
         this.form.appendChild(div);
         this.formSetting.isCloseable = true;
         let form = this;
-        console.log("CLOSABLE!!!!!!!!!!!!!!!!!!!",div, this.form.id);
         div.addEventListener("click",(()=>
         {
             form.hide();
@@ -326,25 +348,6 @@ class FormPopup
     {
         this.settings[name] = value;
     }
-    appendDom(element=document.body)
-    {
-        console.log("APPENDED PARENT",this.form.id);
-        if(!this.isAppended)
-            element.appendChild(this.parent);
-        this.isAppended = true;
-    }
-    show()
-    {
-        if(!this.isAppended) this.appendDom();
-        console.log("SHOW",this.form.id);
-        this.parent.style.display="flex";
-        this.active = true;
-    }
-    hide()
-    {
-        this.parent.style.display="none";
-        this.active = false;
-    }
     setHeight(height)
     {
         this.form.style.minHeight = height;
@@ -353,9 +356,16 @@ class FormPopup
     {
         return this.active;
     }
+    addColorElement()
+    {
+        let colorPicker = new ColorPicker();
+        colorPicker.show();
+    }
     addInput({type="text",id=-1,value=""})
     {
         if(id == -1) return;
+        if(type=="color_custom")
+            return this.addColorElement();
         let input = document.createElement("input");
         input.value = value;
         input.id = this.form.id + "_" + id;
@@ -434,3 +444,281 @@ FormPopup.FULLSCREEN = "100vh";
 FormPopup.BIG = "45em";
 FormPopup.NORMAL = "30em";
 FormPopup.SMALL = "15em";
+class ColorPicker extends AppendableElement
+{
+    constructor(hex)
+    {
+        super();
+        this.hexValue = hex;
+        this.color = {r:255,g: 0,b:0};
+        this.thumbPosition = {y:0,normalizedY:0};
+        this.breakPoints = [];
+        this.createElement();
+        this.setListeners();
+        this.setGradient("rgb(255,0,0)");
+        this.addColorBreakPoint({from:{value:0,rgb:{r:255,g:0,b:0}},to:{value:0.1666,rgb:{r:255,g:0,b:255}}});
+        this.addColorBreakPoint({from:{value:0.1666,rgb:{r:255,g:0,b:255}},to:{value:0.3332,rgb:{r:0,g:0,b:255}}});
+        this.addColorBreakPoint({from:{value:0.3332,rgb:{r:0,g:0,b:255}},to:{value:0.4998,rgb:{r:0,g:255,b:255}}});
+        this.addColorBreakPoint({from:{value:0.4998,rgb:{r:0,g:255,b:255}},to:{value:0.6664,rgb:{r:0,g:255,b:0}}});
+        this.addColorBreakPoint({from:{value:0.6664,rgb:{r:0,g:255,b:0}},to:{value:0.8333,rgb:{r:255,g:255,b:0}}});
+        this.addColorBreakPoint({from:{value:0.8333,rgb:{r:255,g:255,b:0}},to:{value:1.0,rgb:{r:255,g:0,b:0}}});
+
+        this.slider.color = {r:255,g: 0,b:0};
+        
+
+    }
+    appendDom()
+    {
+        super.appendDom();
+        if(this.hexValue)
+        {
+            let rgb = this.hexToRgb(this.hexValue);
+            this.calculatePositionsFromRgb(rgb);
+            this.color = rgb;
+            this.printColor();
+        }
+    }
+    addColorBreakPoint(data)
+    {
+        this.breakPoints.push(data);
+    }
+    calculateColorBreakpointValue(position)
+    {
+        let rgb = this.color;
+        for(let i = 0; i < this.breakPoints.length; i++)
+        {
+            let point = this.breakPoints[i];
+            if(this.isBetween(position,point))
+            {
+                let normalize = (position-point.from.value)/(point.to.value-point.from.value);
+                rgb = {r:Math.floor(point.from.rgb.r + normalize*(point.to.rgb.r - point.from.rgb.r)),g:Math.floor(point.from.rgb.g + normalize*(point.to.rgb.g - point.from.rgb.g)),b:Math.floor(point.from.rgb.b + normalize*(point.to.rgb.b - point.from.rgb.b))};
+                break;
+            }
+        }
+        return rgb;
+    }
+    calculatePositionBreakpointValue(color)
+    {
+        for(let i = 0; i < this.breakPoints.length; i++)
+        {
+            let affectedColor = null;
+            let point = this.breakPoints[i];
+            affectedColor = this.isBetweenColor(color,point);
+            if(affectedColor)
+            {
+                let delta = 0;
+                if(point.from.rgb[affectedColor.key] - point.to.rgb[affectedColor.key] < 0)
+                    delta = -(affectedColor.value/255);
+                else
+                    delta = affectedColor.value/255;
+                let position = (point.from.value - delta*(point.to.value-point.from.value)) * this.slider.clientHeight;
+                return position;
+            }
+        }
+    }
+    setThumbPosition(object,position)
+    {
+        object.thumb.style.transform="translate("+ position.x +"px,"+ position.y +"px)";
+    }
+    calculatePositionsFromRgb(rgb)
+    {
+        let minMax = this.getMinMax(rgb.r,rgb.g,rgb.b);
+        this.ranger.thumb.position.y = minMax.max;
+        this.ranger.thumb.position.x = minMax.max;
+        let position = {};
+        let normalizedPosition = {};
+        let thumbHalf = this.ranger.thumb.clientWidth / 2;
+        position.x = ((minMax.max-minMax.min)/minMax.max) * this.ranger.clientWidth - thumbHalf;
+        position.y = ((255-minMax.max) / 255) * this.ranger.clientHeight - thumbHalf;
+
+        normalizedPosition.x = (position.x + thumbHalf) / this.ranger.clientWidth;
+        normalizedPosition.y = (position.y + thumbHalf) / this.ranger.clientHeight;
+
+        let flippedNormalizedPosition = {x:-normalizedPosition.x + 1,y:-normalizedPosition.y + 1};
+        let fnp = flippedNormalizedPosition;
+        let color = {r:0,g:0,b:0};
+
+        color.r = Math.floor((rgb.r - 255*fnp.x*fnp.y)/(-fnp.x*fnp.y + fnp.y)).clamp(0,255);
+        color.g = Math.floor((rgb.g - 255*fnp.x*fnp.y)/(-fnp.x*fnp.y + fnp.y)).clamp(0,255);
+        color.b = Math.floor((rgb.b - 255*fnp.x*fnp.y)/(-fnp.x*fnp.y + fnp.y)).clamp(0,255);
+        if(color.r == 1) color.r = 0;
+        if(color.r == 254) color.r = 255;
+        if(color.g == 1) color.g = 0;
+        if(color.g == 254) color.g = 255;
+        if(color.b == 1) color.b = 0;
+        if(color.b == 254) color.b = 255;
+        let sliderPosition = this.calculatePositionBreakpointValue(color);
+        this.setThumbPosition(this.ranger,position);
+        this.setThumbPosition(this.slider,{x:0,y:sliderPosition-thumbHalf});
+        this.setGradient(this.rgbToString(color));
+        this.slider.color = color;
+        this.ranger.thumb.normalizedPosition = normalizedPosition;
+    }
+    getMinMax(...values)
+    {
+        let max = values[0];
+        let min = values[0];
+        for(let i = 1; i < values.length; i++)
+        {
+            if(values[i] > max)
+                max = values[i];
+            if(values[i] < min)
+                min = values[i]; 
+        }
+        return {min:min,max:max};
+    }
+    calculateColorRangerValue(ranger)
+    {
+        let sliderColor = this.slider.color;
+        let position = {x:ranger.thumb.normalizedPosition.x,y:ranger.thumb.normalizedPosition.y};
+        position.x = (position.x*-1) + 1;
+        position.y = (position.y*-1) + 1;
+        let color = {r:0,g:0,b:0};
+        color.r = (255*position.x + (-position.x + 1)*sliderColor.r)*position.y;
+        color.g = (255*position.x + (-position.x + 1)*sliderColor.g)*position.y;
+        color.b = (255*position.x + (-position.x + 1)*sliderColor.b)*position.y;
+        return {r:Math.floor(color.r),g:Math.floor(color.g),b:Math.floor(color.b)};
+    }
+    rgbToString(rgb)
+    {
+        return "rgb("+rgb.r+","+rgb.g+","+rgb.b+")";
+    }
+    rgbToHex(rgb)
+    {
+        return "#" + this.componentToHex(rgb.r) + this.componentToHex(rgb.g) + this.componentToHex(rgb.b);
+    }
+    hexToRgb(hex)
+    {
+        hex = hex.replace("#","");
+        let color = {};
+        color.r = parseInt(hex.substring(0,2),16);
+        color.g = parseInt(hex.substring(2,4),16);
+        color.b = parseInt(hex.substring(4,6),16);
+        return color;
+    }
+    componentToHex(c) {
+        let hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+    isBetween(value,breakPoint)
+    {
+        return(value >= breakPoint.from.value && value < breakPoint.to.value);
+    }
+    isBetweenColor(color,breakpoint)
+    {
+        if(color.r != 0 && color.r != 255)
+        {
+            if (breakpoint.from.rgb.g == breakpoint.to.rgb.g && breakpoint.from.rgb.b == breakpoint.to.rgb.b && color.b == breakpoint.from.rgb.b && color.g == breakpoint.from.rgb.g)
+                return {value:color.r,key:"r"};
+        }
+        else if(color.g != 0 && color.g != 255)
+        {
+            if (breakpoint.from.rgb.r == breakpoint.to.rgb.r && breakpoint.from.rgb.b == breakpoint.to.rgb.b && color.r == breakpoint.from.rgb.r && color.b == breakpoint.from.rgb.b)
+                return {value:color.g,key:"g"};
+        }
+        else if(color.b != 0 && color.b != 255)
+        {
+            if (breakpoint.from.rgb.g == breakpoint.to.rgb.g && breakpoint.from.rgb.r == breakpoint.to.rgb.r && color.r == breakpoint.from.rgb.r && color.g == breakpoint.from.rgb.g)
+                return {value:color.b,key:"b"};
+        }
+        //if(color.r != 0 ||color.r != 255)
+        //console.log(color.r == breakpoint.from.rgb.r && color.r == breakpoint.to.rgb.r);
+        //console.log(color.g == breakpoint.from.rgb.g && color.g == breakpoint.to.rgb.g);
+        //console.log(color.b == breakpoint.from.rgb.b && color.b == breakpoint.to.rgb.b);
+        return null;
+    }
+    createElement()
+    {
+        let element = new DOMCompiler("<div class=\"colorPicker\"><div class=\"colorRangeWrapper\"><div class=\"colorRangeThumb\"></div><canvas class=\"colorRange\"></canvas></div><div class=\"colorSlider\"><div class=\"colorSliderThumb\"></div></div><div class=\"hexValue\"><span>#FFFFF</span></div></div>").compileDOM();
+        this.element = element;
+        this.ranger = element.getElementsByClassName("colorRange")[0];
+        this.ranger.wrapper = element.getElementsByClassName("colorRangeWrapper")[0];
+        this.ranger.thumb = element.getElementsByClassName("colorRangeThumb")[0];
+        this.ranger.canvas = this.ranger.getContext("2d");
+        this.slider = element.getElementsByClassName("colorSlider")[0];
+        this.slider.thumb = this.slider.getElementsByClassName("colorSliderThumb")[0];
+        this.hex = element.getElementsByClassName("hexValue")[0];
+        this.slider.thumb.position = {y:0};
+        this.slider.thumb.normalizedPosition = {y:0};
+        this.ranger.thumb.position = {x:255,y:255};
+        this.ranger.thumb.normalizedPosition = {x:1,y:1};
+
+        this.slider.move = false;
+        this.ranger.move = false;
+    }
+    setGradient(color)
+    {
+        let grd = this.ranger.canvas.createLinearGradient(0,this.ranger.height,0,0);
+        grd.addColorStop(0,"black");
+        grd.addColorStop(1,"transparent");
+        let grd2 = this.ranger.canvas.createLinearGradient(0,0,this.ranger.width,0);
+        grd2.addColorStop(0,"white");
+        grd2.addColorStop(1,color);
+        this.ranger.canvas.fillStyle=grd2;
+        this.ranger.canvas.fillRect(0,0,this.ranger.width,this.ranger.height);
+        this.ranger.canvas.fillStyle=grd;
+        this.ranger.canvas.fillRect(0,0,this.ranger.width,this.ranger.height);
+    }
+    mouseSliderMove(element,e)
+    {
+        let position = element.getBoundingClientRect();
+        let thumbCenter = this.slider.thumb.clientHeight /2;
+        let yPos = (e.clientY - position.top - thumbCenter).clamp(-thumbCenter,this.slider.clientHeight-thumbCenter);
+        this.slider.thumb.position.y = yPos+thumbCenter;
+        this.slider.thumb.normalizedPosition.y = (yPos+thumbCenter) / this.slider.clientHeight;
+        this.slider.color = this.calculateColorBreakpointValue(this.slider.thumb.normalizedPosition.y);
+        this.color = this.calculateColorRangerValue(this.ranger);
+        this.setGradient(this.rgbToString(this.slider.color));
+        this.setThumbPosition(this.slider,{x:0,y:yPos});
+        this.printColor();
+    }
+    mouseRangerMove(element,e)
+    {
+        let position = element.getBoundingClientRect();
+        let thumbCenterY = this.ranger.thumb.clientHeight / 2;
+        let thumbCenterX = this.ranger.thumb.clientWidth / 2;
+        let yPos = (e.clientY - position.top - thumbCenterY).clamp(-thumbCenterY,this.ranger.clientHeight-thumbCenterY);
+        let xPos = (e.clientX - position.left - thumbCenterX).clamp(-thumbCenterX,this.ranger.clientWidth-thumbCenterX);
+        this.ranger.thumb.position = {x:xPos+thumbCenterX,y:yPos+thumbCenterY};
+        this.ranger.thumb.normalizedPosition = {x:(xPos+thumbCenterX)/this.ranger.clientWidth,y:(yPos+thumbCenterY)/this.ranger.clientHeight};
+        this.color = this.calculateColorRangerValue(this.ranger);
+        this.setThumbPosition(this.ranger,{x:xPos,y:yPos});
+        this.printColor();
+    }
+    printColor(color=this.color)
+    {
+        console.log(color);
+        let hex = this.rgbToHex(color);
+        this.hex.innerHTML = this.rgbToHex(color);
+        this.hex.style.boxShadow = "0px 1px 0px" + hex;
+    }
+    setListeners()
+    {
+        let self = this;
+        document.onmousemove = function(e)
+        {
+            if(self.slider.move)
+                self.mouseSliderMove(self.slider,e);
+            else if(self.ranger.move)
+                self.mouseRangerMove(self.ranger.wrapper,e);
+        }
+        this.slider.addEventListener("mousedown",function(e)
+        {
+            this.move = true;
+        },false);
+
+        this.ranger.wrapper.addEventListener("mousedown",function(e)
+        {
+            self.ranger.move = true;
+        },false);
+        document.addEventListener("mouseup",function()
+        {
+            self.slider.move = false;
+            self.ranger.move = false;
+        });
+    }
+}
+
+Number.prototype.clamp = function(min, max) {
+    return Math.min(Math.max(this, min), max);
+};

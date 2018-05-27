@@ -172,11 +172,19 @@
             </ul>
         </div>
         <div class="palettePreview" id="newPalettePreview">
+        <h4>Title</h4>
+        <div class="popup"><span>This is a popup message</span></div> 
+        <p>Filler bread text here. woah</p>
+        <div class="btn"><span>button</span></div> 
         </div>
         <script src="../JS/onload.js"></script>
         <script src="../JS/HttpHandler.js"></script>
         <script src="../JS/dropdown.js"></script>
         <script>
+        </script>
+        <script>
+            let color = new ColorPicker("#48543c");
+            color.show();
             let pageVisible;
             let palettes = 
             {
@@ -297,7 +305,7 @@
                 {
                     let form = new FormPopup("addPaletteForm");
                     form.addInput({id:"name"});
-                    form.addInput({id:"Main color"});
+                    form.addInput({id:"Main color",type:"color_custom"});
                     form.addInput({id:"Secondary main color"});
                     form.addInput({id:"Font color dark"});
                     form.addInput({id:"Font color light"});
