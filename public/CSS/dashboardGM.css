@@ -486,7 +486,7 @@ body
     width:1.2em;
     background:#FFF;
     height:1.2em;
-    left:-0.15em;
+    left:-0.10em;
     border-radius:50%;
     box-shadow:0px 0px 0px 1px rgba(32,6,59,0.25), 0px 0.2em 0.8em rgba(32,6,59,0.1);
 }
@@ -494,15 +494,16 @@ body
 {
     left:-0.15em;
     top:-0.15em;
+    z-index:9;
 }
 .colorPicker .hexValue
 {
     font-family: 'Montserrat', sans-serif;
     font-weight:400;
     color:var(--fontColorDark);
-    margin-top:2.5em;
+    margin-top:4.5em;
     position: relative;
-    padding-bottom:0.1em;
+    padding-bottom:0.2em;
     box-shadow:0px 2px 0px rgba(32,6,59,0.25);
 }
 .colorPicker .hexValue::before
@@ -512,4 +513,38 @@ body
     top:-1.4em;
     font-size:0.85em;
     opacity:0.66;
+}
+.colorPicker .btnHolder
+{
+    width:100%;
+    display:flex;
+    justify-content: space-between;
+}
+.colorPicker .btnHolder .revert
+{
+    background:var(--fillColor);
+}
+.colorPicker .btn
+{
+    font-size:0.75em;
+    position: relative;
+    flex-basis:45%;
+    margin-top:1.5em
+}
+.colorPicker .btn span
+{
+    font-size:1.5em;
+}
+.color
+{
+    width:50%;
+    background:#FFF;
+    height:2em;
+    position: absolute;
+    bottom:-2em;
+    z-index:0;
+}
+.originalHex
+{
+    left:50%;
 }

@@ -310,6 +310,7 @@ class FormPopup extends AppendableElement
         this.form.className += "popupForm";
         this.formSetting = {};
         this.formSetting.isCloseable = false;
+        this.inputMap = {};
     }
     copy(id)
     {
@@ -317,6 +318,7 @@ class FormPopup extends AppendableElement
         form.fields = this.fields;
         form.inputs = this.inputs;
         form.settings = this.settings;
+        form.inputMap = this.inputMap;
         form.formSetting = this.formSetting;
         let clonedElement = this.element.cloneNode(true);
         let clonedForm = this.form.cloneNode(true);
@@ -356,16 +358,63 @@ class FormPopup extends AppendableElement
     {
         return this.active;
     }
-    addColorElement()
+    addColorElement(input)
     {
-        let colorPicker = new ColorPicker();
-        colorPicker.show();
+        let self = this;
+        if(!this.colorPicker)
+            this.colorPicker = new ColorPicker();
+        input.addEventListener("focus",function()
+        {
+            self.colorPicker.setHex("#FFFFFF");
+            let position = input.getBoundingClientRect();
+            self.colorPicker.move(position.left,position.top + input.clientHeight + 10);
+            if(input.value[0] == '#' && input.value.length >= 2)
+            {
+                if(!self.colorPicker.isAppended) self.colorPicker.appendDom();
+                if(!self.colorPicker.isActive) self.colorPicker.show();
+                self.colorPicker.setHex(input.value.repeatLastCharacter(7).toString());
+            }  
+            self.colorPicker.onSubmit((hex)=>
+            {
+                input.value = hex;
+                self.valueChange(input);
+                self.colorPicker.hide();
+            });
+            input.addEventListener("keyup",function(e)
+            {
+                if(e.key === "Enter")
+                    return self.colorPicker.hide();
+                if(input.value[0] == '#' && input.value.length >= 2)
+                {
+                    if(!self.colorPicker.isActive) self.colorPicker.show();
+                    self.colorPicker.setHex(input.value.repeatLastCharacter(7));
+                }
+                self.valueChange(input);
+            },false);
+            self.colorPicker.onRevert((hex)=>
+            {
+                self.colorPicker.hide();
+            });
+            self.colorPicker.show();
+            });
+            input.addEventListener("focusout",function()
+            {
+                //colorPicker.hide();
+            },false);
+
+    }
+    valueChange(input)
+    {
+        if(input.valueChangeCallback)
+            input.valueChangeCallback(input);
+    }
+    onInputChange(id,callback)
+    {
+        this.inputMap[id].valueChangeCallback = callback;
     }
     addInput({type="text",id=-1,value=""})
     {
         if(id == -1) return;
-        if(type=="color_custom")
-            return this.addColorElement();
         let input = document.createElement("input");
         input.value = value;
         input.id = this.form.id + "_" + id;
@@ -375,8 +424,14 @@ class FormPopup extends AppendableElement
         input.setAttribute("type",type);
         label.innerHTML = id;
         this.inputs.push(input);
+        this.inputMap[id] = input;
         this.form.appendChild(label);
         this.form.appendChild(input);
+
+        if(type=="color_custom")
+        {
+            this.addColorElement(input);
+        }
     }
     getInputByName(name)
     {
@@ -450,8 +505,11 @@ class ColorPicker extends AppendableElement
     {
         super();
         this.hexValue = hex;
+        this.original = "#FFFFFF";
         this.color = {r:255,g: 0,b:0};
         this.thumbPosition = {y:0,normalizedY:0};
+        this.submitCallback;
+        this.revertCallback;
         this.breakPoints = [];
         this.createElement();
         this.setListeners();
@@ -464,8 +522,24 @@ class ColorPicker extends AppendableElement
         this.addColorBreakPoint({from:{value:0.8333,rgb:{r:255,g:255,b:0}},to:{value:1.0,rgb:{r:255,g:0,b:0}}});
 
         this.slider.color = {r:255,g: 0,b:0};
-        
+        this.originalHexElement.style.background = hex;
+        if(hex)
+            this.setHex(hex);
 
+
+    }
+    setHex(hex)
+    {
+        this.original = hex;
+        this.hexValue = this.original;  
+        this.originalHexElement.style.background = hex;
+        if(this.isAppended)
+        {
+            let rgb = this.hexToRgb(this.hexValue);
+            this.calculatePositionsFromRgb(rgb);
+            this.color = rgb;
+            this.printColor();
+        }   
     }
     appendDom()
     {
@@ -477,6 +551,14 @@ class ColorPicker extends AppendableElement
             this.color = rgb;
             this.printColor();
         }
+    }
+    onSubmit(callback)
+    {
+        this.submitCallback = callback;
+    }
+    onRevert(callback)
+    {
+        this.revertCallback = callback;
     }
     addColorBreakPoint(data)
     {
@@ -508,7 +590,7 @@ class ColorPicker extends AppendableElement
             {
                 let delta = 0;
                 if(point.from.rgb[affectedColor.key] - point.to.rgb[affectedColor.key] < 0)
-                    delta = -(affectedColor.value/255);
+                    delta = -(affectedColor.value/255)+1;
                 else
                     delta = affectedColor.value/255;
                 let position = (point.from.value - delta*(point.to.value-point.from.value)) * this.slider.clientHeight;
@@ -520,8 +602,15 @@ class ColorPicker extends AppendableElement
     {
         object.thumb.style.transform="translate("+ position.x +"px,"+ position.y +"px)";
     }
+    move(x,y)
+    {
+        console.log("wew");
+        this.element.style.left = x+"px";
+        this.element.style.top = y+"px";
+    }
     calculatePositionsFromRgb(rgb)
     {
+        console.log("WEW",rgb);
         let minMax = this.getMinMax(rgb.r,rgb.g,rgb.b);
         this.ranger.thumb.position.y = minMax.max;
         this.ranger.thumb.position.x = minMax.max;
@@ -537,7 +626,6 @@ class ColorPicker extends AppendableElement
         let flippedNormalizedPosition = {x:-normalizedPosition.x + 1,y:-normalizedPosition.y + 1};
         let fnp = flippedNormalizedPosition;
         let color = {r:0,g:0,b:0};
-
         color.r = Math.floor((rgb.r - 255*fnp.x*fnp.y)/(-fnp.x*fnp.y + fnp.y)).clamp(0,255);
         color.g = Math.floor((rgb.g - 255*fnp.x*fnp.y)/(-fnp.x*fnp.y + fnp.y)).clamp(0,255);
         color.b = Math.floor((rgb.b - 255*fnp.x*fnp.y)/(-fnp.x*fnp.y + fnp.y)).clamp(0,255);
@@ -550,6 +638,8 @@ class ColorPicker extends AppendableElement
         let sliderPosition = this.calculatePositionBreakpointValue(color);
         this.setThumbPosition(this.ranger,position);
         this.setThumbPosition(this.slider,{x:0,y:sliderPosition-thumbHalf});
+        if(rgb.r == rgb.g && rgb.g == rgb.b)
+            color = {r:255,g:0,b:0};
         this.setGradient(this.rgbToString(color));
         this.slider.color = color;
         this.ranger.thumb.normalizedPosition = normalizedPosition;
@@ -629,7 +719,7 @@ class ColorPicker extends AppendableElement
     }
     createElement()
     {
-        let element = new DOMCompiler("<div class=\"colorPicker\"><div class=\"colorRangeWrapper\"><div class=\"colorRangeThumb\"></div><canvas class=\"colorRange\"></canvas></div><div class=\"colorSlider\"><div class=\"colorSliderThumb\"></div></div><div class=\"hexValue\"><span>#FFFFF</span></div></div>").compileDOM();
+        let element = new DOMCompiler("<div class=\"colorPicker\"><div class=\"colorRangeWrapper\"><div class=\"colorRangeThumb\"></div><canvas class=\"colorRange\"></canvas><div class=\"newHex color\"></div><div class=\"originalHex color\"></div></div><div class=\"colorSlider\"><div class=\"colorSliderThumb\"></div></div><div class=\"hexValue noSelect\"><span>#FFFFF</span></div><div class=\"btnHolder\"><div class=\"btn noSelect btnSubmit\"><span>Apply</span></div><div class=\"btn noSelect revert\"><span>Revert</span></div></div></div>").compileDOM();
         this.element = element;
         this.ranger = element.getElementsByClassName("colorRange")[0];
         this.ranger.wrapper = element.getElementsByClassName("colorRangeWrapper")[0];
@@ -638,13 +728,18 @@ class ColorPicker extends AppendableElement
         this.slider = element.getElementsByClassName("colorSlider")[0];
         this.slider.thumb = this.slider.getElementsByClassName("colorSliderThumb")[0];
         this.hex = element.getElementsByClassName("hexValue")[0];
+        this.originalHexElement = element.getElementsByClassName("originalHex")[0];
+        this.newHexElement = element.getElementsByClassName("newHex")[0];
         this.slider.thumb.position = {y:0};
         this.slider.thumb.normalizedPosition = {y:0};
         this.ranger.thumb.position = {x:255,y:255};
         this.ranger.thumb.normalizedPosition = {x:1,y:1};
-
+        this.submit = element.getElementsByClassName("btnSubmit")[0];
+        this.revert = element.getElementsByClassName("revert")[0];
         this.slider.move = false;
         this.ranger.move = false;
+
+
     }
     setGradient(color)
     {
@@ -687,10 +782,10 @@ class ColorPicker extends AppendableElement
     }
     printColor(color=this.color)
     {
-        console.log(color);
         let hex = this.rgbToHex(color);
         this.hex.innerHTML = this.rgbToHex(color);
         this.hex.style.boxShadow = "0px 1px 0px" + hex;
+        this.newHexElement.style.background = hex;
     }
     setListeners()
     {
@@ -716,9 +811,24 @@ class ColorPicker extends AppendableElement
             self.slider.move = false;
             self.ranger.move = false;
         });
+        this.submit.addEventListener("click",()=>
+        {
+            self.submitCallback(this.rgbToHex(this.color));
+        },false);
+        this.revert.addEventListener("click",()=>
+        {
+            self.revertCallback();
+        },false);
     }
 }
 
 Number.prototype.clamp = function(min, max) {
     return Math.min(Math.max(this, min), max);
 };
+String.prototype.repeatLastCharacter = function(length)
+{
+    let times = length - this.length;
+    if(times <= 0) return this;
+    let string = this + this.slice(-1).repeat(times);
+    return string;
+}

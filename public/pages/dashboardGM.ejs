@@ -183,8 +183,8 @@
         <script>
         </script>
         <script>
-            let color = new ColorPicker("#48543c");
-            color.show();
+            //let color = new ColorPicker("#eb1010");
+            //color.show();
             let pageVisible;
             let palettes = 
             {
@@ -306,14 +306,46 @@
                     let form = new FormPopup("addPaletteForm");
                     form.addInput({id:"name"});
                     form.addInput({id:"Main color",type:"color_custom"});
-                    form.addInput({id:"Secondary main color"});
-                    form.addInput({id:"Font color dark"});
-                    form.addInput({id:"Font color light"});
-                    form.addInput({id:"Fill Color"});
-                    form.addElement(document.getElementById("newPalettePreview"));
+                    form.addInput({id:"Secondary main color",type:"color_custom"});
+                    form.addInput({id:"Font color dark",type:"color_custom"});
+                    form.addInput({id:"Font color light",type:"color_custom"});
+                    form.addInput({id:"Fill Color",type:"color_custom"});
+                    let preview = document.getElementById("newPalettePreview");
+                    form.addElement(preview);
                     form.appendDom();
                     form.setCloseable();
                     form.addButton({type:"submit",value:"Add"});
+                    form.onInputChange("Main color",(input)=>
+                    {
+                        console.log(input.value,"WOAH M8");
+                        preview.getElementsByTagName("h4")[0].style.boxShadow="inset 0 -0.2em 0 "+input.value;
+                        /*
+                        <div class="palettePreview" id="newPalettePreview">
+                        <h4>Title</h4>
+                        <div class="popup"><span>This is a popup message</span></div> 
+                        <p>Filler bread text here. woah</p>
+                        <div class="btn"><span>button</span></div> 
+                        </div>
+                        */
+                    });
+                    form.onInputChange("Font color dark",(input)=>
+                    {
+                        preview.getElementsByTagName("h4")[0].style.color = input.value;
+                        preview.getElementsByTagName("p")[0].style.color = input.value;
+                    });
+                    form.onInputChange("Font color light",(input)=>
+                    {
+                        preview.getElementsByClassName("popup")[0].style.color = input.value;
+                        preview.getElementsByClassName("btn")[0].style.color = input.value;
+                    });
+                    form.onInputChange("Fill Color",(input)=>
+                    {
+                        preview.getElementsByClassName("popup")[0].style.background = input.value;
+                    });
+                    form.onInputChange("Secondary main color",(input)=>
+                    {
+                        preview.getElementsByClassName("btn")[0].style.background = input.value;
+                    })
                     form.onSubmit((data)=>
                     {
                         let url = new Url("dashboard/palette/add",{palette:data.fields});
