@@ -6,6 +6,7 @@ const InstallHandler = require("../Tools/InstallationHandler");
 const constants = require("../Tools/Constants");
 const Rules = require("../Tools/Rules");
 const async = require("async");
+const fs = require("fs");
 let app;
 router.get("/",(req,res)=>
 { 
@@ -80,6 +81,30 @@ router.post("/palette/update",(req,res)=>
         });
     });
 });
+router.post("/changeImage",(req,res)=>
+{
+    
+    fs.readdir('./public/images',(err,files)=>
+    {
+        if(err) throw err;
+        files = files.filter((file)=>
+        {
+            let ending = file.split(".")[1];
+            if(ending && (ending === "png" || ending === "jpg" || ending === "gif")) return file;
+        });
+        return res.send(JSON.stringify({success:true,files:files}));
+    });
+}); 
+router.post("/heroImage/change",(req,res)=>
+{
+    if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
+    mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_design SET heroImage='${req.body.file}' WHERE id='1'`,(err,result)=>
+    {
+        if(err) throw err;
+        app.locals.heroImage = req.body.file;
+        return res.send(JSON.stringify({success:true}));
+    })
+}); 
 //USER FUNCTIONS
 function isLoggedIn(req)
 {

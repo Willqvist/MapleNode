@@ -50,25 +50,6 @@ class InstallationHandler
             },
             //creating prefix tables
             (data,callback)=>
-            {
-                mysql.connection.query(`DROP TABLE IF EXISTS ${userData.prefix}_Scheme`,(err,result)=>{
-                    if(err) throw err;
-                    mysql.connection.query(`CREATE TABLE ${userData.prefix}_Scheme
-                    (
-                    ID int NOT NULL AUTO_INCREMENT,
-                    mainColor int(8),
-                    secondaryColor int(8),
-                    fontColorLight int(8),
-                    fontColorDark int(8),
-                    highlightColor int(8),
-                    PRIMARY KEY(ID) 
-                    )`,(err,result)=>
-                    {
-                        if(err) throw err;
-                        callback(err,result);
-                    });
-                });
-            },
             //creating prefix tables
             (data,callback)=>
             {
@@ -137,7 +118,27 @@ class InstallationHandler
                         });
                     });
                 });
-            }            
+            },
+            (data,callback)=>
+            {
+                mysql.connection.query(`DROP TABLE IF EXISTS ${userData.prefix}_design`,(err,result)=>{
+                    if(err) throw err;
+                    mysql.connection.query(`CREATE TABLE ${userData.prefix}_design
+                    (
+                        ID int NOT NULL AUTO_INCREMENT,
+                        heroImage varchar(80),
+                        PRIMARY KEY(id)
+                    )`,(err,result)=>
+                    {
+                        if(err) throw err;
+                        mysql.connection.query(`INSERT INTO ${userData.prefix}_palettes (name, mainColor,secondaryMainColor, fontColorLight, fontColorDark, fillColor,active) VALUES('Happy Green','#69DC9E','#3E78B2','#D3F3EE','#20063B','#CC3363','1')`,(err,result)=>
+                        {
+                            if(err) throw err;
+                            callback(err,result);
+                        });
+                    });
+                });
+            }              
         ],
         (err,result)=>
         {

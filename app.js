@@ -47,6 +47,7 @@ function setupListeners(){
 function setupComplete()
 {
     app.locals.palette = constants.getConstant("palette");
+    app.locals.heroImage = constants.getConstant("heroImage");
 }
 process.stdin.on('data', function (text) {
     if (text.trim() === 'exit' || text.trim() === '!e') {

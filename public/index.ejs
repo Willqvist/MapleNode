@@ -17,6 +17,11 @@ if(!isset(typeof settings))
             --fontColorDark:<%= palette.fontColorDark %>;
             --fillColor:<%= palette.fillColor %>;
         }
+        #header
+        {
+            background:url(images/<%= heroImage %>);
+            background-size:cover;
+        }
     </style>
     <link rel="stylesheet" type="text/css" href="CSS/index.css">    
     <link rel="stylesheet" type="text/css" href="CSS/status.css">  
@@ -27,6 +32,13 @@ if(!isset(typeof settings))
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/tabIcon.png">
     <title><%= settings.serverName %></title>
+    <style>
+        #header
+        {
+            background:url(images/<%= heroImage %>);
+            background-size:cover;
+        }
+    </style>
     </head>
     <body>
     <header id="header">

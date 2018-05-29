@@ -33,12 +33,17 @@ function setup(setupListeners,setupComplete){
                         let stringLen = 18 - results[0].serverName.length;
                         let a = " ".repeat(stringLen);
                         constants.setConstant("settings",results[0]);
-                        mysql.connection.query(`SELECT * FROM ${data.prefix}_palettes WHERE active='1'`,(err,result)=>
+                        mysql.connection.query(`SELECT * FROM ${data.prefix}_design`,(err,design)=>
                         {
                             if(err) throw err;
-                            constants.setConstant("palette",result[0]);
-                            setupComplete();
-                            console.log(`║ \x1b[32m-setup complete \x1b[37m            ║\r\n║ ${results[0].serverName} is Online${a}║ \r\n╚═════════════════════════════╝ `,"\x1b[0m");
+                            constants.setConstant("heroImage",design[0].heroImage);
+                            mysql.connection.query(`SELECT * FROM ${data.prefix}_palettes WHERE active='1'`,(err,result)=>
+                            {
+                                if(err) throw err;
+                                constants.setConstant("palette",result[0]);
+                                setupComplete();
+                                console.log(`║ \x1b[32m-setup complete \x1b[37m            ║\r\n║ ${results[0].serverName} is Online${a}║ \r\n╚═════════════════════════════╝ `,"\x1b[0m");
+                            });
                         });
                     });
                 }
