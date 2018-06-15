@@ -5,6 +5,7 @@ const mnHandler = require("../Tools/MNHandler");
 const mysql = require("../Tools/mysql").getMysql();
 let installHandler = new InstallationHandler(mysql.mysql);
 const constants = require("../Tools/Constants");
+let app;
 router.all("/*",(req,res,next)=>
 {
     installHandler.installationComplete((done,data)=>
@@ -51,6 +52,8 @@ router.all("/:id/",(req,res,next)=>
                     {
                         if(err) return res.redirect("setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
                         constants.setConstant("setup-status",1);
+                        app.locals.palette = constants.getConstant("palette");
+                        app.locals.heroImage = "headerImage.png";
                         return res.redirect("/"); 
                     });
                 break;
@@ -74,4 +77,8 @@ router.all(["/","index"],(req,res)=>
 {
     return res.render("setup/index");
 });
-module.exports = router;
+module.exports = function(applet)
+{
+    app = applet;
+    return router;
+};

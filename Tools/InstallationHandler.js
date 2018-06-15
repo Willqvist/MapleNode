@@ -49,7 +49,6 @@ class InstallationHandler
                 });
             },
             //creating prefix tables
-            (data,callback)=>
             //creating prefix tables
             (data,callback)=>
             {
@@ -59,7 +58,6 @@ class InstallationHandler
                     (
                         ID int NOT NULL AUTO_INCREMENT,
                         serverName varchar(255),
-                        downloadLinks varchar(255),
                         version varchar(8),
                         expRate varchar(8),
                         dropRate varchar(8),
@@ -70,7 +68,7 @@ class InstallationHandler
                         PRIMARY KEY(ID) 
                     )`,(err,result)=>
                     {
-                        if(err) throw err;
+
                         callback(err,result);
                     });
                 });
@@ -81,7 +79,7 @@ class InstallationHandler
                     if(err) throw err;
                     mysql.connection.query(`CREATE TABLE ${userData.prefix}_Vote
                     (
-                        ID int NOT NULL AUTO_INCREMENT,
+                        ID int NOT NULL,
                         name varchar(255),
                         nx int(20),
                         time varchar(255),
@@ -89,6 +87,7 @@ class InstallationHandler
                         PRIMARY KEY(name)  
                     )`,(err,result)=>
                     {
+                        console.log("eww");
                         if(err) throw err;
                         callback(err,result);
                     });
@@ -114,6 +113,17 @@ class InstallationHandler
                         mysql.connection.query(`INSERT INTO ${userData.prefix}_palettes (name, mainColor,secondaryMainColor, fontColorLight, fontColorDark, fillColor,active) VALUES('Happy Green','#69DC9E','#3E78B2','#D3F3EE','#20063B','#CC3363','1')`,(err,result)=>
                         {
                             if(err) throw err;
+
+                            constants.setConstant("palette",
+                            {
+                                name:'Happy Green',
+                                name:'#69DC9E',
+                                mainColor:'#69DC9E',
+                                secondaryMainColor:'#3E78B2',
+                                fontColorLight:'#D3F3EE', 
+                                ontColorDark:'#20063B',
+                                fillColor:'#CC3363'
+                            });
                             callback(err,result);
                         });
                     });
@@ -131,11 +141,28 @@ class InstallationHandler
                     )`,(err,result)=>
                     {
                         if(err) throw err;
-                        mysql.connection.query(`INSERT INTO ${userData.prefix}_palettes (name, mainColor,secondaryMainColor, fontColorLight, fontColorDark, fillColor,active) VALUES('Happy Green','#69DC9E','#3E78B2','#D3F3EE','#20063B','#CC3363','1')`,(err,result)=>
+                        mysql.connection.query(`INSERT INTO ${userData.prefix}_design (heroImage) VALUES('headerImage.png')`,(err,result)=>
                         {
                             if(err) throw err;
                             callback(err,result);
                         });
+                    });
+                });
+            },
+            (data,callback)=>
+            {
+                mysql.connection.query(`DROP TABLE IF EXISTS ${userData.prefix}_downloads`,(err,result)=>{
+                    if(err) throw err;
+                    mysql.connection.query(`CREATE TABLE ${userData.prefix}_downloads
+                    (
+                        ID int NOT NULL AUTO_INCREMENT,
+                        name varchar(80),
+                        url varchar(80),
+                        PRIMARY KEY(id)
+                    )`,(err,result)=>
+                    {
+                        if(err) throw err;
+                        callback(err,result);
                     });
                 });
             }              
@@ -150,17 +177,16 @@ class InstallationHandler
     {
 
         console.log("CREATE TABLE ",userData);
-        userData.downloadLinks = userData.downloadSetup + ";" + userData.downloadClient;
+        //userData.downloadLinks = userData.downloadSetup + ";" + userData.downloadClient;
        async.waterfall(
         [
             (callback)=>
             {
                 mysql.connection.query(`
                 INSERT INTO ${constants.getConstant("prefix")}_settings
-                (serverName,downloadLinks,version,expRate,dropRate,mesoRate,nxColumn,vpColumn,gmLevel)
+                (serverName,version,expRate,dropRate,mesoRate,nxColumn,vpColumn,gmLevel)
                 VALUES(
                     '${userData.serverName}',
-                    '${userData.downloadLinks};',
                     '${userData.version}',
                     '${userData.exp}',
                     '${userData.drop}',
@@ -174,6 +200,18 @@ class InstallationHandler
                 {
                     if(err) throw err;
                     callback(err,result);
+                });
+            },
+            (data,callback)=>
+            {
+                mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_downloads (name,url) VALUES( 'Setup', '${userData.downloadSetup}')`,(err,result)=>
+                {
+                    if(err) throw err;
+                    mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_downloads (name,url) VALUES( 'Client', '${userData.downloadClient}')`,(err,result)=>
+                    {
+                        if(err) throw err;
+                        callback(err,result);
+                    });
                 });
             },
             (result,callback)=>

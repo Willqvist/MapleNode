@@ -18,6 +18,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/tabIcon.png">
     <title>Dashboard GM</title>
+    <style>
+        #heroImageDisplay
+        {
+            background:url(../images/<%= heroImage %>);
+            background-size:cover;
+            background-position:50% 50%;
+        }
+    </style>
     </head>
     <body>
 
@@ -35,9 +43,9 @@
                     </svg>
                 </div>
             </div>
-            <div class="categoryMenu_item" data-page="general">
-                <h3>General</h3>
-                <div id="general_saved" class="saved">
+            <div class="categoryMenu_item" data-page="download">
+                <h3>Downloads</h3>
+                <div id="download_saved" class="saved">
                     <svg id="icon-notice" viewBox="0 0 32 32">
                         <title>notice</title>
                         <path d="M15.5 3.5c-7.18 0-13 5.82-13 13s5.82 13 13 13 13-5.82 13-13-5.82-13-13-13zM15.5 23.875c-0.829 0-1.5-0.672-1.5-1.5s0.671-1.5 1.5-1.5c0.828 0 1.5 0.672 1.5 1.5s-0.672 1.5-1.5 1.5zM17 17.375c0 0.828-0.672 1.5-1.5 1.5-0.829 0-1.5-0.672-1.5-1.5v-7c0-0.829 0.671-1.5 1.5-1.5 0.828 0 1.5 0.671 1.5 1.5v7z"></path>
@@ -116,16 +124,38 @@
                         <% } %>
                     </div>
                 </section>
+                <section class="page" id="download">
+                    <div class="pageHeader">
+                        <h4>Download</h4>
+                        <div class="save btn"><span>save</span></div>
+                        <div class="headerBtnAdd add btn"><span>add</span></div>
+                    </div>
+                    <div class="voteSiteHolder">
+                    <%
+                    downloads.forEach((download)=>
+                    {
+                    %>
+                        <div class="voteSite" id="<%= download.name %>">
+                            <div class="edit">
+                                <svg id="icon-pencil2" viewBox="0 0 24 24">
+                                    <path d="M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z"></path>
+                                </svg>
+                            </div>
+                            <h5 data-beforeContent="Name" class="name before"><%= download.name %></h5>
+                            <h6 data-beforeContent="Url" class="url before"><%= download.url %></h6>                                                                                 
+                        </div>
+                    <% }); %>
+                    </div>
+                </section>
                 <section class="page" id="design">
                     <div class="pageHeader">
                         <h4>Design</h4>
                         <div class="save btn"><span>save</span></div>
-                        <div class="dropdownBtn btn noSelect" id="addDesignDropdown" data-dropdowncontent="addDesign">
+                        <div class="headerBtnAdd dropdownBtn btn noSelect" id="addDesignDropdown" data-dropdowncontent="addDesign">
                             <span>▾ Add Option</span>
                             <ul id="addDesign" class="noSelect dropdownContent">
                                 <li data-select="Palette" class="add">Palette</li>
                                 <li data-select="Font" class="add">Font</li>
-                                <li data-select="Header Image" class="add">Header Image</li>
                             </ul>
                         </div>
                     </div>
@@ -199,8 +229,6 @@
         <script>
         </script>
         <script>
-            //let color = new ColorPicker("#eb1010");
-            //color.show();
             let pageVisible;
             let palettes = 
             {
@@ -223,21 +251,131 @@
             let vote = document.getElementById("vote");
             let dashboard = document.getElementById("dashboard");
             let design = document.getElementById("design");
+            let download = document.getElementById("download");
             let pages =
             {
                 vote:{id:"vote",isSaved:true,page:vote,method:onVoteLoad,remove:{}},
                 design:{id:"design",isSaved:true,page:design,method:onDesignLoad},
-                //design:{id:"design",isSaved:true,page:vote,method:onVoteLoad},
-                //layout:{id:"layout",isSaved:true,page:vote,method:onVoteLoad},
+                download:{id:"downloads",isSaved:true,page:download,method:onDownloadLoad},
                 dashboard:{id:"dashboard",isSaved:true,page:dashboard,method:onDashboardLoad},
             }
             setSaveButton(pages.vote,pages.vote.page.getElementsByClassName("save")[0]);
             setSaveButton(pages.design,pages.design.page.getElementsByClassName("save")[0]);
-            //setCancelSaveButton(pages.vote,document.getElementById("gtop.com"));
+            setSaveButton(pages.download,pages.download.page.getElementsByClassName("save")[0]);
             
             loadPage(pages.dashboard);
             function onDashboardLoad(page)
             {
+            }
+            function onDownloadLoad(page)
+            {
+                let downloads = 
+                {
+                    <%
+                    downloads.forEach((download)=>
+                    {
+                    %>
+                        <%=download.name%>:{name:"<%=download.name%>",url:"<%= download.url %>",element:document.getElementById("<%=download.name%>")},
+                    <%});%>
+                }
+                let newValues = copyObject(downloads);
+                let newLinks = {};
+                let form = new FormPopup("changeDownload");
+                let add = page.page.getElementsByClassName("add")[0];
+                form.setCloseable();
+                form.addInput({id:"name"});
+                form.addInput({id:"url"});
+                form.addButton({type:"submit",value:"Change"});
+                form.onSubmit((data)=>
+                {
+                    console.log(data);
+                    let key = data.settings.key;
+                    if(newValues[key].name != data.fields.name || newValues[key].url != data.fields.url)
+                    {
+                        page.onLinkChanged = true;
+                        setUnsaved(page);
+                    }
+                    newValues[key].name = data.fields.name;
+                    newValues[key].url = data.fields.url;
+                    newValues[key].element.getElementsByClassName("name")[0].innerHTML = data.fields.name;
+                    newValues[key].element.getElementsByClassName("url")[0].innerHTML = data.fields.url;
+                    form.hide();
+                });
+                getEditButtonsClick(page,(element)=>
+                {
+                    console.log(newValues);
+                    console.log("ID",element.parentNode.id);
+                    let download = newValues[element.parentNode.id];
+                    form.setValue({id:"name",value:download.name});
+                    form.setValue({id:"url",value:download.url});
+                    form.setSetting({name:"key",value:element.parentNode.id});
+                    form.show();
+                });
+
+                let addForm = form.copy("addDownload");
+                addForm.addButton({type:"submit",value:"Add"});
+                addForm.onSubmit((data)=>
+                {
+                    console.log("wew");
+                    newLinks[data.fields.name] = {name:data.fields.name,url:data.fields.url};
+                    setUnsaved(page);
+                    page.onLinkAdd = true;
+                    addForm.hide();
+                });
+                add.addEventListener("click",()=>
+                {
+                    addForm.show();
+                },false);
+                page.onSave = function()
+                {
+                    if(!page.isSaved)
+                    {
+                        if(page.onLinkChanged)
+                        {
+                            let url = new Url("dashboard/download/update",{original:downloads,new:newValues});
+                            HttpHandler.postData(url,(response)=>
+                            {
+                                if(response.success)
+                                {
+                                    for(let key in newValues)
+                                    {
+                                        if(!downloads[newValues[key].name])
+                                        {
+                                            newValues[newValues[key].name] = newValues[key];
+                                            newValues[newValues[key].name].element.id = newValues[key].name;
+                                            delete newValues[key];
+                                        }
+                                    }
+                                    page.onLinkChanged = false;
+                                    setSaved(page);                                 
+                                }
+                                
+                            });
+                        }
+                        if(page.onLinkAdd)
+                        {
+                            console.log("add");
+                            let url = new Url("dashboard/download/add",{add:newLinks});
+                            HttpHandler.postData(url,(response)=>
+                            {
+                                if(response.success)
+                                {
+                                    for(let key in newLinks)
+                                    {
+                                        let element = newLinks[key];
+                                        newValues[element.name] = {};
+                                        newValues[element.name].name = element.name;
+                                        newValues[element.name].url = element.url;
+                                    }
+                                    newLinks = {};
+                                    page.onLinkAdd = false;            
+                                    setSaved(page);                                 
+                                }
+                                
+                            });
+                        }
+                    }
+                }
             }
             function getEditButtonsClick(page,callback,shouldPageBeLoaded = true)
             {
@@ -306,12 +444,27 @@
                 { 
                     if(page.isSaved) return;
                     console.log(page.design);
-                    let url = new Url("dashboard/palette/update",{name:page.design.name,palette:page.design.colors});
-                    HttpHandler.postData(url,(response)=>
+                    if(page.design && page.design.name && page.design.colors)
                     {
-                        console.log(response);
-                        setSaved(page);
-                    });
+                        let url = new Url("dashboard/palette/update",{name:page.design.name,palette:page.design.colors});
+                        HttpHandler.postData(url,(response)=>
+                        {
+                            console.log(response);
+                            setSaved(page);
+                        });
+                    }
+                    if(page.choosenImage)
+                    {
+                        let url = new Url("dashboard/heroImage/change",{file:page.choosenImage.getAttribute("data-name")});
+
+                        HttpHandler.postData(url,(data)=>
+                        {
+                            if(data.success)
+                                page.choosenImage = null;
+
+                            setSaved(page);    
+                        }); 
+                    }
                 }
 
                 //ADD PALETTE
@@ -374,7 +527,7 @@
 
 
 
-                //HERO IMAGE
+                /*HERO IMAGE*/
                 let heroForm = new FormPopup("HeropForm");
                 let siteHolder = new DOMCompiler("<div id=\"fileHolder\"> <div id=\"fileHolderTitle\"> <h6>public/images</h6> <h3>Images</h3> </div><div class=\"fileWrapper\"> </div></div>").compileDOM();
                 let fileTemplate = new DOMCompiler("<div class=\"file\" data-path=\"{{path}}\" data-name=\"{{name}}\"> <div class=\"accept\"> <svg id=\"icon-check-circle\" viewBox=\"0 0 24 24\"> <title>accept</title> <path d=\"M22 10.1c-0.6 0-1 0.4-1 1v0.9c0 5-4 9-9 9 0 0 0 0 0 0-5 0-9-4-9-9s4-9 9-9c0 0 0 0 0 0 1.3 0 2.5 0.3 3.7 0.8 0.5 0.2 1.1 0 1.3-0.5s0-1.1-0.5-1.3c-1.4-0.6-2.9-1-4.5-1 0 0 0 0 0 0-6.1 0-11 4.9-11 11s4.9 11 11 11c0 0 0 0 0 0 6.1 0 11-4.9 11-11v-0.9c0-0.6-0.4-1-1-1z\"></path> <path d=\"M9.7 10.3c-0.4-0.4-1-0.4-1.4 0s-0.4 1 0 1.4l3 3c0.2 0.2 0.4 0.3 0.7 0.3s0.5-0.1 0.7-0.3l10-10c0.4-0.4 0.4-1 0-1.4s-1-0.4-1.4 0l-9.3 9.3-2.3-2.3z\"></path> </svg> </div><div class=\"fileImage\"></div><h5>{{name}}</h5> </div>");
@@ -389,24 +542,12 @@
                 heroForm.onSubmit(()=>
                 {
                     console.log("wew");
-                    if(page.choosenImage)
-                    {
-                        let url = new Url("dashboard/heroImage/change",{file:page.choosenImage.getAttribute("data-name")});
-
-                        HttpHandler.postData(url,(data)=>
-                        {
-                            if(data.success)
-                            {
-                                heroImageDisplay.style.background = "url(../images/"+page.choosenImage.getAttribute("data-name")+")";
-                                heroImageDisplay.style.backgroundSize="cover";
-                                heroImageDisplay.style.backgroundPosition="50% 50%";
-                                heroForm.hide();
-                                page.choosenImage = null;
-                                fileHolder.innerHTML = "";
-                            }
-
-                        }); 
-                    }
+                    heroImageDisplay.style.background = "url(../images/"+page.choosenImage.getAttribute("data-name")+")";
+                    heroImageDisplay.style.backgroundSize="cover";
+                    heroImageDisplay.style.backgroundPosition="50% 50%";
+                    heroForm.hide();
+                    fileHolder.innerHTML = "";
+                    setUnsaved(page);
                 });
                 getEditButtonsClick(page,(self)=>
                 {
@@ -426,6 +567,7 @@
                                 let image = element.getElementsByClassName("fileImage")[0];
                                 image.style.background="url(../images/"+file+")";
                                 image.style.backgroundSize="cover";
+                                image.style.backgroundPosition="50% 50%";
                                 element.addEventListener("click",function()
                                 {
                                     if(page.choosenImage)
@@ -533,7 +675,6 @@
                         }).bind(page));
                     }
                 }
-                //add vote site
 
                 let voteSiteElement = new DOMCompiler("<div class=\"voteSite\" data-site=\"{{name}}\" id=\"{{name}}\"> <div class=\"close\"> <svg id=\"icon-pencil2\" viewBox=\"0 0 24 24\"> <title>close</title> <path d=\"M21 5h-4v-1c0-1.7-1.3-3-3-3h-4c-1.7 0-3 1.3-3 3v1h-4c-0.6 0-1 0.4-1 1s0.4 1 1 1h1v13c0 1.7 1.3 3 3 3h10c1.7 0 3-1.3 3-3v-13h1c0.6 0 1-0.4 1-1s-0.4-1-1-1zM9 4c0-0.6 0.4-1 1-1h4c0.6 0 1 0.4 1 1v1h-6v-1zM18 20c0 0.6-0.4 1-1 1h-10c-0.6 0-1-0.4-1-1v-13h12v13z\"></path> <path d=\"M10 10c-0.6 0-1 0.4-1 1v6c0 0.6 0.4 1 1 1s1-0.4 1-1v-6c0-0.6-0.4-1-1-1z\"></path> <path d=\"M14 10c-0.6 0-1 0.4-1 1v6c0 0.6 0.4 1 1 1s1-0.4 1-1v-6c0-0.6-0.4-1-1-1z\"></path> </svg> </div><div class=\"edit\"><svg id=\"icon-pencil2\" viewBox=\"0 0 24 24\"><title>pencil2</title><path d=\"M21.7 7.3l-5-5c-0.4-0.4-1-0.4-1.4 0l-13 13c-0.2 0.2-0.3 0.4-0.3 0.7v5c0 0.6 0.4 1 1 1h5c0.3 0 0.5-0.1 0.7-0.3l13-13c0.4-0.4 0.4-1 0-1.4zM7.6 20h-3.6v-3.6l12-12 3.6 3.6-12 12z\"></path></svg></div><h5 class=\"name\">{{name}}</h5><h6 data-beforeContent=\"Nx per vote\" class=\"nx before\">{{nx}}</h6><h6 data-beforeContent=\"Vote interval\" class=\"time before\">{{time}}</h6><h6 data-beforeContent=\"Full url\" class=\"url before\">{{url}}</h6></div>");
                 let voteSiteHolder = document.getElementsByClassName("voteSiteHolder")[0];
@@ -569,7 +710,7 @@
                 },false);
 
             }
-            //PAGE HANDLER
+            /*PAGE HANDLER*/
             function setSaveButton(page,button)
             {
                 button.addEventListener("click",()=>
@@ -589,13 +730,13 @@
                page.isSaved = false;
                console.log(page.page.getElementsByClassName("save")[0]);
                page.page.getElementsByClassName("save")[0].style.background="#3e78b2";
-               document.getElementById(page.id+"_saved").style.opacity="1";
+               document.getElementById(page.page.id+"_saved").style.opacity="1";
             }
             function setSaved(page)
             {
                 page.isSaved = true;
                 page.page.getElementsByClassName("save")[0].style.background="#c4c4c4";
-                document.getElementById(page.id+"_saved").style.opacity="0";
+                document.getElementById(page.page.id+"_saved").style.opacity="0";
             }
             function isUnsaved(page)
             {

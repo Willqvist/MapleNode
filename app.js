@@ -20,7 +20,7 @@ app.use(helmet());
 require("./setup")(setupListeners,setupComplete);
 
 //routers
-const SetupRouter = require("./Routers/setupRouter");
+const SetupRouter = require("./Routers/setupRouter")(app);
 const GlobalRouter = require("./Routers/GlobalRouter");
 const IORouter = require("./Routers/IORouter");
 const PagesRouter = require("./Routers/PagesRouter");

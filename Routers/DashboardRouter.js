@@ -105,6 +105,40 @@ router.post("/heroImage/change",(req,res)=>
         return res.send(JSON.stringify({success:true}));
     })
 }); 
+router.post("/download/update",(req,res)=>
+{
+    if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
+    async.forEachOf(req.body.new,(page,key,callback)=>
+    {
+        mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_downloads SET name = '${req.body.new[key].name}',url='${req.body.new[key].url}' WHERE name='${key}'`,(err,result)=>
+        {
+            if(err) throw err;
+            callback();
+        });
+    },
+    (err)=>
+    {
+        if(err) throw err;
+        res.send(JSON.stringify({success:true}));
+    });
+}); 
+router.post("/download/add",(req,res)=>
+{
+    if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
+    async.forEachOf(req.body.add,(element,key,callback)=>
+    {
+        mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_downloads (name,url) VALUES ('${element.name}','${element.url}')`,(err,result)=>
+        {
+            if(err) throw err;
+            callback();
+        });
+    },
+    (err)=>
+    {
+        if(err) throw err;
+        res.send(JSON.stringify({success:true}));
+    });
+}); 
 //USER FUNCTIONS
 function isLoggedIn(req)
 {
@@ -126,15 +160,18 @@ function renderGMDashboard(req,res)
         mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_palettes`,(err,palettes)=>
         {
         if(err) throw err;
-        let activePalette = palettes[0];
-        for(let i = 0; i < palettes.length; i++)
-        {
-            if(palettes[i].active == 1){
-                activePalette = palettes[i];
-                break;
+            let activePalette = palettes[0];
+            for(let i = 0; i < palettes.length; i++)
+            {
+                if(palettes[i].active == 1){
+                    activePalette = palettes[i];
+                    break;
+                }
             }
-        }
-        res.render("pages/dashboardGM",{votes:globalSettings,palettes:{all:palettes,active:activePalette}});
+            mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_downloads`,(err,downloads)=>
+            {
+                res.render("pages/dashboardGM",{votes:globalSettings,downloads:downloads,palettes:{all:palettes,active:activePalette}});
+            });
         });
     });
 }
