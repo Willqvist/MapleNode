@@ -165,7 +165,27 @@ class InstallationHandler
                         callback(err,result);
                     });
                 });
-            }              
+            }
+            /*
+            ,
+            (data,callback)=>
+            {
+                mysql.connection.query(`DROP TABLE IF EXISTS ${userData.prefix}_library_${userData.}`,(err,result)=>{
+                    if(err) throw err;
+                    mysql.connection.query(`CREATE TABLE ${userData.prefix}_downloads
+                    (
+                        ID int NOT NULL AUTO_INCREMENT,
+                        name varchar(80),
+                        url varchar(80),
+                        PRIMARY KEY(id)
+                    )`,(err,result)=>
+                    {
+                        if(err) throw err;
+                        callback(err,result);
+                    });
+                });
+            }     
+            */           
         ],
         (err,result)=>
         {

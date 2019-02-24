@@ -1,6 +1,5 @@
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
-
 //libaries
 const express = require("express");
 const session = require('express-session');
@@ -8,10 +7,10 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const constants = require("./Tools/Constants");
-
+const Parser = require("./wz_parser/parser");
 //setup
 let app = express();
-app.listen(8081);
+let server = app.listen(8081);
 app.set('view engine', 'ejs');
 app.set("views",__dirname+"/public");
 app.use(bodyParser.json()); 
@@ -19,12 +18,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(helmet()); 
 require("./setup")(setupListeners,setupComplete);
 
+const io = require('socket.io').listen(server);
+require("./Tools/ProgressUpdater").init(io);
 //routers
 const SetupRouter = require("./Routers/setupRouter")(app);
 const GlobalRouter = require("./Routers/GlobalRouter");
 const IORouter = require("./Routers/IORouter");
 const PagesRouter = require("./Routers/PagesRouter");
 const DashboardRouter = require("./Routers/DashboardRouter")(app);
+const mysql = require("./Tools/mysql").getMysql();
+const LibraryRouter = require("./Routers/LibraryRouter");
 //listeners
 function setupListeners(){
     app.use(session(
@@ -37,6 +40,7 @@ function setupListeners(){
     app.get("*.ejs",(req,res)=>res.status(404).render("error/404"));
     app.use(express.static(__dirname+"/public"));
     app.use("/setup",SetupRouter);
+    app.use("/library",LibraryRouter);
     app.use("/",GlobalRouter);
     app.use("/",PagesRouter);
     app.use("/dashboard",DashboardRouter);
@@ -48,10 +52,31 @@ function setupComplete()
 {
     app.locals.palette = constants.getConstant("palette");
     app.locals.heroImage = constants.getConstant("heroImage");
+    constants.setConstant("urlPath");
+    constants.setConstant("type_mapper",
+    {
+        "Consume":"Item",
+        "Etc":"Item",
+        "Cash":"Item",
+        "Pet":"Item",
+        "Install":"Item",
+    }
+    );
+    /*
+    Parser.parse("./wz_parser/String.wz",({file,err})=>
+    {
+    });
+    */
+    mysql.connection.query(`SELECT expRate,dropRate,mesoRate,serverName FROM ${constants.getConstant("prefix")}_settings`,(err,results)=>
+    {
+        if(err) throw err;
+        app.locals.settings = results[0];
+        constants.setConstant("settings",app.locals.settings);
+    }); 
 }
 process.stdin.on('data', function (text) {
     if (text.trim() === 'exit' || text.trim() === '!e') {
-    console.log("exiting...");
+        console.log("exiting...");
       process.exit();
     }
 });
@@ -72,6 +97,8 @@ constants.setConstant("jobMethod",(jobs,name)=>
     }
     return -1;
 });
+
+
 //EJS functions
 app.locals.printStatement = function(statement,callback)
 {

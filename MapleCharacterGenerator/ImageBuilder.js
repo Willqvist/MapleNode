@@ -33,12 +33,11 @@ class ImageBuilder
             }).bind(i));
         }
     }
-    outputImage(canvas, src,callback)
+    outputImage(canvas,src,callback)
     {
         canvas.image.pack()
         .pipe(fs.createWriteStream(src))
-        .on('finish',function() {
-
+        .on('finish',function(err) {
             callback();
         });
         canvas.clearCanvas();

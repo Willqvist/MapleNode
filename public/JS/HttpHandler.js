@@ -43,7 +43,7 @@ class FormElement
     constructor(id)
     {
         this.formElement = document.getElementById(id);
-        this.fields = this.formElement.getElementsByTagName("input");
+        this.fields = this.formElement.querySelectorAll("input,select,textarea");
     }
     getInputValues()
     {
@@ -75,6 +75,10 @@ class ErrorElement
     {
         this.errorElement.style.display = "none";
     }
+    hide()
+    {
+        this.removeError();
+    }
     success(success)
     {
         this.errorElement.innerHTML = success.reason;
@@ -88,6 +92,10 @@ class ErrorElement
         this.errorElement.style.display = "block";
         this.errorElement.style.background = "#CC3363";
         this.isShown = true;
+    }
+    show(error)
+    {
+        this.showError(error);
     }
     isErrorShown()
     {
@@ -275,10 +283,14 @@ class AppendableElement
         this.isAppended = false;
         this.active = false;
     }
-    appendDom(element=document.body)
+    static setParent(appendElement)
+    {
+        AppendableElement.appendElement = appendElement;
+    }
+    appendDom()
     {
         if(!this.isAppended)
-            element.appendChild(this.element);
+            AppendableElement.appendElement.appendChild(this.element);
         this.isAppended = true;
     }
     show()
@@ -495,6 +507,7 @@ class FormPopup extends AppendableElement
         this.callback = callback;
     }
 }
+AppendableElement.appendElement = document.body;
 FormPopup.FULLSCREEN = "100vh";
 FormPopup.BIG = "45em";
 FormPopup.NORMAL = "30em";

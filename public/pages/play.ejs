@@ -1,0 +1,80 @@
+<%
+let MENU_SITE = "PLAY";
+%>
+<!doctype html>
+<html>
+    <head>
+        <style>
+            body
+            {
+                --mainColor:<%= palette.mainColor %>;
+                --secondaryMainColor:<%= palette.secondaryMainColor %>;
+                --fontColorLight:<%= palette.fontColorLight %>;
+                --fontColorDark:<%= palette.fontColorDark %>;
+                --fillColor:<%= palette.fillColor %>;
+            }
+        </style>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">   
+        <link rel="stylesheet" type="text/css" href="CSS/status.css">  
+        <link rel="stylesheet" type="text/css" href="CSS/media.css">   
+        <link rel="stylesheet" type="text/css" href="CSS/menu.css">             
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="images/tabIcon.png">
+        <style>
+            #content{
+                justify-content:space-between;
+            }
+            .btn-holder
+            {
+                display:flex;
+            }
+            .btn,.btn-a{
+                flex:1;
+                margin:0;
+                border-radius:0;
+            }
+            #content{
+                max-width:100em;
+            }
+        </style>
+        <title>Play <%= settings.serverName %></title>
+    </head>
+    <body>
+        <% include ../imports/menu.ejs %>
+        <header id="header">
+            <div id="fade"></div>
+            <div id="headerContent" class="maxWidth">
+                <div id="headerInfo">
+                    <h1>Play <%= settings.serverName %></h1>
+                </div>
+            </div>
+        </header>
+            <section id="content" class="maxWidth">
+            <%
+            for(let download of downloads)
+            {
+            %>
+            <div class="block halfBlock">
+                <h3 class="blockHeader"><%= download.name %></h3>
+                <div class="status">
+                    <h2>Download <%= download.name %></h2>
+                </div>
+                <div class="btn-holder">
+                    <div class="btn-a btn-blue"><a href="<%= download.url %>">Download</a></div>
+                </div>
+            </div> 
+            <%
+            }
+            %>        
+        </section>
+        <script src="JS/HttpHandler.js"></script>
+        <script>
+            document.body.onload = function(){
+                let chart = new BarChart("voteCanvas",0,0);
+                chart.setFont({size:"0.8em",font:"Montserrat"});
+                chart.renderChart();
+            }
+        </script>
+    </body>
+</html>

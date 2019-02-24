@@ -11,6 +11,7 @@ document.addEventListener("click",function(e)
      for(let i = 0; i < activeDropdowns.length; i++)
      {
          element = activeDropdowns[i];
+         console.log("CLICK TARGET: ", e.target,"|",element.parent);
          if(!element.parent.contains(e.target))
              toggleDropdown(element.parent,element.element,false);
      }
@@ -52,5 +53,6 @@ document.addEventListener("click",function(e)
 
  function dropdownClickHandler(object,method)
  {
+    console.log("wew DROPDOWN: ",object.getAttribute("data-dropdowncontent"));
      dropdowns[object.getAttribute("data-dropdowncontent")] = method;
  }

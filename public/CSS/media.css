@@ -18,6 +18,14 @@
         max-width:100%;
         width:100%;
     }
+    #menu_content
+    {
+        max-width:100%;
+        width:100%; 
+        background:red;
+        box-sizing: border-box;
+        padding:0em 2em;
+    }
 }
 @media only screen and (max-height:55em)
 {

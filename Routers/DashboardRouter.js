@@ -10,7 +10,7 @@ const fs = require("fs");
 let app;
 router.get("/",(req,res)=>
 { 
-    if(!isLoggedIn(req)) return res.render("pages/login");
+    if(!isLoggedIn(req)) return res.render("pages/dashboardLogin");
     let user = getUser(req);
     if(user.gm == 0)
         return renderDashboard(req,res);
@@ -170,7 +170,7 @@ function renderGMDashboard(req,res)
             }
             mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_downloads`,(err,downloads)=>
             {
-                res.render("pages/dashboardGM",{votes:globalSettings,downloads:downloads,palettes:{all:palettes,active:activePalette}});
+                res.render("pages/dashboardGM",{votes:globalSettings,downloads:downloads,palettes:{all:palettes,active:activePalette},user:req.session.user});
             });
         });
     });

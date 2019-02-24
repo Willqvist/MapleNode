@@ -1,0 +1,56 @@
+<%
+let MENU_SITE = "VOTE";
+%>
+<!doctype html>
+<html>
+    <head>
+        <style>
+            body
+            {
+                --mainColor:<%= palette.mainColor %>;
+                --secondaryMainColor:<%= palette.secondaryMainColor %>;
+                --fontColorLight:<%= palette.fontColorLight %>;
+                --fontColorDark:<%= palette.fontColorDark %>;
+                --fillColor:<%= palette.fillColor %>;
+            }
+        </style>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">   
+        <link rel="stylesheet" type="text/css" href="CSS/status.css">  
+        <link rel="stylesheet" type="text/css" href="CSS/media.css">   
+        <link rel="stylesheet" type="text/css" href="CSS/menu.css">             
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="images/tabIcon.png">
+        <title>Status</title>
+    </head>
+    <body>
+        <% include ../imports/menu.ejs %>
+        <header id="header">
+            <div id="fade"></div>
+            <div id="headerContent" class="maxWidth">
+                <div id="headerInfo">
+                    <h1>Play <%= settings.serverName %></h1>
+                </div>
+            </div>
+        </header>
+            <section id="content" class="maxWidth">
+            <div class="block smallBlock">
+                <h3 class="blockHeader">Server Status</h3>
+                <div class="status">
+                    <h2 class="beforeTitle" data-beforeTitleContent="MapleNode is">ONLINE</h2>
+                </div>
+            </div>
+            <div class="block halfBlock">
+                    <h3 class="blockHeader">Server News</h3>
+            </div>            
+        </section>
+        <script src="JS/HttpHandler.js"></script>
+        <script>
+            document.body.onload = function(){
+                let chart = new BarChart("voteCanvas",0,0);
+                chart.setFont({size:"0.8em",font:"Montserrat"});
+                chart.renderChart();
+            }
+        </script>
+    </body>
+</html>

@@ -30,17 +30,40 @@ class MySQL{
     {
         return this.mysql;
     }
+    connect(data,callback)
+    {
+        this.connection = this.mysql.createConnection(data);
+        this.connection.connect((err)=>
+        {
+            callback(err);
+        }); 
+    }
     setConnection(mysql)
     {
         this.connection = mysql;
     }
 }
 let mysqlObject = new MySQL(mysql);
+let connections = {};
 function getMysql()
 {
     return mysqlObject;
 }
+function createMysqlConnection(str)
+{
+    connections[str] = new MySQL(mysql);
+    return connections[str];
+}
+function getMysqlConnetion(str)
+{
+    if(!connections[str])
+        return undefined;
+    
+    return connections[str];
+}
 module.exports = 
 {
-    getMysql:getMysql
+    getMysql:getMysql,
+    create:createMysqlConnection,
+    getMysqlConnetion:getMysqlConnetion
 };

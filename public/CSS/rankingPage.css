@@ -247,3 +247,8 @@ ul.blockHeader li
     font-size:1.5em;
     color:var(--fontColorDark);  
 }
+.dropdownBtn
+{
+    height:4.5em;
+    font-size:1em;
+}

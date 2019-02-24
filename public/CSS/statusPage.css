@@ -6,14 +6,9 @@
 body{
     background:#FFF;
 }
-.maxWidth{
-    max-width:120em;
-    width:90%;
-    margin:auto;
-}
 #header{
     width:100%;
-    height:30em;
+    height:35em;
     background:url(../images/headerImage.png);
     background-size:cover;
     background-position:50% 50%;
@@ -36,7 +31,7 @@ body{
     align-items:flex-end;
     height:100%;
     box-sizing:border-box;
-    padding:0 5em;
+    padding:0 0em;
     padding-bottom:4em;
     z-index:4;
     position:Relative;
@@ -56,7 +51,7 @@ body{
     display:flex; 
     flex-flow:row wrap;
     box-sizing:border-box;
-    padding:0em 5em 4em 5em;
+    padding:0em 0em 4em 0em;
     justify-content: space-between;
     align-items:flex-start;
 }

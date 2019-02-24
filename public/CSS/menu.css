@@ -1,4 +1,98 @@
-.btn
+*{
+    padding:0;
+    margin:0;
+}
+#menu{
+    width:100%;
+    position:fixed;
+    z-index:99;
+    top:0;
+    background:#FFF;
+    font-size:1em;
+}
+#menu_content{
+    margin:auto;
+    display:flex;
+    justify-content: space-between;
+}
+#menu_content #menu_logo{
+    width:5.5em;
+    height:5em;
+    background:url(../images/logo.png) no-repeat;
+    background-position:0% 50%;
+    background-size:contain;
+    font-size:1em;
+}
+#menu_content ul{
+    display:flex;
+}
+#menu_content ul li
+{
+    list-style: none; 
+    box-shadow:1px 0px 0px  rgba(0,0,0,0.05),inset 0px 0em 0 var(--fontColorDark);
+    transition:ease 0.2s;
+}
+#menu_content ul li a
+{
+    text-decoration: none;
+    width:100%;
+    height:100%;
+    display:block;
+    padding:0em 2em; 
+    box-sizing: border-box;
+    font-weight:400;
+    font-family: 'Montserrat', sans-serif;
+    color:var(--fontColorDark);
+    font-size:0.98em;
+    display:flex;
+    justify-content: center;
+    align-content: center;
+    align-items:flex-start;
+}
+#menu_content ul li a span{
+    margin:auto;
+}
+#menu_content ul li a svg
+{
+    width:2.2em;
+    height:2.2em;
+    fill:none;
+    stroke:var(--fontColorDark);
+    stroke-width:5;
+    margin:auto;
+    margin-right:0.6em;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+#menu_content ul li:hover
+{
+    box-shadow:1px 0px 0px  rgba(0,0,0,0.05),inset 0px 0.3em 0 var(--fontColorDark);
+
+}
+.menu_active
+{
+    box-shadow:1px 0px 0px  rgba(0,0,0,0.05),inset 0px 0.3em 0 var(--mainColor) !important;
+}
+.menu_active svg
+{
+    stroke:var(--mainColor) !important;
+}
+.menu_active a
+{
+    color:var(--mainColor) !important;
+}
+.menu_active:hover
+{
+    box-shadow:1px 0px 0px  rgba(0,0,0,0.05),inset 0px 0.4em 0 var(--fontColorDark) !important;
+}
+.btn-holder
+{
+    display:flex;
+    width:100%;
+    justify-content: space-between;
+    margin-top:1em;
+}
+.btn,.btn-a
 {
     padding:0 2em;
     height:4.5em;
@@ -14,6 +108,26 @@
     transition: ease 0.2s;
     margin-right:1em;
     box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
+    font-size:0.85em;
+}
+.btn-a
+{
+    padding:0;
+    overflow:hidden;
+}
+.btn-a a
+{
+    display:flex;
+    justify-content:center;
+    align-content: center;
+    align-items:center;
+    text-decoration: none;
+    padding:0;
+    width:100%;
+    height:100%;
+    padding:0 2em;
+    color:#FFF;
+    color:var(--fontColorLight);
 }
 .btn:hover
 {
@@ -74,4 +188,61 @@
        -moz-user-select: none; /* Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* no prefix */
+}
+.error
+{
+    width:100%;
+    box-sizing:border-box;
+    padding:1.2em;
+    color:var(--fontColorLight);
+    background:var(--fillColor);
+    margin-bottom:1.5em;
+    border-radius:0.5em;
+    font-family: 'Montserrat', sans-serif;
+    font-size:0.9em;
+    display:none;
+}  
+.loader
+{
+    width:100%;
+    height:100%;
+    position: absolute;
+    background:rgba(251,249,253,1);
+    display:block;
+    display:none;
+    align-items: center;
+    align-content: center;
+    z-index:99;
+    transition: ease 0.23s;
+    opacity:0;
+}
+.loader p::before
+{
+    content:"";
+    background:url(http://gifimage.net/wp-content/uploads/2017/10/maplestory-gif-2.gif) no-repeat;
+    background-size:contain;
+    background-position:50% 100%;
+    position:Absolute;
+    left:0;
+    right:0;
+    height:3.2em;
+    width:8em;
+    top:-2em;
+    margin:auto;
+}
+.loader p
+{
+    margin:auto;
+    width:100%;
+    text-align:center;
+    font-weight:400;
+    position: relative;
+    padding-top:2em;
+    font-family: 'Montserrat', sans-serif;
+    color:var(--fontColorDark);  
+} 
+.maxWidth{
+    max-width:140em;
+    width:90%;
+    margin:auto;
 }

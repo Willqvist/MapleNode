@@ -1,3 +1,6 @@
 MapleCharacterGenerator/items/
 MapleCharacterGenerator/Characters/
 node_modules/
+library/
+*.psd
+*.wz

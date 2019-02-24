@@ -7,6 +7,7 @@
 {
     padding:2.5em;
 }
+/*
 #control form .fill
 {
     width:100%;
@@ -19,6 +20,49 @@
     transition:ease 0.2s;
     font-family: 'Montserrat', sans-serif;
     margin-bottom:2.2em;
+}
+*/
+.inputHolder
+{
+    display:flex;
+    flex-direction: column;
+}
+.firstInputHolder
+{
+    margin-top:1em;
+}
+#control form .fill
+{
+    width:100%;
+    height:2.6em;
+    box-sizing: border-box;
+    border:none;
+    background:transparent;
+    outline:none;
+    box-shadow:inset 0px -0.1em 0 rgba(0,0,0,0.2);
+    transition:ease 0.2s;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom:2em;
+    font-size:1em;
+    transition: ease 0.2s;
+}
+#control form .inputInlineHolder
+{
+    width:100%;
+    display:flex;
+    flex-direction: row;
+}
+#control form .inputInlineHolder .fill
+{
+    margin:0em 0.2em;
+}
+#control form select:valid
+{
+    box-shadow:inset 0px -0.1em 0 rgba(0,0,0,0.2) !important;
+}
+#control form select:focus
+{
+    box-shadow:inset 0px -0.1em 0 var(--secondaryMainColor) !important;
 }
 #control form input
 {
@@ -36,16 +80,24 @@
 #control form label
 {
     font-family: 'Montserrat', sans-serif;
-    font-weight:700; 
-    display:block;  
-    margin-bottom:0.5em;
+    font-weight:400; 
+    display:block;
+    font-size:0.86em;  
+    margin-bottom:0em;
     color:var(--fontColorDark);
+    color:rgba(0,0,0,0.5);
+    order:-1;
+    transition: ease 0.2s;
 }
 #control form .fill:focus
 {
-    box-shadow:inset 0px 0em 0 0em var(--secondaryMainColor),inset 0px 0em 0 0.2em var(--secondaryMainColor);
+    box-shadow:inset 0px -0.1em 0 var(--secondaryMainColor);
+}
+#control form .fill:focus + label
+{
+    color:var(--secondaryMainColor);
 }
 #control form .fill:valid
 {
-    box-shadow:inset 0px 0em 0 0em var(--mainColor),inset 0px 0em 0 0.2em var(--mainColor);
+    box-shadow:inset 0px -0.1em 0 0em var(--mainColor);
 }

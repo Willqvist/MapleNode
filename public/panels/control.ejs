@@ -8,12 +8,16 @@
     </div>
     <form id="loginForm">
         <div class="error" id="loginError">Error</div>
-        <label for="username">Username</label>
-        <input id="username" class="fill" type="text" name="username" required/>
-        <label for="password">Password</label>
-        <input id="password" class="fill" name="password" type="password" required/>
+        <div class="inputHolder firstInputHolder">
+            <input id="username" class="fill" type="text" name="username" required/>
+            <label for="username">Username</label>
+        </div>
+        <div class="inputHolder">
+            <input id="password" class="fill" name="password" type="password" required/>
+            <label for="password">Password</label>
+        </div>
         <div id="form-btn-holder">
-            <div class="btn btn-blue"><a href="#">Register</a></div>
+            <div class="btn-a btn-blue"><a href="register">Register</a></div>
             <input type="submit" class="btn btn-green" id="login" value="Login" />
         </div>
     </form>
@@ -34,6 +38,7 @@
         HttpHandler.postData(url,(response)=>
         {
             console.log(response);
+            
             loader.style.opacity="0";
             setTimeout(()=>
             {

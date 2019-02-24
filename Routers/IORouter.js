@@ -5,10 +5,35 @@ const mysql = require("../Tools/mysql").getMysql();
 const InstallHandler = require("../Tools/InstallationHandler");
 const constants = require("../Tools/Constants");
 const Rules = require("../Tools/Rules");
+const md5 = require("md5");
 let mcg = new MapleCharacterGenerator(mysql.connection,60*5);
 let installHandler = new InstallHandler(mysql.mysql);
 router.post("/login",(req,res)=>
 {
+    setTimeout(()=>{
+        mysql.connection.query(`SELECT id,name,gm FROM accounts WHERE name = ? AND password = ?`,[req.body.username,md5(req.body.password)],(err, result, fields)=>
+        {
+            let data = {};
+            data.success = true;
+            data.loggedin = false;
+            data.reason = "Wrong username or password";
+            if(result.length >= 1)
+            {
+                data.loggedin = true;
+                data.reason = "You have successfully loggedin!";
+                console.log(req.session);
+                req.session.user = {name:result[0].name,id:result[0].id,gm:result[0].gm};
+                let hour = 3600000/2;
+                req.session.cookie.expires = new Date(Date.now() + hour);
+                req.session.cookie.maxAge = hour;
+            }
+            res.send(JSON.stringify(data)); 
+        });
+    },00);
+});
+router.post("/register",(req,res)=>
+{
+    /*
     setTimeout(()=>{
         mysql.connection.query(`SELECT id,name,gm FROM accounts WHERE name = ? AND password = ?`,[req.body.username,req.body.password],(err, result, fields)=>
         {
@@ -29,7 +54,48 @@ router.post("/login",(req,res)=>
             res.send(JSON.stringify(data)); 
         });
     },00);
+    */
+   setTimeout(()=>{
+   let data = req.body;
+   if(isBetween(data.username.length,3,15) && isBetween(data.username.length,3,15))
+   {
+        if(data.c_password == data.password)
+        {
+            if(data.c_email == data.email)
+            {
+                if(data.year > 1800)
+                {
+                    mysql.connection.query(`INSERT INTO accounts (name,password,birthday,email) VALUES('${data.username}','${md5(data.password)}','${data.year}-${data.month}-${data.day}','${data.email}')`,(err,result)=>
+                    {
+                        if(err) throw err;
+                        res.send(JSON.stringify({success:true,error:"Register complete! You will be directed to a new page in 3 sec..."}));
+                    });
+                }
+                else
+                {
+                    res.send(JSON.stringify({success:false,error:"Are you really over 200 years old?"}));
+                }
+            }
+            else
+            {
+                res.send(JSON.stringify({success:false,error:"Emails does not match"}));
+            }
+        }
+        else
+        {
+            res.send(JSON.stringify({success:false,error:"Passwords does not match"}));
+        }
+   }
+   else
+   {
+       res.send(JSON.stringify({success:false,error:"username and password most be between 3 and 15 characters"}));
+   }
+},2000);
 });
+function isBetween(data,min,max)
+{
+    return data > min && data < max;
+}
 router.post("/ranking",(req,res)=>
 {
     let jobs = constants.getConstant("jobs");

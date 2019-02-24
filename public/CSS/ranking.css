@@ -40,7 +40,7 @@
     flex-direction: row;
     justify-content: space-between;
     position: relative;
-    box-shadow:inset 0px -0.2em 0em rgba(0, 0, 0, 0.08);
+    box-shadow:inset 0px -0.16em 0em rgba(0, 0, 0, 0.08);
     transition:Ease 0.2s;
     cursor:pointer;
 }
@@ -69,7 +69,8 @@
     color:var(--fontColorDark);
     font-weight:400;
     padding-bottom:0.6em;
-    opacity:0.6;
+    opacity:0;
+    transform: translateY(0.5em);
     transition:Ease 0.2s;
 }
 .rankingPlayer h3::before
@@ -88,7 +89,7 @@
 {
     position: absolute;
     bottom:0;
-    height:0.2em;
+    height:0.16em;
     background:var(--secondaryMainColor);
     margin-left:-2em;
     transition:Ease 0.2s;
@@ -97,12 +98,12 @@
     min-height:0em;
     padding-left:2.4em;
 }
+.rankingPlayer:hover h5
+{
+    opacity:0.6;
+    transform: translateY(0);
+}
 .rankingPlayer:hover .playerExpBar
 {
     margin-left:-2.4em;
-}
-.rankingPlayer:hover h5
-{
-    padding-bottom:0.6em;
-    opacity:0.8;
 }

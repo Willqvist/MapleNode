@@ -9,9 +9,11 @@
     -ms-transition: none !important;
     -o-transition: none !important;
   }
-body
+#wrapper
 {
+    font-size:1em;
     display:flex;
+    margin-top:5em;
 }
 #categoryMenu
 {
@@ -82,9 +84,6 @@ body
 }
 #menu
 {
-    width:100%;
-    height:6em;
-    background:#FFF;
     box-shadow:inset 0px -1px 0px #BAEFD2;
 }
 #pages
@@ -186,6 +185,7 @@ body
 .voteSiteHolder
 {
     display:flex;
+    flex-flow: wrap;
 }
 .voteSite .edit:hover,.voteSite .close:hover
 {

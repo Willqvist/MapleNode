@@ -10,17 +10,28 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.6.0",
+    "better-queue": "^3.8.10",
+    "bmp-js": "^0.1.0",
     "body-parser": "^1.18.2",
+    "circular-json": "^0.5.9",
     "ejs": "^2.5.8",
     "express": "^4.16.3",
+    "express-fileupload": "^1.1.1-alpha.3",
     "express-session": "^1.15.6",
     "fs": "0.0.1-security",
     "helmet": "^3.12.0",
+    "md5": "^2.2.1",
+    "memorystream": "^0.3.1",
+    "multer": "^1.4.1",
     "mysql": "^2.15.0",
     "node-png": "^0.4.3",
+    "pako": "^1.0.8",
     "pngjs": "^3.3.2",
     "pngjs2": "^2.0.0",
+    "socket.io": "^2.2.0",
+    "uint32": "^0.2.1",
     "xml-parser": "^1.2.1",
-    "xmldom": "^0.1.27"
+    "xmldom": "^0.1.27",
+    "zlib": "^1.0.5"
   }
 }

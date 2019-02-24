@@ -1,3 +1,6 @@
+<%
+let MENU_SITE = "RANKING";
+%>
 <!doctype html>
 <html>
     <head>
@@ -13,15 +16,16 @@
             }
         </style>
         <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">
-        <link rel="stylesheet" type="text/css" href="CSS/rankingPage.css">    
         <link rel="stylesheet" type="text/css" href="CSS/media.css">   
         <link rel="stylesheet" type="text/css" href="CSS/menu.css"> 
-        <link rel="stylesheet" type="text/css" href="CSS/dropdown.css">             
+        <link rel="stylesheet" type="text/css" href="CSS/dropdown.css">    
+        <link rel="stylesheet" type="text/css" href="CSS/rankingPage.css">                    
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="images/tabIcon.png">
         <title>Ranking</title>
     </head>
     <body>
+        <% include ../imports/menu.ejs %>
         <header id="header">
             <div id="fade"></div>
             <div id="headerContent" class="maxWidth">
