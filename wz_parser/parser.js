@@ -32,10 +32,18 @@ class Parser
     }
     static parse_buffer(buffer,filename,callback)
     {
-        let err_handler = new ErrorHandler(callback);
+        //let err_handler = new ErrorHandler(callback);
         let wzFile = new WZFile(filename,buffer,Constants.versions.GMS);
-        wzFile.setType(WZType.getType(filename,callback),callback);
-        wzFile.parse(err_handler);
+        if(!wzFile.setType(WZType.getType(filename,callback)))
+        {
+            return callback({err:{hasError:true,reason:"Something went wrong parsing file, is this a correct .wz file?"}});
+        }
+        let parsed = wzFile.parse();
+        console.log("parsing");
+        if(!parsed)
+        {
+            return callback({err:{hasError:true,reason:"Something went wrong parsing file"}});
+        }
         wzFile.wzDir.parseImages();
         wzFile.saveType();
     }

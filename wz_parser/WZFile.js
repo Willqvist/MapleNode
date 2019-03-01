@@ -33,7 +33,7 @@ class WZFile extends WZNode
             contentStart:this.contentStart
         };
         this.version = this.reader.readInt16();
-        this.hash();
+        return this.hash();
     }
     hash()
     {
@@ -74,8 +74,7 @@ class WZFile extends WZNode
                                 let directory = new WZDirectory(this.reader,this.name,this.versionHash,this.WzIv,this);
                                 directory.parse();
                                 this.wzDir = directory;
-                                console.log("DONE!!");
-                                return;
+                                return true;
                             }
                         }
                         this.reader.seek(position);
@@ -94,7 +93,9 @@ class WZFile extends WZNode
             let directory = new WzDirectory(this.reader, this.name, this.versionHash, this.WzIv, this);
             directory.ParseDirectory();
             this.wzDir = directory; 
+            return true;
         }
+        return false;
     }
     getVersionHash(encrypted_version,real_version)
     {
@@ -123,12 +124,13 @@ class WZFile extends WZNode
         }
         return 0;
     }
-    setType(type,callback)
+    setType(type)
     {
+        if(type==null) return false;
         this.type = type;
         this.type.err = false;
         this.type.wzFile = this;
-        this.type.callback = callback;
+        return true;
     }
     saveType()
     {
@@ -146,6 +148,7 @@ class WZFile extends WZNode
                     }
                     catch(err)
                     {
+                        console.log(err);
                         this.stop = false;
                         this.type.err = true;
                         this.type.error();

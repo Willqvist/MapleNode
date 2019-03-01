@@ -5,3 +5,4 @@ library/
 *.psd
 *.wz
 settings/setup.MN
+settings/database.MN

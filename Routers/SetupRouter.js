@@ -50,7 +50,7 @@ router.all("/:id/",(req,res,next)=>
                 case 2:
                     installHandler.setSetupComplete(req.body,(err)=>
                     {
-                        if(err) return res.redirect("setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
+                        if(err) return res.redirect(301,"setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
                         constants.setConstant("setup-status",1);
                         app.locals.palette = constants.getConstant("palette");
                         app.locals.heroImage = "headerImage.png";

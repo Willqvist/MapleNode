@@ -22,7 +22,14 @@ class SimpleWritableBuffer
     inflate()
     {
         this.hasDeflated = true;
-        this.buffer = pako.inflate(this.buffer);
+        try
+        {
+            this.buffer = pako.inflate(this.buffer);
+            return true;
+        }catch(err)
+        {
+            return false;
+        }
     }
     realloc(size)
     {

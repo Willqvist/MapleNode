@@ -60,6 +60,9 @@ function setupComplete()
         "Cash":"Item",
         "Pet":"Item",
         "Install":"Item",
+        "Equip":"Eqp",
+        "Eqp":"Eqp"
+        
     }
     );
     /*

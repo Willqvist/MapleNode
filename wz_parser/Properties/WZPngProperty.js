@@ -37,15 +37,20 @@ class WZPngProperty extends ImageProperty
         }
         this.reader = reader;
     }
-    storePng(dest,meta)
+    storePng(storer,dest,meta)
     {
         let dir = dest+this.parent.parent.parent.name.replace(".img","")+"/";
-        if(meta)
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir,{ recursive: true });
+        }
+        let src;
+        if(!meta.filename)
         {
             this.parent.parent.storeMeta(dir,meta);
+            src = dir + this.parent.name + ".png";
         }
-        
-        let src = dir + this.parent.name + ".png";
+        else
+            src = dir + meta.filename + ".png";
         if(this.png == null)
         {
             let pos = this.reader.pos;
@@ -59,8 +64,8 @@ class WZPngProperty extends ImageProperty
         }
         //pipe image to file...
         //console.log(this.parent.getPath());
-
-        ImageStorer.getInstance().addImage(this.png,dir,src);
+        if(this.png)
+            storer.addImage(this.png,dir,src);
     }
     ArgbToRgba()
     {
@@ -107,7 +112,10 @@ class WZPngProperty extends ImageProperty
                 }
             }
             dataStream.pos = 2;
-            dataStream.inflate();
+            if(!dataStream.inflate())
+            {
+                return;
+            }
         }
         switch(this.format + this.format2)
         {
