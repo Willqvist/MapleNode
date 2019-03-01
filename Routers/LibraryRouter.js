@@ -48,22 +48,32 @@ let uploadSettings =
 {
     uploadedString:false
 }
-router.post("/upload",upload.array('wz'),(req,res)=>
+router.post("/upload/:uid",upload.array('wz'),(req,res)=>
 {
     let wz_files = req.files;
-    console.log(req.body);
+
     for(let id in wz_files)
     {
         let file = wz_files[id];
 
+        if(file.originalname != "String.wz" && !uploadSettings.loadedString)
+        {
+            return res.send(JSON.stringify({error:"Upload String.wz first!",uid:req.params.uid}));
+        }
+
         parser.add_to_parse({name:file.originalname,data:file.buffer},((result)=>
         {
             if(result.err.hasError)
-            return res.send(JSON.stringify({error:"Error parsing " + file.originalname}));
+                if(result.err.reason)
+                    return res.send(JSON.stringify({error:result.err.reason,uid:req.params.uid}));
+                else
+                    return res.send(JSON.stringify({error:"Error parsing " + file.originalname,uid:req.params.uid}));
             
             uploadSettings.loadedString = true;
-            return res.send(JSON.stringify({success:true}));
-        }).bind(file.originalname));
+            return res.send(JSON.stringify({success:true,uid:req.params.uid}));
+        }).bind(file));
+
+        break;
     }
 });
 

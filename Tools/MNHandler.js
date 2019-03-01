@@ -4,10 +4,12 @@ class MNHandler
     saveMysql(data,callback)
     {
         let string = JSON.stringify(data);
-        fs.writeFile("settings/database.MN",string,(err)=>
+        this.checkForFile("settings/database.MN",()=>
         {
-            console.log(err); 
-            callback(err);  
+            fs.writeFile("settings/database.MN",string,(err)=>
+            {
+                callback(err);  
+            });
         });
     }
     isDatabaseSetup() 
@@ -17,6 +19,24 @@ class MNHandler
     getMysql()
     {
         return JSON.parse(fs.readFileSync("settings/database.MN","utf8"));
+    }
+    checkForFile(fileName,callback)
+    {
+        if (!fs.existsSync("settings")){
+            fs.mkdirSync("settings");
+        }
+        fs.exists(fileName, function (exists) {
+            if(exists)
+            {
+                callback();
+            }else
+            {
+                fs.writeFile(fileName, {flag: 'wx'}, function (err, data) 
+                { 
+                    callback();
+                })
+            }
+        });
     }
 }
 module.exports = new MNHandler();
