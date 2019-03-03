@@ -1,8 +1,7 @@
 const mysql = require("../Tools/mysql").getMysql();
 const Queue = require('../Tools/Queue');
+const fs = require("graceful-fs");
 const ImageStorer = require("./ImageStorer");
-const progress = require("../Tools/ProgressUpdater");
-
 class WZType
 {
     static getType(str,callback)
@@ -10,14 +9,13 @@ class WZType
         if(str.includes("String")) return new WZString(callback);
         if(str.includes("Mob")) return new WZMob(callback);
         if(str.includes("Character")) return new WZCharacter(callback);
-        if(WZType.includes(str,"Item","Mob","Etc","Map","Base")) return new WZPng(callback);
+        if(WZType.includes(str,"Item","Etc","Map","Base")) return new WZPng(callback);
         return null;
     }
     static includes(str,...args)
     {
         let s = false;
         args.forEach(e => {
-            console.log(e,str,str.includes(e));
             if(str.includes(e))
             {
                 s = true;
@@ -38,9 +36,31 @@ class WZType
     {
         throw new Error("parsed not included!");
     }
+    writeMeta(dest,property,data)
+    {
+        let dir = dest+property.parent.parent.parent.name.replace(".img","")+"/";
+        this.writeMetaDir(dir,property,data);
+    }
+    writeMetaDir(dir,property,meta)
+    {
+        if(!this.metaSaved[dir])
+        {
+            //console.log(++this.f,dir);
+            property.storeMeta(dir,meta,(err)=>{
+                this.metaSaved[dir] = {};
+            });
+        }
+    }
     constructor(callback)
     {
         this.callback = callback;
+        this.metaSaved = {};
+        this.f = 0;
+        this.storer = new ImageStorer();
+        this.storer.setCallbackComplete(()=>
+        {
+            this.callback({wz:this.wzFile,err:{hasError:this.err}});
+        });
     }
 }
 
@@ -64,6 +84,9 @@ class WZString extends WZType
                 }).bind(cb));
            
             }).bind(cb));
+        },()=>
+        {
+            this.callback({wz:this.wzFile,err:{hasError:this.err}}); 
         });
 
         WZString.meta = {};
@@ -72,6 +95,7 @@ class WZString extends WZType
     parsed()
     {
         this.callback({wz:this.wzFile,err:{hasError:this.err}});
+        //this.queue.process();
     }
     toEight(type,str)
     {
@@ -79,20 +103,19 @@ class WZString extends WZType
         if(str.length < 8) return this.toEight(type,"0"+str);
         return str;
     }
-    parse(prop)
+    parse(prop,next)
     {
         if(prop.type=="STRING" && prop.parent.type=="SUB")
         {
-            //prop.storeMeta("./library/v62/String/"+prop.name+"/");
             let type = prop.parentImg().name;
             let id = this.toEight(type,prop.parent.name);
-            //console.log(name);
+
             if(!WZString.meta[type])
                 WZString.meta[type] = {};
             if(prop.name=="name" || prop.name=="desc")
             {
                 let {name,desc} = prop.parent.getPropertyValue();
-                //console.log(id,desc);
+
                 name = !name ? "" : name.value;
                 desc = !desc ? "" : desc.value;
                 if(type=="Mob.img")
@@ -100,16 +123,16 @@ class WZString extends WZType
                 
                 if(SpecialStrings.isSpecial(id))
                 {
-                    console.log(id,SpecialStrings.isSpecial(id),name);
                     name = SpecialStrings.isSpecial(id);
                     WZString.meta["Special.img"][id] = {name:name,desc:desc};
-                    return;
+                    return next();
                 }
                 WZString.meta[type][id] = {type:type.replace(".img",""),id:id,name:name,desc:desc};
-                //console.log(WZString.meta[type][id]); 
-                this.queue.push(WZString.meta[type][id]);  
+
+                this.queue.push(WZString.meta[type][id]); 
             }
         }
+        next();
     }
 }
 
@@ -119,18 +142,11 @@ class WZPng extends WZType
     constructor(callback)
     {
         super(callback);
-        this.storer = new ImageStorer();
-        this.storer.setCallbackComplete(()=>
-        {
-            this.callback({wz:this.wzFile,err:{hasError:this.err}})
-        });
-
     }
     parsed()
     {
         console.log("done with WZPng Type!");
         this.storer.complete();
-        //this.callback({wz:this.wzFile,err:{hasError:this.err}});
     }
     removeTrailingZeros(str)
     {
@@ -140,17 +156,16 @@ class WZPng extends WZType
         }
         return str;
     }
-    parse(property)
+    parse(property,next)
     {
         if(property.type=="CANVAS")
         {
             let metaData = property.parent.parent.getPropertyValue();
-            console.log(metaData);
             let parentImg = property.parent.parent.name;
             let parentDir = property.parentDirectory();
-            //console.log(parentImg.replace(".img",""));
+
             let id = parentImg.replace(".img","");
-            //console.log("parent img: ",id);
+
             let parentName = parentDir.name+".img";
             if(WZString.meta[parentName] && WZString.meta[parentName][id])
             {
@@ -162,9 +177,11 @@ class WZPng extends WZType
                 metaData["name"] = "Undefined";
                 metaData["desc"] = "Undefined";
             }
-            console.log();
-            property.png.storePng(this.storer,"./library/v62/Item/",metaData);
+            this.writeMetaDir("./library/v62/Item/"+id+"/",property,metaData);
+            property.png.storePng(this.storer,"./library/v62/Item/",next);
+            return;
         }
+        next();
     }
 }
 
@@ -173,18 +190,12 @@ class WZMob extends WZType
     constructor(callback)
     {
         super(callback);
-        this.storer = new ImageStorer();
-        this.storer.setCallbackComplete(()=>
-        {
-            console.log("complete");
-            this.callback({wz:this.wzFile,err:{hasError:this.err}})
-        });
     }
     parsed()
     {
-        console.log("done with WZPng Type!");
+        console.log("parsed!");
         this.storer.complete();
-        //this.callback({wz:this.wzFile,err:{hasError:this.err}});
+
     }
     toEight(type,str)
     {
@@ -200,7 +211,7 @@ class WZMob extends WZType
         }
         return str;
     }
-    parse(property)
+    parse(property,next)
     {
         if(property.type == "SUB" && property.name == "info")
         {
@@ -216,15 +227,19 @@ class WZMob extends WZType
             {
                 meta.name = mob_meta.name;
                 meta.desc = mob_meta.desc;
-                property.parentImg().storeMeta("./library/v62/Mob/"+id+"/",meta);
+                //property.parentImg().storeMeta("./library/v62/Mob/"+id+"/",meta,next);
+                this.writeMetaDir("./library/v62/Mob/"+id+"/",property.parentImg(),meta);
+                return next();
             }
+            else
+                return next();
         }
 
 
         if(property.type == "CANVAS")
         {
             let name = property.parent.name + "_" + property.name;
-            property.png.storePng(this.storer,"./library/v62/Mob/",{filename:name});
+            property.png.storePng(this.storer,"./library/v62/Mob/",next,name);
         }
     }    
 }
@@ -234,18 +249,13 @@ class WZCharacter extends WZType
     constructor(callback)
     {
         super(callback);
-        this.storer = new ImageStorer();
-        this.storer.setCallbackComplete(()=>
-        {
-            console.log("complete!!");
-            this.callback({wz:this.wzFile,err:{hasError:this.err}})
-        });
     }
     parsed()
     {
 
         console.log("done with WZPng Type!");
         this.storer.complete();
+
         //this.callback({wz:this.wzFile,err:{hasError:this.err}});
     }
     removeTrailingZeros(str)
@@ -256,13 +266,13 @@ class WZCharacter extends WZType
         }
         return str;
     }
-    parse(property)
+    parse(property,next)
     {
         if(property.type == "CANVAS" && (property.name == "icon" || property.name == "iconRaw"))
         {
-            console.log(property.name,property.parentImg().name,property.parentImg().parent.name);
             //console.log(property.png);
-            property.png.storePng(this.storer,"./library/v62/Eqp/",{name:"empty right now!!! TODO",type:property.parentImg().parent.name});
+            this.storeMeta("./library/v62/Eqp/",property,{name:"empty right now!!! TODO",type:property.parentImg().parent.name})
+            property.png.storePng(this.storer,"./library/v62/Eqp/",next);
         }
     }    
 }

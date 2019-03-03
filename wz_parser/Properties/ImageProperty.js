@@ -1,6 +1,7 @@
 const WZNode = require("../WZNode");
-const fs = require("fs");
-
+const fs = require("graceful-fs");
+const ImageStorer = require("../ImageStorer");
+const JSONStream = require('JSONStream');
 class ImageProperty extends WZNode
 {
     constructor(name)
@@ -52,17 +53,21 @@ class ImageProperty extends WZNode
         prop.setParent(this);
         this.props.push(prop);
     }
-    storeMeta(dir,meta)
+    storeMeta(dir,meta,callback)
     {
-        if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir,{recursive:true});
-        }
+        if(!fs.existsSync(dir))
+            fs.mkdirSync(dir);
         let json;
         if(!meta)
             json = JSON.stringify(this.getPropertyValue());
         else
             json = JSON.stringify(meta);
-        fs.writeFileSync(dir+'meta.json', json, 'utf8');
+
+        let stream = fs.createWriteStream(dir+'meta.json');
+            stream.write(json);
+        stream.end();
+
+        callback();
     }
     getPropertyValue()
     {

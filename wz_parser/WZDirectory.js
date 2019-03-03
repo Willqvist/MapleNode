@@ -44,11 +44,24 @@ class WZDirectory extends WZNode
         if(this.subDirs.length==0)
         {
             callback(this);
+            return;
         }
         this.subDirs.forEach(dir=>
         {
             dir.getAllSubDirectories(callback);
         });
+    }
+    getDeepSubDirectories(index = 0)
+    {
+        let dirs = this.subDirs.slice();
+        dirs.forEach(dir => {
+            dirs = dirs.concat(dir.getDeepSubDirectories(++index));
+        });
+        if(index == 0)
+        {
+            dirs.push(this);
+        }
+        return dirs;      
     }
     getChildImage(index)
     {

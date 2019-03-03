@@ -19,6 +19,13 @@ class SimpleWritableBuffer
         this.buffer[this.pos] = byte;
         this.pos ++;
     }
+    writeBytes(bytes)
+    {
+        for(let i = 0; i < bytes.length; i++)
+        {
+            this.writeByte(bytes[i]);
+        }
+    }    
     inflate()
     {
         this.hasDeflated = true;
@@ -31,6 +38,11 @@ class SimpleWritableBuffer
             return false;
         }
     }
+    empty()
+    {
+        this.buffer = new Buffer(8);
+        this.pos = 0;
+    }
     realloc(size)
     {
         let buf = Buffer.allocUnsafe(size).fill(0);
@@ -39,6 +51,10 @@ class SimpleWritableBuffer
             buf[i]=this.buffer[i];
         }
         this.buffer = buf;
+    }
+    getBuffer()
+    {
+        return this.buffer;
     }
     read(offset, size)
     {

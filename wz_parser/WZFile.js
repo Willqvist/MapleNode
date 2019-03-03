@@ -2,7 +2,7 @@ const WZReader = require("./WZReader");
 const WZNode = require("./WZNode");
 const WZDirectory = require("./WZDirectory");
 const Tools = require("./Tools");
-
+const async = require("async");
 class WZFile extends WZNode
 {
     constructor(filename,buffer,version)
@@ -132,19 +132,64 @@ class WZFile extends WZNode
         this.type.wzFile = this;
         return true;
     }
-    saveType()
+    saveType(callback)
     {
         if(!this.type) return;
         this.stop = true;
-        this.wzDir.getAllSubDirectories(dir => {
+        /*
+        var self = this;
+        async.each(this.wzDir.getDeepSubDirectories(),function(dir,next_dir)
+        {
+            let imgs = dir.getChildImages();
+            async.each(imgs,function(element,next_img)
+            {
+                let props = self.getAllProperties(element);
+                async.each(props,function(prop,next)
+                {
+                    if(!self.stop) return next(true);
+                    try
+                    {
+                        self.type.parse(prop,next);
+                    }
+                    catch(err)
+                    {
+                        console.trace(err);
+                        self.stop = false;
+                        self.type.err = true;
+                        //this.type.error();
+                        //next(true);
+                    }
+                },function(err)
+                {
+                    if(err) throw err;
+                    next_img();
+                });
+
+            },function(err)
+            {
+                if(err) throw err;
+                next_dir();
+            });
+
+        },function(err)
+        {
+            if(err) throw err;
+            if(!self.type.err)
+                self.type.parsed();
+        
+            return callback(self.stop);
+        });
+        */
+        let dirs = this.wzDir.getDeepSubDirectories();
+        dirs.forEach(dir => {
             //console.log(dir.getPath(),dir.getChildImages().length);
             dir.getChildImages().forEach(element => {
                 //console.log(element.getProperties().length);
-                this.getAllProperties(element,elem => {
+                this.getAllProperties(element).forEach(elem => {
                     if(!this.stop) return;
                     try
                     {
-                        this.type.parse(elem);
+                        this.type.parse(elem,()=>{});
                     }
                     catch(err)
                     {
@@ -158,14 +203,18 @@ class WZFile extends WZNode
         });
         if(!this.type.err)
             this.type.parsed();
-        return this.stop;
+
+        return callback(this.stop);
     }
-    getAllProperties(element,callback)
+    getAllProperties(element)
     {
-        callback(element);
-        element.getProperties().forEach(e => {
-            this.getAllProperties(e,callback);
-        });
+        let props = [];
+        props.push(element);
+        for(let i = 0; i < element.props.length; i++)
+        {
+            props = props.concat(this.getAllProperties(element.props[i]));
+        }
+        return props;
     }
 }
 module.exports = WZFile;

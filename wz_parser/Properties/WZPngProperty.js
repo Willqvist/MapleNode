@@ -3,7 +3,7 @@ const SimpSimpleWritableBuffer = require("../SimpleWritableBuffer");
 const WZReader = require("../WZReader");
 const PNG = require("pngjs").PNG;
 const ImageStorer = require("../ImageStorer");
-const fs = require("fs");
+const fs = require("graceful-fs");
 class WZPngProperty extends ImageProperty
 {
     constructor(reader,parseNow,parent)
@@ -37,20 +37,8 @@ class WZPngProperty extends ImageProperty
         }
         this.reader = reader;
     }
-    storePng(storer,dest,meta)
+    createImage(storer,src,callback)
     {
-        let dir = dest+this.parent.parent.parent.name.replace(".img","")+"/";
-        if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir,{ recursive: true });
-        }
-        let src;
-        if(!meta.filename)
-        {
-            this.parent.parent.storeMeta(dir,meta);
-            src = dir + this.parent.name + ".png";
-        }
-        else
-            src = dir + meta.filename + ".png";
         if(this.png == null)
         {
             let pos = this.reader.pos;
@@ -63,9 +51,24 @@ class WZPngProperty extends ImageProperty
             this.reader.seek(pos);
         }
         //pipe image to file...
-        //console.log(this.parent.getPath());
+        //console.log(dir,src);
         if(this.png)
-            storer.addImage(this.png,dir,src);
+            storer.addImage(this.png,src,callback);
+    }
+    storePng(storer,dest,callback,name)
+    {
+        let dir = dest+this.parent.parent.parent.name.replace(".img","")+"/";
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir,{ recursive: true });
+        }
+        let src;
+
+        if(!name)
+            src = dir + this.parent.name + ".png";
+        else
+            src = dir + name + ".png";
+
+        this.createImage(storer,src,callback);
     }
     ArgbToRgba()
     {

@@ -1,4 +1,6 @@
-const fs = require("fs");
+const fs = require("graceful-fs");
+const FileQueue = require('filequeue');
+
 class ImageStorer
 {
     constructor()
@@ -8,49 +10,60 @@ class ImageStorer
         this.callback;
         this.done = false;
         this.isFilling = true;
+        this.index = 0;
+        this.piped = {};
+        this.piping = 0;
     }
-    addImage(image,dir,src)
+    addImage(image,src)
     {
-        this.done = false;
-        this.images.push({image:image,dir:dir,src:src});
-        if(this.images.length >= 1)
-            this.saveImage();
+        if(this.piped[src])
+            return;
+        this.piped[src] = {};
+        this.piping ++;
+        this.images.push({image:image,src:src});
+        this.saveImage();
     }
     setCallbackComplete(callback)
     {
         this.hasCallback = true;
         this.callback = callback;
-        if(this.done)
-        {
-            callback();
-        }
     }
     complete()
     {
         this.isFilling = false;
         this.saveImage();
     }
+    static getQueue()
+    {
+        console.log(++ImageStorer.i);
+        return ImageStorer.queue;
+    }
     saveImage(names)
     {
-        if(this.images.length==0)
+        if(this.index >= this.images.length)
         {
             if(this.hasCallback && !this.isFilling)
             {
                 this.done = true;
-                this.callback(names);
+                this.images = [];
             }
             return;
         }
-        let image = this.images[0];
-        if(!fs.existsSync(image.dir))
-            fs.mkdirSync(image.dir);
+        let image = this.images[this.index++];
 
+        console.log("piping image",image.src);
         image.image.pack()
         .pipe(fs.createWriteStream(image.src))
         .on('finish',(function() {
-            this.images.shift();
-            this.saveImage();
-        }).bind(this));
+            delete this.piped[image.src];
+            console.log("done piping image",image.src);
+            if(Object.keys(this.piped).length == 0)
+            {
+                this.callback()
+            }
+        }).bind(this,image));
     }
 }
+ImageStorer.queue = new FileQueue(100000);
+ImageStorer.i = 0;
 module.exports = ImageStorer;

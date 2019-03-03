@@ -5,6 +5,7 @@ const library = require("../Tools/Library").getLibrary();
 const fs = require("fs");
 const parser = require("../wz_parser/parser");
 const multer  = require('multer');
+const WritableBuffer = require("../wz_parser/SimpleWritableBuffer")
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, './uploads')
@@ -13,7 +14,11 @@ const storage = multer.diskStorage({
       cb(null, file.originalname)
     }
   });
-const upload = multer();
+const upload = multer({
+    limits: {
+        fileSize: 1000000*1000
+    }
+});
 
 router.all(["/","/index","/start"],(req,res,next)=>
 {
@@ -48,38 +53,48 @@ let uploadSettings =
 {
     uploadedString:false
 }
-router.post("/upload/:uid",upload.array('wz'),(req,res)=>
+let buffers = [];
+let size = 0;
+let file_uid = -1;
+router.post("/upload/:uid/file",(req,res)=>
+{
+    if(parseInt(req.params.uid) != file_uid)
+    {
+        file_uid = parseInt(req.params.uid);
+        buffers = [];
+    }
+    buffers.push(new Buffer(req.body.file,"binary"));
+    return res.send("!");
+});
+router.post("/upload/:name/:uid",(req,res)=>
 {
     let wz_files = req.files;
-
-    for(let id in wz_files)
+    let buffer = Buffer.concat(buffers);
+    console.log(buffer);
+    let file = {originalname:req.params.name,buffer:buffer};
+    if(file.originalname != "String.wz" && !uploadSettings.loadedString)
     {
-        let file = wz_files[id];
-
-        if(file.originalname != "String.wz" && !uploadSettings.loadedString)
-        {
-            return res.send(JSON.stringify({error:"Upload String.wz first!",uid:req.params.uid}));
-        }
-
-        parser.add_to_parse({name:file.originalname,data:file.buffer},((result)=>
-        {
-            if(result.err.hasError)
-                if(result.err.reason)
-                    return res.send(JSON.stringify({error:result.err.reason,uid:req.params.uid}));
-                else
-                    return res.send(JSON.stringify({error:"Error parsing " + file.originalname,uid:req.params.uid}));
-            
-            uploadSettings.loadedString = true;
-            return res.send(JSON.stringify({success:true,uid:req.params.uid}));
-        }).bind(file));
-
-        break;
+        return res.send(JSON.stringify({error:"Upload String.wz first!",uid:req.params.uid}));
     }
+
+    parser.add_to_parse({name:file.originalname,data:file.buffer},((result)=>
+    {
+        console.log("came here");
+        if(result.err.hasError)
+            if(result.err.reason)
+                return res.send(JSON.stringify({error:result.err.reason,uid:req.params.uid}));
+            else
+                return res.send(JSON.stringify({error:"Error parsing " + file.originalname,uid:req.params.uid}));
+        
+        uploadSettings.loadedString = true;
+        return res.send(JSON.stringify({success:true,uid:req.params.uid}));
+    }).bind(file));
 });
 
 
 router.get("/:type/:id",(req,res)=>
 {
+
     let id = req.params.id;
     let type = req.params.type;
     if(!constants.getConstant("type_mapper")[type]) return res.send("hmm");

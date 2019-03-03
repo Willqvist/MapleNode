@@ -1,7 +1,14 @@
+
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 //libaries
 const express = require("express");
+const async = require("async");
+async.each([1,2,3,4,5],(item,next)=>
+{
+    next();
+    console.log(item);
+});
 const session = require('express-session');
 const fs = require("fs");
 const bodyParser = require("body-parser");
@@ -13,7 +20,7 @@ let app = express();
 let server = app.listen(8081);
 app.set('view engine', 'ejs');
 app.set("views",__dirname+"/public");
-app.use(bodyParser.json()); 
+app.use(bodyParser.json({limit:'1000mb'})); 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(helmet()); 
 require("./setup")(setupListeners,setupComplete);
