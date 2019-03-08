@@ -118,8 +118,6 @@ class WZString extends WZType
 
                 name = !name ? "" : name.value;
                 desc = !desc ? "" : desc.value;
-                if(type=="Mob.img")
-                console.log(type,id,name);
                 
                 if(SpecialStrings.isSpecial(id))
                 {
@@ -146,7 +144,7 @@ class WZPng extends WZType
     parsed()
     {
         console.log("done with WZPng Type!");
-        this.storer.complete();
+        this.callback({wz:this.wzFile,err:{hasError:this.err}});
     }
     removeTrailingZeros(str)
     {
@@ -194,8 +192,7 @@ class WZMob extends WZType
     parsed()
     {
         console.log("parsed!");
-        this.storer.complete();
-
+        this.callback({wz:this.wzFile,err:{hasError:this.err}});
     }
     toEight(type,str)
     {
@@ -235,8 +232,7 @@ class WZMob extends WZType
                 return next();
         }
 
-
-        if(property.type == "CANVAS")
+        if(property.type == "CANVAS" && (property.parent.name == "walk" || property.parent.name == "stand" || property.parent.name == "die"))
         {
             let name = property.parent.name + "_" + property.name;
             property.png.storePng(this.storer,"./library/v62/Mob/",next,name);
@@ -254,8 +250,7 @@ class WZCharacter extends WZType
     {
 
         console.log("done with WZPng Type!");
-        this.storer.complete();
-
+        this.callback({wz:this.wzFile,err:{hasError:this.err}});
         //this.callback({wz:this.wzFile,err:{hasError:this.err}});
     }
     removeTrailingZeros(str)
@@ -270,8 +265,9 @@ class WZCharacter extends WZType
     {
         if(property.type == "CANVAS" && (property.name == "icon" || property.name == "iconRaw"))
         {
+            let id = property.parent.name.replace(".img","");
             //console.log(property.png);
-            this.storeMeta("./library/v62/Eqp/",property,{name:"empty right now!!! TODO",type:property.parentImg().parent.name})
+            this.writeMetaDir("./library/v62/Eqp/"+id+"/",property,{name:"empty right now!!! TODO",type:property.parentImg().parent.name})
             property.png.storePng(this.storer,"./library/v62/Eqp/",next);
         }
     }    

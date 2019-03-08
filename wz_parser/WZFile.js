@@ -132,7 +132,7 @@ class WZFile extends WZNode
         this.type.wzFile = this;
         return true;
     }
-    saveType(callback)
+    saveType()
     {
         if(!this.type) return;
         this.stop = true;
@@ -181,6 +181,7 @@ class WZFile extends WZNode
         });
         */
         let dirs = this.wzDir.getDeepSubDirectories();
+        dirs.push(this.wzDir);
         dirs.forEach(dir => {
             //console.log(dir.getPath(),dir.getChildImages().length);
             dir.getChildImages().forEach(element => {
@@ -203,8 +204,6 @@ class WZFile extends WZNode
         });
         if(!this.type.err)
             this.type.parsed();
-
-        return callback(this.stop);
     }
     getAllProperties(element)
     {

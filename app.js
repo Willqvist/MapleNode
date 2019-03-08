@@ -4,17 +4,12 @@ process.stdin.setEncoding('utf8');
 //libaries
 const express = require("express");
 const async = require("async");
-async.each([1,2,3,4,5],(item,next)=>
-{
-    next();
-    console.log(item);
-});
 const session = require('express-session');
 const fs = require("fs");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const constants = require("./Tools/Constants");
-const Parser = require("./wz_parser/parser");
+
 //setup
 let app = express();
 let server = app.listen(8081);
@@ -68,8 +63,15 @@ function setupComplete()
         "Pet":"Item",
         "Install":"Item",
         "Equip":"Eqp",
-        "Eqp":"Eqp"
-        
+        "Eqp":"Eqp",
+        "Mob":"Mob"
+    }
+    );
+    constants.setConstant("icon_mapper",
+    {
+        "Item":"icon",
+        "Eqp":"icon",
+        "Mob":"stand_0"
     }
     );
     /*

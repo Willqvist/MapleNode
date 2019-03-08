@@ -55,9 +55,13 @@ class WZPngProperty extends ImageProperty
         if(this.png)
             storer.addImage(this.png,src,callback);
     }
+    pad8(str)
+    {
+        return str.padStart(8,'0');
+    }
     storePng(storer,dest,callback,name)
     {
-        let dir = dest+this.parent.parent.parent.name.replace(".img","")+"/";
+        let dir = dest+this.pad8(this.parent.parent.parent.name.replace(".img",""))+"/";
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir,{ recursive: true });
         }
@@ -82,12 +86,10 @@ class WZPngProperty extends ImageProperty
     parsePng()
     {
         if(this.parsed) return;
-        let zlib;
         let uncompressedSize = 0;
         let x = 0,y = 0, b = 0,g = 0;
         let bmp;
         let imgParent = this.parentImg();
-        let decBuf;
 
         let reader = new WZReader(Buffer.from(this.bytes));
         let header = reader.readUInt16();
@@ -97,7 +99,10 @@ class WZPngProperty extends ImageProperty
         {
             dataStream = new SimpSimpleWritableBuffer();
             dataStream.buffer = reader.buffer;
-            dataStream.inflate();
+            if(!dataStream.inflate())
+            {
+                return;
+            }
         }
         else
         {
@@ -127,7 +132,6 @@ class WZPngProperty extends ImageProperty
                 bmp = new PNG({width:this.width,height:this.height});
                 uncompressedSize = this.width*this.height*2;
                 let decBuf = dataStream.read(0,uncompressedSize);
-                let r,a;
                 for(let i = 0; i < uncompressedSize; i ++)
                 {
                     /*

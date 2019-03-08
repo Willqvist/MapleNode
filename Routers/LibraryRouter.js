@@ -111,7 +111,8 @@ router.get("/:id.:type.:ext",(req,res)=>
     switch(req.params.ext)
     {
         case "img":
-            let path = "/library/v62/"+constants.getConstant("type_mapper")[req.params.type]+"/"+req.params.id+"/icon.png";
+            let type = constants.getConstant("type_mapper")[req.params.type];
+            let path = "/library/v62/"+type+"/"+req.params.id+"/"+constants.getConstant("icon_mapper")[type]+".png";
             fs.exists(realPath + path,(err)=>
             {
                 res.contentType('image/png');

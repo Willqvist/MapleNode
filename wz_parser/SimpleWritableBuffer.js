@@ -13,7 +13,6 @@ class SimpleWritableBuffer
     {
         if(this.pos >= this.buffer.length)
         {
-            console.log(this.buffer.length*2);
             this.realloc(this.buffer.length*2);
         }
         this.buffer[this.pos] = byte;
@@ -29,14 +28,10 @@ class SimpleWritableBuffer
     inflate()
     {
         this.hasDeflated = true;
-        try
-        {
+   
             this.buffer = pako.inflate(this.buffer);
             return true;
-        }catch(err)
-        {
-            return false;
-        }
+ 
     }
     empty()
     {

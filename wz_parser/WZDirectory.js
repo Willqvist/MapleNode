@@ -57,10 +57,6 @@ class WZDirectory extends WZNode
         dirs.forEach(dir => {
             dirs = dirs.concat(dir.getDeepSubDirectories(++index));
         });
-        if(index == 0)
-        {
-            dirs.push(this);
-        }
         return dirs;      
     }
     getChildImage(index)

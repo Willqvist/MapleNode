@@ -1,5 +1,6 @@
 const fs = require("graceful-fs");
 const FileQueue = require('filequeue');
+const PNG = require("pngjs").PNG;
 
 class ImageStorer
 {
@@ -16,52 +17,33 @@ class ImageStorer
     }
     addImage(image,src)
     {
-        if(this.piped[src])
-            return;
-        this.piped[src] = {};
         this.piping ++;
-        this.images.push({image:image,src:src});
-        this.saveImage();
+        this.saveImage({image:image,src:src});
     }
     setCallbackComplete(callback)
     {
         this.hasCallback = true;
         this.callback = callback;
     }
-    complete()
+    saveImage(image)
     {
-        this.isFilling = false;
-        this.saveImage();
-    }
-    static getQueue()
-    {
-        console.log(++ImageStorer.i);
-        return ImageStorer.queue;
-    }
-    saveImage(names)
-    {
-        if(this.index >= this.images.length)
-        {
-            if(this.hasCallback && !this.isFilling)
-            {
-                this.done = true;
-                this.images = [];
-            }
-            return;
-        }
-        let image = this.images[this.index++];
+        let buffer = PNG.sync.write(image.image,{colorType:6});
+        fs.writeFileSync(image.src,buffer);
+        /*
 
-        console.log("piping image",image.src);
         image.image.pack()
         .pipe(fs.createWriteStream(image.src))
         .on('finish',(function() {
-            delete this.piped[image.src];
-            console.log("done piping image",image.src);
-            if(Object.keys(this.piped).length == 0)
+            console.log("done piping image",this.piping);
+            this.piping --;
+            console.log("done piping image");
+            if(this.piping == 0)
             {
-                this.callback()
+                if(this.hasCallback)
+                this.callback();
             }
-        }).bind(this,image));
+        }).bind(this));
+        */
     }
 }
 ImageStorer.queue = new FileQueue(100000);

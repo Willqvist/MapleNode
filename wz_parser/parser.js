@@ -45,10 +45,7 @@ class Parser
             return callback({err:{hasError:true,reason:"Something went wrong parsing file"}});
         }
         wzFile.wzDir.parseImages();
-        wzFile.saveType(()=>
-        {
-            console.log("done");
-        });
+        wzFile.saveType();
     }
     static add_to_parse(file,callback)
     {
