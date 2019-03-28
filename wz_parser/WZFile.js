@@ -11,7 +11,7 @@ class WZFile extends WZNode
         this.name = filename;
         this.fileVersion = -1;
         this.wzKey = Tools.getIVKeyByVersion(version);
-        this.reader = new WZReader(buffer,this.wzKey);
+        this.reader = new WZReader(WZReader.LITTLE_ENDIAN, buffer,this.wzKey);
     }
     setFileVersion(ver)
     {

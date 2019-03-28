@@ -3,17 +3,18 @@ const Tools = require("./Tools");
 const uint32 = require('uint32');
 class WZReader
 {
-    constructor(buffer,wzKey=null)
+    constructor(endian,buffer,wzKey=null)
     {
         this.buffer = buffer;
         this.pos = 0;
+        this.endian = endian;
         if(wzKey)
             this.wzKey = Tools.GenerateWzKey(wzKey);
     }
     readInt32()
     {
         this.pos += 4;
-        return this.buffer.readInt32LE(this.pos - 4);
+        return this.endian == 1 ? this.buffer.readInt32LE(this.pos - 4) : this.buffer.readInt32BE(this.pos - 4);
     }
     readInt8()
     {
@@ -23,7 +24,7 @@ class WZReader
     readInt16()
     {
         this.pos += 2;
-        return this.buffer.readInt16LE(this.pos - 2);
+        return this.endian == 1 ? this.buffer.readInt16LE(this.pos - 2) : this.buffer.readInt16BE(this.pos - 2);
     }
     readInt64()
     {
@@ -38,7 +39,7 @@ class WZReader
     readUInt32()
     {
         this.pos += 4;
-        return this.buffer.readUInt32LE(this.pos - 4);
+        return this.endian == 1 ? this.buffer.readUInt32LE(this.pos - 4) : this.buffer.readUInt32BE(this.pos - 4);
     }
     readUInt16()
     {
@@ -253,4 +254,6 @@ class WZReader
         this.pos = seek;
     }
 }
+WZReader.BIG_ENDIAN = 0;
+WZReader.LITTLE_ENDIAN = 1;
 module.exports = WZReader;

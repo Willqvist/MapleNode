@@ -6,6 +6,7 @@ class SimpleWritableBuffer
     constructor()
     {
         this.pos = 0;
+        this.size = 0;
         this.buffer = Buffer.allocUnsafe(8).fill(0);
         this.hasDeflated=false;
     }
@@ -16,6 +17,7 @@ class SimpleWritableBuffer
             this.realloc(this.buffer.length*2);
         }
         this.buffer[this.pos] = byte;
+        this.size ++;
         this.pos ++;
     }
     writeBytes(bytes)
@@ -24,14 +26,37 @@ class SimpleWritableBuffer
         {
             this.writeByte(bytes[i]);
         }
+    }
+    setBuffer(buffer)
+    {
+        this.size = buffer.length;
+        this.buffer = buffer;
+    }
+    trim()
+    {
+        let buf = Buffer.allocUnsafe(this.size).fill(0);
+        for(let i = 0; i < this.size; i++)
+        {
+            buf[i] = this.buffer[i];
+        }
+        this.buffer = buf;
     }    
     inflate()
     {
+        this.trim();
         this.hasDeflated = true;
-   
+        try
+        {
             this.buffer = pako.inflate(this.buffer);
             return true;
- 
+        }
+        catch(err)
+        {
+            //this.buffer = zlib.gunzipSync(this.buffer);
+            console.log("wew",err);
+            
+        }
+        return false;
     }
     empty()
     {

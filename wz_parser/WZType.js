@@ -225,7 +225,7 @@ class WZMob extends WZType
                 meta.name = mob_meta.name;
                 meta.desc = mob_meta.desc;
                 //property.parentImg().storeMeta("./library/v62/Mob/"+id+"/",meta,next);
-                this.writeMetaDir("./library/v62/Mob/"+id+"/",property.parentImg(),meta);
+                this.writeMetaDir("./library/v62/Mob/"+this.pad8(id)+"/",property.parentImg(),meta);
                 return next();
             }
             else
@@ -237,7 +237,11 @@ class WZMob extends WZType
             let name = property.parent.name + "_" + property.name;
             property.png.storePng(this.storer,"./library/v62/Mob/",next,name);
         }
-    }    
+    } 
+    pad8(str)
+    {
+        return str.padStart(8,'0');
+    }   
 }
 
 class WZCharacter extends WZType

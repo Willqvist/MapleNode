@@ -9,7 +9,16 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const constants = require("./Tools/Constants");
-
+/*
+const parser = require("./wz_parser/parser");
+parser.parse("./wz_parser/String.wz",()=>
+{
+    parser.parse("./wz_parser/Mob.wz",()=>
+    {
+        
+    });
+});
+*/
 //setup
 let app = express();
 let server = app.listen(8081);

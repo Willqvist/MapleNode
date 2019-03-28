@@ -22,7 +22,6 @@ class WZPngProperty extends ImageProperty
         this.offs = reader.pos;
         let len = reader.readInt32()-1;
         reader.skip(1);
-
         if(len > 0)
         {
             if(parseNow)
@@ -51,7 +50,7 @@ class WZPngProperty extends ImageProperty
             this.reader.seek(pos);
         }
         //pipe image to file...
-        //console.log(dir,src);
+        //console.log(src);
         if(this.png)
             storer.addImage(this.png,src,callback);
     }
@@ -91,14 +90,14 @@ class WZPngProperty extends ImageProperty
         let bmp;
         let imgParent = this.parentImg();
 
-        let reader = new WZReader(Buffer.from(this.bytes));
+        let reader = new WZReader(WZReader.LITTLE_ENDIAN,Buffer.from(this.bytes,"utf8"));
         let header = reader.readUInt16();
         let listWzUsed = header != 0x9C78 && header != 0xDA78;
         let dataStream;
         if(!listWzUsed)
         {
             dataStream = new SimpSimpleWritableBuffer();
-            dataStream.buffer = reader.buffer;
+            dataStream.setBuffer(reader.buffer);
             if(!dataStream.inflate())
             {
                 return;
@@ -116,12 +115,17 @@ class WZPngProperty extends ImageProperty
                 // write array to file
                 for(let i = 0; i < blockSize; i++)
                 {
-                    dataStream.writeByte(reader.readByte() ^ imgParent.reader.wzKey[i]);
+                    let byte = reader.readByte();
+                    //if(i < 100 && this.parentImg().name.includes("3110302"))
+                        //console.log(byte,imgParent.reader.wzKey[i],byte ^ imgParent.reader.wzKey[i]);
+                    dataStream.writeByte(byte ^ imgParent.reader.wzKey[i]);
                 }
             }
             dataStream.pos = 2;
+            
             if(!dataStream.inflate())
             {
+                process.exit();
                 return;
             }
         }

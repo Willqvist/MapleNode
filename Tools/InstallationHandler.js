@@ -272,19 +272,14 @@ class InstallationHandler
         {
             case "ECONNREFUSED":
                 return "connection refused.. is mysql on?";
-            break;
             case "ENOTFOUND":
                 return "Could not connect to host";
-            break;
             case "ER_ACCESS_DENIED_ERROR":
                 return "Wrong username or password";
-            break;
             case "ER_BAD_DB_ERROR":
                 return "Could not find database";
-            break;
             default:
                 return "something went wrong... error code: " + error;
-            break;
         }
     }
 }
