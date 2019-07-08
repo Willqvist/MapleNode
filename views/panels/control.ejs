@@ -1,0 +1,26 @@
+<% if(isLoggedIn()){
+    let player = getUser();
+%>
+    <form>
+    </form>
+<% }else{ %>
+    <form id="control_form">
+        <div class="error" id="controlError">Error</div>
+        <div class="inputs">
+            <div class="input">
+                <label for="control_name">Username</label>
+                <input name="control_name" id="control_name">
+            </div>
+            <div class="input">
+                <label for="control_pass">Username</label>
+                <input class="input" id="control_pass" name="control_pass" type="password" autofill="false" autocomplete="off">
+            </div>
+        </div>
+        <div id="control_btns">
+            <input type="submit" class="btn" value="Login">
+            <div class="btn btn-a"><a href="/register"><span>Register</span></a></div>
+        </div>
+    </form>
+<%
+   }
+%>

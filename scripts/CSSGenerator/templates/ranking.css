@@ -1,0 +1,95 @@
+.ranking_box
+{
+    background:var(--secondaryMainColor);
+    margin-bottom:2em;
+}
+.ranking_box .box_title
+{
+    color:var(--fontColorLight);
+}
+.rank_wrap
+{
+    display:flex;
+    flex-flow: column;
+    height:100%;
+}
+#rank_content_wrapper
+{
+    flex:1;
+    display:flex;
+}
+#rank_player_menu{
+    width:100%;
+    height:5em;
+    background:var(--secondaryMainColor);
+    box-shadow:inset 0px 0px 0px 5em rgba(0, 0, 0, 0.1);
+}
+#rank_wrap_players,#rank_players_info
+{
+    width:100%;
+    height:100%;
+    position: relative;
+}
+#rank_wrap_players
+{
+}
+.rank_player
+{
+    width:15em;
+    height:15em;
+    background-size:contain !important;
+    position:absolute;
+    left:0;right:0;top:0;bottom:0;
+    margin:auto;
+    transition:ease 0.3s;
+}
+#rank_players_info
+{
+    display:flex;
+}
+#rank_players_content
+{
+    margin:auto 0;
+    width:100%;
+    display:flex;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+    color:var(--fontColorLight);
+    justify-content: space-between;
+}
+#rank_players_content h1
+{
+    font-size:3.5em;
+}
+#rank_players_content h2
+{
+    font-weight:200;
+    font-size:1.24m;
+}
+#rank_players_content h3
+{
+    font-weight:200;
+    font-size:1em;
+}
+#exp_bar
+{
+    width:100%;
+    height:0.8em;
+    margin-top:0.5em;
+    background:var(--secondaryMainColor);
+    box-shadow:inset 0px 0px 0px 4em rgba(0, 0, 0, 0.1);
+}
+#exp_bar_percent
+{
+    background:var(--mainColor);
+    width:20%;
+    height:100%;
+}
+#rank_players_status
+{
+    display:flex;
+    justify-content: space-between;
+    max-width:23em;
+    width:100%;
+    margin:2em 0;
+}

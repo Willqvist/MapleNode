@@ -137,6 +137,7 @@ class InstallationHandler
                     (
                         ID int NOT NULL AUTO_INCREMENT,
                         heroImage varchar(80),
+                        logo varchar(80),
                         PRIMARY KEY(id)
                     )`,(err,result)=>
                     {
@@ -158,6 +159,23 @@ class InstallationHandler
                         ID int NOT NULL AUTO_INCREMENT,
                         name varchar(80),
                         url varchar(80),
+                        PRIMARY KEY(id)
+                    )`,(err,result)=>
+                    {
+                        if(err) throw err;
+                        callback(err,result);
+                    });
+                });
+            },
+            (data,callback)=>
+            {
+                mysql.connection.query(`DROP TABLE IF EXISTS ${userData.prefix}_layout`,(err,result)=>{
+                    if(err) throw err;
+                    mysql.connection.query(`CREATE TABLE ${userData.prefix}_layout
+                    (
+                        ID int NOT NULL AUTO_INCREMENT,
+                        name varchar(22),
+                        layout mediumtext,
                         PRIMARY KEY(id)
                     )`,(err,result)=>
                     {

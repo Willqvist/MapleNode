@@ -1,109 +1,95 @@
-
-.ranking
+.ranking_box
+{
+    background:#3E78B2;
+    margin-bottom:2em;
+}
+.ranking_box .box_title
+{
+    color:#D3F3EE;
+}
+.rank_wrap
+{
+    display:flex;
+    flex-flow: column;
+    height:100%;
+}
+#rank_content_wrapper
+{
+    flex:1;
+    display:flex;
+}
+#rank_player_menu{
+    width:100%;
+    height:5em;
+    background:#3E78B2;
+    box-shadow:inset 0px 0px 0px 5em rgba(0, 0, 0, 0.1);
+}
+#rank_wrap_players,#rank_players_info
+{
+    width:100%;
+    height:100%;
+    position: relative;
+}
+#rank_wrap_players
+{
+}
+.rank_player
+{
+    width:15em;
+    height:15em;
+    background-size:contain !important;
+    position:absolute;
+    left:0;right:0;top:0;bottom:0;
+    margin:auto;
+    transition:ease 0.3s;
+}
+#rank_players_info
 {
     display:flex;
 }
-.rankingSide
+#rank_players_content
 {
-    width:50%;
-    flex:1;
+    margin:auto 0;
+    width:100%;
     display:flex;
     flex-direction: column;
-}
-#rankingDisplay
-{
-    background:url(../images/playerBG.png);
-    background-size:40em;
-    background-position: 50% 50%;
-    height:35em;
-    position:relative;
-}
-#playerImage
-{
-    position:Absolute;
-    background:url(http://localhost:8081/Characters/matolo.chr) no-repeat;
-    background-size:contain;
-    background-position:50% 100%;
-    width:12em;
-    height:12em;
-    margin:auto;
-    left:0;right:0;top:0;bottom:0;
-    top:5.5em;
-}
-.rankingPlayer
-{
-    flex:1;
-    display:flex;
-    width:100%;
-    box-sizing:border-box;
-    padding:0 2em;
-    flex-direction: row;
+    font-family: 'Montserrat', sans-serif;
+    color:#D3F3EE;
     justify-content: space-between;
-    position: relative;
-    box-shadow:inset 0px -0.16em 0em rgba(0, 0, 0, 0.08);
-    transition:Ease 0.2s;
-    cursor:pointer;
 }
-.rankingPlayer h3
+#rank_players_content h1
 {
-    font-weight:700;
-    font-family: 'Montserrat', sans-serif;   
-    color:var(--fontColorDark);   
-    font-size:1.2em;
-    margin:auto 0;
-    position:relative;
-    padding-top:0.65em;   
-    min-width:2em;
+    font-size:3.5em;
 }
-
-.rankingPlayer h5
+#rank_players_content h2
 {
-    position:Absolute;
-    left:0;
-    right:0;
-    margin:auto;
-    text-align:center;
-    bottom:0.5em;
-    font-size:0.9em;
-    font-family: 'Montserrat', sans-serif;   
-    color:var(--fontColorDark);
-    font-weight:400;
-    padding-bottom:0.6em;
-    opacity:0;
-    transform: translateY(0.5em);
-    transition:Ease 0.2s;
+    font-weight:200;
+    font-size:1.24m;
 }
-.rankingPlayer h3::before
+#rank_players_content h3
 {
-    content:attr(data-beforeContent);
-    position:Absolute;
-    left:0;
-    top:0;
-    font-family: 'Montserrat', sans-serif;   
-    color:var(--fontColorDark);
-    font-weight:400;
-    opacity:0.6; 
-    font-size:0.7em;
+    font-weight:200;
+    font-size:1em;
 }
-.playerExpBar
+#exp_bar
 {
-    position: absolute;
-    bottom:0;
-    height:0.16em;
-    background:var(--secondaryMainColor);
-    margin-left:-2em;
-    transition:Ease 0.2s;
+    width:100%;
+    height:0.8em;
+    margin-top:0.5em;
+    background:#3E78B2;
+    box-shadow:inset 0px 0px 0px 4em rgba(0, 0, 0, 0.1);
 }
-.rankingPlayer:hover{
-    min-height:0em;
-    padding-left:2.4em;
-}
-.rankingPlayer:hover h5
+#exp_bar_percent
 {
-    opacity:0.6;
-    transform: translateY(0);
+    background:#69DC9E;
+    width:20%;
+    height:100%;
 }
-.rankingPlayer:hover .playerExpBar
+#rank_players_status
 {
-    margin-left:-2.4em;
+    display:flex;
+    justify-content: space-between;
+    max-width:23em;
+    width:100%;
+    margin:2em 0;
 }

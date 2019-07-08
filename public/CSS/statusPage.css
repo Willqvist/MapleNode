@@ -3,9 +3,6 @@
     padding:0;
     margin:0;
 }
-body{
-    background:#FFF;
-}
 #header{
     width:100%;
     height:35em;
@@ -37,7 +34,7 @@ body{
     position:Relative;
 }
 #headerInfo{
-    color:var(--fontColorLight);
+    color:#D3F3EE;
     font-family: 'Montserrat', sans-serif;
 }
 #headerInfo h1{
@@ -45,7 +42,6 @@ body{
     font-size:4em;
 }
 #content{
-    background:#FFF;
     z-index:2;
     position:Relative;
     display:flex; 
@@ -57,7 +53,6 @@ body{
 }
 .block
 {
-    background:#fbf9fd;
     display:flex; 
     flex-direction: column;
     margin-top:4em;
@@ -78,7 +73,6 @@ body{
     width:100%;
 }              
 .blockHeader{
-    background:#FFF;
     width:100%;
     line-height:3em;
     height:3em;
@@ -86,8 +80,8 @@ body{
     padding-left:1.5em;
     font-weight:400;
     font-family: 'Montserrat', sans-serif;   
-    box-shadow:inset 0px -0.2em 0 var(--mainColor);
-    color:var(--fontColorDark);             
+    box-shadow:inset 0px -0.2em 0 #69DC9E;
+    color:#20063B;             
 }
 .status{
     padding:4em 2em !important;
@@ -112,7 +106,7 @@ body{
     height:1.2em;
     max-width:1.2em;
     flex:1;
-    background:var(--mainColor);
+    background:#69DC9E;
     border-radius:50%;
 }
 
@@ -127,7 +121,7 @@ body{
     font-size:0.85em;
     font-weight:400;
     font-family: 'Montserrat', sans-serif;
-    color:var(--secondaryMainColor);   
+    color:#3E78B2;   
 }
 .runtimeInfo h3
 {
@@ -177,7 +171,7 @@ body{
     font-size:1.6em;
     font-weight:700;
     font-family: 'Montserrat', sans-serif;  
-    color:var(--fontColorDark);
+    color:#20063B;
 }
 @media only screen and (max-width:120em)
 {

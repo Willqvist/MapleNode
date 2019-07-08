@@ -1,0 +1,143 @@
+<%
+let MENU_SITE="LOGIN";
+%>
+<!doctype html>
+<html>
+    <head>
+    <% include ../imports/head %>
+    <style>
+        #content{
+            width:35em;
+            margin:auto;
+            position:relative;
+            padding-bottom:5em;
+        }
+        #logo{
+            width:15em;
+            height:7.5em;
+            background:url(../images/<%= logo %>) no-repeat;
+            background-size:contain;
+            background-position:50% 50%;
+            margin:auto;
+            margin-top:9em;
+            margin-bottom:5em;
+        }
+        body{
+            background-size:contain;
+            background-position:50% 100%;
+            background-attachment:fixed;
+        }
+        .m{
+            position:fixed;
+            width:30em;
+            height:30em;
+        }
+        .ml{
+            left:0;
+            bottom:0;
+            background:url("../images/left_bottom_monsters.png") no-repeat;
+            background-size:contain;
+            background-position:00% 100%;
+        }
+        .mr{
+            right:0;
+            bottom:0;
+            background:url("../images/right_bottom_monsters.png") no-repeat;
+            background-size:contain;
+            background-position:100% 100%;
+        }        
+    </style>
+        <link rel="stylesheet" type="text/css" href="../CSS/control.css">
+        <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
+    </head>
+        <style>
+        .loader
+        {
+            background:#FFF;
+        }
+        #control_btns
+        {
+            display:flex;
+            justify-content: space-between;
+        }
+        .input input
+        {
+            margin-bottom:0.2em;
+        } 
+        .input select
+        {
+            outline:none;
+        }  
+    </style>
+
+    <body>
+        <% include ../imports/menu.ejs %>
+        <div class="m ml">
+        </div>
+        <div class="m mr">
+        </div>
+        <div id="content">
+            <div id="logo">
+            </div>
+            <div id="control">
+                <div class="loader" id="loginLoader">
+                    <p>Loading</p>    
+                </div>
+    <form id="loginForm">
+        <div class="error" id="loginError">Error</div>
+        <div class="input firstInputHolder">
+            <label for="username">Username</label>
+            <input id="username" class="fill" type="text" name="username" required/>
+        </div>
+        <div class="input">
+            <label for="password">Password</label>
+            <input id="password" class="fill" name="password" type="password" required/>
+        </div>
+        <div id="control_btns">
+            <div class="btn btn-a btn-blue"><a href="register"><span>Register</span></a></div>
+            <input type="submit" class="btn" id="login" value="Login" />
+        </div>
+    </form>
+</div>
+<script src="JS/HttpHandler.js"></script>
+<script>
+    let form = new FormElement("loginForm");
+    let error = new ErrorElement("loginError");
+    let loader = document.getElementById("loginLoader");
+    form.onSubmit({preventDefault:true,body:true},(body,e)=>
+    {
+        loader.style.display="flex";
+        setTimeout(()=>
+        {
+            loader.style.opacity="1";
+        }, 10);
+        let url = new Url("/IO/login",{username:body.username,password:body.password});
+        HttpHandler.postData(url,(response)=>
+        {
+            console.log(response);
+            
+            loader.style.opacity="0";
+            setTimeout(()=>
+            {
+                loader.style.display="none";
+            }, 320);
+            if(!response.success)
+            {
+                console.log(response.http.status);
+                return;
+            }
+            else if(!response.loggedin)
+            {
+                error.showError({reason:response.reason});
+                return;
+            }
+            error.success({reason:response.reason});
+            let site = "/dashboard";
+            <% if(isset(typeof site)) { %> site = "<% site %>" <% } %>
+            window.location.href = site;
+            console.log(response.loggedin);
+        });
+    });
+</script>
+</body>
+</html>

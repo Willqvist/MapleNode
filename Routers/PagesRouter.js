@@ -4,14 +4,10 @@ const MapleCharacterGenerator = require("../MapleCharacterGenerator/MCG");
 const mysql = require("../Tools/mysql").getMysql();
 const InstallHandler = require("../Tools/InstallationHandler");
 const constants = require("../Tools/Constants");
-const Rules = require("../Tools/Rules");
-router.get(["/","/index","/main"],(req,res)=>
+router.get(["/"],(req,res)=>
 {
-    mysql.connection.query(`SELECT name,level,exp FROM characters ORDER BY level DESC LIMIT 6`,(err,players)=>
-    {
-        if(err) throw err;
-        return res.render("index",{user:req.session.user,players:players}); 
-    }); 
+    console.log("//fgh");
+    return res.render("index"); 
 });
 router.get("/ranking",(req,res)=>
 { 
@@ -41,7 +37,6 @@ router.get("/status",(req,res)=>
 });
 router.get("/vote",(req,res)=>
 { 
-    if(!req.session.user) return res.render("pages/dashboardLogin",{site:"vote"});
-    return res.render("pages/vote",{user:req.session.user});
+    mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_vote`,(err,data)=> res.render("pages/vote",{user:req.session.user,votes:data}));
 });
 module.exports = router;

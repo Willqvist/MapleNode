@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+body{
+    background:#fdfcff;
+}
+.box_wrapper{
+    z-index:2;
+    position:Relative;
+    display: grid;
+    grid-column-gap: 1.5em;
+    grid-row-gap: 1.5em;
+    padding-top:1.5em;
+    height:130em;
+}
+.box
+{
+    box-sizing: border-box;
+    padding:1.5em;
+    background:#FFF;
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.10);
+    position: relative;
+    overflow:hidden;
+}
+.box_naked
+{
+    box-shadow:0px 0px 0px rgba(0, 0, 0, 0);
+    background:none;
+}
+/*
+        <div class="news_box box">
+            <h2 class="box_title">News</h2>
+        </div>
+        <div class="server_box box">
+            <h2 class="box_title">News</h2>
+        </div>
+        <div class="stats_box box box_naked">
+            <h2 class="box_title">Server stats</h2>
+        </div>
+        <div class="ranking_box box box_naked">
+            <h2 class="box_title">Server stats</h2>
+        </div> 
+        */  
+.box_title
+{
+    font-weight:500;
+    font-size:1.1em;
+    font-family: 'Montserrat', sans-serif;
+    color:var(--fontColorDark);
+}
+.info_box
+{
+    grid-column : 1 / 7;
+    grid-row : 1 / 6;
+}
+.control_box
+{
+    grid-column : 7 / 10;
+    grid-row : 1 / 4; 
+}
+
+.news_box
+{
+    grid-column : 1 / 7;
+    grid-row : 6 / 8; 
+}
+
+.server_box
+{
+    grid-column : 7 / 10;
+    grid-row : 4 / 8;     
+}
+
+.stats_box
+{
+    grid-column : 1 / 10;
+    grid-row : 8 / 10;       
+}
+
+.ranking_box
+{
+    grid-column : 1 / 10;
+    grid-row : 10 / 14;
+}
+
+.block
+{
+    min-height:10em;
+    margin-top:2em;
+    background:#fbf9fd;
+    display:flex; 
+    flex-direction: column;
+}
+.smallBlock{
+    width:32%;
+}
+.halfBlock
+{
+    width:49%;
+} 
+.middleBlock
+{
+    width:66%;
+}
+.fullBlock
+{
+    width:100%;
+}              
+.blockHeader{
+    background:#FFF;
+    width:100%;
+    line-height:3em;
+    height:3em;
+    box-sizing:border-box;
+    padding-left:0.5em;
+    font-weight:400;
+    font-family: 'Montserrat', sans-serif;   
+    box-shadow:inset 0px -0.15em 0 var(--mainColor);
+    color:var(--fontColorDark);  
+    display:flex;    
+}   
+.blockHeader svg{
+    width:1.8em;
+    height:1.8em;
+    fill:none;
+    stroke:var(--fontColorDark);
+    stroke-width:5;
+    margin:auto 0;
+    margin-right:0.6em;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}            

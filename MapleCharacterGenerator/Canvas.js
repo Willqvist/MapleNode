@@ -55,7 +55,6 @@ class Canvas
     }
     drawRect(x,y,width,height)
     {
-        console.log("color(",(this.color >> 16) & 0xFF,(this.color >> 8) & 0xFF,(this.color) & 0xFF,")");
         for(let i = x; i < Math.min(x+width,this.width); i++)
         {
             for(let j = y; j < Math.min(y+height,this.height); j++)

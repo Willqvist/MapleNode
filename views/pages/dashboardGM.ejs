@@ -1,0 +1,282 @@
+<%
+let MENU_SITE = "DASHBOARD";
+
+%>
+<!doctype html>
+<html>
+    <head>
+        <title>Dashboard GM</title>
+        <% include ../imports/head %>        
+        <link rel="stylesheet" type="text/css" href="../CSS/control.css">
+        <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
+        <link rel="stylesheet" type="text/css" href="../CSS/dashboard.css">
+    </head>
+    <body>
+        <div id="infoBox">Select palette</div>
+        <% include ../imports/menu %>
+        <div class="maxWidth">
+            <div class="dashboardMenu dark">
+                <ul>
+                    <li class="dashitem" id="menuDashboard"><i class="fas fa-chart-line"></i><span>dashboard</span></li>
+                    <li class="dashitem" id="menuDownloads"><i class="fas fa-save"></i><span>downloads</span></li>
+                    <li class="dashitem" id="menuVoting"><i class="fas fa-vote-yea"></i></i><span>voting</span></li>
+                    <li class="dashitem" id="menuDesign"><i class="fas fa-palette"></i></i><span>design</span></li>
+                    <li class="dashitem" id="menuLayout"><i class="fas fa-th-large"></i></i><span>layout</span></li>
+                    <li class="dashitem"><i class="fas fa-user-friends"></i></i><span>characters</span></li>
+                    <li class="dashitem"><i class="fas fa-cog"></i><span>settings</span></li>
+                </ul>
+                <div id="menuActive"></div>
+            </div>
+
+            <!-- DASHBOARD -->
+            <div class="panel" id="dashboardpanel">
+                <div class="panelHeader">
+                    <h1>Dashboard</h1>
+                </div>
+                <div class="box">
+                </div>
+            </div>
+
+            <!-- DOWNLOADS -->
+            <div class="panel" id="downloadspanel">
+                <div class="panelHeader">
+                    <h1>Downloads</h1>
+                    <div class="dashBtn add info" data-info="Add Download"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="boxFlexHolder">
+                    <%
+                        for(var i = 0; i < downloads.length; i++)
+                        {
+                            var download = downloads[i];
+                    %>
+                    <div class="box downloadBox" id="download-key-<%= download.ID %>">
+                        <h3><%= download.name %></h3>
+                        <h4 data-type="Name"><%= download.name %></h4>
+                        <h4 data-type="Url" ><%= download.url %></h4>
+                        <div class="boxBtns">
+                            <div class="dashBtn edit info" data-info="Edit Download" data-key="<%= download.ID %>" data-name="<%= download.name %>" data-url="<%= download.url %>"><i class="fas fa-pen"></i></div>
+                            <div class="dashBtn remove info" data-info="Remove Download"><i class="fas fa-trash"></i></div>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>   
+            </div>
+
+            <!-- VOTING -->
+            <div class="panel" id="votepanel">
+                <div class="panelHeader">
+                    <h1>Voting</h1>
+                    <div class="dashBtn add info" data-info="Add Vote"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="boxFlexHolder">
+                    <%
+                        for(var i = 0; i < votes.length; i++)
+                        {
+                            var vote = votes[i];
+                    %>
+                    <div class="box downloadBox voteBox" id="vote-key-<%= vote.ID %>">
+                        <h3>Vote</h3>
+                        <h4 data-type="Name"><%= vote.name %></h4>
+                        <h4 data-type="Url" ><%= vote.url %></h4>
+                        <h4 data-type="Nx" ><%= vote.nx %></h4>
+                        <h4 data-type="Time" ><%= vote.time %></h4>
+                        <div class="boxBtns">
+                            <div class="dashBtn edit info" data-info="Edit Vote"
+                            data-name="<%= vote.name %>"
+                            data-url="<%= vote.url %>"
+                            data-nx="<%= vote.nx %>"
+                            data-time="<%= vote.time %>"
+                            data-key="<%= vote.ID %>" 
+                            ><i class="fas fa-pen"></i></div>
+                            <div class="dashBtn remove info" data-info="Remove Vote"><i class="fas fa-trash"></i></div>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+            <div class="panel" id="designpanel">
+                <div class="panelHeader">
+                    <h1>Logo</h1>  
+                    <div class="dashBtn editLogo info" data-info="Edit Logo"><i class="fas fa-pen"></i></div>
+                </div>     
+                <div class="box logoImage" style="background:url(images/<%= logo %>) no-repeat;"></div>      
+                <div class="panelHeader panelSubHeader">
+                    <h1>Hero Image</h1>  
+                    <div class="dashBtn editHero info" data-info="Edit Hero image"><i class="fas fa-pen"></i></div>
+                </div>          
+                <div class="box panelHeroImage" style="background:url(images/<%= heroImage %>) no-repeat;"></div>      
+                <div class="panelHeader panelSubHeader">
+                    <h1>Palettes</h1>  
+                    <div class="dashBtn addPalette info" data-info="Add palette"><i class="fas fa-plus"></i></div>
+                </div> 
+                <div class="boxFlexHolder">
+                <%
+                    for(var i = 0; i < palettes.all.length; i++)
+                    {
+                        var palette = palettes.all[i];
+                        var isActive = palette == palettes.active;
+                %>
+                <div class="box downloadBox paletteBox <%= isActive ? "activePalette" : "" %>" data-id="<%= download.ID %>">
+                    <h3>Palette</h3>
+                    <h4 data-type="Name"><%= palette.name %></h4>
+                    <div class="palette">
+                        <div class="colorPalette mainColor" style="background:<%= palette.mainColor %>"></div>
+                        <div class="colorPalette secondaryMainColor" style="background:<%= palette.secondaryMainColor %>"></div>
+                        <div class="colorPalette fontColorDark" style="background:<%= palette.fontColorDark %>"></div>
+                        <div class="colorPalette fontColorLight" style="background:<%= palette.fontColorLight %>"></div>
+                        <div class="colorPalette fillColor" style="background:<%= palette.fillColor %>"></div>
+                    </div>
+                    <div class="boxBtns">
+                        <% if(palette.active == 0){ %>
+                            <div class="dashBtn select info" data-info="Select palette" data-key="<%= palette.ID %>"><i class="fas fa-mouse-pointer"></i></div>
+                        <% }else{ %>
+                            <div class="dashBtn info activeBtn" data-info="Current Palette" data-key="<%= palette.ID %>"><i class="fas fa-check"></i></div>
+                        <% } %>
+                        <div class="dashBtn editPalette info" data-info="Edit Palette"
+                        data-name="<%= palette.name %>"
+                        data-mainColor="<%= palette.mainColor %>"
+                        data-secondaryMainColor="<%= palette.secondaryMainColor %>"
+                        data-fontColorDark="<%= palette.fontColorDark %>"
+                        data-fontColorLight="<%= palette.fontColorLight %>"
+                        data-fillColor="<%= palette.fillColor %>"
+                        data-key="<%= palette.ID %>" 
+                        ><i class="fas fa-pen"></i></div>
+                        <div class="dashBtn remove info" data-key="<%= palette.ID %>" data-info="Remove Palette"><i class="fas fa-trash"></i></div>
+                    </div>
+                </div>
+                <% } %>
+                </div>
+            </div>      
+            <div class="panel" id="layoutpanel"> 
+                <div class="panelHeader">
+                    <h1>Layout - Home</h1>
+                    <div class="dashBtn add info" data-info="Select Page"><i class="far fa-hand-pointer"></i></div>
+                </div>
+                <div class="layoutEditor">
+                    <div class="layotuEditorChild">
+                        <label for="height">Layout height</label>
+                        <div class="input">
+                            <input class="layoutInput" name="height" id="height">
+                            <p><span>em</span></p>
+                        </div>
+                    </div>
+                    <div class="layotuEditorChild">
+                        <label for="aor">Amount of Rows</label>
+                        <div class="input">
+                            <input class="layoutInput" name="aor" id="aor">
+                            <p><span>amt</span></p>
+                        </div>
+                    </div>
+                    <div class="layotuEditorChild">
+                        <label for="aoc">Amount of Columns</label>
+                        <div class="input">
+                            <input class="layoutInput" name="aoc" id="aoc">
+                            <p><span>amt</span></p>
+                        </div>
+                    </div>
+                    <div class="layotuEditorChild">
+                        <label for="padding">Padding</label>
+                        <div class="input">
+                            <input class="layoutInput" name="padding" id="padding">
+                            <p><span>em</span></p>
+                        </div>
+                    </div>
+                    <div class="layotuEditorChild">
+                        <label for="padding" class="hidden">Save</label>
+                        <div class="input">
+                            <input id="saveLayout" type="button" class="btn disabled-btn" value="Save">
+                            <p><span>em</span></p>
+                        </div>
+                    </div>                                           
+                </div>
+                <div class="layoutWrapper">                   
+                <div class="mover" id="layoutMover"><div class="moverIcon info" data-info="Change layout height"><i class="fas fa-arrows-alt-v"></i></div></div>
+                </div> 
+            </div>  
+        </div>
+        <script>
+
+            let menuPos = document.getElementsByClassName("dashboardMenu")[0];
+            let items = document.getElementsByClassName("dashitem");
+            let menuActive = document.getElementById("menuActive");
+            menuActive.style.width = items[0].clientWidth + "px";
+
+            let infos = document.getElementsByClassName("info");
+            let infoBox = document.getElementById("infoBox");
+            let leave,enter;
+            for(let i = 0; i < infos.length; i++)
+            {
+                let item = infos[i];
+                item.addEventListener("mouseenter",()=>
+                {
+                    infoBox.style.display="block";
+                    infoBox.innerHTML = item.getAttribute("data-info");
+                    let box = item.getBoundingClientRect();
+                    let buttonWidth = box.right-box.left;
+                    let infoBoxRect = infoBox.getBoundingClientRect();
+                    let width = infoBoxRect.right-infoBoxRect.left;
+                    let height = infoBoxRect.bottom-infoBoxRect.top;
+                    //infoBox.style.transform =`translate(${box.left}px,${box.top}px)`;
+                    infoBox.style.top = (box.top-height-15+window.pageYOffset) + "px";
+                    infoBox.style.left = (box.left-width/2+buttonWidth/2) + "px";
+                    clearTimeout(leave);
+                    enter = setTimeout(()=>
+                    {
+                        infoBox.style.opacity="1";
+                        infoBox.style.transform="translateY(0em)";
+                    },20);
+
+                },false);
+                item.addEventListener("mouseleave",()=>
+                {
+                    infoBox.style.opacity="0";
+                    infoBox.style.transform="translateY(-0.2em)";
+                    clearTimeout(enter);
+                    leave = setTimeout(()=>
+                    {
+                        infoBox.style.display="none";
+                    },220);
+                });
+            }
+
+            for(let i = 0; i < items.length; i++)
+            {
+                let item = items[i];
+                item.addEventListener("click",()=>
+                {
+                    let rect = item.getBoundingClientRect();
+                    menuActive.style.width = item.clientWidth + "px";
+                    menuActive.style.left = (rect.left - menuPos.getBoundingClientRect().left) + "px";
+                },false);
+            }
+
+        </script>
+        <script src="./JS/dashboard.js"></script>
+        <script>
+            let dashboard = new DashboardPanel("dashboardpanel");
+            let downloads = new DownloadPanel("downloadspanel");
+            let voting = new VotePanel("votepanel");
+            let design = new DesignPanel("designpanel","<%= heroImage %>");
+            let layout = new LayoutPanel("layoutpanel","rgba(255,255,255,0.5)");
+            let handler = new PanelHandler();
+            handler.addPanel(dashboard);
+            handler.addPanel(downloads);
+            handler.addPanel(voting);
+            handler.addPanel(design);
+            handler.addPanel(layout);
+
+            handler.bindButton("menuDashboard",dashboard);
+            handler.bindButton("menuDownloads",downloads);
+            handler.bindButton("menuVoting",voting);
+            handler.bindButton("menuDesign",design);
+            handler.bindButton("menuLayout",layout);
+            console.log(JSON.stringify({                0:{name:"info_box",panel:"none",columns:{pos:1,size:7},rows:{pos:1,size:6}},
+                1:{name:"control_box",panel:"none",columns:{pos:7,size:10},rows:{pos:1,size:4}},
+                2:{name:"news_box",panel:"none",columns:{pos:1,size:7},rows:{pos:6,size:8}},
+                3:{name:"server_box",panel:"none",columns:{pos:7,size:10},rows:{pos:4,size:8}},
+                4:{name:"stats_box",panel:"none",columns:{pos:1,size:10},rows:{pos:8,size:10}},
+                5:{name:"ranking_box",panel:"none",columns:{pos:1,size:10},rows:{pos:10,size:14}}}));
+            handler.showPanel(dashboard);
+        </script>
+    </body>
+</html>

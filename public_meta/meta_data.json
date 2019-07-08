@@ -1,0 +1,7 @@
+{
+    "packets":
+    {
+        "*":["User"],
+        "/":["Characters"]
+    }
+}

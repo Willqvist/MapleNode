@@ -6,7 +6,7 @@ const mysql = require("../Tools/mysql").getMysql();
 let installHandler = new InstallationHandler(mysql.mysql);
 const constants = require("../Tools/Constants");
 let app;
-router.all("/*",(req,res,next)=>
+router.all("*",(req,res,next)=>
 {
     installHandler.installationComplete((done,data)=>
     {
@@ -14,6 +14,11 @@ router.all("/*",(req,res,next)=>
         return res.status(403).send('403 - access denied');
       return next();
     });
+});
+
+router.all(["/","index"],(req,res)=>
+{
+    return res.render("setup/index");
 });
 router.all("/:id/",(req,res,next)=>
 {
@@ -72,10 +77,6 @@ router.all("/:id/",(req,res,next)=>
     {
         return res.redirect("/");
     }
-});
-router.all(["/","index"],(req,res)=>
-{
-    return res.render("setup/index");
 });
 module.exports = function(applet)
 {

@@ -1,0 +1,50 @@
+.news_fade
+{
+    position:Absolute;
+    width:100%;
+    height:100%;
+    z-index:0;
+    left:-1.5em;
+    top:-1.5em;
+    padding-right:1.5em;
+    padding-top:1.5em;
+    background-image: linear-gradient(to right, #20063B , transparent);
+    z-index:0;
+}
+.news_content
+{
+    z-index:2;
+    position: relative;
+    color:#FFF;
+    font-family: 'Montserrat', sans-serif;
+    margin:auto 0 auto;
+    margin-left:0;
+    padding-bottom:1.2em;
+}
+.news_content h2
+{
+    font-size:2.5em;
+    margin:0.4em 0 0.4em 0;
+}
+.news_content p
+{
+    font-weight:300;
+    font-size:1em;
+    max-width:22em;
+    margin-bottom:0.5em;
+}
+.news .box_title
+{
+    color:#FFF;
+    z-index:2;
+    position: relative;
+}
+.news_box
+{
+    
+    background:url("http://dhost1.mmomiss.com/upload/userfiles/images/2a519cf3bd81f93444cfdd51331b71c9.jpg") no-repeat;
+    background-size:cover;
+    background-position:50% 50%;
+    display:flex;
+    flex-flow: column nowrap;
+}

@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">   
+        <link rel="stylesheet" type="text/css" href="CSS/status.css">  
+        <link rel="stylesheet" type="text/css" href="CSS/media.css">   
+        <link rel="stylesheet" type="text/css" href="CSS/menu.css">             
+        <% include ../imports/head %>        
+
+        <title>Status</title>
+        <% include ../imports/menu.ejs %>
+        <header id="header">
+            <div id="fade"></div>
+            <div id="headerContent" class="maxWidth">
+                <div id="headerInfo">
+                    <h1>Server Status</h1>
+                </div>
+            </div>
+        </header>
+            <section id="content" class="maxWidth">
+            <div class="block smallBlock">
+                <h3 class="blockHeader">Server Status</h3>
+                <div class="status">
+                    <h2 class="beforeTitle" data-beforeTitleContent="MapleNode is">ONLINE</h2>
+                </div>
+            </div>
+            <div class="block middleBlock">
+                <h3 class="blockHeader">Server runtime</h3>
+                <div class="runtime">
+                    <div class="statusBlockHolder">
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                        <div class="statusBlock"></div>
+                    </div>
+                    <div class="runtimeInfo">
+                    <h2>20 days ago</h2>
+                    <h3><span>Uptime 100%</span></h3>
+                    <h2>Today</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="block halfBlock">
+                <h3 class="blockHeader">Vote Status</h3>
+                <div class="voteStatus">
+                    <ul>
+                        <li class="beforeTitle" data-beforeTitleContent="Votes this week">1200</li>
+                        <li class="beforeTitle" data-beforeTitleContent="Votes last week">1000</li>
+                    </ul>
+                    <canvas id="voteCanvas"></canvas>
+                </div>
+            </div>
+            <div class="block halfBlock">
+                    <h3 class="blockHeader">Server News</h3>
+                </div>            
+        </section>
+        <script src="JS/HttpHandler.js"></script>
+        <script>
+            document.body.onload = function(){
+                let chart = new BarChart("voteCanvas",0,0);
+                chart.setFont({size:"0.8em",font:"Montserrat"});
+                chart.renderChart();
+            }
+        </script>
+    </body>
+</html>

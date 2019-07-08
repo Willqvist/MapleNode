@@ -23,6 +23,7 @@ ul.blockHeader li
     justify-content: space-Around;
     box-shadow:inset 0px -1px 0px rgba(42, 34, 60, 0.2);
     transition: ease 0.2s;
+    height:8em;
 }
 .user:nth-child(even)
 {
@@ -40,7 +41,7 @@ ul.blockHeader li
 {
     font-size:1.2em;
     margin:auto 0;
-    color:var(--fontColorDark);
+    color:#20063B;
     font-weight:400;
     font-family: 'Montserrat', sans-serif;
 }
@@ -129,7 +130,7 @@ ul.blockHeader li
     position: relative;
     padding-top:2em;
     font-family: 'Montserrat', sans-serif;
-    color:var(--fontColorDark);  
+    color:#20063B;  
 }
 .tab{
     font-size:0.7em;
@@ -154,23 +155,24 @@ ul.blockHeader li
 {
     width:4.5em;
     height:4.5em;
-    background:var(--secondaryMainColor);
+    background:#69DC9E;
     position: relative;
-    fill:var(--fontColorLight);
-    box-shadow:inset 0px -0em 0 var(--secondaryMainColor);
-    transition: ease 0.2s;
-    border-radius: 0.4em;
-    border-bottom-right-radius: 0.4em;
+    border-radius: 22em;
     cursor: pointer;
+    transition:Ease 0.2s;
+}
+#searchBtn:hover,#reloadSearch:hover
+{
+    background:#3E78B2;
 }
 #reloadSearch
 {
-    background:var(--secondaryMainColor);
+    background:#69DC9E;
     margin-right:1em;
     cursor:pointer;
     box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
 }
-#reloadSearch:hover svg
+#reloadSearch:hover .fas
 {
     transform: rotateZ(180deg) !important;
 }
@@ -178,7 +180,7 @@ ul.blockHeader li
 {
     margin-right:2em;
 }
-#searchBtn svg,#reloadSearch svg
+#searchBtn .fas,#reloadSearch .fas
 {
     display:block;
     position: absolute;
@@ -187,14 +189,11 @@ ul.blockHeader li
     top:0;
     bottom:0;
     margin:auto;
-    height:70%;
-    width:70%;
+    font-size:1.7em;
+    width:1em;
+    height:1em;
     transition: ease 0.4s;
-}
-#reloadSearch svg
-{
-    height:50%;
-    width:50%;
+    color:#FFF;
 }
 #settings form input
 {
@@ -205,19 +204,20 @@ ul.blockHeader li
     box-sizing: border-box;
     border:none;
     outline:none;
-    box-shadow:inset 0px -0.2em 0 transparent,inset 0px 0em 0 0.2em var(--secondaryMainColor),0px 0.2em 1em rgba(32,6,59,0.1);
+    box-shadow:inset 0px 0em 0 0.12em #20063B,0px 3px 12px rgba(0, 0, 0, 0.06);
     transition:ease 0.2s;
     font-family: 'Montserrat', sans-serif;
     margin-bottom:2.2em;
     border:none;
     margin:0;
     text-align:left;
-    border-radius: 0.4em;
+    border-radius: 22em;
     margin-right:1em;
+    transition:ease 0.2s;
 }
 #settings form input:focus
 {
-    box-shadow:inset 0px 0em 0 0em transparent,inset 0px 0em 0 0.2em var(--secondaryMainColor);
+    box-shadow:inset 0px 0em 0 0.12em #69DC9E,0px 3px 12px rgba(0, 0, 0, 0.06);
 }
 #settingsBtns
 {
@@ -245,10 +245,18 @@ ul.blockHeader li
 {
     margin:auto;
     font-size:1.5em;
-    color:var(--fontColorDark);  
+    color:#20063B;  
 }
 .dropdownBtn
 {
-    height:4.5em;
     font-size:1em;
+    margin-right:1em;
+    display:flex;
+    background:#3E78B2;
+}
+.dropdownBtn span
+{
+    text-align:center;
+    font-size:1.2em;
+    margin:auto;
 }

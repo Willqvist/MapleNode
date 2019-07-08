@@ -1,0 +1,34 @@
+<%
+let MENU_SITE = "PLAY";
+let name = "Play";
+
+%>
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="CSS/header.css">   
+        <link rel="stylesheet" type="text/css" href="CSS/menu.css"> 
+        <link rel="stylesheet" type="text/css" href="CSS/play.css"> 
+        <% include ../imports/head %>    
+        <title>Play <%= settings.serverName %></title>
+        <% include ../imports/menu.ejs %>
+        <% include ../panels/header.ejs %>
+        <section id="content" class="maxWidth box_wrapper">
+        <%
+        for(let download of downloads)
+        {
+        %>
+        <div class="box">
+            <h3 class="box_title" data-before="Download"> <%= download.name %></h3>
+            <h3 class="box_title" data-before="Url"> <%= download.url %></h3>
+            <div class="btn-holder">
+                <div class="btn btn-a"><a href="<%= download.url %>"><span>Download</span></a></div>
+            </div>
+        </div> 
+        <%
+        
+        }
+        %>        
+        </section>
+    </body>
+</html>

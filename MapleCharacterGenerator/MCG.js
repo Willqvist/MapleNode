@@ -54,7 +54,9 @@ class MapleCharacterGenerator
             if((dateNow-date)/1000 <  this.cooldown)
                 return callback({success:true});
         }
-        this.builder = new ItemBuilder();
+        if(!this.builder)
+            this.builder = new ItemBuilder();
+        
         mysql.query("SELECT id, face, hair,skincolor FROM characters WHERE name=?",[name],((err,results)=>
         {   
             if(err) throw err;
@@ -102,7 +104,6 @@ class MapleCharacterGenerator
             player.parts.coat = 1040006;
         //1062051
         //1060002
-        console.log("START BUILDING");
         this.builder.equipItems(player,
             [
                 {method:this.builder.setCape,parameters:{id:player.parts.cape,z:"capeBelowBody"}},

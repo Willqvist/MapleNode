@@ -1,0 +1,238 @@
+<%
+let MENU_SITE="SIGN UP";
+%>
+<!doctype html>
+<html>
+    <head>
+        <% include ../imports/head %>        
+
+        <link rel="stylesheet" type="text/css" href="../CSS/control.css">
+        <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
+    <style>
+        body
+        {
+            margin:0;
+            padding:0;
+        }
+        #content{
+            width:35em;
+            margin:auto;
+            position:relative;
+            padding-bottom:5em;
+        }
+        #logo{
+            width:15em;
+            height:7.5em;
+            background:url(../images/<%= logo %>) no-repeat;
+            background-size:contain;
+            background-position:50% 50%;
+            margin:auto;
+            margin-top:9em;
+            margin-bottom:5em;
+        }
+        .m{
+            position:fixed;
+            width:30em;
+            height:30em;
+        }
+        .ml{
+            left:0;
+            bottom:0;
+            background:url("../images/left_bottom_monsters.png") no-repeat;
+            background-size:contain;
+            background-position:00% 100%;
+        }
+        .mr{
+            right:0;
+            bottom:0;
+            background:url("../images/right_bottom_monsters.png") no-repeat;
+            background-size:contain;
+            background-position:100% 100%;
+        }
+        #form-btn-holder{
+            margin-top:2em;
+            align-content:right
+        }
+        .loader
+        {
+            background:#FFF;
+        }
+        .input input
+        {
+            margin-bottom:0.2em;
+        } 
+        .input select
+        {
+            outline:none;
+        }    
+        .input .btn
+        {
+            margin-right:1em;
+        }
+        .input-radio input
+        {
+            box-shadow:none;
+            border:none;
+            width:2em;
+            height:2em;
+            outline:none;
+        }
+        .input-radio input:focus
+        {
+            box-shadow:none;
+            border:none;
+            width:2em;
+            height:2em;
+            outline:none;
+        }
+        .input-radio-wrapper
+        {
+            display:flex;
+            align-items:center;
+        }
+        .input-radio-wrapper span
+        {
+            margin-left:1em;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .rw
+        {
+            display:flex;
+            width:2em;
+            height:2em;
+            border-radius:20em;
+            overflow:hidden;
+            box-shadow:0px 3px 12px rgba(0,0,0,0.06);
+        }
+        .input-radio-wrapper input
+        {
+            background:red;
+            border-radius:20em;
+            margin:auto;
+            transform:scale(1.16);
+        }
+    </style>
+        <% include ../imports/menu.ejs %>
+        <div class="m ml">
+        </div>
+        <div class="m mr">
+        </div>
+        <div id="content">
+            <div id="logo">
+            </div>
+            <div id="control">
+                <div class="loader" id="loginLoader">
+                    <p>Loading</p>    
+                </div>
+                <form id="loginForm">
+                    <div class="error" id="loginError">Error</div>
+                    <div class="input firstInputHolder">
+                        <label for="username">Username</label>
+                        <input id="username" type="text" name="username" autocomplete="off" required/>
+                    </div>
+                    <div class="input inputHolder">
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" autocomplete="off" required/>
+                    </div>
+                    <div class="input inputHolder">
+                        <label for="c_password">Confirm Password</label>
+                        <input id="c_password" name="c_password" type="password" autocomplete="off" required/>
+                    </div>
+                    <div class="input inputHolder">
+                        <label for="email">Email</label>
+                        <input id="email" type="text" name="email" autocomplete="off" required/>
+                    </div>
+                    <div class="input inputHolder">
+                        <label>Date of Birth</label>
+                        <div class="inputInlineHolder">
+                        <select class="btn btn-blue" id="year" name="year">
+                            <% 
+                            let year = new Date().getFullYear();
+                            for(let i = 0; i < 220; i++)
+                            {
+                            %>
+                            <option value="<%= year - i %>"><%= year - i %></option>
+                            <% 
+                            }
+                            %>
+                        </select>
+                        <select id="month" name="month" class="btn btn-blue">
+                            <% 
+                            let months =
+                            [
+                                'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+                            ]
+                            for(let i = 0; i < months.length; i++)
+                            {
+                            %>
+                            <option value="<%= i+1 %>"><%= months[i] %></option>
+                            <% 
+                            }
+                            %>
+                        </select>
+                        <select id="day" name="day" class="btn btn-blue">
+                            <% 
+                            for(let i = 31; i > 0; i--)
+                            {
+                            %>
+                            <option value="<%= i %>"><%= i %></option>
+                            <% 
+                            }
+                            %>
+                        </select>                        
+                        </div>
+                    </div>         
+                    <div class="input inputHolder input-radio">
+                        <label for="email">Terms & Conditions</label>
+                        <div class="input-radio-wrapper">
+                        <div class="rw"><input class="radio" type="checkbox" name="gender" value="male"></div>
+                        <span>I agree to the MapleNode <a href="/">game rules and Terms & Conditions.</a></span>
+                        </div>
+                    </div>                                                                          
+                    <div id="form-btn-holder">
+                        <input name="login_submit" type="submit" class="btn btn-green" id="login" value="Register" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script src="../JS/HttpHandler.js"></script>
+        <script>
+        let form = new FormElement("loginForm");
+        let error = new ErrorElement("loginError");
+        let loader = document.getElementById("loginLoader");
+        form.onSubmit({preventDefault:true,body:true},(body,e)=>
+        {
+            let url = new Url("/IO/register",body);
+            loader.style.display="flex";
+            setTimeout(()=>
+            {
+                loader.style.opacity="1";
+            setTimeout(()=>
+            {
+            HttpHandler.postData(url,(response)=>
+            {
+                loader.style.opacity="0";
+                setTimeout(()=>
+                {
+                    loader.style.display="none";
+                    setTimeout(()=>
+                    {
+                        window.location.replace("./");
+                    },3000);
+                }, 320);
+                if(response.success)
+                {
+                    error.hide();
+                    error.success({reason:response.error});
+                }
+                else
+                {
+                    error.show({reason:response.error});
+                }
+            });
+         }, 320);
+         }, 10);
+        });
+        </script>
+    </body>
+</html>

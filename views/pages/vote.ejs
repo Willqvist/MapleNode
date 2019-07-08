@@ -1,0 +1,42 @@
+<%
+let MENU_SITE = "VOTE";
+let name = "Vote";
+
+%>
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="CSS/header.css">   
+        <link rel="stylesheet" type="text/css" href="CSS/menu.css"> 
+        <link rel="stylesheet" type="text/css" href="CSS/play.css"> 
+        <% include ../imports/head %>    
+        <title>Vote <%= settings.serverName %></title>
+        <style>
+            .box
+            {
+                height:20em;
+            }
+        </style>
+        <% include ../imports/menu.ejs %>
+        <% include ../panels/header.ejs %>
+        <section id="content" class="maxWidth box_wrapper">
+        <%
+        for(let download of votes)
+        {
+        %>
+        <div class="box">
+            <h3 class="box_title" data-before="Download"> <%= download.name %></h3>
+            <h3 class="box_title" data-before="Nx"> <%= download.nx %></h3>
+            <h3 class="box_title" data-before="Time"> <%= download.time %></h3>
+            <h3 class="box_title" data-before="Url"> <%= download.url %></h3>
+            <div class="btn-holder">
+                <div class="btn btn-a"><a href="<%= download.url %>"><span>Vote</span></a></div>
+            </div>
+        </div> 
+        <%
+        
+        }
+        %>        
+        </section>
+    </body>
+</html>

@@ -128,7 +128,6 @@ class ItemBuilder extends ImageBuilder
         let elements = file.getElementsByTagName("z");
         for(let i = 0; i < elements.length; i++)
         {
-            console.log("CAP: ", elements[i].parentNode.nodeName.replace("_",""), elements[i].firstChild.data, z);
             if(elements[i].firstChild.data == z)
             {
                 nodeName = elements[i].parentNode.parentNode.nodeName.replace("_","");
@@ -142,7 +141,6 @@ class ItemBuilder extends ImageBuilder
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
         self.loadImage("MapleCharacterGenerator/items/Cap/0"+id+".img/default."+nodeName+".png",(image)=>
         {
-            console.log("CAP DRAWN","MapleCharacterGenerator/items/Cap/0"+id+".img/default."+nodeName+".png");
             let position = self.body["stand"+self.parts.stand].parts[0].position;
             self.canvas.drawImage(image,self.offsetX + parseInt(x),self.offsetY + parseInt(y) + self.faceOffset.y);
             next();
@@ -205,10 +203,8 @@ class ItemBuilder extends ImageBuilder
             return next();
         let x = zElem.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
-        console.log("MapleCharacterGenerator/items/"+type+"/0"+id+".img/stand"+self.parts.stand+".0."+nodeName+".png");
         self.loadImage("MapleCharacterGenerator/items/"+type+"/0"+id+".img/stand"+self.parts.stand+".0."+nodeName+".png",(image)=>
         {
-            console.log("caoted");
             let position = self.body["stand"+self.parts.stand].parts[0].position;
             self.canvas.drawImage(image,self.clothOffset.x + self.offsetX + parseInt(x),self.clothOffset.y + position.y + self.offsetY + parseInt(y));
             next();
@@ -248,7 +244,6 @@ class ItemBuilder extends ImageBuilder
         let stand = 1;
         self.loadImage("MapleCharacterGenerator/items/Pants/0"+id+".img/stand"+stand+".0.pants.png",(image)=>
         {
-            console.log("panted");
             let position = self.body["stand"+self.parts.stand].parts[0].position;
             self.canvas.drawImage(image,self.clothOffset.x + self.offsetX + parseInt(x),self.clothOffset.y + position.y + self.offsetY + parseInt(y));
             next();
@@ -256,7 +251,6 @@ class ItemBuilder extends ImageBuilder
     }
     setShoes(self,parameters,next)
     {
-        console.log("shoes id: ",parameters.id);
         let id = parameters.id;
         let z = parameters.z;
         let file = new DOMParser().parseFromString(fs.readFileSync("MapleCharacterGenerator/items/Shoes/0"+id+".img/coord.xml","utf8"),"text/xml");
@@ -382,7 +376,6 @@ class ItemBuilder extends ImageBuilder
         let infoStand = file.getElementsByTagName("_info")[0].getElementsByTagName(nodeName.replace("_",""))[0];
         let x = zElem.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
-        console.log("WEAPON POSITION", x,y);
         if(infoStand != null)
         {
             let child;
@@ -394,7 +387,6 @@ class ItemBuilder extends ImageBuilder
         self.loadImage("MapleCharacterGenerator/items/Weapon/0"+id+".img/"+prefix+"stand"+self.parts.stand+".0."+nodeName+".png",(image)=>
         {
             let position = self.body["stand"+self.parts.stand].parts[0].position;
-            console.log("BOST OFFSET;:",self.bowOffset.x);
             self.canvas.drawImage(image,self.clothOffset.x + self.offsetX + self.bowOffset.x + parseInt(x),self.clothOffset.y + self.bowOffset.y + position.y + self.offsetY + parseInt(y));
             next();
         });

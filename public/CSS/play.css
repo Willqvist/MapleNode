@@ -1,0 +1,73 @@
+.box_wrapper{
+    display:flex;
+    margin-top:1.5em;
+    justify-content: space-around;
+}
+.box
+{
+    box-sizing: border-box;
+    padding:1.5em;
+    background:#FFF;
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.10);
+    overflow:hidden;
+    min-width:20em;
+    height:14em;
+    display:flex;
+    flex-direction: column;
+}
+.box h3
+{
+    position:relative;
+    font-weight:bold;
+    font-size:1.2em;
+    margin-top:0.8em;
+    color:#20063B;
+}
+.box h3:before
+{
+    content:attr(data-before);
+    position: absolute;
+    font-size:0.8em;
+    top:-1.3em;
+    font-weight:500;
+    opacity:0.4;
+}
+.box_naked
+{
+    box-shadow:0px 0px 0px rgba(0, 0, 0, 0);
+    background:none;
+}
+/*
+        <div class="news_box box">
+            <h2 class="box_title">News</h2>
+        </div>
+        <div class="server_box box">
+            <h2 class="box_title">News</h2>
+        </div>
+        <div class="stats_box box box_naked">
+            <h2 class="box_title">Server stats</h2>
+        </div>
+        <div class="ranking_box box box_naked">
+            <h2 class="box_title">Server stats</h2>
+        </div> 
+        */  
+.box_title
+{
+    font-weight:500;
+    font-size:1.1em;
+    font-family: 'Montserrat', sans-serif;
+    color:#20063B;
+}
+.btn
+{
+    height:3em;
+    margin:auto;
+}
+.box
+{
+    justify-content: space-between;
+}
+.box p
+{
+    
+}

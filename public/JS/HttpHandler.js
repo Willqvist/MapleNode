@@ -14,6 +14,20 @@ class HttpHandler
         }
         http.send(JSON.stringify(url.getParamters()));
     }
+    static getData(url,callback)
+    {
+        let http = new XMLHttpRequest();
+        http.open("GET",url.getFullUrl(),true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onreadystatechange = function()
+        {
+            if(http.readyState == XMLHttpRequest.DONE && http.status == 200)
+                callback(JSON.parse(http.responseText));
+            else if(http.readyState == XMLHttpRequest.DONE && http.status == 404)
+                callback({success:false,http:{status:http.status}});
+        }
+        http.send(JSON.stringify(url.getParamters()));
+    }
 }
 class Url
 {
@@ -52,16 +66,23 @@ class FormElement
             data[this.fields[i].name] = this.fields[i].value;
         return data;  
     }
+    submit()
+    {
+        this.onSubmitCallback(null);
+    }
+    onSubmitCallback(e)
+    {
+        if(this.settings.preventDefault && e != null)
+        e.preventDefault();
+        if(this.settings.body)    
+            return this.subCallback(this.getInputValues(),e);
+        return this.subCallback(e);  
+    }
     onSubmit(settings, callback)
     {
-        this.formElement.onsubmit = (function(e)
-        {
-            if(settings.preventDefault)
-                e.preventDefault();
-            if(settings.body)    
-                return callback(form.getInputValues(),e);
-            return callback(e);  
-        }).bind({form:this});
+        this.subCallback = callback;
+        this.settings = settings;
+        this.formElement.onsubmit = this.onSubmitCallback.bind(this);
     }
 }
 class ErrorElement
@@ -297,11 +318,30 @@ class AppendableElement
     {
         if(!this.isAppended) this.appendDom();
         this.element.style.display="flex";
+        setTimeout(()=>
+        {
+            this.element.style.opacity="1";
+            this.element.style.transform="translateY(0em)";
+        },20);
         this.active = true;
     }
-    hide()
+    hide(fade=true)
     {
-        this.element.style.display="none";
+        if(fade)
+        {
+            this.element.style.opacity="0"; 
+            this.element.style.transform="translateY(0.5em)";
+            setTimeout(()=>
+            {
+                this.element.style.display="none"; 
+            },220);  
+        }
+        else
+        {
+            this.element.style.display="none"; 
+            this.element.style.opacity="0"; 
+            this.element.style.transform="translateY(0.5em)";
+        }
         this.active = false;
     }
 }
@@ -620,6 +660,11 @@ class ColorPicker extends AppendableElement
         console.log("wew");
         this.element.style.left = x+"px";
         this.element.style.top = y+"px";
+        this.pos = {x:x,y:y};
+    }
+    getHeight()
+    {
+        return this.element.clientHeight;
     }
     calculatePositionsFromRgb(rgb)
     {

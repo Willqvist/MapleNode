@@ -4,8 +4,9 @@ const MapleCharacterGenerator = require("../MapleCharacterGenerator/MCG");
 const mysql = require("../Tools/mysql").getMysql();
 const InstallHandler = require("../Tools/InstallationHandler");
 const constants = require("../Tools/Constants");
-const Rules = require("../Tools/Rules");
 const md5 = require("md5");
+const Logger = require("../Logger/Logger");
+
 let mcg = new MapleCharacterGenerator(mysql.connection,60*5);
 let installHandler = new InstallHandler(mysql.mysql);
 router.post("/login",(req,res)=>
@@ -26,10 +27,15 @@ router.post("/login",(req,res)=>
                 let hour = 3600000/2;
                 req.session.cookie.expires = new Date(Date.now() + hour);
                 req.session.cookie.maxAge = hour;
+                Logger.log("["+req.ip+"] " + req.body.username + " loggedin");
+            }
+            else
+            {
+                Logger.log("["+req.ip+"] tried to login with username " + req.body.username + "");
             }
             res.send(JSON.stringify(data)); 
         });
-    },00);
+    },100);
 });
 router.post("/register",(req,res)=>
 {
@@ -68,6 +74,7 @@ router.post("/register",(req,res)=>
                     mysql.connection.query(`INSERT INTO accounts (name,password,birthday,email) VALUES('${data.username}','${md5(data.password)}','${data.year}-${data.month}-${data.day}','${data.email}')`,(err,result)=>
                     {
                         if(err) throw err;
+                        Logger.log("["+req.ip+"] " + data.username + " registered");
                         res.send(JSON.stringify({success:true,error:"Register complete! You will be directed to a new page in 3 sec..."}));
                     });
                 }
@@ -167,10 +174,8 @@ router.post("/ranking",(req,res)=>
     `;
     setTimeout(()=>
     {
-        console.log(sql);
         mysql.connection.query(sql,queryData,(err,result)=>
         {
-            console.log("wew");
             if(err)
                 throw err;
             let jobs = constants.getConstant("jobs");
@@ -180,6 +185,25 @@ router.post("/ranking",(req,res)=>
             res.send(JSON.stringify(result));  
         })
     },200);
+});
+router.post("/search",(req,res)=>
+{
+    let search = req.body.search;
+    if(search.length == 0)
+    return res.send(JSON.stringify({empty:"search for a word"}));
+    let cat = req.body.category;
+    let menus = ["home","forum","vote","play","ranking","sign up","login"];
+    let sql_players = `SELECT name FROM characters WHERE name LIKE'%${search}%'`;
+
+    if(cat == 'menu' || cat == 'all')
+    //let sql_items = `SELECT name FROM characters WHERE name like ${search}`;
+    mysql.connection.query(sql_players,(err,result)=>
+    {
+        if(err) throw err;
+        res.send(JSON.stringify({players:result,pages:menus.filter(w=>w.includes(search))}));
+
+    });
+        
 });
 router.get("/ranking/:player",(req,res,next)=>
 {

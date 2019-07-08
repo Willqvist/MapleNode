@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const MapleCharacterGenerator = require("../MapleCharacterGenerator/MCG");
 const mysql = require("../Tools/mysql").getMysql();
-const InstallHandler = require("../Tools/InstallationHandler");
 const constants = require("../Tools/Constants");
-const Rules = require("../Tools/Rules");
-const async = require("async");
 const fs = require("fs");
+const CSSGenerator = require("../scripts/CSSGenerator/CSSGenerator");
 let app;
 router.get("/",(req,res)=>
 { 
@@ -20,81 +17,126 @@ router.get("/",(req,res)=>
 router.post("/votes/update",(req,res)=>
 { 
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
-    async.forEachOf(req.body.newValue,(page,key,callback)=>
-        {
-            if(!req.body.originalValue[key]) return callback();
-            let name = req.body.originalValue[key].name;
-            mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_Vote (nx,name,url,time) VALUES ('${page.nx}','${page.name}','${page.url}','${page.time}') ON DUPLICATE KEY UPDATE nx='${page.nx}', name='${page.name}', url='${page.url}', time='${page.time}'`,(err,result)=>
-            {
-                return callback(err);
-            });
-        },(err)=>
-        {
-            if(err) throw err;
-            if(req.body.remove)
-            {
-                async.forEachOf(req.body.remove,(page,key,callback)=>
-                {
-                    console.log(req.body.remove,key);
-                    mysql.connection.query(`DELETE FROM ${constants.getConstant("prefix")}_Vote WHERE name='${req.body.remove[key]}'`,(err,result)=>
-                    {
-                        callback(err);
-                    })
-                },(err)=>
-                {
-                    if(err) throw err;
-                    res.send(JSON.stringify({success:true})); 
-                });
-            }
-            else
-            {
-                res.send(JSON.stringify({success:true}));
-            }
-        });
+    mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_vote SET name = '${req.body.name}',url='${req.body.url}',nx='${req.body.nx}',time='${req.body.time}' WHERE id='${req.body.key}'`,(err,result)=>
+    {
+        if(err) throw err;
+        res.send(JSON.stringify({success:true}));
+    });
 });
+
+router.post("/vote/add",(req,res)=>
+{
+    if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
+    if(!req.body.name || req.body.name.length == 0 || req.body.url.length == 0 || req.body.nx.length == 0 || req.body.time.length == 0) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
+    mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_vote (name,url,nx,time) VALUES ('${req.body.name}','${req.body.url}','${req.body.nx}','${req.body.time}')`,(err,result)=>
+    {
+        if(err) throw err;
+        res.send(JSON.stringify({success:true,id:result.insertId}));
+    });
+}); 
+
 router.post("/palette/add",(req,res)=>
 {
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
-    let palette = req.body.palette;
-    mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_palettes (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES('${palette["name"]}','${palette["Main color"]}','${palette["Secondary main color"]}','${palette["Font color dark"]}','${palette["Font color light"]}','${palette["Fill Color"]}','0')`,(err,result)=>
+    let palette = req.body;
+    mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_palettes (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES('${palette.name}','${palette.mainColor}','${palette.secondaryMainColor}','${palette.fontColorDark}','${palette.fontColorLight}','${palette.fillColor}','0')`,(err,result)=>
     {
        if(err) return res.send(JSON.stringify({success:false})); 
-       return res.send(JSON.stringify({success:true}));
+       return res.send(JSON.stringify({success:true,key:result.insertId}));
+    });
+});
+router.post("/palette/select",(req,res)=>
+{
+    console.log(req.body.key);
+    mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_palettes SET active='0' WHERE active='1'`,(err,result)=>
+    {
+        mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_palettes SET active='1' WHERE ID='${req.body.key}'`,(err,result)=>
+        {
+            if(err) throw err;
+            mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_palettes WHERE ID='${req.body.key}'`,(err,resp)=>
+            {
+                let palette = resp[0];
+                CSSGenerator.generateCSS(palette.mainColor,palette.secondaryMainColor,palette.fontColorDark,palette.fontColorLight,palette.fillColor,()=>
+                {
+                    console.log(palette);
+                    return res.send(JSON.stringify({success:true}));
+                });
+            });
+        });
+    });
+});
+router.post("/palette/remove",(req,res)=>
+{
+    mysql.connection.query(`DELETE FROM ${constants.getConstant("prefix")}_palettes WHERE ID='${req.body.key}'`,(err,result)=>
+    {
+        if(err) throw err;
+        return res.send(JSON.stringify({success:true}));
     });
 });
 router.post("/palette/update",(req,res)=>
 {
-    console.log("wew");
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
-    let palette = req.body.palette;
+    let palette = req.body;
     let name = req.body.name;
-    mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_palettes SET active='0' WHERE active='1'`,(err,result)=>
+    mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_palettes SET name='${name}',mainColor='${palette.mainColor}',secondaryMainColor='${palette.secondaryMainColor}',fontColorDark='${palette.fontColorDark}',fontColorLight='${palette.fontColorLight}',fillColor='${palette.fillColor}' WHERE ID='${req.body.key}'`,(err,result)=>
     {
         if(err) throw err;
-        mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_palettes (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES ('${name}','${palette.maiColor}','${palette.secondaryMainColor}','${palette.fontColorDark}','${palette.fontColorLight}','${palette.fillColor}','1')
-        ON DUPLICATE KEY UPDATE mainColor='${palette.mainColor}',secondaryMainColor='${palette.secondaryMainColor}',fontColorDark='${palette.fontColorDark}',fontColorLight='${palette.fontColorLight}',fillColor='${palette.fillColor}',active='1'
-        `,(err,result)=>
+        app.locals.palette = palette;
+        CSSGenerator.generateCSS(palette.mainColor,palette.secondaryMainColor,palette.fontColorDark,palette.fontColorLight,palette.fillColor,()=>
         {
-            if(err) throw err;
-            app.locals.palette = palette;
-            return res.send(JSON.stringify({success:true}));
+            return res.send(JSON.stringify({success:true})); 
         });
     });
 });
 router.post("/changeImage",(req,res)=>
 {
     
-    fs.readdir('./public/images',(err,files)=>
+    readImages((files)=>
     {
-        if(err) throw err;
-        files = files.filter((file)=>
-        {
-            let ending = file.split(".")[1];
-            if(ending && (ending === "png" || ending === "jpg" || ending === "gif")) return file;
-        });
         return res.send(JSON.stringify({success:true,files:files}));
     });
 }); 
+function readImages(callback,dir='./public/images/',start="",images=[])
+{
+    fs.readdir(dir+start,(err,files)=>
+    {
+        if(err) throw err;
+        files.iterate((file,next)=>
+        {
+            if(fs.lstatSync('./public/images/'+start+"/"+file).isDirectory())
+            {
+                readImages((imgs)=>
+                {
+                    images = images.concat(imgs);
+                    next();
+                },dir,start+"/"+file);
+            }
+            else
+            {
+                let ending = file.split(".")[1];
+                if(ending && (ending === "png" || ending === "jpg" || ending === "gif" || ending === "svg"))
+                    images.push((start+"/"+file).substr(1));
+                next();
+            }
+        },()=>
+        {
+            callback(images);
+        });
+    });
+}
+Array.prototype.iterate = function(callback,done,index=0)
+{
+    if(index==this.length) return done();
+    if(this.length == 0) return;
+    callback(this[index],()=>
+    {
+        this.iterate(callback,done,index+1);
+    });
+};
+function readDir(dir,callback)
+{
+    fs.readdir(dir,(err,files)=>{if(err) throw err; callback(files);});
+}
 router.post("/heroImage/change",(req,res)=>
 {
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
@@ -105,37 +147,84 @@ router.post("/heroImage/change",(req,res)=>
         return res.send(JSON.stringify({success:true}));
     })
 }); 
-router.post("/download/update",(req,res)=>
+router.post("/logo/change",(req,res)=>
 {
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
-    async.forEachOf(req.body.new,(page,key,callback)=>
+    mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_design SET logo='${req.body.file}' WHERE id='1'`,(err,result)=>
     {
-        mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_downloads SET name = '${req.body.new[key].name}',url='${req.body.new[key].url}' WHERE name='${key}'`,(err,result)=>
-        {
-            if(err) throw err;
-            callback();
-        });
-    },
-    (err)=>
+        if(err) throw err;
+        app.locals.logo = req.body.file;
+        return res.send(JSON.stringify({success:true}));
+    })
+}); 
+router.post("/download/update",(req,res)=>
+{
+    console.log(req.body);
+    if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
+    if(!req.body.name && !req.body.url && (req.body.name.length == 0 || req.body.url.length == 0)) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
+    
+    mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_downloads SET name = '${req.body.name}',url='${req.body.url}' WHERE id='${req.body.key}'`,(err,result)=>
     {
         if(err) throw err;
         res.send(JSON.stringify({success:true}));
     });
 }); 
+router.post("/download/remove",(req,res)=>
+{
+    console.log(req.body);
+    if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
+    if(!req.body.id) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
+    mysql.connection.query(`DELETE FROM ${constants.getConstant("prefix")}_downloads WHERE id='${req.body.id}'`,(err,result)=>
+    {
+        if(err) throw err;
+        res.send(JSON.stringify({success:true}));
+    });
+
+});
+
 router.post("/download/add",(req,res)=>
 {
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
-    async.forEachOf(req.body.add,(element,key,callback)=>
-    {
-        mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_downloads (name,url) VALUES ('${element.name}','${element.url}')`,(err,result)=>
-        {
-            if(err) throw err;
-            callback();
-        });
-    },
-    (err)=>
+    if(!req.body.url || !req.body.name || req.body.name.length == 0 || req.body.url.length == 0) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
+    mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_downloads (name,url) VALUES ('${req.body.name}','${req.body.url}')`,(err,result)=>
     {
         if(err) throw err;
+        res.send(JSON.stringify({success:true,id:result.insertId}));
+    });
+});
+
+router.get("/layout/:name",(req,res)=>
+{
+    if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
+    if(req.params.name.length == 0) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
+
+    mysql.connection.query(`SELECT layout FROM ${constants.getConstant("prefix")}_layout WHERE name = '${req.params.name}'`,(err,result)=>
+    {
+        if(err)
+        {
+            Logger.error(err);
+            res.send(JSON.stringify({success:false,json:JSON.stringify({error:err})}));
+        }
+        fs.readdir("./views/panels/",(err,files)=>
+        {
+            if(err) Logger.error(err);
+            res.send(JSON.stringify({success:true,json:result[0],content:files}));
+        });
+    });
+}); 
+router.post("/layout",(req,res)=>
+{
+    if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
+    if(req.body.json.length == 0 || req.body.name.length == 0) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
+
+    mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_layout SET layout='${req.body.json}' WHERE name = '${req.body.name}'`,(err,result)=>
+    {
+        if(err)
+        {
+            Logger.error(err);
+            res.send(JSON.stringify({success:false,json:JSON.stringify({error:err})}));
+        }
+        CSSGenerator.generateHomeLayout(JSON.parse(req.body.json));
         res.send(JSON.stringify({success:true}));
     });
 }); 
@@ -152,9 +241,10 @@ function getUser(req)
 {
     return req.session.user;
 }
+
 function renderGMDashboard(req,res)
 {
-    mysql.connection.query(`SELECT name,nx,time,url FROM ${constants.getConstant("prefix")}_Vote`,(err,globalSettings)=>
+    mysql.connection.query(`SELECT name,nx,time,url,ID FROM ${constants.getConstant("prefix")}_Vote`,(err,globalSettings)=>
     {
         if(err) throw err;
         mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_palettes`,(err,palettes)=>
@@ -175,10 +265,12 @@ function renderGMDashboard(req,res)
         });
     });
 }
+
 function renderDashboard(req,res)
 {
     res.render("pages/dashboardUser");
 }
+
 module.exports = function(applet)
 {
     app = applet;

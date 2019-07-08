@@ -1,0 +1,82 @@
+<%
+
+if(!isset(typeof settings))
+{
+    settings = {};
+}
+let MENU_SITE = "HOME";
+name = settings.serverName;
+%>
+<!doctype html>
+<html>
+    <head>
+    <% include imports/head %>
+    <style>
+        body
+        {
+            --mainColor:<%= palette.mainColor %>;
+            --secondaryMainColor:<%= palette.secondaryMainColor %>;
+            --fontColorLight:<%= palette.fontColorLight %>;
+            --fontColorDark:<%= palette.fontColorDark %>;
+            --fillColor:<%= palette.fillColor %>;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="CSS/index.css">  
+    <link rel="stylesheet" type="text/css" href="CSS/header.css">    
+    <link rel="stylesheet" type="text/css" href="CSS/status.css">  
+    <link rel="stylesheet" type="text/css" href="CSS/news.css">  
+    <link rel="stylesheet" type="text/css" href="CSS/ranking.css"> 
+    <link rel="stylesheet" type="text/css" href="CSS/control.css">
+    <link rel="stylesheet" type="text/css" href="CSS/media.css">    
+    <link rel="stylesheet" type="text/css" href="CSS/menu.css">            
+    <title><%= settings.serverName %></title>
+    <style>
+        #headerBackground,#headerContent
+        {
+            background:url(images/<%= heroImage %>);
+            background-size:cover;
+            background-position:50% 50%;            
+        }
+        #headerBackground
+        {
+            filter:blur(1em);
+        }
+        .box_wrapper
+        {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            grid-auto-rows: 1fr
+        }
+    </style>
+    <% include imports/menu.ejs %>
+    <% include panels/header.ejs %>
+    <div class="box_wrapper maxWidth">
+        <!--var(--content)-->
+    </div>
+        <script>
+        //TODO: CHANGE TO < loadPanelScripts() >
+        //CONTROL SCRIPT
+        let control_form = new FormElement("control_form");
+        let control_error = new ErrorElement("controlError");
+        control_form.onSubmit({body:true,preventDefault:true},(body,e)=>
+        {
+            let data = {username:body.control_name,password:body.control_pass};
+            let url = new Url("IO/login",data);
+            HttpHandler.postData(url,(response)=>
+            {
+                console.log(response.reason);
+                if(!response.loggedin)
+                {
+                    return control_error.showError({reason:response.reason});
+                }
+                control_error.success({reason:response.reason + ". redirecting..."});
+                setTimeout(()=>
+                {
+                    window.location.href = "/dashboard";
+                },2500);
+            });
+            console.log(body); 
+        });
+        </script>
+    </body>
+</html>

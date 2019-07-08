@@ -1,0 +1,261 @@
+<%
+let MENU_SITE = "RANKING";
+let name = "Ranking";
+%>
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">
+        <link rel="stylesheet" type="text/css" href="CSS/header.css">
+        <link rel="stylesheet" type="text/css" href="CSS/media.css">   
+        <link rel="stylesheet" type="text/css" href="CSS/menu.css"> 
+        <link rel="stylesheet" type="text/css" href="CSS/dropdown.css">    
+        <link rel="stylesheet" type="text/css" href="CSS/rankingPage.css">      
+        <% include ../imports/head %>                      
+        <title>Ranking</title>
+        <% include ../imports/menu.ejs %>
+        <% include ../panels/header.ejs %>
+            <section id="content" class="maxWidth">
+            <div id="settings" class="tab">
+                <div id="settingsBtns">
+                    <div class="dropdownBtn btn noSelect" data-dropdownContent="searchSettings"><span>&dtrif; Overall</span>
+                        <ul id="searchSettings"class="noSelect dropdownContent">
+                            <%
+                            for(let key in getJobs())
+                            {
+                            %>
+                            <li data-id="<%=key%>" data-select="<%=getJobs()[key]%>"><%= getJobs()[key]%></li>
+                            <%
+                            }
+                            %>
+                        </ul>
+                    </div>
+                    <div class="dropdownBtn btn noSelect" data-dropdownContent="searchRankingSettings"><span>&dtrif; Level</span>
+                        <ul id="searchRankingSettings" class="noSelect dropdownContent">
+                            <li data-select="Level">Level</li>
+                            <li data-select="Fame">Fame</li>
+                        </ul>
+                    </div>
+                    <div id="reloadSearch">
+                    <i id="icon-search" class="fas fa-sync-alt"></i>
+                </div>
+                </div>
+                <form>
+                    <input placeholder="Search..." id="searchBar" />
+                    <div id="searchBtn">
+                        <i id="icon-search" class="fas fa-search"></i>
+                    </div>
+                </form>
+            </div>
+            <div class="block fullBlock">
+                <ul class="blockHeader">
+                    <li class="title">Level Rank</li>
+                    <li class="characterMenu"><span class="title">Character</span><span class="title">Name</span></li>
+                    <li class="title">Job / Job rank</li>
+                    <li class="title">Level</li>
+                </ul>
+                <div id="usersWrapper">
+                    <div class="loader" id="rankLoader">
+                        <p>Loading</p>    
+                    </div>
+                    <div id="users">
+
+                    </div>
+                </div>
+            </div>
+            <div  class="tab pageTab">
+                <div id="prev" class="btn noSelect"><span>Previous Page</span></div>  
+                <div id="pageInfo"><h3 id="pageNumber">0</h3></div>
+                <div id="next" class="btn noSelect"><span>Next Page</span></div>
+            </div>                     
+        </section>
+        <script src="JS/HttpHandler.js"></script>
+        <script src="JS/dropdown.js"></script>
+        <script>
+           let jobs = "-1";
+           let rank = "Level";
+           let reload = document.getElementById("reloadSearch");
+           let titles = document.getElementsByClassName("title");
+           let title =
+           {
+               ORDER:0,
+               CHARACTER:1,
+               NAME:2,
+               JOB:3,
+               RANK:4,
+           }
+           dropdownClickHandler(dropdownBtns[0],changeJob);
+           dropdownClickHandler(dropdownBtns[1],changeRank);
+           function changeJob(self,data,dataId)
+           {
+               self.firstChild.innerHTML = "&dtrif; "+data;
+               jobs = dataId;
+           }
+           function changeRank(self,data,dataId)
+           {
+               self.firstChild.innerHTML = "&dtrif; "+data;
+               rank = data;
+           }
+            //###RELOAD####
+            reload.addEventListener("click",()=>
+            {
+                console.log("wew");
+                reloadPage();
+                //reload.childNodes[1].style.transform = "rotateZ(180deg) !important";
+            },false);
+        </script>
+        <script>
+            let loader = new Loader("rankLoader");
+            let userElement = new DOMCompiler("<div class=\"user\">\r\n<h3 class=\"rank\">{{placement}}</h3>\r\n<div class=\"character\">\r\n<div class=\"characterImage\"></div>\r\n<h3>{{name}}</h3>\r\n</div>\r\n<h3 class=\"job\"><span>({{jobRank}})</span>{{job}}</h3>\r\n<h3 class=\"level\">{{rank}}</h3>\r\n</div>");
+            let page = 0;
+            let length = 5;
+            let search;
+            let isLoading = false;
+            let next = document.getElementById("next");
+            let prev = document.getElementById("prev");
+            let userWrapper = document.getElementById("users");
+            let pageNumer = document.getElementById("pageNumber");
+            
+            let lastClickedUser = null;
+
+            //userElement.setVariable({variable:"rank",data:1});
+            goToPage(0);
+            prevButton();
+            function isset(variable)
+            {
+                return typeof variable !== 'undefined'
+            }
+            function showUser(user)
+            {
+                user.style.height="15em";
+            }
+            function hideUser(user)
+            {
+                user.style.height = "8em";
+            }
+            function goToPage(page){
+                pageNumer.innerHTML = page;
+                isLoading= true;
+                loader.show();
+                console.log(jobs,rank);
+                let url = new Url("/IO/ranking",{page:page,job:jobs,rank:rank,search:search});
+                HttpHandler.postData(url,(response)=>
+                {
+                    userWrapper.innerHTML = "";
+                    console.log(response);
+                    for(let i = 0; i < response.length; i++){
+                        let user = response[i]; 
+                        userElement.setVariable({variable:"placement",data:user.rank.toString()});
+                        userElement.setVariable({variable:"name",data:user.name});
+                        userElement.setVariable({variable:"job",data:user.job.toString()});
+                        userElement.setVariable({variable:"jobRank",data:user.jobRank.toString()});
+                        if(isset(user.level))
+                        {
+                            userElement.setVariable({variable:"rank",data:user.level.toString()});
+                            titles[title.RANK].innerHTML = "Level";
+                        }
+                        else if(isset(user.fame))
+                        {
+                            userElement.setVariable({variable:"rank",data:user.fame.toString()});
+                            titles[title.RANK].innerHTML = "Fame";
+                        }
+                        let element = userElement.compileDOM();
+                        let image = element.getElementsByClassName("characterImage")[0];
+                        image.style.background="url(Characters/"+user.name+".chr)";
+                        image.style.backgroundSize="14em";
+                        image.style.backgroundPosition="50% 50%";
+                        element.addEventListener(
+                            "click",
+                            (()=>
+                            {
+                                if(lastClickedUser)
+                                {
+                                    hideUser(lastClickedUser);
+                                    if(lastClickedUser == element)
+                                    {
+                                        lastClickedUser = null;
+                                        return;
+                                    }
+                                }
+                                showUser(element);
+                                lastClickedUser = element;
+                            }).bind(element),false
+                        );
+
+                        userWrapper.appendChild(element);
+                        if(response.length < length)
+                        {
+                            length = response.length;
+                            userWrapper.style.minHeight = (8 * length) + "em";
+                        }
+                    }
+                    loader.hide();
+                    isLoading = false;
+                });
+            }
+            console.log(usersWrapper);
+            next.addEventListener("click",goNext,false);
+            prev.addEventListener("click",goPrev,false);
+            function goNext()
+            {
+                if(!canChangePage()) return;
+                page ++;
+                goToPage(page);
+                prevButton();
+            }
+            function prevButton()
+            {
+                if(page == 0)
+                {
+                    prev.style.background="#bdc0c4";
+                    prev.style.cursor = "not-allowed";
+                }
+                else
+                {
+                    prev.style.background="#3e78b2";
+                    prev.style.cursor = "pointer";
+                }
+            }
+            function goPrev()
+            {
+                if(!canChangePage() || page == 0)  return;
+                page --;
+                goToPage(page);  
+                prevButton();         
+            }
+            function canChangePage()
+            {
+                return !isLoading;
+            }
+            function reloadPage()
+            {
+                if(isLoading) return;
+                goToPage(0);
+            }
+
+            //##SEARCH 
+
+            let searchBtn = document.getElementById("searchBtn");
+            let searchBar = document.getElementById("searchBar");
+            searchBar.addEventListener("keyup",function()
+            {
+                console.log(this.value);
+                search = this.value;
+                if(this.value.length > 0)
+                {
+                    searchBtn.style.boxShadow = "inset 0px -4.5em 0 #3e78b2";
+                }
+                else
+                {
+                   searchBtn.style.boxShadow = "inset 0px -0em 0 #3e78b2"; 
+                }
+            },false);
+
+            searchBtn.addEventListener("click",function()
+            {
+                reloadPage();
+            },false);
+        </script>
+    </body>
+</html>
