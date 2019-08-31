@@ -19,13 +19,16 @@ let MENU_SITE="LOGIN";
             background-size:contain;
             background-position:50% 50%;
             margin:auto;
-            margin-top:9em;
-            margin-bottom:5em;
+            margin-bottom:1em;
         }
         body{
             background-size:contain;
             background-position:50% 100%;
             background-attachment:fixed;
+        }
+        label, span
+        {
+            color:#FFF !important;
         }
         .m{
             position:fixed;
@@ -49,6 +52,7 @@ let MENU_SITE="LOGIN";
     </style>
         <link rel="stylesheet" type="text/css" href="../CSS/control.css">
         <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
+        <link rel="stylesheet" type="text/css" href="../CSS/loginreg.css">
     </head>
         <style>
         .loader
@@ -67,11 +71,22 @@ let MENU_SITE="LOGIN";
         .input select
         {
             outline:none;
+        }
+        #content
+        {
+            margin:auto;
+            position:absolute;
+            height:21em;
+            left:0;
+            right:0;
+            top:0;
+            bottom:0;
         }  
     </style>
 
     <body>
         <% include ../imports/menu.ejs %>
+        <div class="gradient"></div>
         <div class="m ml">
         </div>
         <div class="m mr">

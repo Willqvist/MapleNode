@@ -1,8 +1,25 @@
 <header id="header">
     <div id="headerBackground"></div>
     <div id="headerBreaker"></div>
+     <div id="fade"></div>
+
     <div id="headerContent" class="maxWidth">
         <h1><%= name %></h1>
-        <div id="fade"></div>
     </div>
+    <script>
+        let bg = document.getElementById("headerBackground");
+        document.addEventListener("scroll",()=>
+        {
+            let y = window.scrollY;
+            console.log(y);
+            parallax(0,600,y,(delta)=>
+            {
+                bg.style.backgroundPosition = "50% " + (50-(delta*50)) +"%";
+            });
+        },false);
+        function parallax(start,end,t,callback)
+        {
+            callback((t-start)/(end-start));
+        }
+    </script>
 </header>

@@ -370,6 +370,7 @@ class DesignPanel extends Panel
         super(name);
         this.heroImageElement = document.getElementsByClassName("panelHeroImage")[0];
         this.logoElement = document.getElementsByClassName("logoImage")[0];
+        this.logoElementDark = document.getElementsByClassName("logoImage")[1];
         this.editHero = new DashbordFormElement("editHeroImage","Select new Heroimage","none"); 
         this.removePalette = new DashbordFormElement("removePalettem","Remove Palette, are you sure?","Delete");
         this.removePalette.build();
@@ -468,6 +469,7 @@ class DesignPanel extends Panel
                                 }
                                 image.className += " selectedHeroImage";
                                 this.logoElement.style.background=`url(./images/${image.getAttribute("data-image")})`;
+                                this.logoElementDark.style.background=`url(./images/${image.getAttribute("data-image")})`;
                             });                            
                         }
                     },false);

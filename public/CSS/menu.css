@@ -10,21 +10,28 @@ body
     width:100%;
     position:fixed;
     z-index:99;
-    top:0;
-    background:#FFF;
+    padding-top:2.4em;
     font-size:1em;
+    height:3em;
+    color:#FFF !important;
+    transition: ease 0.35s;
+    margin-top:0 !important;
+    top:0;
+    /*
+    background:#FFF;
     box-shadow:0px 0.3em 0 rgba(0, 0, 0, 0.05);
+    */
 }
 #menu_content{
     margin:auto;
     display:flex;
     justify-content: space-between;
     position: relative;
-    background:#FFF;
+     /*background:#FFF;*/
 }
 #menu_content #menu_logo{
-    width:5em;
-    height:5.5em;
+    width:9em;
+    height:3em;
     background-position:0% 50%;
     background-size:contain;
     font-size:1em;
@@ -58,12 +65,13 @@ body
     box-sizing: border-box;
     font-weight:700;
     font-family: 'Montserrat', sans-serif;
-    color:#20063B;
-    font-size:0.78em;
+    color:#FFF;
+    font-size:0.76em;
     display:flex;
     justify-content: center;
     align-content: center;
     align-items:flex-start;
+    letter-spacing: 0.2em;
     opacity:1;
     transition:opacity Ease 0.2s;
 }
@@ -84,14 +92,14 @@ body
     align-items:center;
     width:13em;
     z-index:1;
-    background:#FFF;
+    font-size:0.85em;
 }
 #search_menu input
 {
     border:none;
     flex:0 1 auto;
     box-shadow:0px 0px 0px 1px rgba(0, 0, 0, 0.10);
-    border-radius:10em;
+    border-radius:0.5em;
     font-family: 'Montserrat', sans-serif;
     font-weight:400;
     color:#20063B; 
@@ -100,19 +108,23 @@ body
     outline:none;
     padding-left:0.6em;
     padding-right:0.6em;
+    font-size:1em;
+
     transition:width ease 0.2s;
 }
 #search_menu input:focus
 {
-    width:10em;
+    width:7em;
 }
 #search_btn_menu
 {
     width:2.5em;
     height:2.5em;
-    border-radius:100%;
+    font-size:1em;
+    border-radius:0.5em;
     background:#69DC9E;
     margin-left:0.5em;
+    font-size:1em;
     color:#FFF;
     display:flex;
     justify-content: center;
@@ -137,8 +149,8 @@ body
     width:2em;
     height:2em;
     fill:none;
-    stroke:#20063B;
-    stroke-width:7;
+    stroke:#FFF;
+    stroke-width:9;
     margin:auto;
     margin-right:0.6em;
     stroke-linecap:round;
@@ -147,11 +159,10 @@ body
 .dashboardLogo
 {
     border-radius:22em;
-    background:Red;
     width:2.5em;
     height:2.5em;
     overflow: hidden;
-    background:#20063B;
+    background:#FFF;
     position: relative;
 }
 .dashboardLogo img
@@ -257,7 +268,7 @@ body
 }
 .search_menu_item:hover
 {
-    background:#D3F3EE;
+    background:#FFF;
 }
 
 /*SCROLL BAR*/
@@ -289,12 +300,14 @@ input
     transition:Ease 0.2s;
     background:#69DC9E;
     border:none;
-    color:#D3F3EE;
-    border-radius:10em;
+    color:#FFF;
+    border-radius:0.5em;
     text-align:center;
     width:11em;
     z-index:5;
     position: relative;
+    box-shadow:0px 0.24em 0.4em rgba(0, 0, 0, 0.05) !important;
+    border-radius:0.5em;
 }
 .btn-1{width:1em;font-size:0.5em;}
 .btn-2{width:2em;font-size:0.6em;}
@@ -315,7 +328,10 @@ input
     width:100%;
     height:100%;
     text-decoration: none;
-    color:#D3F3EE;
+    border-radius:0.5em;
+    color:#FFF;
+    box-shadow:0px 0.2em 0.2em rgba(0, 0, 0, 0.08) !important;
+
 }
 .btn-span
 {
@@ -323,7 +339,7 @@ input
 }
 .btn-span p
 {
-    color:#D3F3EE;
+    color:#FFF;
     margin:auto;
 }
 .btn-a a span
@@ -385,7 +401,7 @@ input
     width:100%;
     box-sizing:border-box;
     padding:1.2em;
-    color:#D3F3EE;
+    color:#FFF;
     background:#CC3363;
     margin-bottom:1.5em;
     border-radius:0.5em;
@@ -438,7 +454,18 @@ input
     margin:auto;
 }
 
+.box_style
+{
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.09), 0px 0.24em 0.4em rgba(0, 0, 0, 0.05) !important;
+    border-radius:0.5em;
 
+}
+.btn_style
+{
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.09), 0px 0.2em 0.2em rgba(0, 0, 0, 0.05) !important;
+    border-radius:0.5em;
+
+}
 /*SCROLL BAR*/
 ::-webkit-scrollbar {
 width: 10px;
@@ -446,7 +473,7 @@ width: 10px;
 
 /* Track */
 ::-webkit-scrollbar-track {
-background: #D3F3EE; 
+background: #FFF; 
 }
 
 /* Handle */
@@ -484,7 +511,7 @@ background: #3E78B2;
     font-size:1em;
     width:100%;
     height:3.5em;
-    border-radius:22em;
+    border-radius:0.5em;
     outline:none;
     border:none;
     color:#20063B;

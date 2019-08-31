@@ -8,6 +8,7 @@ let MENU_SITE="SIGN UP";
 
         <link rel="stylesheet" type="text/css" href="../CSS/control.css">
         <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
+        <link rel="stylesheet" type="text/css" href="../CSS/loginreg.css">
     <style>
         body
         {
@@ -27,8 +28,11 @@ let MENU_SITE="SIGN UP";
             background-size:contain;
             background-position:50% 50%;
             margin:auto;
-            margin-top:9em;
-            margin-bottom:5em;
+            margin-bottom:1em;
+        }
+        label, span
+        {
+            color:#FFF !important;
         }
         .m{
             position:fixed;
@@ -111,8 +115,21 @@ let MENU_SITE="SIGN UP";
             margin:auto;
             transform:scale(1.16);
         }
+        #content
+        {
+            margin:auto;
+            position:absolute;
+            height:45em;
+            left:0;
+            right:0;
+            top:0;
+            bottom:0;
+        }  
+
     </style>
         <% include ../imports/menu.ejs %>
+                <div class="gradient"></div>
+
         <div class="m ml">
         </div>
         <div class="m mr">

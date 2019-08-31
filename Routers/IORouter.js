@@ -6,7 +6,7 @@ const InstallHandler = require("../Tools/InstallationHandler");
 const constants = require("../Tools/Constants");
 const md5 = require("md5");
 const Logger = require("../Logger/Logger");
-
+const async = require("async");
 let mcg = new MapleCharacterGenerator(mysql.connection,60*5);
 let installHandler = new InstallHandler(mysql.mysql);
 router.post("/login",(req,res)=>
@@ -103,6 +103,41 @@ function isBetween(data,min,max)
 {
     return data > min && data < max;
 }
+router.get("/vote/:name",(req,res)=>
+{
+    let name = req.params.name;
+    mysql.connection.query(`SELECT * FROM accounts WHERE name = '${name}'`,(err,result)=>
+    {
+        if(result.length == 0) return res.send(JSON.stringify({success:false,reason:"Could not find username"}));
+        mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_voting WHERE accountid = '${result[0].id}'`,(err,ress)=>
+        {
+            if(ress.length >= 1)
+            {
+                let sql = `WHERE ID='${ress[0].voteid}'`;
+                for(let i = 1; i < ress.length; i++)
+                {
+                    sql += ` OR ID='${ress[i].voteid}'`;
+                }
+                mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_vote ${sql}`,(err,votes)=>   
+                {
+                    return res.send(JSON.stringify({success:true,reason:"Found username",userid:result[0].id, occupied:ress,votes:votes}));
+                });
+            }
+            else
+            {
+                return res.send(JSON.stringify({success:true,reason:"Found username",userid:result[0].id, occupied:ress,votes:[]}));
+
+            }
+        });
+    });
+});
+router.post("/vote",(req,res)=>
+{
+    mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_voting (accountid,voteid) VALUES('${req.body.accid}','${req.body.id}')`,(err,result)=>
+    {
+        return res.send(JSON.stringify({success:true,reason:"Found username"}));
+    });
+});
 router.post("/ranking",(req,res)=>
 {
     let jobs = constants.getConstant("jobs");

@@ -21,7 +21,6 @@ ul.blockHeader li
 
     display:flex;
     justify-content: space-Around;
-    box-shadow:inset 0px -1px 0px rgba(42, 34, 60, 0.2);
     transition: ease 0.2s;
     height:8em;
 }
@@ -157,7 +156,8 @@ ul.blockHeader li
     height:4.5em;
     background:var(--mainColor);
     position: relative;
-    border-radius: 22em;
+    border-radius: 0.5em;
+    box-shadow:0px 0.2em 0.2em rgba(0, 0, 0, 0.08) !important;
     cursor: pointer;
     transition:Ease 0.2s;
 }
@@ -204,14 +204,13 @@ ul.blockHeader li
     box-sizing: border-box;
     border:none;
     outline:none;
-    box-shadow:inset 0px 0em 0 0.12em var(--fontColorDark),0px 3px 12px rgba(0, 0, 0, 0.06);
     transition:ease 0.2s;
     font-family: 'Montserrat', sans-serif;
     margin-bottom:2.2em;
     border:none;
     margin:0;
     text-align:left;
-    border-radius: 22em;
+    border-radius: 0.5em;
     margin-right:1em;
     transition:ease 0.2s;
 }

@@ -142,6 +142,7 @@ function isActive(type)
             let error = new ErrorElement("loginError");
             let menu_input = document.getElementById("search_menu_input");
             let search_shows = false;
+            let menu = document.getElementById("menu");
             /*
             menu_input.addEventListener("keyup",(e)=>{
                 if(!search_shows)
@@ -158,6 +159,31 @@ function isActive(type)
                 if(menu_input.value.length == 0) return;
                 form.submit();
             },false);
+            let place = window.scrollY > 90;
+            let lp = false;
+            setWindowStyle(menu.style,place);
+            function setWindowStyle(style,place)
+            {
+                if((place && lp) || (!place && !lp)) return;
+                lp = place;
+                if(place)
+                {
+                    style.background="<%= palette.fontColorDark %>";
+                    style.height="4em";
+                    style.paddingTop="1em";
+                }
+                else
+                {
+                    style.background="transparent";
+                    style.paddingTop="2.4em";
+                }
+            }
+            document.addEventListener("scroll",(e)=>
+            {
+                let style = menu.style;
+                setWindowStyle(style,window.scrollY > 90);
+
+            });
             function createCategory(name)
             {
                 if(cats[name])

@@ -1,16 +1,15 @@
 .box_wrapper{
     display:flex;
     margin-top:1.5em;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 .box
 {
     box-sizing: border-box;
     padding:1.5em;
     background:#FFF;
-    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.10);
     overflow:hidden;
-    min-width:20em;
+    min-width:25em;
     height:14em;
     display:flex;
     flex-direction: column;
@@ -70,4 +69,71 @@
 .box p
 {
     
+}
+.loginBox
+{
+    display:block;
+    width:100%;
+    height:10em;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding:1em;
+    box-sizing: border-box;
+    padding:1.5em;
+    background:#FFF;
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.10);
+    margin-top:2em;
+    font-family: 'Montserrat', sans-serif;
+    color:var(--fontColorDark);
+}
+.loginBox h3
+{
+    position:relative;
+    font-weight:bold;
+    font-size:1.2em;
+}
+.loginBox input
+{
+    height:2.8em;
+    width:100%;
+    max-width:40em;
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.60);
+    border:none;
+    border-radius:0.5em;
+    padding-left:1em;
+    box-sizing: border-box;
+}
+.loginBox p
+{
+    font-size:0.8em;
+    color:var(--fillColor);
+    display:none;
+}
+.vote_btn
+{
+    background:lightgray;
+    color:var(--fontColorDark);
+}
+.vote_btn a
+{
+    cursor: not-allowed ;  
+}
+.vote_btn:hover
+{
+    background:lightgray;
+    color:var(--fontColorDark);
+    cursor: not-allowed;
+}
+.validBtn
+{
+    background:var(--mainColor);
+}
+.validBtn a
+{
+    cursor:pointer;
+}
+.validBtn:hover
+{
+    background:var(--secondaryMainColor);
 }

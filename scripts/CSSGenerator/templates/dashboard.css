@@ -1,17 +1,21 @@
 body
 {
-    background:#353F4F;
+    background:var(--fontColorDark);
     font-family: 'Montserrat', sans-serif;
     overflow-x:hidden;
 }
 .maxWidth
 {
-    margin-top:5.5em;
     position: relative;
+    margin-top:0;
 }
 .dashboardMenu
 {
     position: relative;
+}
+.dashboard
+{
+    margin-top:7em;
 }
 .dashboardMenu ul
 {
@@ -19,10 +23,8 @@ body
     width:100%;
     display:flex;
     height:4.5em;
-    background:#353F4F;
-    color:#FFF;
+    color:var(--fontColorLight);
     justify-items: center;
-    box-shadow:inset 0px -0.2em 0px #3D495B;
 }
 .dashboardMenu ul li
 {
@@ -37,6 +39,7 @@ body
     font-size:0.88em;
     cursor:pointer;
     transition:Ease 0.2s;
+    box-shadow:inset 0px -0.2em 0px 0px rgba(255,255,255, 0.1);
 }
 .dashboardMenu ul li:hover
 {
@@ -51,7 +54,7 @@ body
 {
     height:0.2em;
     width:0em;
-    background:var(--fillColor);
+    background:var(--mainColor);
     bottom:0em;
     position:absolute;
     transition:ease 0.4s;
@@ -85,21 +88,21 @@ body
 .box
 {
     margin-top:2em;
-    border-radius:0.6em;
     background:#FFF;
-    box-shadow:0px 3px 12px rgba(0, 0, 0, 0.06);
     padding:1.2em;
     box-sizing: border-box;
     position: relative;
     transition: ease 0.5s;
     width:20em;
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.09), 0px 0.24em 0.4em rgba(0, 0, 0, 0.05);
+    border-radius:0.5em;
 }
 .dashBtn
 {
     width:2.5em;
     height:2.5em;
     background:var(--fillColor);
-    border-radius:100%;
+    border-radius:0.5em;
     display:flex;
     cursor: pointer;
     transition:ease 0.2s;
@@ -189,15 +192,15 @@ body
     background:#FFF;
     flex-direction: column;
     padding:3em;
-    border-radius:1em;
-    box-shadow:0px 3px 12px rgba(0,0,0,0.16);
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.09), 0px 0.24em 0.4em rgba(0, 0, 0, 0.05);
+    border-radius:0.5em;
     position: relative;
 }
 .formElement .formElementInput
 {
     height:2.8em;
     width:100%;
-    border-radius:22em;
+    border-radius:0.5em;
     outline:none;
     border:none;
     color:var(--fontColorDark);
@@ -275,13 +278,12 @@ body
 .heroImageEdit
 {
     width:7em;
-    border-radius:1em;
     background-position: 50% 50% !important;
     background-size:cover !important;
     margin:1em;
     height:7em;
-    box-shadow:0px 3px 12px rgba(0,0,0,0.16);
-    transition:Ease 0.2s;
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.09), 0px 0.24em 0.4em rgba(0, 0, 0, 0.05) !important;
+    border-radius:0.5em;    transition:Ease 0.2s;
     position: relative;
 }
 .heroImageEdit:hover
@@ -321,7 +323,18 @@ body
     height:100%;
     flex:1;
 }
-
+.gradient
+{
+    position: fixed;
+    bottom:0;
+    width:100vw;
+    height:100vh;
+    background:radial-gradient(
+        circle at bottom left,
+        rgba(255,255,255,0.3) -100%,
+        transparent 60%
+      );;
+}
 .colorPicker
 {
     position:Absolute;
@@ -497,17 +510,19 @@ body
 {
     position: absolute;
     height:1em;
-    background:var(--fontColorDark);
+    background:#FFF;
     margin:auto;
     z-index:200;
     font-size:0.8em;
     padding:0.7em 1.2em;
     box-shadow:0px 3px 12px rgba(0,0,0,0.16);
     border-radius:2em;
-    color:#FFF;
+    color:var(--fontColorDark);
     display:none;
     opacity:0;
     transform: translateY(-0.2em);
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.09), 0px 0.24em 0.4em rgba(0, 0, 0, 0.05);
+    border-radius:0.5em;
     transition: opacity Ease 0.2s, transform ease 0.2s;
 }
 .info
@@ -525,7 +540,7 @@ body
     left:0;
     right:0;
     border:solid 10px transparent;
-    border-top:solid 10px var(--fontColorDark);
+    border-top:solid 10px rgba(0, 0, 0, 0.05);
     z-index:2022;
 }
 .activeBtn
@@ -536,6 +551,10 @@ body
 {
     margin-bottom:2em !important;
 }
+.logos
+{
+    display:flex;
+}
 .logoImage
 {
     width:14em;
@@ -544,8 +563,14 @@ body
     background-position:50% 50% !important;
     background-color:#FFF !important;
     background-repeat: no-repeat !important;
-    box-shadow:0px 0px 0px 0.5em #FFF,0px 3px 12px rgba(0,0,0,0.16);
-    border-radius:0.1em;
+    box-sizing: border-box;
+    padding:1em;
+    margin-right:1em;
+}
+.logoImageDark
+{
+    background-color:var(--fontColorDark) !important;
+
 }
 .layoutWrapper{
     z-index:2;
@@ -699,7 +724,7 @@ body
 .layotuEditorChild .layoutInput
 {
     width:9em;
-    border-radius:20em;
+    border-radius:0.5em;
     padding-left:1em;
     box-sizing: border-box;
     padding-right:3em;

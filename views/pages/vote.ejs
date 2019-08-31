@@ -8,6 +8,7 @@ let name = "Vote";
     <head>
         <link rel="stylesheet" type="text/css" href="CSS/header.css">   
         <link rel="stylesheet" type="text/css" href="CSS/menu.css"> 
+        <link rel="stylesheet" type="text/css" href="CSS/index.css"> 
         <link rel="stylesheet" type="text/css" href="CSS/play.css"> 
         <% include ../imports/head %>    
         <title>Vote <%= settings.serverName %></title>
@@ -19,18 +20,32 @@ let name = "Vote";
         </style>
         <% include ../imports/menu.ejs %>
         <% include ../panels/header.ejs %>
+        <section class="maxWidth">
+        <%
+        if(!isLoggedIn())
+        {
+            %>
+                <div class="loginBox box_style big_box">
+                    <h3>Enter username</h3>
+                    <input placeholder="Username..." autocomplete="off" id="username">
+                    <p id="loader" ><i class="fas fa-circle-notch fa-spin"></i></p>
+                </div>
+            <%
+        }
+        %>
+        </section>
         <section id="content" class="maxWidth box_wrapper">
         <%
-        for(let download of votes)
+        for(let vote of votes)
         {
         %>
         <div class="box">
-            <h3 class="box_title" data-before="Download"> <%= download.name %></h3>
-            <h3 class="box_title" data-before="Nx"> <%= download.nx %></h3>
-            <h3 class="box_title" data-before="Time"> <%= download.time %></h3>
-            <h3 class="box_title" data-before="Url"> <%= download.url %></h3>
+            <h3 class="box_title" data-before="Download"> <%= vote.name %></h3>
+            <h3 class="box_title" data-before="Nx"> <%= vote.nx %></h3>
+            <h3 class="box_title" data-before="Time"> <%= vote.time %> hours</h3>
+            <h3 class="box_title" data-before="Url"> <%= vote.url %></h3>
             <div class="btn-holder">
-                <div class="btn btn-a"><a href="<%= download.url %>"><span>Vote</span></a></div>
+                <div id="vote_<%= vote.ID %>" data-vote="<%= vote.ID %>" class="vote_btn btn btn-a"><a href="<%= vote.url %>"><span>Vote</span></a></div>
             </div>
         </div> 
         <%
@@ -38,5 +53,107 @@ let name = "Vote";
         }
         %>        
         </section>
+        <%
+        if(!isLoggedIn())
+        {
+        %>
+                <script>
+                    let input = document.getElementById("username");
+                    let p = document.getElementById("loader");
+                    let tout;
+                    let loaded = true;
+                    input.addEventListener("keyup",(e)=>
+                    {
+                        if(tout)
+                            clearTimeout(tout);
+                        if(input.value.length >= 1)
+                        loader.style.display="block";
+                        if(loaded)
+                        {
+                            loader.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`;
+                            loaded = false;
+                        }
+                        tout = setTimeout(()=>
+                        {
+                            let url = new Url("IO/vote/" + input.value);
+                            HttpHandler.getData(url,(response)=>
+                            {
+                                loader.style.color = "red";
+                                if(response.success)
+                                {
+                                    loader.style.color = "green";
+                                    validateVote(response);
+                                }
+                                loader.innerHTML = response.reason;
+                                loaded = true;
+                            });
+                        },800);
+                    });
+                </script>
+        <%
+        }else{
+        %>
+            <script>
+                let url = new Url("IO/vote/<%= getUser().name %>");
+                HttpHandler.getData(url,(response)=>
+                {
+                    validateVote(response);
+                });    
+            </script>
+        <%
+        }
+        %>
+    <script>
+        let btns = document.getElementsByClassName("btn");
+        function validateVote(response)
+        {
+            console.log(response);
+            for(let i = 0; i < btns.length; i++)
+            {
+                let btn = btns[i];
+                btn.getElementsByTagName("a")[0].innerHTML = "<span>Vote</span>";
+                btn.className = "vote_btn btn btn-a";
+                let id = btn.getAttribute("data-vote");
+                let date;
+                let occ;
+                let vote;
+                for(let j = 0; j < response.occupied.length; j++)
+                {
+                    if(response.occupied[j].id == id)
+                    {
+                        occ = response.occupied[j];
+                        date = response.occupied[j].date;
+                    }
+                }
+
+                for(let j = 0; j < response.votes.length; j++)
+                {
+                    if(response.votes[j].ID == id)
+                    {
+                        vote = response.votes[j];
+                    }
+                }
+                if(date)
+                {
+                    let dateTime = new Date(date);
+                    let delta = parseFloat(((Math.abs(dateTime-new Date()) / 36e5)/100)*60).toFixed(2);
+                    console.log(vote.time - delta);
+                    btn.getElementsByTagName("a")[0].innerHTML = "<span>"+ (vote.time - delta) + "h</span>";
+                }
+                else
+                {
+                    btn.className += " validBtn";
+                    btn.addEventListener("click",()=>
+                    {
+                        let url = new Url("IO/vote",{id:btn.getAttribute("data-vote"),accid:response.userid});
+                        HttpHandler.postData(url,(response)=>
+                        {
+
+                        });
+                    },false);
+                }
+            }
+        }
+    </script>
     </body>
 </html>

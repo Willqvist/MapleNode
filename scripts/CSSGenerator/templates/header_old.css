@@ -1,7 +1,7 @@
 #header{
     width:100%;
-    height:35em;
-    background:#20063B;
+    height:25em;
+    background:url(../images/headerImage.png);
     background-size:cover;
     background-position:50% 50%;
     position:Relative;
@@ -11,14 +11,15 @@
 {
     width:100%;
     height:100%;
+    background:url(../images/headerImage.png);
     background-size:cover;
+    background-position:50% 50%;
     position: absolute;
-    opacity:0.7;
 }
 #fade
 {
     content:"";
-    background:linear-gradient(to left,transparent,#20063B 90%);
+    background:linear-gradient(transparent,var(--fontColorDark) 120%);
     position:Absolute;
     width:100%;
     height:100%;
@@ -26,16 +27,22 @@
     left:0;
     z-index:0;
 }
+#headerBreaker
+{
+    position:Absolute;
+    width:100%;
+    height:2em;
+    bottom:0;
+    background:#fdfcff;
+}
 #headerContent
 {
     display:flex;
     align-items:center;
     height:100%;
     box-sizing:border-box;
+    padding:0 5em;
     z-index:4;
-    background:none !important;
-    margin-top:5em;
-    padding:0 !important;
     position:Relative;
 }
 #headerContent h1
@@ -44,6 +51,6 @@
     position: relative;
     color:#FFF;
     font-family: 'Montserrat', sans-serif;
-    font-size:4em;
+    font-size:3.2em;
     text-transform: capitalize;
 }

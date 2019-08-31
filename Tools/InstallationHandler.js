@@ -79,12 +79,31 @@ class InstallationHandler
                     if(err) throw err;
                     mysql.connection.query(`CREATE TABLE ${userData.prefix}_Vote
                     (
-                        ID int NOT NULL,
+                        ID int NOT NULL AUTO_INCREMENT,
                         name varchar(255),
                         nx int(20),
                         time varchar(255),
                         url varchar(255),
-                        PRIMARY KEY(name)  
+                        PRIMARY KEY(id)  
+                    )`,(err,result)=>
+                    {
+                        console.log("eww");
+                        if(err) throw err;
+                        callback(err,result);
+                    });
+                });
+            },
+            (data,callback)=>
+            {
+                mysql.connection.query(`DROP TABLE IF EXISTS ${userData.prefix}_voting`,(err,result)=>{
+                    if(err) throw err;
+                    mysql.connection.query(`CREATE TABLE ${userData.prefix}_voting
+                    (
+                        ID int NOT NULL AUTO_INCREMENT,
+                        accountid int(22),
+                        voteid int(22),
+                        date timestamp,
+                        PRIMARY KEY(id) 
                     )`,(err,result)=>
                     {
                         console.log("eww");

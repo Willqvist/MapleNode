@@ -16,9 +16,10 @@ body{
     box-sizing: border-box;
     padding:1.5em;
     background:#FFF;
-    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.10);
+    box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.09), 0px 0.24em 0.4em rgba(0, 0, 0, 0.05);
     position: relative;
     overflow:hidden;
+    border-radius:0.5em;
 }
 .box_naked
 {

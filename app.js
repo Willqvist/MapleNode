@@ -60,7 +60,7 @@ function setupListeners(){
     const cGen = require("./scripts/CSSGenerator/CSSGenerator");
     app.use((req,res,next)=>
     {
-        cGen.generateCSS("#69DC9E","#3E78B2","#20063B","#D3F3EE","#CC3363",()=>{});
+        cGen.generateCSS("#69DC9E","#3E78B2","#20063B","#FFF","#CC3363",()=>{});
         var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         req.ip = ip;
         PacketHandler.handlePackets(app,req,res,next);
