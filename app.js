@@ -29,7 +29,7 @@ app.set("views",__dirname+"/views");
 app.use(bodyParser.json({limit:'1000mb'})); 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(helmet()); 
-require("./setup")(setupListeners,setupComplete);
+require("./setup")(server,setupListeners,setupComplete);
 
 const io = require('socket.io').listen(server);
 require("./Tools/ProgressUpdater").init(io);
@@ -84,31 +84,7 @@ function setupComplete()
     app.locals.palette = constants.getConstant("palette");
     app.locals.heroImage = constants.getConstant("heroImage");
     app.locals.logo = constants.getConstant("logo");
-    constants.setConstant("urlPath");
-    constants.setConstant("type_mapper",
-    {
-        "Consume":"Item",
-        "Etc":"Item",
-        "Cash":"Item",
-        "Pet":"Item",
-        "Install":"Item",
-        "Equip":"Eqp",
-        "Eqp":"Eqp",
-        "Mob":"Mob"
-    }
-    );
-    constants.setConstant("icon_mapper",
-    {
-        "Item":"icon",
-        "Eqp":"icon",
-        "Mob":"stand_0"
-    }
-    );
-    /*
-    Parser.parse("./wz_parser/String.wz",({file,err})=>
-    {
-    });
-    */
+    
     mysql.connection.query(`SELECT expRate,dropRate,mesoRate,serverName FROM ${constants.getConstant("prefix")}_settings`,(err,results)=>
     {
         if(err) throw err;
@@ -116,6 +92,8 @@ function setupComplete()
         constants.setConstant("settings",app.locals.settings);
     }); 
 }
+
+
 //instansiating constants
 constants.setConstant("jobs",
 {
@@ -132,6 +110,28 @@ constants.setConstant("jobMethod",(jobs,name)=>
     }
     return -1;
 });
+constants.setConstant("urlPath");
+constants.setConstant("type_mapper",
+{
+    "Consume":"Item",
+    "Etc":"Item",
+    "Cash":"Item",
+    "Pet":"Item",
+    "Install":"Item",
+    "Equip":"Eqp",
+    "Eqp":"Eqp",
+    "Mob":"Mob"
+}
+);
+constants.setConstant("icon_mapper",
+{
+    "Item":"icon",
+    "Eqp":"icon",
+    "Mob":"stand_0"
+}
+);
+
+
 
 //PROCESS INPUT
 process.stdin.on('data', function (text) {
@@ -163,6 +163,8 @@ InputListener.listen("sql",(data)=>
         }
     });
 });
+
+
 
 //INPUT HELPER METHODS
 function getStdinVars()
@@ -199,6 +201,8 @@ function getInputVariables(data,start=0)
 
     InputListener.recive(variable.trim(),attribs);
 }
+
+
 
 
 

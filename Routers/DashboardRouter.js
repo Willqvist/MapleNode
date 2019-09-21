@@ -3,6 +3,7 @@ const router = express.Router();
 const mysql = require("../Tools/mysql").getMysql();
 const constants = require("../Tools/Constants");
 const fs = require("fs");
+const Logger = require("../Logger/Logger");
 const CSSGenerator = require("../scripts/CSSGenerator/CSSGenerator");
 let app;
 router.get("/",(req,res)=>
@@ -198,7 +199,7 @@ router.get("/layout/:name",(req,res)=>
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
     if(req.params.name.length == 0) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
 
-    mysql.connection.query(`SELECT layout FROM ${constants.getConstant("prefix")}_layout WHERE name = '${req.params.name}'`,(err,result)=>
+    mysql.connection.query(`SELECT json FROM ${constants.getConstant("prefix")}_layout WHERE name = '${req.params.name}'`,(err,result)=>
     {
         if(err)
         {
@@ -217,12 +218,12 @@ router.post("/layout",(req,res)=>
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
     if(req.body.json.length == 0 || req.body.name.length == 0) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
 
-    mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_layout SET layout='${req.body.json}' WHERE name = '${req.body.name}'`,(err,result)=>
+    mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_layout SET json='${req.body.json}' WHERE name = '${req.body.name}'`,(err,result)=>
     {
         if(err)
         {
             Logger.error(err);
-            res.send(JSON.stringify({success:false,json:JSON.stringify({error:err})}));
+            return res.send(JSON.stringify({success:false,json:JSON.stringify({error:err})}));
         }
         CSSGenerator.generateHomeLayout(JSON.parse(req.body.json));
         res.send(JSON.stringify({success:true}));

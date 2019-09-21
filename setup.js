@@ -3,7 +3,7 @@ const mysql = require("./Tools/mysql.js").getMysql();
 const constants = require("./Tools/Constants");
 const Library = require("./Tools/Library").getLibrary();
 const Logger = require("./Logger/Logger");
-function setup(setupListeners,setupComplete){
+function setup(server,setupListeners,setupComplete){
     Logger.log("Starting server...");
     mysql.instantiate((err)=>
     {
@@ -16,7 +16,7 @@ function setup(setupListeners,setupComplete){
             setupListeners();
             if(!data.prefix)
             {
-                Logger.warn("prefix value is not set... have you finished setup?");
+                Logger.warn("prefix value is not set... have you finished setup? go to: localhost:" + server.address().port + "/setup/");
             }
             else
             {

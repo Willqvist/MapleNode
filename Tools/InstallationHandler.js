@@ -87,7 +87,6 @@ class InstallationHandler
                         PRIMARY KEY(id)  
                     )`,(err,result)=>
                     {
-                        console.log("eww");
                         if(err) throw err;
                         callback(err,result);
                     });
@@ -106,7 +105,6 @@ class InstallationHandler
                         PRIMARY KEY(id) 
                     )`,(err,result)=>
                     {
-                        console.log("eww");
                         if(err) throw err;
                         callback(err,result);
                     });
@@ -194,7 +192,7 @@ class InstallationHandler
                     (
                         ID int NOT NULL AUTO_INCREMENT,
                         name varchar(22),
-                        layout mediumtext,
+                        json mediumtext,
                         PRIMARY KEY(id)
                     )`,(err,result)=>
                     {

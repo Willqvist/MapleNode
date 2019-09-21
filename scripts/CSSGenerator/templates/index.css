@@ -47,40 +47,6 @@ body{
     font-family: 'Montserrat', sans-serif;
     color:var(--fontColorDark);
 }
-.info_box
-{
-    grid-column : 1 / 7;
-    grid-row : 1 / 6;
-}
-.control_box
-{
-    grid-column : 7 / 10;
-    grid-row : 1 / 4; 
-}
-
-.news_box
-{
-    grid-column : 1 / 7;
-    grid-row : 6 / 8; 
-}
-
-.server_box
-{
-    grid-column : 7 / 10;
-    grid-row : 4 / 8;     
-}
-
-.stats_box
-{
-    grid-column : 1 / 10;
-    grid-row : 8 / 10;       
-}
-
-.ranking_box
-{
-    grid-column : 1 / 10;
-    grid-row : 10 / 14;
-}
 
 .block
 {

@@ -930,8 +930,8 @@ class LayoutPanel extends Panel
             {
                 if(resp.success)
                 {
-                    this.panels = JSON.parse(resp.json.layout);
-                    console.log(resp.content);
+                    console.log(resp.json.json);
+                    this.panels = JSON.parse(resp.json.json);
                     resp.content.forEach((file,index)=>{resp.content[index] = file.substring(0,file.length-4)});
                     this.editPanelForm = new DashbordFormElement("selectPanelForm","Select panel","Select");
                     this.editPanelForm.addInput({type:"select",values:resp.content,id:"panelSelect",name:"panelSelect",label:"Panel"});
@@ -977,6 +977,7 @@ class PanelHandler
     {
         this.panels[panel.name] = panel;
         panel.handler = this;
+
         if(!panel.loadable)
             panel.init();
     }

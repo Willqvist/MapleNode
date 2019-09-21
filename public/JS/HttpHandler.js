@@ -21,6 +21,7 @@ class HttpHandler
         http.setRequestHeader("Content-type", "application/json");
         http.onreadystatechange = function()
         {
+            console.log("response");
             if(http.readyState == XMLHttpRequest.DONE && http.status == 200)
                 callback(JSON.parse(http.responseText));
             else if(http.readyState == XMLHttpRequest.DONE && http.status == 404)
