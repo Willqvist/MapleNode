@@ -4,14 +4,14 @@ const MapleCharacterGenerator = require("../MapleCharacterGenerator/MCG");
 const mysql = require("../Tools/mysql").getMysql();
 const InstallHandler = require("../Tools/InstallationHandler");
 const constants = require("../Tools/Constants");
-let mcg = new MapleCharacterGenerator(mysql.connection,60*5);
+let mcg = new MapleCharacterGenerator(60*5);
 let installHandler = new InstallHandler(mysql.mysql);
 router.get("/Characters/*.chr",(req,res)=>
 {
     let realPath = constants.getConstant("realPath");
     let name = req.url.replace("/Characters/","").replace(".chr","");
     console.log("Ew");
-    mcg.generatePlayer(mysql.connection,name,(req)=>{
+    mcg.generatePlayer(name,(req)=>{
         if(!req.success)
         {
             if(req.errorID == mcg.error.INVALID_PLAYER)

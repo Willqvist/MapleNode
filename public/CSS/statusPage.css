@@ -42,7 +42,7 @@
     padding-left:1.5em;
     font-weight:400;
     font-family: 'Montserrat', sans-serif;   
-    color:#20063B;             
+    color:#111111;             
 }
 .status{
     padding:4em 2em !important;
@@ -67,7 +67,7 @@
     height:1.2em;
     max-width:1.2em;
     flex:1;
-    background:#69DC9E;
+    background:#EFCB68;
     border-radius:50%;
 }
 
@@ -132,7 +132,7 @@
     font-size:1.6em;
     font-weight:700;
     font-family: 'Montserrat', sans-serif;  
-    color:#20063B;
+    color:#111111;
 }
 @media only screen and (max-width:120em)
 {

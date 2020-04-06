@@ -23,58 +23,46 @@ name = settings.serverName;
                
     <title><%= settings.serverName %></title>
     <% include imports/menu.ejs %>
-    <div class="header">
-        <div class="video_bg">
-            <video class="bg_video" width="1080" height="720" autoplay muted loop>
-                <source src="videos/blurred_video.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-        <div class="shadow"></div>
+    <div class="video_bg">
         <div class="video">
-        <div class="header_content">
-                <div class="header_logo">
-                    <img src="./images/svgs/logo.svg" alt="Logo">
-                </div>
-                <div class="btn_parent">
-                    <div class="btn-a btn"><a class="child" href=""><span>PLAY <%= settings.serverName %></span></a></div>
-                </div>
-            </div>
-        <div class="gradient"></div>
-        <video autoplay muted loop>
-            <source src="videos/vid.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
         </div>
     </div>
-        <div class="content">
-            <div class="block_content maxWidth news">
-                <div class="block_menu">
-                    <h2>news</h2>
-                </div>
+    <div class="box_wrapper maxWidth">
+        
+            <div class="control box ranking_box" style="grid-column:1/7;grid-row:1/6">
+                <h2 class="box_title">ranking_box</h2>
+                <% include panels/ranking.ejs %>
+            </div>
+            
+            <div class="control box none_box" style="grid-column:7/10;grid-row:1/4">
+                <h2 class="box_title">control_box</h2>
+                <% include panels/none.ejs %>
+            </div>
+            
+            <div class="control box none_box" style="grid-column:1/7;grid-row:6/8">
+                <h2 class="box_title">news_box</h2>
+                <% include panels/none.ejs %>
+            </div>
+            
+            <div class="control box none_box" style="grid-column:7/10;grid-row:4/8">
+                <h2 class="box_title">server_box</h2>
+                <% include panels/none.ejs %>
+            </div>
+            
+            <div class="control box news_box" style="grid-column:1/10;grid-row:8/10">
+                <h2 class="box_title">news_box</h2>
                 <% include panels/news.ejs %>
             </div>
-            <div class="block_content maxWidth news">
-                <div class="block_menu">
-                    <h2>server info</h2>
-                </div>
+            
+            <div class="control box none_box" style="grid-column:1/10;grid-row:10/14">
+                <h2 class="box_title">ranking_box</h2>
+                <% include panels/none.ejs %>
             </div>
-            <div class="block_content maxWidth news">
-                <div class="block_menu">
-                    <h2>ranking</h2>
-                </div>
-            </div>
-            <div class="block_content maxWidth news">
-                <div class="block_menu">
-                    <h2>stats</h2>
-                </div>
-            </div>
-        </div>
+            
     </div>
         <script>
         //TODO: CHANGE TO < loadPanelScripts() >
         //CONTROL SCRIPT
-        /*
         let control_form = new FormElement("control_form");
         let control_error = new ErrorElement("controlError");
         control_form.onSubmit({body:true,preventDefault:true},(body,e)=>
@@ -96,7 +84,6 @@ name = settings.serverName;
             });
             console.log(body); 
         });
-        */
         </script>
     </body>
 </html>

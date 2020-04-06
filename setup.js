@@ -47,7 +47,7 @@ function setup(server,setupListeners,setupComplete){
             else{
                 constants.setConstant("setup-status",-1);
                 Logger.warn("setup incomplete"); 
-                }   
+            }   
         });
     });
 }

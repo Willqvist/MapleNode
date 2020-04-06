@@ -26,8 +26,8 @@ let app = express();
 let server = app.listen(stdIn.port);
 app.set('view engine', 'ejs');
 app.set("views",__dirname+"/views");
-app.use(bodyParser.json({limit:'1000mb'})); 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({limit:'1000mb',extended: true})); 
+app.use(bodyParser.urlencoded({limit:'1000mb',extended: true, parameterLimit: 1000000}));
 app.use(helmet()); 
 require("./setup")(server,setupListeners,setupComplete);
 
@@ -60,7 +60,7 @@ function setupListeners(){
     const cGen = require("./scripts/CSSGenerator/CSSGenerator");
     app.use((req,res,next)=>
     {
-        cGen.generateCSS("#69DC9E","#3E78B2","#20063B","#FFF","#CC3363",()=>{});
+        cGen.generateCSS("#EFCB68","#3E78B2","#111111","#F4F4F4","#111111",()=>{});
         var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         req.ip = ip;
         PacketHandler.handlePackets(app,req,res,next);
@@ -130,6 +130,7 @@ constants.setConstant("icon_mapper",
     "Mob":"stand_0"
 }
 );
+constants.setConstant("MCG","Xml");
 
 
 

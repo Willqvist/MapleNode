@@ -54,6 +54,10 @@ function createMysqlConnection(str)
     connections[str] = new MySQL(mysql);
     return connections[str];
 }
+function connection(str)
+{
+    return mysqlObject.connection;
+}
 function getMysqlConnetion(str)
 {
     if(!connections[str])
@@ -65,5 +69,6 @@ module.exports =
 {
     getMysql:getMysql,
     create:createMysqlConnection,
-    getMysqlConnetion:getMysqlConnetion
+    getMysqlConnetion:getMysqlConnetion,
+    connection:connection
 };

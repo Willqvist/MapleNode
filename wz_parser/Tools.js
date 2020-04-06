@@ -42,7 +42,6 @@ class Tools
         input = cipher.update(input);
         this.copy(input,0,wzKey,(wzKey.length-15),15);
         cipher.final();
-        console.log("wz key length: ",wzKey.length);
         return wzKey;
     }
 

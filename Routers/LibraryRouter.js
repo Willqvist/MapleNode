@@ -70,7 +70,7 @@ router.post("/upload/:name/:uid",(req,res)=>
 {
     let wz_files = req.files;
     let buffer = Buffer.concat(buffers);
-    console.log(buffer);
+    console.log("BUFFER: ",buffer.length);
     let file = {originalname:req.params.name,buffer:buffer};
     if(file.originalname != "String.wz" && !uploadSettings.loadedString)
     {

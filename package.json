@@ -38,5 +38,8 @@
     "xml-parser": "^1.2.1",
     "xmldom": "^0.1.27",
     "zlib": "^1.0.5"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3"
   }
 }

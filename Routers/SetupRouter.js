@@ -59,6 +59,7 @@ router.all("/:id/",(req,res,next)=>
                         constants.setConstant("setup-status",1);
                         app.locals.palette = constants.getConstant("palette");
                         app.locals.heroImage = "headerImage.png";
+                        app.locals.logo = "svgs/logo.svg";
                         return res.redirect("/"); 
                     });
                 break;

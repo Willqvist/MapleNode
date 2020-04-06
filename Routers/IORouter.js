@@ -109,7 +109,7 @@ router.get("/vote/:name",(req,res)=>
     mysql.connection.query(`SELECT * FROM accounts WHERE name = '${name}'`,(err,result)=>
     {
         if(result.length == 0) return res.send(JSON.stringify({success:false,reason:"Could not find username"}));
-        mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_voting WHERE accountid = '${result[0].id}'`,(err,ress)=>
+        mysql.connection.query(`SELECT voteid FROM ${constants.getConstant("prefix")}_voting WHERE accountid = '${result[0].id}'`,(err,ress)=>
         {
             if(ress.length >= 1)
             {

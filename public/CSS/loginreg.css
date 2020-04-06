@@ -1,21 +1,18 @@
 body
 {
-    background:#20063B;
+    background:#111111;
 }
 .gradient
 {
     position: absolute;
     bottom:0;
+    z-index:0;
     width:100vw;
     height:100vh;
-    background:radial-gradient(
-        circle at bottom left,
-        rgba(255,255,255,0.3) -100%,
-        transparent 60%
-      );;
+
 }
 
 #content a
 {
-    color:#69DC9E;
+    color:#EFCB68;
 }

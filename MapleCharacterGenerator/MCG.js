@@ -1,10 +1,12 @@
-const ItemBuilder = require("./ItemBuilder");
-const mysql = require("mysql");
+const ItemBuilderXml = require("./ItemBuilderXml");
+const ItemBuilderJson = require("./ItemBuilderJson");
+const mysql = require("../Tools/mysql").connection();
 const util = require("util");
 const fs = require("fs");
+const Constants = require("../Tools/Constants");
 class MapleCharacterGenerator
 {   
-    constructor(mysql,cooldown)
+    constructor(cooldown)
     {
         this.cooldown = cooldown*0;
         this.players = [];
@@ -14,6 +16,10 @@ class MapleCharacterGenerator
         {
             INVALID_PLAYER:0,
             CANT_FIND_ITEM:1
+        }
+        this.generators = {
+            "Xml":new ItemBuilderXml(),
+            "Json":new ItemBuilderJson()
         }
     }
     getPlayerFromName(name)
@@ -42,21 +48,19 @@ class MapleCharacterGenerator
     {
         this.que.splice(index,1);
     }
-    generatePlayer(mysql,name,callback)
+    generatePlayer(name,callback)
     {
+        if(!this.builder)
+            this.builder = this.generators[Constants.getConstant("MCG")];
         let player = {parts:{},name:name,callback:callback}
-        let parts = player.parts;
         if(fs.existsSync(__dirname + "/Characters/"+name+".png"))
         {
             let stat = fs.statSync(__dirname + "/Characters/"+name+".png");
             let date = new Date(util.inspect(stat.mtime));
             let dateNow = new Date();
-            if((dateNow-date)/1000 <  this.cooldown)
+            if((dateNow-date)/1000 < this.cooldown)
                 return callback({success:true});
         }
-        if(!this.builder)
-            this.builder = new ItemBuilder();
-        
         mysql.query("SELECT id, face, hair,skincolor FROM characters WHERE name=?",[name],((err,results)=>
         {   
             if(err) throw err;

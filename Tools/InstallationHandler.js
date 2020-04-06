@@ -159,7 +159,7 @@ class InstallationHandler
                     )`,(err,result)=>
                     {
                         if(err) throw err;
-                        mysql.connection.query(`INSERT INTO ${userData.prefix}_design (heroImage) VALUES('headerImage.png')`,(err,result)=>
+                        mysql.connection.query(`INSERT INTO ${userData.prefix}_design (heroImage,logo) VALUES('headerImage.png','svgs/logo.svg')`,(err,result)=>
                         {
                             if(err) throw err;
                             callback(err,result);
@@ -197,7 +197,12 @@ class InstallationHandler
                     )`,(err,result)=>
                     {
                         if(err) throw err;
-                        callback(err,result);
+                        mysql.connection.query(`INSERT INTO ${userData.prefix}_layout (name,json) VALUES('home','{"0":{"name":"info_box","panel":"none","columns":{"pos":1,"size":7},"rows":{"pos":1,"size":6}},"1":{"name":"control_box","panel":"none","columns":{"pos":7,"size":10},"rows":{"pos":1,"size":4}},"2":{"name":"news_box","panel":"none","columns":{"pos":1,"size":7},"rows":{"pos":6,"size":8}},"3":{"name":"server_box","panel":"none","columns":{"pos":7,"size":10},"rows":{"pos":4,"size":8}},"4":{"name":"stats_box","panel":"none","columns":{"pos":1,"size":10},"rows":{"pos":8,"size":10}},"5":{"name":"ranking_box","panel":"none","columns":{"pos":1,"size":10},"rows":{"pos":10,"size":14}}}')
+                        `,(err,result)=>
+                        {
+                            if(err) throw err;
+                            callback(err,result);
+                        });
                     });
                 });
             }

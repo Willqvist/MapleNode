@@ -1,50 +1,80 @@
-.news_fade
-{
-    position:Absolute;
-    width:100%;
-    height:100%;
-    z-index:0;
-    left:-1.5em;
-    top:-1.5em;
-    padding-right:1.5em;
-    padding-top:1.5em;
-    background-image: linear-gradient(to right, var(--fontColorDark) , transparent);
-    z-index:0;
-}
 .news_content
 {
-    z-index:2;
+   width:100%;
+   height:100%;
+   display:flex;
+   justify-content: space-between;
+   padding:0.2rem;
+   box-sizing: border-box;
+}
+.news_box {
     position: relative;
-    color:#FFF;
-    font-family: 'Montserrat', sans-serif;
-    margin:auto 0 auto;
-    margin-left:0;
-    padding-bottom:1.2em;
-}
-.news_content h2
-{
-    font-size:2.5em;
-    margin:0.4em 0 0.4em 0;
-}
-.news_content p
-{
-    font-weight:300;
+    width:100%;
+    max-width:29em;
+    min-width:25em;
+    height:10em;
     font-size:1em;
-    max-width:22em;
-    margin-bottom:0.5em;
+    cursor:pointer;
+    color:var(--fontColorDark);
+    text-decoration: none;
+    border-radius:1em;
+    z-index:1;
+    background: var(--mainColor);
+    box-shadow: 0px 0px 0 0.1rem var(--mainColor);
 }
-.news .box_title
-{
-    color:#FFF;
-    z-index:2;
-    position: relative;
-}
-.news_box
-{
-    
-    background:url("http://dhost1.mmomiss.com/upload/userfiles/images/2a519cf3bd81f93444cfdd51331b71c9.jpg") no-repeat;
-    background-size:cover;
-    background-position:50% 50%;
+.content_box_content {
     display:flex;
-    flex-flow: column nowrap;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    height:100%;
+    width:100%;
+    box-shadow: 0px 0px 0 0.1rem var(--fontColorDark);
+    border-top-left-radius: 1em;
+    background:#FFF;
+    transition: ease 0.2s;
+
+}
+.content_box_content:hover {
+    border-radius:1em;
+    border-top-left-radius: 0em;
+    transform: translate(-0.6em,-0.6em);
+}
+.content_box_content:hover .news_image{
+    border-bottom-left-radius:1em;
+    border-top-left-radius: 0em;
+}
+.news_box *{
+    flex: 1;
+}
+.news_image {
+    font-size:1em;
+    transition: ease 0.2s;
+    max-width:11em;
+    border-top-left-radius: 1em;
+    height:100%;
+    background:url("https://assets.change.org/photos/8/qc/aw/TJqcAWOsBHXFhBZ-800x450-noPad.jpg?1559979831");
+    background-size:cover;
+    background-position: 50% 50%;
+}
+.news_type {
+    position: absolute;
+    right:1.8rem;
+    text-align: right;
+    font-size:0.7em;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 100;
+}
+.news_textcontent{
+    box-sizing: border-box;
+    padding:2em;
+    font-family: 'Montserrat', sans-serif;
+}
+.news_textcontent h4{
+    font-size:1rem;
+    margin-bottom:1em;
+}
+.news_textcontent p{
+    font-size:0.75em;
 }

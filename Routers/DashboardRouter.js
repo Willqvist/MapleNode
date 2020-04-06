@@ -15,7 +15,7 @@ router.get("/",(req,res)=>
     else if(user.gm >= 1)
         return renderGMDashboard(req,res);   
 });
-router.post("/votes/update",(req,res)=>
+router.post("/vote/update",(req,res)=>
 { 
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
     mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_vote SET name = '${req.body.name}',url='${req.body.url}',nx='${req.body.nx}',time='${req.body.time}' WHERE id='${req.body.key}'`,(err,result)=>
@@ -28,13 +28,23 @@ router.post("/votes/update",(req,res)=>
 router.post("/vote/add",(req,res)=>
 {
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
-    if(!req.body.name || req.body.name.length == 0 || req.body.url.length == 0 || req.body.nx.length == 0 || req.body.time.length == 0) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
+    if(!req.body.name || !req.body.nx || !req.body.time || req.body.name.length == 0 || req.body.url.length == 0 || req.body.nx.length == 0 || req.body.time.length == 0) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
     mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_vote (name,url,nx,time) VALUES ('${req.body.name}','${req.body.url}','${req.body.nx}','${req.body.time}')`,(err,result)=>
     {
         if(err) throw err;
         res.send(JSON.stringify({success:true,id:result.insertId}));
     });
-}); 
+});
+
+router.post("/vote/remove",(req,res)=>
+{
+    if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
+    mysql.connection.query(`DELETE FROM ${constants.getConstant("prefix")}_vote WHERE id = '${req.body.id}'`,(err,result)=>
+    {
+        if(err) throw err;
+        res.send(JSON.stringify({success:true}));
+    });
+});
 
 router.post("/palette/add",(req,res)=>
 {
@@ -162,7 +172,8 @@ router.post("/download/update",(req,res)=>
 {
     console.log(req.body);
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
-    if(!req.body.name && !req.body.url && (req.body.name.length == 0 || req.body.url.length == 0)) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
+    console.log(req.body.name.length == 0);
+    if(!req.body.name || !req.body.url || (req.body.name.length == 0 || req.body.url.length == 0)) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
     
     mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_downloads SET name = '${req.body.name}',url='${req.body.url}' WHERE id='${req.body.key}'`,(err,result)=>
     {

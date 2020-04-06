@@ -48,7 +48,12 @@ let MENU_SITE="LOGIN";
             background:url("../images/right_bottom_monsters.png") no-repeat;
             background-size:contain;
             background-position:100% 100%;
-        }        
+        }     
+        .btn,.btn-a a,.btn-input input {
+            font-size:0.9em;
+            padding-left:2em;
+            padding-right:2em;
+        }
     </style>
         <link rel="stylesheet" type="text/css" href="../CSS/control.css">
         <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
@@ -109,8 +114,16 @@ let MENU_SITE="LOGIN";
             <input id="password" class="fill" name="password" type="password" required/>
         </div>
         <div id="control_btns">
-            <div class="btn btn-a btn-blue"><a href="register"><span>Register</span></a></div>
-            <input type="submit" class="btn" id="login" value="Login" />
+            <div class="btn_parent">
+                <div class="btn-a btn">
+                    <a href="register" class="child"><span>Register</span></a>
+                </div>
+            </div>
+            <div class="btn_parent">
+                <div class="btn btn-input">
+                    <input type="submit" class="child" id="login" value="Login" />
+                </div>
+            </div>
         </div>
     </form>
 </div>

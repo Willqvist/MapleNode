@@ -40,7 +40,7 @@ ul.blockHeader li
 {
     font-size:1.2em;
     margin:auto 0;
-    color:#20063B;
+    color:#111111;
     font-weight:400;
     font-family: 'Montserrat', sans-serif;
 }
@@ -129,7 +129,7 @@ ul.blockHeader li
     position: relative;
     padding-top:2em;
     font-family: 'Montserrat', sans-serif;
-    color:#20063B;  
+    color:#111111;  
 }
 .tab{
     font-size:0.7em;
@@ -154,7 +154,7 @@ ul.blockHeader li
 {
     width:4.5em;
     height:4.5em;
-    background:#69DC9E;
+    background:#EFCB68;
     position: relative;
     border-radius: 0.5em;
     box-shadow:0px 0.2em 0.2em rgba(0, 0, 0, 0.08) !important;
@@ -167,7 +167,7 @@ ul.blockHeader li
 }
 #reloadSearch
 {
-    background:#69DC9E;
+    background:#EFCB68;
     margin-right:1em;
     cursor:pointer;
     box-shadow:0px 0.2em 1em rgba(32,6,59,0.1);
@@ -216,7 +216,7 @@ ul.blockHeader li
 }
 #settings form input:focus
 {
-    box-shadow:inset 0px 0em 0 0.12em #69DC9E,0px 3px 12px rgba(0, 0, 0, 0.06);
+    box-shadow:inset 0px 0em 0 0.12em #EFCB68,0px 3px 12px rgba(0, 0, 0, 0.06);
 }
 #settingsBtns
 {
@@ -244,7 +244,7 @@ ul.blockHeader li
 {
     margin:auto;
     font-size:1.5em;
-    color:#20063B;  
+    color:#111111;  
 }
 .dropdownBtn
 {

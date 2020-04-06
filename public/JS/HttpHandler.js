@@ -14,6 +14,22 @@ class HttpHandler
         }
         http.send(JSON.stringify(url.getParamters()));
     }
+
+    static postData(url) {
+        return new Promise(resolve => {
+            let http = new XMLHttpRequest();
+            http.open("POST", url.getFullUrl(), true);
+            http.setRequestHeader("Content-type", "application/json");
+            http.onreadystatechange = function () {
+                if (http.readyState == XMLHttpRequest.DONE)
+                    resolve(JSON.parse(http.responseText));
+                //else if (http.readyState == XMLHttpRequest.DONE && http.status == 404)
+                    //resolve({success: false, http: {status: http.status}});
+            }
+            http.send(JSON.stringify(url.getParamters()));
+        });
+    }
+
     static getData(url,callback)
     {
         let http = new XMLHttpRequest();
