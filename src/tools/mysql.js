@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require('mysql2/promise');
 const mnHandler = require("./MNHandler");
 class MySQL{
     constructor(mysql){

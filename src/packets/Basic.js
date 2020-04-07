@@ -1,5 +1,5 @@
 const Packet = require('./Packet');
-const constants = require('../Tools/Constants');
+const constants = require('../tools/Constants');
 
 class Basic extends Packet
 {

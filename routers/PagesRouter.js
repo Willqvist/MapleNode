@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const mysql = require("../Tools/mysql").getMysql();
-const constants = require("../Tools/Constants");
+const DBConn = require("../src/database/DatabaseConnection");
 router.get(["/"],(req,res)=>
 {
     return res.render("index"); 
@@ -20,9 +19,10 @@ router.get("/register",(req,res)=>
     if(req.session.user) res.redirect("dashboard");
     return res.render("pages/register");
 });
-router.get("/play",(req,res)=>
-{ 
-    mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_downloads`,(err,data)=> res.render("pages/play",{user:req.session.user,downloads:data}));
+router.get("/play",async (req,res)=>
+{
+    let data = await DBConn.instance.getDownloads();
+    res.render("pages/play",{user:req.session.user,downloads:data})
 });
 router.get("/download",(req,res)=>
 { 
@@ -32,8 +32,9 @@ router.get("/status",(req,res)=>
 { 
     return res.render("pages/status",{user:req.session.user});
 });
-router.get("/vote",(req,res)=>
-{ 
-    mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_vote`,(err,data)=> res.render("pages/vote",{user:req.session.user,votes:data}));
+router.get("/vote",async (req,res)=>
+{
+    let data = await DBConn.instance.getVotes();
+    res.render("pages/vote",{user:req.session.user,votes:data});
 });
 module.exports = router;

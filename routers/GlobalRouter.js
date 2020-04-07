@@ -1,16 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const MapleCharacterGenerator = require("../MapleCharacterGenerator/MCG");
-const mysql = require("../Tools/mysql").getMysql();
-const InstallHandler = require("../Tools/InstallationHandler");
-const constants = require("../Tools/Constants");
+const constants = require("../src/tools/Constants");
 let mcg = new MapleCharacterGenerator(60*5);
-let installHandler = new InstallHandler(mysql.mysql);
 router.get("/Characters/*.chr",(req,res)=>
 {
     let realPath = constants.getConstant("realPath");
     let name = req.url.replace("/Characters/","").replace(".chr","");
-    console.log("Ew");
     mcg.generatePlayer(name,(req)=>{
         if(!req.success)
         {

@@ -1,5 +1,5 @@
-const mysql = require("../Tools/mysql").getMysql();
-const Queue = require('../Tools/Queue');
+const mysql = require("../src/tools/mysql").getMysql();
+const Queue = require('../src/tools/Queue');
 const fs = require("graceful-fs");
 const ImageStorer = require("./ImageStorer");
 class WZType

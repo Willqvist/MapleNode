@@ -1,6 +1,6 @@
 const Packet = require('./Packet');
-const mysql = require("../Tools/mysql").getMysql();
-const Logger = require("../Logger/Logger");
+const mysql = require("../tools/mysql").getMysql();
+const Logger = require("../logger/Logger");
 class UserPacket extends Packet
 {
     isLoggedIn()

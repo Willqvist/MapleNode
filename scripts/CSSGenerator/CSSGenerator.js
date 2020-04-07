@@ -1,5 +1,5 @@
 const fs = require('fs');
-const Logger = require("../../Logger/Logger");
+const Logger = require("../../src/logger/Logger");
 class CSSGenerator
 {
     generateCSS(mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,callback)

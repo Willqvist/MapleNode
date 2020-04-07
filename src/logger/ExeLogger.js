@@ -1,4 +1,4 @@
-const Time = require("../Tools/Time");
+const Time = require("../tools/Time");
 class ExeLogger
 {
     static log(msg)

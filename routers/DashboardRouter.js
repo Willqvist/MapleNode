@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const mysql = require("../Tools/mysql").getMysql();
-const constants = require("../Tools/Constants");
+const mysql = require("../src/tools/mysql").getMysql();
+const constants = require("../src/tools/Constants");
 const fs = require("fs");
-const Logger = require("../Logger/Logger");
+const Logger = require("../src/logger/Logger");
 const CSSGenerator = require("../scripts/CSSGenerator/CSSGenerator");
 let app;
 router.get("/",(req,res)=>

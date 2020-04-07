@@ -1,5 +1,5 @@
-const constants = require("../Tools/Constants");
-const mysql = require("../Tools/mysql").getMysql();
+const constants = require(".//Constants");
+const mysql = require(".//mysql").getMysql();
 
 class RankLoader
 {

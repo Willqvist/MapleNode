@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const MapleCharacterGenerator = require("../MapleCharacterGenerator/MCG");
-const mysql = require("../Tools/mysql").getMysql();
-const InstallHandler = require("../Tools/InstallationHandler");
-const constants = require("../Tools/Constants");
+const mysql = require("../src/tools/mysql").getMysql();
+const InstallHandler = require("../src/tools/InstallationHandler");
+const constants = require("../src/tools/Constants");
 const md5 = require("md5");
-const Logger = require("../Logger/Logger");
+const Logger = require("../src/logger/Logger");
 const async = require("async");
 let mcg = new MapleCharacterGenerator(mysql.connection,60*5);
 let installHandler = new InstallHandler(mysql.mysql);

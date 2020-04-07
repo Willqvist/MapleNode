@@ -1,5 +1,5 @@
 const Packet = require("./Packet");
-const RankLoader = require("../Tools/RankLoader");
+const RankLoader = require("../tools/RankLoader");
 class CharactersPacket extends Packet
 {
     getCharacters()

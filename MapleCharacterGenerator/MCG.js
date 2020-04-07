@@ -1,9 +1,9 @@
 const ItemBuilderXml = require("./ItemBuilderXml");
 const ItemBuilderJson = require("./ItemBuilderJson");
-const mysql = require("../Tools/mysql").connection();
+const mysql = require("../src/tools/mysql").connection();
 const util = require("util");
 const fs = require("fs");
-const Constants = require("../Tools/Constants");
+const Constants = require("../src/tools/Constants");
 class MapleCharacterGenerator
 {   
     constructor(cooldown)

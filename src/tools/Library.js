@@ -1,6 +1,6 @@
 const mysql = require("./mysql").getMysql();
 const mnHandler = require("./MNHandler");
-const constants = require("../Tools/Constants");
+const constants = require(".//Constants");
 
 const fs = require("fs");
 const limit = 100;
