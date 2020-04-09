@@ -6,3 +6,4 @@ library/
 *.wz
 settings/setup.MN
 settings/database.MN
+dist/
