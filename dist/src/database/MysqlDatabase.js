@@ -72,7 +72,7 @@ class MysqlDatabase {
             row[i] = {};
             let keys = Object.keys(rows[i]);
             for (let key in keys) {
-                row[i][key] = conversions[key](rows[i][key]);
+                row[i][keys[key]] = conversions[keys[key]](rows[i][keys[key]]);
             }
         }
         return row;
@@ -106,27 +106,27 @@ class MysqlDatabase {
             obj.select.push("id");
             let [rows, err] = yield this.exec(obj, "characters", MysqlConversions_1.charactersConversion);
             if (err) {
-                return [null, { errorCode: 0, errorMsg: err }];
+                throw { errorCode: 0, errorMsg: err };
             }
-            return [rows[0], null];
+            return rows[0];
         });
     }
     getSettings(obj) {
         return __awaiter(this, void 0, void 0, function* () {
             let [rows, err] = yield this.exec(obj, "settings", MysqlConversions_1.mn_settingsConversion);
             if (err) {
-                return [null, { errorCode: 0, errorMsg: err }];
+                throw { errorCode: 0, errorMsg: err };
             }
-            return [rows[0], null];
+            return rows[0];
         });
     }
     getDesign(obj) {
         return __awaiter(this, void 0, void 0, function* () {
             let [rows, err] = yield this.exec(obj, "design", MysqlConversions_1.mn_designConversion);
             if (err) {
-                return [null, { errorCode: 0, errorMsg: err }];
+                throw { errorCode: 0, errorMsg: err };
             }
-            return [rows[0], null];
+            return rows[0];
         });
     }
     getActivePalette(obj) {
@@ -137,29 +137,29 @@ class MysqlDatabase {
                 };
             }
             obj.where["active"] = 1;
-            let [rows, err] = yield this.exec(obj, "design", MysqlConversions_1.mn_designConversion);
+            let [rows, err] = yield this.exec(obj, "palettes", MysqlConversions_1.mn_palettesConversion);
             if (err) {
-                return [null, { errorCode: 0, errorMsg: err }];
+                throw { errorCode: 0, errorMsg: err };
             }
-            return [rows[0], null];
+            return rows[0];
         });
     }
     getDownloads(obj) {
         return __awaiter(this, void 0, void 0, function* () {
             let [rows, err] = yield this.exec(obj, "downloads", MysqlConversions_1.mn_downloadsConversion);
             if (err) {
-                return [null, { errorCode: 0, errorMsg: err }];
+                throw { errorCode: 0, errorMsg: err };
             }
-            return [rows[0], null];
+            return rows[0];
         });
     }
     getVotes(obj) {
         return __awaiter(this, void 0, void 0, function* () {
             let [rows, err] = yield this.exec(obj, "votes", MysqlConversions_1.mn_voteConversion);
             if (err) {
-                return [null, { errorCode: 0, errorMsg: err }];
+                throw { errorCode: 0, errorMsg: err };
             }
-            return [rows, null];
+            return rows;
         });
     }
     getVote(id, obj) {
@@ -172,9 +172,9 @@ class MysqlDatabase {
             obj.where["id"] = id;
             let [rows, err] = yield this.exec(obj, "votes", MysqlConversions_1.mn_voteConversion);
             if (err) {
-                return [null, { errorCode: 0, errorMsg: err }];
+                throw { errorCode: 0, errorMsg: err };
             }
-            return [rows[0], null];
+            return rows[0];
         });
     }
     getPalette(id, obj) {
@@ -187,9 +187,9 @@ class MysqlDatabase {
             obj.where["id"] = id;
             let [rows, err] = yield this.exec(obj, "palettes", MysqlConversions_1.mn_palettesConversion);
             if (err) {
-                return [null, { errorCode: 0, errorMsg: err }];
+                throw { errorCode: 0, errorMsg: err };
             }
-            return [rows[0], null];
+            return rows[0];
         });
     }
     getLayout(name, obj) {
@@ -202,9 +202,9 @@ class MysqlDatabase {
             obj.where["name"] = name;
             let [rows, err] = yield this.exec(obj, "layout", MysqlConversions_1.mn_layoutConversion);
             if (err) {
-                return [null, { errorCode: 0, errorMsg: err }];
+                throw { errorCode: 0, errorMsg: err };
             }
-            return [rows[0], null];
+            return rows[0];
         });
     }
     getAccount(name, obj) {
@@ -217,9 +217,9 @@ class MysqlDatabase {
             obj.where["name"] = name;
             let [rows, err] = yield this.exec(obj, "accounts", MysqlConversions_1.accountsConversion);
             if (err) {
-                return [null, { errorCode: 0, errorMsg: err }];
+                throw { errorCode: 0, errorMsg: err };
             }
-            return [rows[0], null];
+            return rows[0];
         });
     }
     addPalette(name, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, active) {

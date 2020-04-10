@@ -9,12 +9,11 @@ export default async function setup(server : any,setupListeners : ()=>void,setup
     setupListeners();
     let data;
     try{
-    data = await installer.getInstallerObject("./settings/setup.MN");
+    data = await installer.getInstallerObject("/settings/setup.MN");
     }catch(err) {
         Logger.log("To begin setup, visit /setup");
         return;
     }
-    console.log("setup!");
 
     if(!data.prefix)
     {
@@ -27,11 +26,15 @@ export default async function setup(server : any,setupListeners : ()=>void,setup
     }
     if(data.done && data.prefix)
     {
-        let [settings,err] = await DatabaseConnection.instance.getSettings();
-        let [design,errDesign] = await DatabaseConnection.instance.getDesign({select:["heroImage","logo"]});
-        let [palette,errPalette] = await DatabaseConnection.instance.getActivePalette();
-        setConstants(settings,design,palette);
-        setupComplete();
+        try {
+            let settings = await DatabaseConnection.instance.getSettings();
+            let design = await DatabaseConnection.instance.getDesign({select:["heroImage","logo"]});
+            let palette = await DatabaseConnection.instance.getActivePalette();
+            setConstants(settings,design,palette);
+            setupComplete();
+        } catch(err) {
+            console.log(err);
+        }
     }
     else{
         consts.setConstant("setup-status",-1);

@@ -29,13 +29,12 @@ function setup(server, setupListeners, setupComplete) {
         setupListeners();
         let data;
         try {
-            data = yield installer.getInstallerObject("./settings/setup.MN");
+            data = yield installer.getInstallerObject("/settings/setup.MN");
         }
         catch (err) {
             Logger_1.default.log("To begin setup, visit /setup");
             return;
         }
-        console.log("setup!");
         if (!data.prefix) {
             Logger_1.default.warn("prefix value is not set... have you finished setup? go to: localhost:" + server.address().port + "/setup/");
         }
@@ -44,11 +43,16 @@ function setup(server, setupListeners, setupComplete) {
             consts.setConstant("realPath", __dirname);
         }
         if (data.done && data.prefix) {
-            let [settings, err] = yield DatabaseConnection_1.default.instance.getSettings();
-            let [design, errDesign] = yield DatabaseConnection_1.default.instance.getDesign({ select: ["heroImage", "logo"] });
-            let [palette, errPalette] = yield DatabaseConnection_1.default.instance.getActivePalette();
-            setConstants(settings, design, palette);
-            setupComplete();
+            try {
+                let settings = yield DatabaseConnection_1.default.instance.getSettings();
+                let design = yield DatabaseConnection_1.default.instance.getDesign({ select: ["heroImage", "logo"] });
+                let palette = yield DatabaseConnection_1.default.instance.getActivePalette();
+                setConstants(settings, design, palette);
+                setupComplete();
+            }
+            catch (err) {
+                console.log(err);
+            }
         }
         else {
             consts.setConstant("setup-status", -1);

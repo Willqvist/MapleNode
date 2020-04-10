@@ -21,18 +21,18 @@ export interface Error {
 
 export interface Database {
     onInstansiate(data : object) : Promise<boolean>;
-    getSettings(obj?: SWO) : Promise<[SettingsInterface,Error?]>;
-    getCharacter(name :string, obj?: SWO) : Promise<[CharactersInterface,Error?]>;
-    getDesign(obj?: SWO) : Promise<[DesignInterface,Error?]>;
-    getActivePalette(obj?: SWO) : Promise<[PalettesInterface,Error?]>;
-    getDownloads(obj?: SWO) : Promise<[DownloadsInterface,Error?]>;
-    getVotes(obj?: SWO) : Promise<[VoteInterface[],Error?]>;
-    getVote(id: number, obj?: SWO) : Promise<[VoteInterface,Error?]>;
-    getPalette(name : string, obj?: SWO) : Promise<[PalettesInterface,Error?]>;
-    getLayout(name: string, obj?: SWO) : Promise<[LayoutInterface,Error?]>;
-    getEquipment(character : number) : Promise<[EquipmentInterface[],Error?]>;
+    getSettings(obj?: SWO) : Promise<SettingsInterface>;
+    getCharacter(name :string, obj?: SWO) : Promise<CharactersInterface>;
+    getDesign(obj?: SWO) : Promise<DesignInterface>;
+    getActivePalette(obj?: SWO) : Promise<PalettesInterface>;
+    getDownloads(obj?: SWO) : Promise<DownloadsInterface>;
+    getVotes(obj?: SWO) : Promise<VoteInterface[]>;
+    getVote(id: number, obj?: SWO) : Promise<VoteInterface>;
+    getPalette(name : string, obj?: SWO) : Promise<PalettesInterface>;
+    getLayout(name: string, obj?: SWO) : Promise<LayoutInterface>;
+    getEquipment(character : number) : Promise<EquipmentInterface[]>;
     loadRank(searchFlag,page: number,order: number) : Promise<any>;
-    getAccount(name: string,obj?: SWO) : Promise<[AccountsInterface,Error]>;
+    getAccount(name: string,obj?: SWO) : Promise<AccountsInterface>;
     addAccount(name: string,password: string,birthday: string,email: string) : Promise<boolean>;
     addVoting(accountid: number, voteid: number) : Promise<boolean>;
     addVote(name: string,url: string,nx: number,time: number) : Promise<boolean>;

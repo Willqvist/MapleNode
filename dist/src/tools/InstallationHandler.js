@@ -41,6 +41,7 @@ class InstallationHandler {
                                 prefix: data.prefix,
                                 done: data.done
                             };
+                            constants.setConstant("prefix", data.prefix);
                             resolve(ret);
                         });
                     }
@@ -62,6 +63,7 @@ class InstallationHandler {
             data.prefix = userData.prefix;
             constants.setConstant("prefix", userData.prefix);
             console.log("stop that fear!");
+            yield this.saveInstallerObject({ done: false, mysqlSetupComplete: true, prefix: userData.prefix });
             yield DatabaseConnection_1.default.instance.rebuildDatabase(data.prefix);
             yield DatabaseConnection_1.default.instance.addPalette('Happy Green', '#69DC9E', '#3E78B2', '#D3F3EE', '#20063B', '#CC3363', 1);
             yield DatabaseConnection_1.default.instance.addDesign('headerImage.png', 'svgs/logo.svg');
@@ -77,16 +79,36 @@ class InstallationHandler {
             constants.setConstant("palette", paletteInterface);
         });
     }
+    writeToFile(src, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise(resolve => {
+                fs.writeFile(Paths_1.HOME + src, data, { flag: 'wx' }, (err) => {
+                    resolve(!err);
+                });
+            });
+        });
+    }
     setSetupComplete(settings, setup, client) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield DatabaseConnection_1.default.instance.addSettings(settings.serverName, settings.version, settings.expRate, settings.dropRate, settings.mesoRate, settings.nxColumn, settings.vpColumn, settings.gmLevel);
-            yield DatabaseConnection_1.default.instance.addDownload('Setup', setup);
-            yield DatabaseConnection_1.default.instance.addDownload('Client', client);
+            console.log("here i1");
+            try {
+                yield DatabaseConnection_1.default.instance.addSettings(settings.serverName, settings.version, settings.expRate, settings.dropRate, settings.mesoRate, settings.nxColumn, settings.vpColumn, settings.gmLevel);
+                console.log("here i2");
+                yield DatabaseConnection_1.default.instance.addDownload('Setup', setup);
+                yield DatabaseConnection_1.default.instance.addDownload('Client', client);
+                let data = yield this.getInstallerObject("/settings/setup.MN");
+                data.done = true;
+                yield this.saveInstallerObject(data);
+            }
+            catch (err) {
+                console.log(err);
+            }
         });
     }
     saveInstallerObject(data) {
         return new Promise((resolve, reject) => {
-            fs.writeFile("settings/setup.MN", JSON.stringify(data), (err) => {
+            console.log("path: ", Paths_1.HOME + "/settings/setup.MN");
+            fs.writeFile(Paths_1.HOME + "/settings/setup.MN", JSON.stringify(data), (err) => {
                 if (err)
                     reject(err);
                 resolve(data);

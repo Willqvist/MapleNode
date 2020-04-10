@@ -90,17 +90,19 @@ export default class MapleCharacterGenerator
             if((dateNow.getMinutes()-date.getMinutes())/1000 < this.cooldown)
                 return callback({success:true});
         }
-        let [result,err] = await DatabaseConnection.instance.getCharacter(name,{select:["face","hair","skincolor"]});
-        if(err) throw err;
-        if(!result)
-            return {success:false,errorID:ERROR.INVALID_PLAYER,reason:"cant find player: " + name};
-        player.parts.face = result.face;
-        player.parts.hair = result.hair;
-        player.parts.skincolor = result.skincolor;
-        let results = await DatabaseConnection.instance.getEquipment(result.id);
-        if(err) throw err;
-        player.items = results;
-        this.addToQueue(player);
+        try {
+            let result = await DatabaseConnection.instance.getCharacter(name,{select:["face","hair","skincolor"]});
+            if(!result)
+                return {success:false,errorID:ERROR.INVALID_PLAYER,reason:"cant find player: " + name};
+            player.parts.face = result.face;
+            player.parts.hair = result.hair;
+            player.parts.skincolor = result.skincolor;
+            let results = await DatabaseConnection.instance.getEquipment(result.id);
+            player.items = results;
+            this.addToQueue(player);
+        } catch(err) {
+            throw err;
+        }
     }
     buildPlayer(player : Player)
     {

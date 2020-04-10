@@ -59,15 +59,13 @@ router.all("/:id/",async (req,res,next)=>
                             version: req.body.version,
                             expRate: req.body.exp,
                             vpColumn: req.body.vp,
-                            settings.version,
-                            settings.expRate,
-                            settings.dropRate,
-                            settings.mesoRate,
-                            settings.nxColumn,
-                            settings.vpColumn,
-                            settings.gmLevel
+                            serverName : req.body.serverName,
+                            dropRate: req.body.drop,
+                            mesoRate : req.body.meso,
+                            nxColumn: req.body.nx,
+                            gmLevel: req.body.gmLevel
                         }
-                        await installHandler.setSetupComplete(settings,req.body.setupDownload,req.body.clientDownload);
+                        await installHandler.setSetupComplete(settings,req.body.downloadSetup,req.body.downloadClient);
                         constants.setConstant("setup-status", 1);
                         app.locals.palette = constants.getConstant("palette");
                         app.locals.heroImage = "headerImage.png";

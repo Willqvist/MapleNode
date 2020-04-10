@@ -78,7 +78,7 @@ export class MysqlDatabase implements Database {
             row[i] = {};
             let keys = Object.keys(rows[i]);
             for(let key in keys) {
-                row[i][key] = conversions[key](rows[i][key]);
+                row[i][keys[key]] = conversions[keys[key]](rows[i][keys[key]]);
             }
         }
         return row;
@@ -99,7 +99,7 @@ export class MysqlDatabase implements Database {
         return [row,err];
     }
 
-    async getCharacter(name : string, obj?: SWO): Promise<[CharactersInterface, Error?]> {
+    async getCharacter(name : string, obj?: SWO): Promise<CharactersInterface> {
         if(!obj) {
             obj = {
                 where:{},
@@ -110,54 +110,53 @@ export class MysqlDatabase implements Database {
         obj.select.push("id");
         let [rows, err] = await this.exec(obj, "characters",charactersConversion);
         if(err) {
-            return [null,{errorCode:0,errorMsg:err}];
+            throw {errorCode:0,errorMsg:err};
         }
-        return [<CharactersInterface>rows[0],null];
+        return rows[0];
     }
 
-    async getSettings(obj : SWO) :Promise<[SettingsInterface,Error]> {
+    async getSettings(obj : SWO) :Promise<SettingsInterface> {
         let [rows, err] = await this.exec(obj, "settings",mn_settingsConversion);
         if(err) {
-            return [null,{errorCode:0,errorMsg:err}];
+            throw {errorCode:0,errorMsg:err};
         }
-        return [<SettingsInterface>rows[0],null];
+        return rows[0];
     }
-    async getDesign(obj : SWO) :Promise<[DesignInterface,Error]> {
+    async getDesign(obj : SWO) :Promise<DesignInterface> {
         let [rows, err] = await this.exec(obj, "design",mn_designConversion);
         if(err) {
-            return [null,{errorCode:0,errorMsg:err}];
+            throw {errorCode:0,errorMsg:err};
         }
-        return [<DesignInterface>rows[0],null];
+        return rows[0];
     }
-    async getActivePalette(obj) :Promise<[PalettesInterface,Error]> {
+    async getActivePalette(obj) :Promise<PalettesInterface> {
         if(!obj){
             obj = {
                 where:[]
             };
         }
         obj.where["active"] = 1;
-        let [rows, err] = await this.exec(obj, "design",mn_designConversion);
+        let [rows, err] = await this.exec(obj, "palettes",mn_palettesConversion);
         if(err) {
-            return [null,{errorCode:0,errorMsg:err}];
+            throw {errorCode:0,errorMsg:err};
         }
-        return [<PalettesInterface>rows[0],null];
+        return rows[0];
     }
-    async getDownloads(obj : SWO) :Promise<[DownloadsInterface,Error]> {
+    async getDownloads(obj : SWO) :Promise<DownloadsInterface> {
         let [rows, err] = await this.exec(obj, "downloads",mn_downloadsConversion);
         if(err) {
-            return [null,{errorCode:0,errorMsg:err}];
+            throw {errorCode:0,errorMsg:err};
         }
-
-        return [<DownloadsInterface>rows[0],null];
+        return rows[0];
     }
-    async getVotes(obj : SWO) :Promise<[VoteInterface[],Error]> {
+    async getVotes(obj : SWO) :Promise<VoteInterface[]> {
         let [rows, err] = await this.exec(obj, "votes",mn_voteConversion);
         if(err) {
-            return [null,{errorCode:0,errorMsg:err}];
+            throw {errorCode:0,errorMsg:err};
         }
-        return [rows,null];
+        return rows;
     }
-    async getVote(id : number, obj : SWO) :Promise<[VoteInterface,Error]> {
+    async getVote(id : number, obj : SWO) :Promise<VoteInterface> {
         if(!obj) {
             obj = {
                 where:[]
@@ -166,11 +165,11 @@ export class MysqlDatabase implements Database {
         obj.where["id"] = id;
         let [rows, err] = await this.exec(obj, "votes",mn_voteConversion);
         if(err) {
-            return [null,{errorCode:0,errorMsg:err}];
+            throw {errorCode:0,errorMsg:err};
         }
-        return [rows[0],null];
+        return rows[0];
     }
-    async getPalette(id : string, obj : SWO) :Promise<[PalettesInterface,Error]> {
+    async getPalette(id : string, obj : SWO) :Promise<PalettesInterface> {
         if(!obj) {
             obj = {
                 where:[]
@@ -179,11 +178,11 @@ export class MysqlDatabase implements Database {
         obj.where["id"] = id;
         let [rows, err] = await this.exec(obj, "palettes",mn_palettesConversion);
         if(err) {
-            return [null,{errorCode:0,errorMsg:err}];
+            throw {errorCode:0,errorMsg:err};
         }
-        return [rows[0],null];
+        return rows[0];
     }
-    async getLayout(name : string,obj : SWO) :Promise<[LayoutInterface,Error]> {
+    async getLayout(name : string,obj : SWO) :Promise<LayoutInterface> {
         if(!obj) {
             obj = {
                 where:[]
@@ -192,12 +191,12 @@ export class MysqlDatabase implements Database {
         obj.where["name"] = name;
         let [rows, err] = await this.exec(obj, "layout",mn_layoutConversion);
         if(err) {
-            return [null,{errorCode:0,errorMsg:err}];
+            throw {errorCode:0,errorMsg:err};
         }
-        return [rows[0],null];
+        return rows[0];
     }
 
-    async getAccount(name : string,obj : SWO): Promise<[AccountsInterface,Error]> {
+    async getAccount(name : string,obj : SWO): Promise<AccountsInterface> {
         if(!obj) {
             obj = {
                 where:[]
@@ -206,9 +205,9 @@ export class MysqlDatabase implements Database {
         obj.where["name"] = name;
         let [rows, err] = await this.exec(obj, "accounts",accountsConversion);
         if(err) {
-            return [null,{errorCode:0,errorMsg:err}];
+            throw {errorCode:0,errorMsg:err};
         }
-        return [rows[0],null];
+        return rows[0];
     }
     async addPalette(name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) {
         let [rows,l] = await this.connection.query(`INSERT INTO ${this.table("palettes")} (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES
@@ -305,7 +304,7 @@ export class MysqlDatabase implements Database {
         return undefined;
     }
 
-    getEquipment(character: number): Promise<[EquipmentInterface[], Error]> {
+    getEquipment(character: number): Promise<EquipmentInterface[]> {
         return undefined;
     }
 }

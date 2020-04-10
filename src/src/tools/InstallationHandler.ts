@@ -3,6 +3,7 @@ import * as constants from "./Constants";
 import DBConn from "../database/DatabaseConnection";
 import { PalettesInterface, SettingsInterface, DownloadsInterface } from "../database/DatabaseInterfaces";
 import {HOME} from "../../Paths";
+import { resolve } from "dns";
 
 export interface InstallerI {
     mysqlSetupComplete : boolean;
@@ -29,6 +30,7 @@ export default class InstallationHandler
                             prefix: data.prefix,
                             done:data.done
                         };
+                        constants.setConstant("prefix",data.prefix);
                         resolve(ret);
                     });
                 } else {
@@ -47,6 +49,7 @@ export default class InstallationHandler
         data.prefix = userData.prefix;
         constants.setConstant("prefix",userData.prefix);
         console.log("stop that fear!");
+        await this.saveInstallerObject({done:false,mysqlSetupComplete:true,prefix:userData.prefix});
         await DBConn.instance.rebuildDatabase(data.prefix);
         await DBConn.instance.addPalette('Happy Green','#69DC9E','#3E78B2','#D3F3EE','#20063B','#CC3363',1);
         await DBConn.instance.addDesign('headerImage.png','svgs/logo.svg');
@@ -63,9 +66,19 @@ export default class InstallationHandler
 
         constants.setConstant("palette",paletteInterface);
     }
+
+    private async writeToFile(src: string, data: string) : Promise<boolean> {
+        return new Promise<boolean>(resolve => {
+            fs.writeFile(HOME+src,data,{flag:'wx'},(err)=> {
+                resolve(!err);
+            })
+        });
+    }
+
     async setSetupComplete(settings : SettingsInterface, setup : string, client : string)
     {
-
+        console.log("here i1");
+        try {
         await DBConn.instance.addSettings(settings.serverName,
             settings.version,
             settings.expRate,
@@ -75,14 +88,23 @@ export default class InstallationHandler
             settings.vpColumn,
             settings.gmLevel
         );
-
+        console.log("here i2");
         await DBConn.instance.addDownload('Setup',setup);
         await  DBConn.instance.addDownload('Client',client);
+
+        let data : InstallerI = await this.getInstallerObject("/settings/setup.MN");
+        data.done = true;
+        await this.saveInstallerObject(data);
+
+        } catch(err) {
+            console.log(err);
+        }
     }
-    saveInstallerObject(data)
+    saveInstallerObject(data : InstallerI)
     {
         return new Promise((resolve,reject) => {
-            fs.writeFile("settings/setup.MN", JSON.stringify(data), (err) => {
+            console.log("path: ",HOME+"/settings/setup.MN");
+            fs.writeFile(HOME+"/settings/setup.MN", JSON.stringify(data), (err) => {
                 if(err) reject(err);
                 resolve(data);
             });

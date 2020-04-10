@@ -82,19 +82,20 @@ class MapleCharacterGenerator {
                 if ((dateNow.getMinutes() - date.getMinutes()) / 1000 < this.cooldown)
                     return callback({ success: true });
             }
-            let [result, err] = yield DatabaseConnection_1.default.instance.getCharacter(name, { select: ["face", "hair", "skincolor"] });
-            if (err)
+            try {
+                let result = yield DatabaseConnection_1.default.instance.getCharacter(name, { select: ["face", "hair", "skincolor"] });
+                if (!result)
+                    return { success: false, errorID: ERROR.INVALID_PLAYER, reason: "cant find player: " + name };
+                player.parts.face = result.face;
+                player.parts.hair = result.hair;
+                player.parts.skincolor = result.skincolor;
+                let results = yield DatabaseConnection_1.default.instance.getEquipment(result.id);
+                player.items = results;
+                this.addToQueue(player);
+            }
+            catch (err) {
                 throw err;
-            if (!result)
-                return { success: false, errorID: ERROR.INVALID_PLAYER, reason: "cant find player: " + name };
-            player.parts.face = result.face;
-            player.parts.hair = result.hair;
-            player.parts.skincolor = result.skincolor;
-            let results = yield DatabaseConnection_1.default.instance.getEquipment(result.id);
-            if (err)
-                throw err;
-            player.items = results;
-            this.addToQueue(player);
+            }
         });
     }
     buildPlayer(player) {
