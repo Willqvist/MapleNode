@@ -7,4 +7,5 @@ library/
 settings/setup.MN
 settings/database.MN
 dist/
+dist/*
 src/MapleCharacterGenerator/gd/
