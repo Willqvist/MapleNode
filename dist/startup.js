@@ -15,13 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const DatabaseConnection_1 = __importDefault(require("./src/database/DatabaseConnection"));
 const MysqlDatabase_1 = require("./src/database/MysqlDatabase");
 const MNHandler_1 = __importDefault(require("./src/tools/MNHandler"));
+const Logger_1 = __importDefault(require("./src/logger/Logger"));
 function onStart() {
     return __awaiter(this, void 0, void 0, function* () {
         let exists = yield MNHandler_1.default.isDatabaseSetup();
         if (exists) {
-            let data = yield MNHandler_1.default.getMysql("./settings/database.MN");
-            let result = yield DatabaseConnection_1.default.createInstance(getDatabase(), data);
+            try {
+                let data = yield MNHandler_1.default.getMysql("./settings/database.MN");
+                let result = yield DatabaseConnection_1.default.createInstance(getDatabase(), data);
+            }
+            catch (err) {
+                Logger_1.default.warn("Could not connected to database.");
+                Logger_1.default.error(`[${err.errno}] ${err.msg}`);
+                return false;
+            }
         }
+        return true;
     });
 }
 exports.onStart = onStart;

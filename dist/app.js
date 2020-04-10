@@ -26,6 +26,7 @@ const express_session_1 = __importDefault(require("express-session"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const helmet_1 = __importDefault(require("helmet"));
 const consts = __importStar(require("./src/tools/Constants"));
+const Paths_1 = require("./Paths");
 //const PacketHandler = require("../src/packets/PacketHandler");
 const setup_1 = __importDefault(require("./setup"));
 const in_1 = __importDefault(require("./in"));
@@ -44,22 +45,28 @@ new IH().setMysqlSetupComplete(data);
 //setup
 let app = express_1.default();
 let server = app.listen(in_1.default.port);
-const socket_io_1 = __importDefault(require("socket.io"));
-socket_io_1.default.listen(server);
 const CSSGenerator_1 = __importDefault(require("./scripts/CSSGenerator/CSSGenerator"));
 const SetupRouter_1 = __importDefault(require("./routers/SetupRouter"));
 //PacketHandler.setupGlobalPackets(app);
 app.set('view engine', 'ejs');
-app.set("views", __dirname + "/views");
+app.set("views", Paths_1.HOME + "/views");
 app.use(body_parser_1.default.json({ limit: '1000mb', extended: true }));
 app.use(body_parser_1.default.urlencoded({ limit: '1000mb', extended: true, parameterLimit: 1000000 }));
 app.use(helmet_1.default());
-run().then(() => { });
+run().then((res) => {
+    if (!res) {
+        server.close();
+        process.exit(0);
+    }
+});
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         Logger_1.default.log("Starting server...");
-        yield main.onStart();
+        let res = yield main.onStart();
+        if (!res)
+            return false;
         yield setup_1.default(server, setupListeners, setupComplete);
+        return true;
     });
 }
 //listeners
@@ -70,10 +77,8 @@ function setupListeners() {
             resave: false,
             saveUninitialized: true,
         }));
-        app.use(express_1.default.static(__dirname + "/public"));
-        console.log("setu2 p!");
+        app.use(express_1.default.static(Paths_1.HOME + "/public"));
         app.use("/setup", SetupRouter_1.default(app));
-        console.log("setu3 p!");
         //app.use("/",        route("GlobalRouter"));
         app.use((req, res, next) => __awaiter(this, void 0, void 0, function* () {
             let paletteInterface = {
@@ -85,8 +90,8 @@ function setupListeners() {
                 fillColor: '#CC3363'
             };
             yield CSSGenerator_1.default.generateCSS(paletteInterface);
-            let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-            req.ip = ip;
+            //let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            //req.ip = ip;
             //PacketHandler.handlePackets(app,req,res,next);
         }));
         //app.use("/library",     route("LibraryRouter"));

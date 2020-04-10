@@ -8,13 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const Errno_1 = __importDefault(require("../tools/Errno"));
 class DatabaseConnection {
     static createInstance(database, data) {
         return __awaiter(this, void 0, void 0, function* () {
             DatabaseConnection.instance = database;
             let connected = yield database.onInstansiate(data);
-            console.log("here", connected);
+            if (!connected) {
+                throw Errno_1.default;
+            }
             DatabaseConnection.connected = connected;
             return connected;
         });

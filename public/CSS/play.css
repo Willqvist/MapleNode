@@ -20,7 +20,7 @@
     font-weight:bold;
     font-size:1.2em;
     margin-top:0.8em;
-    color:#111111;
+    color:#20063B;
 }
 .box h3:before
 {
@@ -55,7 +55,7 @@
     font-weight:500;
     font-size:1.1em;
     font-family: 'Montserrat', sans-serif;
-    color:#111111;
+    color:#20063B;
 }
 .btn
 {
@@ -85,7 +85,7 @@
     box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.10);
     margin-top:2em;
     font-family: 'Montserrat', sans-serif;
-    color:#111111;
+    color:#20063B;
 }
 .loginBox h3
 {
@@ -107,13 +107,13 @@
 .loginBox p
 {
     font-size:0.8em;
-    color:#111111;
+    color:#CC3363;
     display:none;
 }
 .vote_btn
 {
     background:lightgray;
-    color:#111111;
+    color:#20063B;
 }
 .vote_btn a
 {
@@ -122,12 +122,12 @@
 .vote_btn:hover
 {
     background:lightgray;
-    color:#111111;
+    color:#20063B;
     cursor: not-allowed;
 }
 .validBtn
 {
-    background:#EFCB68;
+    background:#69DC9E;
 }
 .validBtn a
 {

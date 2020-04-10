@@ -9,11 +9,11 @@ import { SettingsInterface } from "../src/database/DatabaseInterfaces";
 const router = express.Router();
 let app;
 let installHandler = new InstallationHandler();
-
+const settingsSrc = "/settings/setup.MN"
 router.all("*",async (req,res,next)=>
 {
-    let data = await installHandler.installationComplete();
-    console.log("IM HERE: ",data);
+    let data;
+    data = await installHandler.installationComplete(settingsSrc);
     if(data.done)
         return res.status(403).send('403 - access denied');
     return next();
@@ -34,7 +34,7 @@ router.all("/:id/",async (req,res,next)=>
             switch(number)
             {
                 case 1:
-                    let data;
+                    let data : any = {};
                     let prefix = req.body.prefix;
                     data.user = req.body.user;
                     data.password = req.body.password;
@@ -50,7 +50,7 @@ router.all("/:id/",async (req,res,next)=>
                         console.log(err);
                         return res.render("setup/error", {
                             page: number,
-                            error: {reason: installHandler.getInstallErrors(err.code)}});
+                            error: {reason: installHandler.getInstallErrors(err.errno)}});
                     }
                 break;
                 case 2:
@@ -59,6 +59,13 @@ router.all("/:id/",async (req,res,next)=>
                             version: req.body.version,
                             expRate: req.body.exp,
                             vpColumn: req.body.vp,
+                            settings.version,
+                            settings.expRate,
+                            settings.dropRate,
+                            settings.mesoRate,
+                            settings.nxColumn,
+                            settings.vpColumn,
+                            settings.gmLevel
                         }
                         await installHandler.setSetupComplete(settings,req.body.setupDownload,req.body.clientDownload);
                         constants.setConstant("setup-status", 1);

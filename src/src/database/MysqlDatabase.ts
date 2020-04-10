@@ -1,5 +1,6 @@
 import {Database,SWO,Error} from "./Database";
-import mysql = require("mysql2/promise");
+import mysql from "mysql2/promise";
+import errno from "../tools/Errno"
 import {
     accountsConversion,
     charactersConversion,
@@ -27,7 +28,13 @@ export class MysqlDatabase implements Database {
 
     async onInstansiate(data) : Promise<boolean> {
         data.multipleStatements = true;
-        this.connection = await mysql.createConnection(data);
+        try {
+            this.connection = await mysql.createConnection(data);
+        } catch(err) {
+            errno.errno = err.errno;
+            errno.msg = err.message;
+            return false;
+        }
         return true;
     }
 

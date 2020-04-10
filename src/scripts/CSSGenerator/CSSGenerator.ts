@@ -1,16 +1,18 @@
 import fs from 'fs';
 import Logger from "../../src/logger/Logger";
 import { PalettesInterface } from '../../src/database/DatabaseInterfaces';
+import {HOME} from "../../Paths";
+
 export default class CSSGenerator
 {
     static async generateCSS(palette : PalettesInterface) : Promise<void>
     {
-        return new Promise<void>(resolve => {
+        return new Promise<void>((resolve,reject) => {
             let i = 0;
-            fs.readdir("./scripts/CSSGenerator/templates/", (err, files) => {
-                if (err) Logger.error(err.message);
+            fs.readdir(HOME+"/templates/CSSTemplates/", (err, files) => {
+                if (err) reject(err);
                 files.forEach((file) => {
-                    fs.readFile("./scripts/CSSGenerator/templates/" + file, "utf8", ((err, text) => {
+                    fs.readFile(HOME+"/templates/CSSTemplates/" + file, "utf8", ((err, text) => {
                         i++;
                         if (err) Logger.error(err);
                         text = text.replace(/var\(--mainColor\)/g, palette.mainColor);
@@ -18,7 +20,7 @@ export default class CSSGenerator
                         text = text.replace(/var\(--fontColorDark\)/g, palette.fontColorDark);
                         text = text.replace(/var\(--fontColorLight\)/g, palette.fontColorLight);
                         text = text.replace(/var\(--fillColor\)/g, palette.fillColor);
-                        fs.writeFileSync("./public/CSS/" + file, text);
+                        fs.writeFileSync(HOME+"/public/CSS/" + file, text);
                         if (i == files.length - 1) {
                             resolve();
                         }
@@ -51,5 +53,3 @@ export default class CSSGenerator
         });
     }
 }
-let generator = new CSSGenerator();
-module.exports = generator; 

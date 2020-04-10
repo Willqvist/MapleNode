@@ -75,14 +75,11 @@ function getInputVariables(data, start = 0) {
 }
 //CLEANUP ON EXIT
 function exitHandler(options, exitCode) {
-    console.log("-exitting");
     if (options.exit) {
-        Logger_1.default.log("exiting process");
         process.exit(1);
     }
 }
 process.on('exit', (code) => {
-    Logger_1.default.log("exiting process: " + code);
 });
 process.on('SIGINT', exitHandler.bind(null, { exit: true }));
 process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));

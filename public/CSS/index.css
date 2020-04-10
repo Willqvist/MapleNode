@@ -57,15 +57,15 @@ body{
     margin-top:1.2em;
     border-radius:1em;
     z-index:1;
-    box-shadow:inset 0px 0px 0 0.2rem #EFCB68;
+    box-shadow:inset 0px 0px 0 0.2rem #69DC9E;
 }
 .header .gradient {
     position: absolute;
     width:100%;
     height:100%;
     z-index:1;
-    background: #111111;
-    background: linear-gradient(180deg, #111111 0%, rgba(16,121,178,0) 100%);    
+    background: #20063B;
+    background: linear-gradient(180deg, #20063B 0%, rgba(16,121,178,0) 100%);    
 }
 .header_content .btn{
     font-size:1em;
@@ -125,7 +125,7 @@ body{
     text-orientation: upright;
 }
 .content .block_menu h2{
-    color:#111111;
+    color:#20063B;
     writing-mode: vertical-lr;
     text-orientation: sideways;
     transform:rotate(180deg);
@@ -140,7 +140,7 @@ body{
     content:"";
     position: absolute;
     width:0.1rem;
-    background:#111111;
+    background:#20063B;
     opacity:0.1;
     right:0;
 }
@@ -187,7 +187,7 @@ body{
     font-weight:500;
     font-size:1.1em;
     font-family: 'Montserrat', sans-serif;
-    color:#111111;
+    color:#20063B;
 }
 
 .block
@@ -222,15 +222,15 @@ body{
     padding-left:0.5em;
     font-weight:400;
     font-family: 'Montserrat', sans-serif;   
-    box-shadow:inset 0px -0.15em 0 #EFCB68;
-    color:#111111;  
+    box-shadow:inset 0px -0.15em 0 #69DC9E;
+    color:#20063B;  
     display:flex;    
 }   
 .blockHeader svg{
     width:1.8em;
     height:1.8em;
     fill:none;
-    stroke:#111111;
+    stroke:#20063B;
     stroke-width:5;
     margin:auto 0;
     margin-right:0.6em;

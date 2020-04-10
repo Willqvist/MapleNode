@@ -15,12 +15,12 @@
     height:10em;
     font-size:1em;
     cursor:pointer;
-    color:#111111;
+    color:#20063B;
     text-decoration: none;
     border-radius:1em;
     z-index:1;
-    background: #EFCB68;
-    box-shadow: 0px 0px 0 0.1rem #EFCB68;
+    background: #69DC9E;
+    box-shadow: 0px 0px 0 0.1rem #69DC9E;
 }
 .content_box_content {
     display:flex;
@@ -29,7 +29,7 @@
     position: relative;
     height:100%;
     width:100%;
-    box-shadow: 0px 0px 0 0.1rem #111111;
+    box-shadow: 0px 0px 0 0.1rem #20063B;
     border-top-left-radius: 1em;
     background:#FFF;
     transition: ease 0.2s;

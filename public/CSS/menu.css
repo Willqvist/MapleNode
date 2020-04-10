@@ -16,7 +16,7 @@ body
 MENU
 */
 #menu{
-    background:#111111;
+    background:#CC3363;
     height:5em;
     color:#FFF;
     width:100%;
@@ -99,7 +99,7 @@ MENU
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
     text-decoration: none;
-    color:#F4F4F4;
+    color:#D3F3EE;
     display:flex;
     padding-right:1.5em;
     padding-left:1.5em;
@@ -108,7 +108,7 @@ MENU
 }
 #menu .underline:hover {
     transition: ease 0.05s;
-    box-shadow:inset 0 -0.12em 0 #EFCB68;
+    box-shadow:inset 0 -0.12em 0 #69DC9E;
 }
 #menu_left ul li span{
     margin:auto;
@@ -139,14 +139,14 @@ MENU
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
     text-decoration: none;
-    color:#F4F4F4;
+    color:#D3F3EE;
     display:flex;
     padding-right:1.5em;
     padding-left:1.5em;
 }
 
 #activeUsers {
-    color:#EFCB68;
+    color:#69DC9E;
     margin-top:auto;
     margin-bottom: auto;
 }
@@ -179,9 +179,9 @@ input
     font-family: 'Montserrat', sans-serif;
     font-weight:700; 
     transition:Ease 0.2s;
-    background:#EFCB68;
+    background:#69DC9E;
     border:none;
-    color:#111111;
+    color:#20063B;
     display:flex;
     z-index:5;
     height:100%;
@@ -199,11 +199,11 @@ input
     z-index: -1;
     border-radius:55em;
     transition:ease 0.2s;
-    box-shadow:inset 0px 0px 0 0.12em #EFCB68;
+    box-shadow:inset 0px 0px 0 0.12em #69DC9E;
 }
 .btn:hover:before {
     
-    background:#EFCB68;
+    background:#69DC9E;
 }
 .btn-a a
 {
@@ -214,20 +214,20 @@ input
     padding-right:1.2em;
     padding-left:1.2em;
     text-decoration: none;
-    color:#111111;
+    color:#20063B;
 }
 
 .btn-span span
 {
     text-decoration: none;
     margin:auto;
-    color:#111111;
+    color:#20063B;
     padding-left:2rem;
     padding-right:2rem;
 }
 
 .btn-input input{
-    background:#EFCB68;
+    background:#69DC9E;
     border:none;
     border-radius:55em;
     display:flex;
@@ -236,13 +236,13 @@ input
     padding-right:1.2em;
     padding-left:1.2em;
     text-decoration: none;
-    color:#111111;
+    color:#20063B;
     text-transform: uppercase;
     font-family: 'Montserrat', sans-serif;
     font-weight:700; 
     transition:Ease 0.2s;
     cursor:pointer;
-    color:#F4F4F4
+    color:#D3F3EE
 }
 .btn-a a span
 {
@@ -256,7 +256,7 @@ input
 
 .btn-green
 {
-    background:#EFCB68;
+    background:#69DC9E;
 }
 .btn-green:hover
 {
@@ -268,17 +268,17 @@ input
 }
 .btn-blue:hover
 {
-    background:#EFCB68;
+    background:#69DC9E;
 }
 .disabled-btn
 {
     background:grey;
-    color:#111111;
+    color:#20063B;
 }
 .disabled-btn:hover
 {
     background:grey;
-    color:#111111;  
+    color:#20063B;  
     cursor: not-allowed;
 }
 .noSelect
@@ -295,8 +295,8 @@ input
     width:100%;
     box-sizing:border-box;
     padding:1.2em;
-    color:#F4F4F4;
-    background:#111111;
+    color:#D3F3EE;
+    background:#CC3363;
     margin-bottom:1.5em;
     border-radius:0.5em;
     font-family: 'Montserrat', sans-serif;
@@ -340,7 +340,7 @@ input
     position: relative;
     padding-top:2em;
     font-family: 'Montserrat', sans-serif;
-    color:#111111;  
+    color:#20063B;  
 } 
 .maxWidth{
     max-width:94em;
@@ -367,12 +367,12 @@ width: 10px;
 
 /* Track */
 ::-webkit-scrollbar-track {
-background: #F4F4F4; 
+background: #D3F3EE; 
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-background: #EFCB68;
+background: #69DC9E;
 border-radius:20em; 
 }
 
@@ -395,10 +395,10 @@ background: #3E78B2;
     display:block;
     margin-bottom:1em;
     font-family: 'Montserrat', sans-serif;
-    color:#111111;
+    color:#20063B;
 }
 .input input::placeholder {
-    color:#111111;
+    color:#20063B;
 }
 .input input
 {
@@ -408,25 +408,25 @@ background: #3E78B2;
     border-radius:0.5em;
     outline:none;
     border:none;
-    color:#111111;
+    color:#20063B;
     font-family: 'Montserrat', sans-serif;
     box-sizing: border-box;
     padding-left:1em;
     transition:ease 0.2s;
     margin:0;
     margin-bottom:0.8em;
-    box-shadow:0px 3px 12px rgba(0,0,0,0.16),0px 0px 0px 1px #111111;
+    box-shadow:0px 3px 12px rgba(0,0,0,0.16),0px 0px 0px 1px #20063B;
 }
 .input input:focus
 {
-    color:#EFCB68;
-    box-shadow:0px 3px 12px rgba(0,0,0,0.16),0px 0px 0px 1px #EFCB68;
+    color:#69DC9E;
+    box-shadow:0px 3px 12px rgba(0,0,0,0.16),0px 0px 0px 1px #69DC9E;
 }
 .input input:focus::placeholder {
-    color:#EFCB68;
+    color:#69DC9E;
 }
 .input input:focus + label {
-    color:#EFCB68;
+    color:#69DC9E;
 }
 .inputs
 {
@@ -438,7 +438,7 @@ background: #3E78B2;
 .isAdmin::after
 {
     content:"GM";
-    color:#EFCB68;
+    color:#69DC9E;
     font-size:0.78em;
     margin-left:0.3em;
 }

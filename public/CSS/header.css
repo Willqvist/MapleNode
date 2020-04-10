@@ -1,7 +1,7 @@
 #header{
     width:100%;
     height:35em;
-    background:#111111;
+    background:#20063B;
     background-size:cover;
     background-position:50% 50%;
     position:Relative;
@@ -18,7 +18,7 @@
 #fade
 {
     content:"";
-    background:linear-gradient(to left,transparent,#111111 90%);
+    background:linear-gradient(to left,transparent,#20063B 90%);
     position:Absolute;
     width:100%;
     height:100%;

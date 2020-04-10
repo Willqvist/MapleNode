@@ -1,6 +1,6 @@
 body
 {
-    background:#111111;
+    background:#20063B;
     font-family: 'Montserrat', sans-serif;
     overflow-x:hidden;
 }
@@ -23,7 +23,7 @@ body
     width:100%;
     display:flex;
     height:4.5em;
-    color:#F4F4F4;
+    color:#D3F3EE;
     justify-items: center;
 }
 .dashboardMenu ul li
@@ -54,7 +54,7 @@ body
 {
     height:0.2em;
     width:0em;
-    background:#EFCB68;
+    background:#69DC9E;
     bottom:0em;
     position:absolute;
     transition:ease 0.4s;
@@ -76,7 +76,7 @@ body
 {
     width:2.5em;
     height:2.5em;
-    background:#111111;
+    background:#CC3363;
     border-radius:0.5em;
     display:flex;
     cursor: pointer;
@@ -85,7 +85,7 @@ body
 }
 .dashBtn:hover
 {
-    background:#EFCB68;
+    background:#69DC9E;
 }
 .dashBtn i
 {
@@ -178,7 +178,7 @@ body
     border-radius:0.5em;
     outline:none;
     border:none;
-    color:#111111;
+    color:#20063B;
     font-family: 'Montserrat', sans-serif;
     box-sizing: border-box;
     padding-left:1em;
@@ -186,11 +186,11 @@ body
     margin:0;
     margin-bottom:2em;
     margin-top:0.5em;
-    box-shadow:0px 3px 12px rgba(0,0,0,0.16),0px 0px 0px 1px #111111;
+    box-shadow:0px 3px 12px rgba(0,0,0,0.16),0px 0px 0px 1px #20063B;
 }
 .formElement .formElementInput:focus
 {
-    box-shadow:0px 3px 12px rgba(0,0,0,0.16),0px 0px 0px 1px #EFCB68;
+    box-shadow:0px 3px 12px rgba(0,0,0,0.16),0px 0px 0px 1px #69DC9E;
 }
 .formElement .formElementLabel
 {
@@ -199,7 +199,7 @@ body
 .formElement h3,.paletteDisplayHeader
 {
     margin-bottom:1em;
-    color:#111111;
+    color:#20063B;
 }
 .formElement .btn
 {
@@ -215,7 +215,7 @@ body
     right:1em;
     top:1em;
     border-radius:50%;
-    color:#111111;
+    color:#20063B;
     transition:ease 0.2s;
 }
 .closeForm i
@@ -225,7 +225,7 @@ body
 .closeForm:hover
 {
     color:#FFF;
-    background:#EFCB68;
+    background:#69DC9E;
     cursor:pointer;
 }
 .voteBox
@@ -364,7 +364,7 @@ body
 {
     font-family: 'Montserrat', sans-serif;
     font-weight:400;
-    color:#111111;
+    color:#20063B;
     margin-top:5em;
     position: relative;
     padding-bottom:0.2em;
@@ -386,7 +386,7 @@ body
 }
 .colorPicker .btnHolder .revert
 {
-    background:#111111;
+    background:#CC3363;
 }
 .colorPicker .btn
 {
@@ -440,17 +440,17 @@ body
 
 #editPalette .fontColorDark
 {
-    color:#111111;
+    color:#20063B;
     margin-left:1em;
     font-size:1em;
 }
 #editPalette .fontColorLight
 {
-    color:#F4F4F4;
+    color:#D3F3EE;
 }
 #editPalette .mainColor
 {
-    background:#EFCB68;
+    background:#69DC9E;
     height:3em;
     display:flex;
     border-radius:0.5em;
@@ -467,7 +467,7 @@ body
 }
 #editPalette .fillColor
 {
-    background:#111111;
+    background:#CC3363;
 }
 #editPalette .btnHolder
 {
@@ -485,14 +485,14 @@ body
 {
     position: absolute;
     height:1em;
-    background:#111111;
+    background:#20063B;
     margin:auto;
     z-index:200;
     font-size:0.8em;
     padding:0.8em 1.2em;
     box-shadow:0px 3px 12px rgba(0,0,0,0.16);
     border-radius:2em;
-    color:#F4F4F4;
+    color:#D3F3EE;
     display:none;
     opacity:0;
     transform: translateY(-0.5em);
@@ -515,12 +515,12 @@ body
     left:0;
     right:0;
     border:solid 10px transparent;
-    border-top:solid 10px #111111;
+    border-top:solid 10px #20063B;
     z-index:2022;
 }
 .activeBtn
 {
-    background:#EFCB68;
+    background:#69DC9E;
 }
 .panel
 {
@@ -544,7 +544,7 @@ body
 }
 .logoImageDark
 {
-    background-color:#111111 !important;
+    background-color:#20063B !important;
 
 }
 .layoutWrapper{
@@ -571,7 +571,7 @@ body
     height:0.4em;
     width:100%;
     transition:ease 0.2s;
-    background:#111111;
+    background:#CC3363;
     cursor:pointer;
     display:flex;
 }
@@ -583,7 +583,7 @@ body
     height:100%;
     top:0;
     transition:ease 0.2s;
-    background:#111111;
+    background:#CC3363;
     cursor:pointer;
     display:flex;  
 }
@@ -603,7 +603,7 @@ body
     height:1.8em;
     margin:auto;
     left:0;right:0;top:0;bottom:0;
-    background:#111111;
+    background:#CC3363;
     border-radius:10em;
     color:#FFF;
     transition: ease 0.1s;
@@ -817,8 +817,8 @@ body
     box-sizing: border-box;
     padding:1.5rem 3rem;
     padding-right:5rem;
-    background:#EFCB68;
-    color:#111111;
+    background:#69DC9E;
+    color:#20063B;
 }
 .popup .title i {
     margin-left:0.8rem;
@@ -858,7 +858,7 @@ body
 .popup .btn_parent .child {
     text-align:center;
     display:block;
-    color:#111111;
+    color:#20063B;
 
 }
 body{
@@ -883,7 +883,7 @@ body{
 }
 
 .dashboard_menu li:hover {
-    background: #EFCB68;
+    background: #69DC9E;
     padding-left:2.6rem;
 }
 
@@ -924,7 +924,7 @@ body{
     margin-top:4rem;
     margin-bottom:0rem;
     margin-left:4rem;
-    color:#111111;
+    color:#20063B;
 }
 .contents > div > .btn-list {
     margin-left:4rem;
@@ -999,13 +999,13 @@ body{
     display:flex;
     justify-content: center;
     justify-items: center;
-    color: #111111;
+    color: #20063B;
     cursor: pointer;
     transition: ease 0.2s;
 }
 
 .panel .btn-icon:hover {
-    color: #EFCB68;
+    color: #69DC9E;
 }
 
 .panel .btn-icon i {

@@ -5,10 +5,14 @@ import session from 'express-session';
 import bodyParser from "body-parser";
 import helmet from "helmet";
 import * as consts from "./src/tools/Constants";
+import {HOME} from "./Paths";
+
 //const PacketHandler = require("../src/packets/PacketHandler");
 import setup from "./setup";
 import input from "./in";
 import Logger from "./src/logger/Logger"
+
+import path from 'path';
 
 //PacketHandler.setup();
 /*
@@ -26,27 +30,29 @@ new IH().setMysqlSetupComplete(data);
 //setup
 let app = express();
 let server = app.listen(input.port);
-
-import io from 'socket.io';
-io.listen(server);
-
 import cGen from "./scripts/CSSGenerator/CSSGenerator";
 import {PalettesInterface, SettingsInterface} from "./src/database/DatabaseInterfaces";
 import SetupRouter from "./routers/SetupRouter";
 //PacketHandler.setupGlobalPackets(app);
-
 app.set('view engine', 'ejs');
-app.set("views",__dirname+"/views");
+app.set("views",HOME+"/views");
 app.use(bodyParser.json({limit:'1000mb',extended: true})); 
 app.use(bodyParser.urlencoded({limit:'1000mb',extended: true, parameterLimit: 1000000}));
 app.use(helmet());
 
-run().then(()=>{});
-async function run() {
+run().then((res)=>{
+    if(!res) {
+        server.close();
+        process.exit(0);
+    }
+});
+async function run() : Promise<boolean> {
     Logger.log("Starting server...");
 
-    await main.onStart();
+    let res = await main.onStart();
+    if(!res) return false;
     await setup(server, setupListeners, setupComplete);
+    return true;
 }
 //listeners
 async function setupListeners(){
@@ -57,11 +63,8 @@ async function setupListeners(){
             saveUninitialized: true,
         }
     ));
-    app.use(express.static(__dirname+"/public"));
-    console.log("setu2 p!");
-
+    app.use(express.static(HOME+"/public"));
     app.use("/setup",SetupRouter(app));
-    console.log("setu3 p!");
 
     //app.use("/",        route("GlobalRouter"));
     app.use(async (req,res,next)=>
@@ -75,8 +78,8 @@ async function setupListeners(){
             fillColor:'#CC3363'
         };
         await cGen.generateCSS(paletteInterface);
-        let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        req.ip = ip;
+        //let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        //req.ip = ip;
         //PacketHandler.handlePackets(app,req,res,next);
     });
 

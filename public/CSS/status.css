@@ -16,7 +16,7 @@
     margin-top:1em;
     font-weight:700;
     font-family: 'Montserrat', sans-serif;
-    color:#EFCB68;   
+    color:#69DC9E;   
 }
 .status .btn
 {
@@ -31,7 +31,7 @@
     top:-1em;
     font-weight:400;
     font-family: 'Montserrat', sans-serif;  
-    color:#111111;
+    color:#20063B;
     opacity:0.8;
 }
 #status_info{
@@ -57,5 +57,5 @@
     font-size:1.6em;
     font-weight:700;
     font-family: 'Montserrat', sans-serif;  
-    color:#111111;
+    color:#20063B;
 }

@@ -29,7 +29,7 @@ function setup(server, setupListeners, setupComplete) {
         setupListeners();
         let data;
         try {
-            data = yield installer.getInstallerObject();
+            data = yield installer.getInstallerObject("./settings/setup.MN");
         }
         catch (err) {
             Logger_1.default.log("To begin setup, visit /setup");

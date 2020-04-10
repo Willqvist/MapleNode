@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mysql = require("mysql2/promise");
+const promise_1 = __importDefault(require("mysql2/promise"));
+const Errno_1 = __importDefault(require("../tools/Errno"));
 const MysqlConversions_1 = require("./MysqlConversions");
 const Constants = require("../tools/Constants");
 const Logger = require("../logger/Logger");
@@ -18,7 +22,14 @@ class MysqlDatabase {
     onInstansiate(data) {
         return __awaiter(this, void 0, void 0, function* () {
             data.multipleStatements = true;
-            this.connection = yield mysql.createConnection(data);
+            try {
+                this.connection = yield promise_1.default.createConnection(data);
+            }
+            catch (err) {
+                Errno_1.default.errno = err.errno;
+                Errno_1.default.msg = err.message;
+                return false;
+            }
             return true;
         });
     }

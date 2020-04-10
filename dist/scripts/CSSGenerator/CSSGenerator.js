@@ -14,16 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const Logger_1 = __importDefault(require("../../src/logger/Logger"));
+const Paths_1 = require("../../Paths");
 class CSSGenerator {
     static generateCSS(palette) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise(resolve => {
+            return new Promise((resolve, reject) => {
                 let i = 0;
-                fs_1.default.readdir("./scripts/CSSGenerator/templates/", (err, files) => {
+                fs_1.default.readdir(Paths_1.HOME + "/templates/CSSTemplates/", (err, files) => {
                     if (err)
-                        Logger_1.default.error(err.message);
+                        reject(err);
                     files.forEach((file) => {
-                        fs_1.default.readFile("./scripts/CSSGenerator/templates/" + file, "utf8", ((err, text) => {
+                        fs_1.default.readFile(Paths_1.HOME + "/templates/CSSTemplates/" + file, "utf8", ((err, text) => {
                             i++;
                             if (err)
                                 Logger_1.default.error(err);
@@ -32,7 +33,7 @@ class CSSGenerator {
                             text = text.replace(/var\(--fontColorDark\)/g, palette.fontColorDark);
                             text = text.replace(/var\(--fontColorLight\)/g, palette.fontColorLight);
                             text = text.replace(/var\(--fillColor\)/g, palette.fillColor);
-                            fs_1.default.writeFileSync("./public/CSS/" + file, text);
+                            fs_1.default.writeFileSync(Paths_1.HOME + "/public/CSS/" + file, text);
                             if (i == files.length - 1) {
                                 resolve();
                             }
@@ -69,6 +70,4 @@ class CSSGenerator {
     }
 }
 exports.default = CSSGenerator;
-let generator = new CSSGenerator();
-module.exports = generator;
 //# sourceMappingURL=CSSGenerator.js.map

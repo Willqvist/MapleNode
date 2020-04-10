@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as constants from "./Constants";
 import DBConn from "../database/DatabaseConnection";
 import { PalettesInterface, SettingsInterface, DownloadsInterface } from "../database/DatabaseInterfaces";
+import {HOME} from "../../Paths";
 
 export interface InstallerI {
     mysqlSetupComplete : boolean;
@@ -11,18 +12,18 @@ export interface InstallerI {
 
 export default class InstallationHandler
 {
-    async installationComplete() : Promise<InstallerI>
+    async installationComplete(src : string) : Promise<InstallerI>
     {
         return new Promise((resolve:(InstallerI)=>void,reject) => {
-            fs.access("settings/setup.MN",fs.constants.F_OK, (err) => {
+            fs.access(HOME+src,fs.constants.F_OK, (err) => {
                 let data : InstallerI =
                 {
                     done: false,
                     mysqlSetupComplete: false,
                 };
                 if (!err) {
-                    fs.readFile("settings/setup.MN", "utf8", (err, text) => {
-                        console.log("setup installer!",data);
+                    fs.readFile(HOME+src, "utf8", (err, text) => {
+                        data = JSON.parse(text);
                         let ret : InstallerI = {
                             mysqlSetupComplete: data.mysqlSetupComplete,
                             prefix: data.prefix,
@@ -31,14 +32,17 @@ export default class InstallationHandler
                         resolve(ret);
                     });
                 } else {
-                    reject(data);
+                    fs.writeFile(HOME+src,JSON.stringify(data),{flag:'wx'},(err)=> {
+                        if(err) reject(err);
+                        resolve(data);
+                    })
                 }
             });
         });
     }
     async setMysqlSetupComplete(userData)
     {
-        let data = await this.installationComplete();
+        let data : any = {};
         data.mysqlSetupComplete = true;
         data.prefix = userData.prefix;
         constants.setConstant("prefix",userData.prefix);
@@ -84,9 +88,9 @@ export default class InstallationHandler
             });
         });
     }
-    async getInstallerObject()
+    async getInstallerObject(src: string)
     {
-      return await this.installationComplete();
+      return await this.installationComplete(src);
     }
     getInstallErrors(error : string) : string
     {

@@ -22,19 +22,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
 const constants = __importStar(require("./Constants"));
 const DatabaseConnection_1 = __importDefault(require("../database/DatabaseConnection"));
+const Paths_1 = require("../../Paths");
 ;
 class InstallationHandler {
-    installationComplete() {
+    installationComplete(src) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                fs.access("settings/setup.MN", fs.constants.F_OK, (err) => {
+                fs.access(Paths_1.HOME + src, fs.constants.F_OK, (err) => {
                     let data = {
                         done: false,
                         mysqlSetupComplete: false,
                     };
                     if (!err) {
-                        fs.readFile("settings/setup.MN", "utf8", (err, text) => {
-                            console.log("setup installer!", data);
+                        fs.readFile(Paths_1.HOME + src, "utf8", (err, text) => {
+                            data = JSON.parse(text);
                             let ret = {
                                 mysqlSetupComplete: data.mysqlSetupComplete,
                                 prefix: data.prefix,
@@ -44,7 +45,11 @@ class InstallationHandler {
                         });
                     }
                     else {
-                        reject(data);
+                        fs.writeFile(Paths_1.HOME + src, JSON.stringify(data), { flag: 'wx' }, (err) => {
+                            if (err)
+                                reject(err);
+                            resolve(data);
+                        });
                     }
                 });
             });
@@ -52,7 +57,7 @@ class InstallationHandler {
     }
     setMysqlSetupComplete(userData) {
         return __awaiter(this, void 0, void 0, function* () {
-            let data = yield this.installationComplete();
+            let data = {};
             data.mysqlSetupComplete = true;
             data.prefix = userData.prefix;
             constants.setConstant("prefix", userData.prefix);
@@ -88,9 +93,9 @@ class InstallationHandler {
             });
         });
     }
-    getInstallerObject() {
+    getInstallerObject(src) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.installationComplete();
+            return yield this.installationComplete(src);
         });
     }
     getInstallErrors(error) {

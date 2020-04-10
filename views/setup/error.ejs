@@ -1,4 +1,4 @@
-<% if(!isset(typeof page)){
+<% if(!locals.page){
     page = "";
 } %>
 <!doctype html>
@@ -11,7 +11,7 @@
         <div id="container">
             <h4>Error</h4>
             <h1>
-            <% if(isset(typeof error)){ %>
+            <% if(locals.error){ %>
                 <%= error.reason %>
             <% } %>
             </h1> 

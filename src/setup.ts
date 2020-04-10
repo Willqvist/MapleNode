@@ -9,7 +9,7 @@ export default async function setup(server : any,setupListeners : ()=>void,setup
     setupListeners();
     let data;
     try{
-    data = await installer.getInstallerObject();
+    data = await installer.getInstallerObject("./settings/setup.MN");
     }catch(err) {
         Logger.log("To begin setup, visit /setup");
         return;

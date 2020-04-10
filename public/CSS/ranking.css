@@ -5,7 +5,7 @@
 }
 .ranking_box .box_title
 {
-    color:#F4F4F4;
+    color:#D3F3EE;
 }
 .rank_wrap
 {
@@ -54,7 +54,7 @@
     display:flex;
     flex-direction: column;
     font-family: 'Montserrat', sans-serif;
-    color:#F4F4F4;
+    color:#D3F3EE;
     justify-content: space-between;
 }
 #rank_players_content h1
@@ -81,7 +81,7 @@
 }
 #exp_bar_percent
 {
-    background:#EFCB68;
+    background:#69DC9E;
     width:20%;
     height:100%;
 }
