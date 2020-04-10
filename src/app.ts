@@ -9,6 +9,7 @@ import * as consts from "./src/tools/Constants";
 import setup from "./setup";
 import input from "./in";
 import Logger from "./src/logger/Logger"
+
 //PacketHandler.setup();
 /*
 let data = {};
@@ -31,6 +32,7 @@ io.listen(server);
 
 import cGen from "./scripts/CSSGenerator/CSSGenerator";
 import {PalettesInterface, SettingsInterface} from "./src/database/DatabaseInterfaces";
+import SetupRouter from "./routers/SetupRouter";
 //PacketHandler.setupGlobalPackets(app);
 
 app.set('view engine', 'ejs');
@@ -44,7 +46,6 @@ async function run() {
     Logger.log("Starting server...");
 
     await main.onStart();
-
     await setup(server, setupListeners, setupComplete);
 }
 //listeners
@@ -57,8 +58,11 @@ async function setupListeners(){
         }
     ));
     app.use(express.static(__dirname+"/public"));
+    console.log("setu2 p!");
 
-    app.use("/setup",   routeApp("SetupRouter"));
+    app.use("/setup",SetupRouter(app));
+    console.log("setu3 p!");
+
     //app.use("/",        route("GlobalRouter"));
     app.use(async (req,res,next)=>
     {

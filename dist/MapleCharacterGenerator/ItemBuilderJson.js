@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const Canvas_1 = __importDefault(require("./Canvas"));
 const ImageBuilder_1 = __importDefault(require("./ImageBuilder"));
+const xmldom_1 = __importDefault(require("xmldom"));
 class ItemBuilder extends ImageBuilder_1.default {
     constructor() {
         super();
@@ -51,13 +52,13 @@ class ItemBuilder extends ImageBuilder_1.default {
                     }
                 }
             };
-        this.parser = new DOMParser();
+        this.parser = new xmldom_1.default();
     }
     getParsed(type, id) {
         return this.parser.parseFromString(fs_1.default.readFileSync(this.getPath(type, id) + `coord.xml`, "utf8"), "text/xml");
     }
     getPath(type, id) {
-        return __dirname + `/gd//${type}/${(id + "").padStart(8, '0')}.img/`;
+        return __dirname + `/src/gd//${type}/${(id + "").padStart(8, '0')}.img/`;
     }
     setHair(id, z, next) {
         if (typeof this.parts.cap !== "undefined" && z == "hairOverHead")
@@ -86,18 +87,22 @@ class ItemBuilder extends ImageBuilder_1.default {
             next();
         });
     }
-    setBody(ids, pos, callback) {
-        this.loadBodyInformation(ids.skin, pos, (parts) => {
-            for (let i = 0; i < parts.length; i++) {
+    /*
+    setBody(ids, pos,callback){
+        this.loadBodyInformation(ids.skin, pos,(parts)=>
+        {
+            for(let i = 0; i < parts.length; i++){
                 let part = parts[i];
-                this.canvas.drawImage(part.image, this.offsetX + part.position.x, this.offsetY + part.position.y);
+                this.canvas.drawImage(part.image,this.offsetX + part.position.x, this.offsetY + part.position.y);
             }
-            this.getFace(ids.face, () => { });
-            this.loadImage(this.getPath("Face", ids.face) + "default.face.png", (image) => {
+            this.getFace(ids.face,()=>{});
+            this.loadImage(this.getPath("Face",ids.face)+"default.face.png",(image)=>
+            {
                 callback();
             });
         });
     }
+    */
     setCap(id, z, next) {
         let file = this.getParsed("Cap", id);
         let zElem;

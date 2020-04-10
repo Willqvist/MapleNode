@@ -6,11 +6,18 @@ import util from "util";
 import fs from "fs";
 import * as Constants from "../src/tools/Constants";
 import DatabaseConnection from "../src/database/DatabaseConnection";
+import { resolve } from "dns";
 
-interface Player{
+export interface Player{
     parts: PartsInterface;
     name : string,
-    callback : (any)=>void;
+    items: any[],
+    callback : (a:any)=>void;
+}
+
+export interface EqiupItem {
+    method:(id : number,z : string,next : ()=>void)=>void;
+    parameters:{id:number,z:string}
 }
 
 enum ERROR {
@@ -52,14 +59,32 @@ export default class MapleCharacterGenerator
     {
         this.que.splice(index,1);
     }
-    async generatePlayer(name : string,callback: (any)=>void)
+
+    exists(file: string) : Promise<boolean> {
+        return new Promise(resolve => {
+            fs.access(file,fs.constants.R_OK,(err)=> {
+                resolve(!err);
+            })
+        });
+    }
+
+    stats(file: string) : Promise<fs.Stats> {
+        return new Promise(resolve => {
+            fs.stat(file,(err,stat)=> {
+                if(err) resolve(null);
+                resolve(stat);
+            })
+        });
+    }
+
+    async generatePlayer(callback: (a:any)=>any,name : string)
     {
         if(!this.builder)
             this.builder = this.generators[Constants.getConstant<string>("MCG")];
-        let player : Player = {parts:{},name:name,callback:callback}
-        if(fs.existsSync(__dirname + "/Characters/"+name+".png"))
+        let player : Player = {parts:{},name:name,callback:callback,items:[]};
+        if(await this.exists(__dirname + "/Characters/"+name+".png"))
         {
-            let stat = fs.statSync(__dirname + "/Characters/"+name+".png");
+            let stat = await this.stats(__dirname + "/Characters/"+name+".png");
             let date = new Date(util.inspect(stat.mtime));
             let dateNow = new Date();
             if((dateNow.getMinutes()-date.getMinutes())/1000 < this.cooldown)
@@ -68,19 +93,16 @@ export default class MapleCharacterGenerator
         let [result,err] = await DatabaseConnection.instance.getCharacter(name,{select:["face","hair","skincolor"]});
         if(err) throw err;
         if(!result)
-            return callback({success:false,errorID:ERROR.INVALID_PLAYER,reason:"cant find player: " + name});
+            return {success:false,errorID:ERROR.INVALID_PLAYER,reason:"cant find player: " + name};
         player.parts.face = result.face;
         player.parts.hair = result.hair;
         player.parts.skincolor = result.skincolor;
-        DatabaseConnection.instance.getEquipment(result.id);
-        mysql.query("SELECT inventoryitems.itemid, inventoryitems.position FROM inventoryequipment INNER JOIN inventoryitems ON inventoryequipment.inventoryitemid = inventoryitems.inventoryitemid WHERE inventoryitems.characterid = ? AND inventoryitems.inventorytype = '-1'",[results[0].id],((err,results)=>
-        {
-            if(err) throw err;
-            player.items = results;
-            this.addToQueue(player);
-        }).bind(player));
+        let results = await DatabaseConnection.instance.getEquipment(result.id);
+        if(err) throw err;
+        player.items = results;
+        this.addToQueue(player);
     }
-    buildPlayer(player)
+    buildPlayer(player : Player)
     {
         this.builder.parts = player.parts;
         let results = player.items;
@@ -147,7 +169,7 @@ export default class MapleCharacterGenerator
                 {method:this.builder.setGloves,parameters:{id:player.parts.glove,z:"glove"}},
                 {method:this.builder.setGloves,parameters:{id:player.parts.glove,z:"gloveOverHair"}},
             ],
-            (player)=>
+            (player : Player)=>
             {
                 this.builder.outputImage(this.builder.canvas,__dirname + "/Characters/"+player.name+".png",()=>
                 {

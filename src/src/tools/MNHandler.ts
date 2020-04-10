@@ -1,9 +1,9 @@
 import ErrnoException = NodeJS.ErrnoException;
-
 import fs from "fs";
+
 export default class MNHandler
 {
-    saveMysql(data) : Promise<ErrnoException>
+    static saveMysql(data) : Promise<ErrnoException>
     {
         return new Promise(async resolve => {
             let string = JSON.stringify(data);
@@ -13,18 +13,17 @@ export default class MNHandler
             });
         });
     }
-    isDatabaseSetup()  : Promise<boolean>
+    static isDatabaseSetup() : Promise<boolean>
     {
         return new Promise((resolve,reject) =>
         {
-
             fs.access("settings/database.MN",fs.constants.F_OK,(err)=>{
-                if(err) reject(err);
+                if(err) resolve(false);
                 resolve(true);
             });
         });
     }
-    getMysql(path) : Promise<any>
+    static getMysql(path) : Promise<any>
     {
         return new Promise(resolve =>
         {
@@ -33,7 +32,7 @@ export default class MNHandler
             });
         });
     }
-    checkForFile(fileName)
+    static checkForFile(fileName)
     {
         return new Promise((resolve,reject) => {
             if (!fs.existsSync("settings")) {
@@ -57,4 +56,3 @@ export default class MNHandler
         });
     }
 }
-module.exports = new MNHandler();

@@ -2,8 +2,8 @@ import fs, {PathLike} from "fs";
 import Canvas from "./Canvas";
 import ImageBuilder from "./ImageBuilder";
 import {PartsInterface} from "../src/tools/Interfaces";
-
-
+import DOMParser from "xmldom"
+import {Player,EqiupItem} from "./MCG";
 export default class ItemBuilder extends ImageBuilder
 {
     // 145200-1452155 OFFSET
@@ -31,55 +31,55 @@ export default class ItemBuilder extends ImageBuilder
         this.faceOffset = {x:0,y:1};
         this.bowOffset ={x:-0,y:-0};
 
-        this.prefixes =
-            {
-                hairShade:".0"
-            };
+        this.prefixes = 
+        {
+            hairShade:".0"
+        };
 
-        this.body =
+        this.body = 
+        {
+            stand1:
             {
-                stand1:
-                    {
-                        body:{
-                            position:{x:7+this.headPosition.x,y:33+this.headPosition.y}
-                        },
-                        head:{
-                            part:"head",
-                            position:this.headPosition
-                        },
-                        arm:{
-                            type:"arm",
-                            position:{x:23+this.headPosition.x,y:35+this.headPosition.y}
-                        },
+                body:{
+                        position:{x:7+this.headPosition.x,y:33+this.headPosition.y}
                     },
-                stand2:
-                    {
-                        body:{
-                            position:{x:8+this.headPosition.x,y:33+this.headPosition.y}
-                        },
-                        head:{
-                            position:this.headPosition
-                        },
-                        arm:{
-                            position:{x:19+this.headPosition.x,y:35+this.headPosition.y}
-                        },
-                        hand:{
-                            position:{x:5+this.headPosition.x,y:38+this.headPosition.y}
-                        }
+                head:{
+                        part:"head",
+                        position:this.headPosition
+                    },
+                arm:{
+                        type:"arm",
+                        position:{x:23+this.headPosition.x,y:35+this.headPosition.y}
+                    },
+            },
+            stand2:
+            {
+                body:{
+                        position:{x:8+this.headPosition.x,y:33+this.headPosition.y}
+                    },
+                head:{
+                        position:this.headPosition
+                    },
+                arm:{
+                        position:{x:19+this.headPosition.x,y:35+this.headPosition.y}
+                    },
+                hand:{
+                        position:{x:5+this.headPosition.x,y:38+this.headPosition.y}
                     }
-            };
+            }
+        };
         this.parser = new DOMParser();
     }
 
-    getParsed(type,id){
+    getParsed(type : string,id : number){
         return this.parser.parseFromString(fs.readFileSync(this.getPath(type,id)+`coord.xml`,"utf8"),"text/xml");
     }
 
     getPath(type,id){
-        return __dirname + `/gd//${type}/${(id+"").padStart(8,'0')}.img/`;
+        return __dirname+`/src/gd//${type}/${(id+"").padStart(8,'0')}.img/`; 
     }
 
-    setHair(id,z,next)
+    setHair(id : number,z : string,next : ()=>void)
     {
         if(typeof this.parts.cap !== "undefined" && z == "hairOverHead")
             return next();
@@ -88,7 +88,7 @@ export default class ItemBuilder extends ImageBuilder
         let hairs = file.getElementsByTagName("_"+z);
         if(hairs.length == 0)
             return next();
-
+        
         let hair = hairs[0];
         let prefix = "";
         if(typeof this.prefixes[z] !== "undefined")
@@ -96,13 +96,13 @@ export default class ItemBuilder extends ImageBuilder
         let x = hair.getElementsByTagName("x")[0].firstChild.textContent;
         let y = hair.getElementsByTagName("y")[0].firstChild.textContent;
         this.loadImage(__dirname + "/gd//Hair/000"+id+".img/default."+(z+prefix)+".png",(image)=>
-        {
+        { 
             this.canvas.drawImage(image,this.offsetX + parseInt(x),this.offsetY + parseInt(y) + this.faceOffset.y);
             next();
         });
     }
-
-    setFace(id,z,next)
+    
+    setFace(id : number,z : string,next : ()=>void)
     {
         let file = this.getParsed("Face",id);
         let x = file.getElementsByTagName("x")[0].firstChild.data;
@@ -113,6 +113,7 @@ export default class ItemBuilder extends ImageBuilder
             next();
         });
     }
+    /*
     setBody(ids, pos,callback){
         this.loadBodyInformation(ids.skin, pos,(parts)=>
         {
@@ -127,7 +128,8 @@ export default class ItemBuilder extends ImageBuilder
             });
         });
     }
-    setCap(id,z,next)
+    */
+    setCap(id : number,z : string,next : ()=>void)
     {
         let file = this.getParsed("Cap",id);
         let zElem;
@@ -160,11 +162,11 @@ export default class ItemBuilder extends ImageBuilder
     setEars(id,z,next)
     {
     }
-    setAccessory(id,z,next)
+    setAccessory(id : number,z : string,next : ()=>void)
     {
         let file = this.getParsed("Accessory",id);
         let zElem;
-        let elements = file.getElementsByTagName("z");
+        let elements = file.getElementsByTagName("z"); 
         let nodeName;
         for(let i = 0; i < elements.length; i++)
         {
@@ -185,9 +187,9 @@ export default class ItemBuilder extends ImageBuilder
 
             this.canvas.drawImage(image,this.faceOffset.x + this.offsetX + parseInt(x),this.faceOffset.y + this.offsetY + parseInt(y));
             next();
-        });
+        });       
     }
-    setUpperBodyCloth(id,z,next,type)
+    setUpperBodyCloth(id : number,z : string,next : ()=>void,type : string)
     {
         let file = this.getParsed(type,id);
         let elements = file.getElementsByTagName("z");
@@ -213,19 +215,19 @@ export default class ItemBuilder extends ImageBuilder
             next();
         });
     }
-    setCoat(id,z,next)
-    {
+    setCoat(id : number,z : string,next : ()=>void)
+    { 
         if(!fs.existsSync(this.getPath("Coat",id)+"coord.xml"))
             return next();
         this.setUpperBodyCloth(id,z,next,"Coat");
     }
-    setLongCoat(id,z,next)
+    setLongCoat(id : number,z : string,next : ()=>void)
     {
         if(!fs.existsSync(this.getPath("LongCoat",id)+"coord.xml"))
             return next();
         this.setUpperBodyCloth(id,z,next,"LongCoat");
     }
-    setPants(id,z,next)
+    setPants(id : number,z : string,next : ()=>void)
     {
         let file = this.getParsed("Pants",id);
         let elements = file.getElementsByTagName("z");
@@ -239,7 +241,7 @@ export default class ItemBuilder extends ImageBuilder
             }
         }
         if(zElem == null)
-            return next();
+           return next();
         let x = zElem.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
         let stand = 1;
@@ -248,9 +250,9 @@ export default class ItemBuilder extends ImageBuilder
             let position = this.body["stand"+this.parts.stand].body.position;
             this.canvas.drawImage(image,this.clothOffset.x + this.offsetX + parseInt(x),this.clothOffset.y + position.y + this.offsetY + parseInt(y));
             next();
-        });
+        }); 
     }
-    setShoes(id,z,next)
+    setShoes(id : number,z : string,next : ()=>void)
     {
         let file = this.getParsed("Shoes",id);
         let elements = file.getElementsByTagName("z");
@@ -264,7 +266,7 @@ export default class ItemBuilder extends ImageBuilder
             }
         }
         if(zElem == null)
-            return next();
+           return next();
         let x = zElem.getElementsByTagName("x")[0].firstChild.data;
         let y = zElem.getElementsByTagName("y")[0].firstChild.data;
         this.loadImage(this.getPath("Shoes",id)+"stand1.0.shoes.png",(image)=>
@@ -274,7 +276,7 @@ export default class ItemBuilder extends ImageBuilder
             next();
         });
     }
-    setGloves(id,z,next)
+    setGloves(id : number,z : string,next : ()=>void)
     {
         let file = this.getParsed("Glove",id);
         let elements = file.getElementsByTagName("z");
@@ -305,9 +307,9 @@ export default class ItemBuilder extends ImageBuilder
                 this.canvas.drawImage(image,this.clothOffset.x + this.offsetX + parseInt(positions[i].x),this.clothOffset.y + position.y + this.offsetY + parseInt(positions[i].y));
             }
             next();
-        });
+        }); 
     }
-    setCape(id,z,next)
+    setCape(id : number,z : string,next : ()=>void)
     {
         let file = this.getParsed("Cape",id);
         let elements = file.getElementsByTagName("z");
@@ -331,9 +333,9 @@ export default class ItemBuilder extends ImageBuilder
             let position = this.body["stand"+this.parts.stand].body.position;
             this.canvas.drawImage(image,this.clothOffset.x + this.offsetX + parseInt(x),this.clothOffset.y + position.y + this.offsetY + parseInt(y));
             next();
-        });
-    }
-    setShield(id,z,next)
+        });        
+    }  
+    setShield(id : number,z : string,next : ()=>void)
     {
         if(this.parts.stand != 1)
             return next();
@@ -347,7 +349,7 @@ export default class ItemBuilder extends ImageBuilder
             next();
         });
     }
-    setWeapon(id,z,next)
+    setWeapon(id : number,z : string,next : ()=>void)
     {
         let file = this.getParsed("Weapon",id);
         let prefix = "";
@@ -383,7 +385,7 @@ export default class ItemBuilder extends ImageBuilder
             next();
         });
     }
-    getZElement(dom,z)
+    getZElement(dom : DOMParser,z : number)
     {
         let zObj = dom.getElementsByTagName("z");
         for(let i= 0; i < zObj.length; i++)
@@ -395,7 +397,7 @@ export default class ItemBuilder extends ImageBuilder
         }
         return -1;
     }
-    setTorso(id,z,next)
+    setTorso(id : number,z : string,next : ()=>void)
     {
         this.loadImage(this.getPath("Skin",id)+"stand"+this.parts.stand+".0.body.png",(image)=>
         {
@@ -404,7 +406,7 @@ export default class ItemBuilder extends ImageBuilder
             next();
         });
     }
-    setHead(id,z,next)
+    setHead(id : number,z : string,next : ()=>void)
     {
         this.loadImage(this.getPath("Skin",id)+"front.head.png",(image)=>
         {
@@ -413,7 +415,7 @@ export default class ItemBuilder extends ImageBuilder
             next();
         });
     }
-    setHands(id,z,next)
+    setHands(id : number,z : string,next : ()=>void)
     {
         let file = this.getPath("Skin",id)+"/stand"+this.parts.stand+".0.hand.png";
         if(!fs.existsSync(file))
@@ -425,29 +427,29 @@ export default class ItemBuilder extends ImageBuilder
             next();
         });
     }
-    setArm(id,z,next)
+    setArm(id : number,z : string,next : ()=>void)
     {
         this.loadImage(this.getPath("Skin",id)+"stand"+this.parts.stand+".0.arm.png",(image)=>
         {
             let position = this.body["stand"+this.parts.stand].arm.position;
             this.canvas.drawImage(image,this.offsetX + position.x,this.offsetY + position.y);
             next();
-        });
+        });  
     }
-    equipItems(player,items,callback,index=0)
+    equipItems(player : Player,items : EqiupItem[],callback : (player:Player)=>void,index=0)
     {
         if(index >= items.length - 1)
         {
             return callback(player);
         }
-
+        
         let item = items[index];
         let id = item.parameters.id;
         let z = item.parameters.z;
 
         if(typeof id === "undefined")
         {
-
+ 
             if(z == "mailChestOverHighest" || z == "mailChest"){
                 id = 1040036;
                 z = "mailChest";
@@ -458,8 +460,8 @@ export default class ItemBuilder extends ImageBuilder
         }
         let method = item.method.bind(this);
         method(id,z,()=>this.equipItems(player,items,callback,++index));
-    }
-    setWeaponInfo(id)
+    } 
+    setWeaponInfo(id : number)
     {
         let file = this.parser.parseFromString(fs.readFileSync(__dirname + "/gd//Weapon/0"+id+".img/coord.xml","utf8"),"text/xml");
         let info = file.getElementsByTagName("_info")[0].getElementsByTagName("stand")[0].getElementsByTagName("value")[0].firstChild.data;

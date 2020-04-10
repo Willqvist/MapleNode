@@ -97,16 +97,7 @@ class MysqlDatabase {
             if (err) {
                 return [null, { errorCode: 0, errorMsg: err }];
             }
-            let data = rows[0];
-            let ret = {
-                id: data.id,
-                skincolor: data.skincolor,
-                hair: data.hair,
-                face: data.face,
-                job: data.job,
-                gender: data.gender
-            };
-            return [ret, null];
+            return [rows[0], null];
         });
     }
     getSettings(obj) {
@@ -115,18 +106,7 @@ class MysqlDatabase {
             if (err) {
                 return [null, { errorCode: 0, errorMsg: err }];
             }
-            let data = rows[0];
-            let ret = {
-                version: data.version,
-                serverName: data.serverName,
-                exp: data.exp,
-                drop: data.drop,
-                meso: data.meso,
-                nx: data.nx,
-                vp: data.vp,
-                gmLevel: data.gmLevel
-            };
-            return [ret, null];
+            return [rows[0], null];
         });
     }
     getDesign(obj) {
@@ -135,12 +115,7 @@ class MysqlDatabase {
             if (err) {
                 return [null, { errorCode: 0, errorMsg: err }];
             }
-            let data = rows[0];
-            let ret = {
-                heroImage: data.heroImage,
-                logo: data.logo
-            };
-            return [ret, null];
+            return [rows[0], null];
         });
     }
     getActivePalette(obj) {
@@ -155,16 +130,7 @@ class MysqlDatabase {
             if (err) {
                 return [null, { errorCode: 0, errorMsg: err }];
             }
-            let data = rows[0];
-            let ret = {
-                name: data.name,
-                mainColor: data.mainColor,
-                secondaryMainColor: data.secondaryMainColor,
-                fontColorLight: data.fontColorLight,
-                fontColorDark: data.fontColorDark,
-                fillColor: data.fillColor
-            };
-            return [ret, null];
+            return [rows[0], null];
         });
     }
     getDownloads(obj) {
@@ -173,12 +139,7 @@ class MysqlDatabase {
             if (err) {
                 return [null, { errorCode: 0, errorMsg: err }];
             }
-            let data = rows[0];
-            let ret = {
-                downloadClient: data.downloadClient,
-                downloadSetup: data.downloadSetup
-            };
-            return [ret, null];
+            return [rows[0], null];
         });
     }
     getVotes(obj) {
@@ -187,15 +148,7 @@ class MysqlDatabase {
             if (err) {
                 return [null, { errorCode: 0, errorMsg: err }];
             }
-            let data = rows[0];
-            let ret = {
-                name: data.downloadClient,
-                amount: data.downloadSetup,
-                url: ""
-            };
-            let arr = [];
-            arr.push(ret);
-            return [arr, null];
+            return [rows, null];
         });
     }
     getVote(id, obj) {
@@ -210,13 +163,7 @@ class MysqlDatabase {
             if (err) {
                 return [null, { errorCode: 0, errorMsg: err }];
             }
-            let data = rows[0];
-            let ret = {
-                name: data.downloadClient,
-                amount: data.downloadSetup,
-                url: ""
-            };
-            return [ret, null];
+            return [rows[0], null];
         });
     }
     getPalette(id, obj) {
@@ -231,16 +178,7 @@ class MysqlDatabase {
             if (err) {
                 return [null, { errorCode: 0, errorMsg: err }];
             }
-            let data = rows[0];
-            let ret = {
-                name: data.name,
-                mainColor: data.mainColor,
-                secondaryMainColor: data.secondaryMainColor,
-                fontColorLight: data.fontColorLight,
-                fontColorDark: data.fontColorDark,
-                fillColor: data.fillColor,
-            };
-            return [ret, null];
+            return [rows[0], null];
         });
     }
     getLayout(name, obj) {
@@ -255,12 +193,7 @@ class MysqlDatabase {
             if (err) {
                 return [null, { errorCode: 0, errorMsg: err }];
             }
-            let data = rows[0];
-            let ret = {
-                name: data.name,
-                json: data.json
-            };
-            return [ret, null];
+            return [rows[0], null];
         });
     }
     getAccount(name, obj) {
@@ -275,12 +208,7 @@ class MysqlDatabase {
             if (err) {
                 return [null, { errorCode: 0, errorMsg: err }];
             }
-            let data = rows[0];
-            let ret = {
-                heroImage: data.name,
-                logo: data.json
-            };
-            return [ret, null];
+            return [rows[0], null];
         });
     }
     addPalette(name, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, active) {

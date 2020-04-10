@@ -6,6 +6,7 @@ import {
     PalettesInterface,
     SettingsInterface, VoteInterface
 } from "./DatabaseInterfaces";
+import { EquipmentInterface } from "../tools/Interfaces";
 
 export interface SWO {
     select?:string[];
@@ -29,7 +30,7 @@ export interface Database {
     getVote(id: number, obj?: SWO) : Promise<[VoteInterface,Error?]>;
     getPalette(name : string, obj?: SWO) : Promise<[PalettesInterface,Error?]>;
     getLayout(name: string, obj?: SWO) : Promise<[LayoutInterface,Error?]>;
-    getEquipment(character : string) : Promise<[SettingsInterface,Error?]>;
+    getEquipment(character : number) : Promise<[EquipmentInterface[],Error?]>;
     loadRank(searchFlag,page: number,order: number) : Promise<any>;
     getAccount(name: string,obj?: SWO) : Promise<[AccountsInterface,Error]>;
     addAccount(name: string,password: string,birthday: string,email: string) : Promise<boolean>;
@@ -53,7 +54,7 @@ export interface Database {
     updatePalette(id: number,mainColor: string,secondaryMainColor: string,fontColorDark: string,
                   fontColorLight: string,fillColor: string) : Promise<boolean>;
 
-    addSettings(serverName: string,version: string,expRate: number,dropRate: number,mesoRate: number,
+    addSettings(serverName: string,version: string,expRate: string,dropRate: string,mesoRate: string,
                 nxColumn: string,vpColumn: string,gmLevel: number) : Promise<boolean>;
 
 }

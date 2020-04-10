@@ -34,7 +34,7 @@ class InstallationHandler {
                     };
                     if (!err) {
                         fs.readFile("settings/setup.MN", "utf8", (err, text) => {
-                            let data = JSON.parse(text);
+                            console.log("setup installer!", data);
                             let ret = {
                                 mysqlSetupComplete: data.mysqlSetupComplete,
                                 prefix: data.prefix,
@@ -72,11 +72,11 @@ class InstallationHandler {
             constants.setConstant("palette", paletteInterface);
         });
     }
-    setSetupComplete(settings, download) {
+    setSetupComplete(settings, setup, client) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield DatabaseConnection_1.default.instance.addSettings(settings.serverName, settings.version, settings.exp, settings.drop, settings.meso, settings.nx, settings.vp, settings.gmLevel);
-            yield DatabaseConnection_1.default.instance.addDownload('Setup', download.downloadSetup);
-            yield DatabaseConnection_1.default.instance.addDownload('Client', download.downloadClient);
+            yield DatabaseConnection_1.default.instance.addSettings(settings.serverName, settings.version, settings.expRate, settings.dropRate, settings.mesoRate, settings.nxColumn, settings.vpColumn, settings.gmLevel);
+            yield DatabaseConnection_1.default.instance.addDownload('Setup', setup);
+            yield DatabaseConnection_1.default.instance.addDownload('Client', client);
         });
     }
     saveInstallerObject(data) {

@@ -4,9 +4,18 @@ import * as consts from "./src/tools/Constants";
 import Logger from "./src/logger/Logger";
 import {DesignInterface, PalettesInterface, SettingsInterface} from "./src/database/DatabaseInterfaces";
 export default async function setup(server : any,setupListeners : ()=>void,setupComplete : ()=>void) : Promise<void>{
+
     let installer = new InstallationHandler();
-    let data = await installer.getInstallerObject();
     setupListeners();
+    let data;
+    try{
+    data = await installer.getInstallerObject();
+    }catch(err) {
+        Logger.log("To begin setup, visit /setup");
+        return;
+    }
+    console.log("setup!");
+
     if(!data.prefix)
     {
         Logger.warn("prefix value is not set... have you finished setup? go to: localhost:" + server.address().port + "/setup/");

@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 class MNHandler {
-    saveMysql(data) {
+    static saveMysql(data) {
         return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
             let string = JSON.stringify(data);
             let exists = yield this.checkForFile("settings/database.MN");
@@ -23,23 +23,23 @@ class MNHandler {
             });
         }));
     }
-    isDatabaseSetup() {
+    static isDatabaseSetup() {
         return new Promise((resolve, reject) => {
             fs_1.default.access("settings/database.MN", fs_1.default.constants.F_OK, (err) => {
                 if (err)
-                    reject(err);
+                    resolve(false);
                 resolve(true);
             });
         });
     }
-    getMysql(path) {
+    static getMysql(path) {
         return new Promise(resolve => {
             fs_1.default.readFile(path, "utf8", (err, data) => {
                 resolve(JSON.parse(data));
             });
         });
     }
-    checkForFile(fileName) {
+    static checkForFile(fileName) {
         return new Promise((resolve, reject) => {
             if (!fs_1.default.existsSync("settings")) {
                 fs_1.default.mkdirSync("settings");
@@ -65,5 +65,4 @@ class MNHandler {
     }
 }
 exports.default = MNHandler;
-module.exports = new MNHandler();
 //# sourceMappingURL=MNHandler.js.map

@@ -7,6 +7,8 @@ const stdIn = getStdinVars();
 if(stdIn.logger)
 {
     Logger.setLogger(new CmdLogger());
+} else {
+    Logger.setLogger(new CmdLogger());
 }
 stdIn.port = !stdIn.port ? 80 : stdIn.port;
 

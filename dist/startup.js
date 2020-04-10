@@ -14,13 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const DatabaseConnection_1 = __importDefault(require("./src/database/DatabaseConnection"));
 const MysqlDatabase_1 = require("./src/database/MysqlDatabase");
-const MNHandler = require("../src/tools/MNHandler");
+const MNHandler_1 = __importDefault(require("./src/tools/MNHandler"));
 function onStart() {
     return __awaiter(this, void 0, void 0, function* () {
-        let exists = yield MNHandler.isDatabaseSetup();
-        console.log("here!");
+        let exists = yield MNHandler_1.default.isDatabaseSetup();
         if (exists) {
-            let data = yield MNHandler.getMysql("./settings/database.MN");
+            let data = yield MNHandler_1.default.getMysql("./settings/database.MN");
             let result = yield DatabaseConnection_1.default.createInstance(getDatabase(), data);
         }
     });
@@ -29,6 +28,7 @@ exports.onStart = onStart;
 function getDatabase() {
     return new MysqlDatabase_1.MysqlDatabase();
 }
+exports.getDatabase = getDatabase;
 function onEnd() {
 }
 exports.onEnd = onEnd;

@@ -54,13 +54,29 @@ class MapleCharacterGenerator {
     removeFromQueue(index) {
         this.que.splice(index, 1);
     }
-    generatePlayer(name, callback) {
+    exists(file) {
+        return new Promise(resolve => {
+            fs_1.default.access(file, fs_1.default.constants.R_OK, (err) => {
+                resolve(!err);
+            });
+        });
+    }
+    stats(file) {
+        return new Promise(resolve => {
+            fs_1.default.stat(file, (err, stat) => {
+                if (err)
+                    resolve(null);
+                resolve(stat);
+            });
+        });
+    }
+    generatePlayer(callback, name) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.builder)
                 this.builder = this.generators[Constants.getConstant("MCG")];
-            let player = { parts: {}, name: name, callback: callback };
-            if (fs_1.default.existsSync(__dirname + "/Characters/" + name + ".png")) {
-                let stat = fs_1.default.statSync(__dirname + "/Characters/" + name + ".png");
+            let player = { parts: {}, name: name, callback: callback, items: [] };
+            if (yield this.exists(__dirname + "/Characters/" + name + ".png")) {
+                let stat = yield this.stats(__dirname + "/Characters/" + name + ".png");
                 let date = new Date(util_1.default.inspect(stat.mtime));
                 let dateNow = new Date();
                 if ((dateNow.getMinutes() - date.getMinutes()) / 1000 < this.cooldown)
@@ -70,17 +86,15 @@ class MapleCharacterGenerator {
             if (err)
                 throw err;
             if (!result)
-                return callback({ success: false, errorID: ERROR.INVALID_PLAYER, reason: "cant find player: " + name });
+                return { success: false, errorID: ERROR.INVALID_PLAYER, reason: "cant find player: " + name };
             player.parts.face = result.face;
             player.parts.hair = result.hair;
             player.parts.skincolor = result.skincolor;
-            DatabaseConnection_1.default.instance.getEquipment(result.id);
-            mysql.query("SELECT inventoryitems.itemid, inventoryitems.position FROM inventoryequipment INNER JOIN inventoryitems ON inventoryequipment.inventoryitemid = inventoryitems.inventoryitemid WHERE inventoryitems.characterid = ? AND inventoryitems.inventorytype = '-1'", [results[0].id], ((err, results) => {
-                if (err)
-                    throw err;
-                player.items = results;
-                this.addToQueue(player);
-            }).bind(player));
+            let results = yield DatabaseConnection_1.default.instance.getEquipment(result.id);
+            if (err)
+                throw err;
+            player.items = results;
+            this.addToQueue(player);
         });
     }
     buildPlayer(player) {

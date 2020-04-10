@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const NUMBER = (val) => val ? parseInt(val) : -1;
+const NUMBER = (val) => val ? Number(val) : -1;
 const STRING = (val) => val ? val : "";
 const DATE = (val) => val;
 const OBJECT = (val) => JSON.parse(val);

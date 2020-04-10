@@ -11,6 +11,9 @@ const stdIn = getStdinVars();
 if (stdIn.logger) {
     Logger_1.default.setLogger(new CmdLogger_1.default());
 }
+else {
+    Logger_1.default.setLogger(new CmdLogger_1.default());
+}
 stdIn.port = !stdIn.port ? 80 : stdIn.port;
 process.stdin.resume();
 process.stdin.setEncoding('utf8');

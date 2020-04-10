@@ -15,6 +15,7 @@ import {
     PalettesInterface,
     SettingsInterface, VoteInterface
 } from "./DatabaseInterfaces";
+import { EquipmentInterface } from "../tools/Interfaces";
 
 const Constants = require("../tools/Constants");
 const Logger = require("../logger/Logger");
@@ -297,7 +298,7 @@ export class MysqlDatabase implements Database {
         return undefined;
     }
 
-    getEquipment(character: string): Promise<[SettingsInterface, Error]> {
+    getEquipment(character: number): Promise<[EquipmentInterface[], Error]> {
         return undefined;
     }
 }

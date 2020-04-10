@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as constants from "./Constants";
 import DBConn from "../database/DatabaseConnection";
-import {DownloadInterface, PaletteInterface, SettingsInterface} from "./Interfaces";
+import { PalettesInterface, SettingsInterface, DownloadsInterface } from "../database/DatabaseInterfaces";
 
 export interface InstallerI {
     mysqlSetupComplete : boolean;
@@ -16,13 +16,13 @@ export default class InstallationHandler
         return new Promise((resolve:(InstallerI)=>void,reject) => {
             fs.access("settings/setup.MN",fs.constants.F_OK, (err) => {
                 let data : InstallerI =
-                    {
-                        done: false,
-                        mysqlSetupComplete: false,
-                    };
+                {
+                    done: false,
+                    mysqlSetupComplete: false,
+                };
                 if (!err) {
                     fs.readFile("settings/setup.MN", "utf8", (err, text) => {
-                        let data = JSON.parse(text);
+                        console.log("setup installer!",data);
                         let ret : InstallerI = {
                             mysqlSetupComplete: data.mysqlSetupComplete,
                             prefix: data.prefix,
@@ -48,7 +48,7 @@ export default class InstallationHandler
         await DBConn.instance.addDesign('headerImage.png','svgs/logo.svg');
         await DBConn.instance.updateLayout('home','{"0":{"name":"info_box","panel":"none","columns":{"pos":1,"size":7},"rows":{"pos":1,"size":6}},"1":{"name":"control_box","panel":"none","columns":{"pos":7,"size":10},"rows":{"pos":1,"size":4}},"2":{"name":"news_box","panel":"none","columns":{"pos":1,"size":7},"rows":{"pos":6,"size":8}},"3":{"name":"server_box","panel":"none","columns":{"pos":7,"size":10},"rows":{"pos":4,"size":8}},"4":{"name":"stats_box","panel":"none","columns":{"pos":1,"size":10},"rows":{"pos":8,"size":10}},"5":{"name":"ranking_box","panel":"none","columns":{"pos":1,"size":10},"rows":{"pos":10,"size":14}}}');
 
-        let paletteInterface : PaletteInterface = {
+        let paletteInterface : PalettesInterface = {
             name:'Happy Green',
             mainColor:'#69DC9E',
             secondaryMainColor:'#3E78B2',
@@ -59,21 +59,21 @@ export default class InstallationHandler
 
         constants.setConstant("palette",paletteInterface);
     }
-    async setSetupComplete(settings : SettingsInterface, download : DownloadInterface)
+    async setSetupComplete(settings : SettingsInterface, setup : string, client : string)
     {
 
         await DBConn.instance.addSettings(settings.serverName,
             settings.version,
-            settings.exp,
-            settings.drop,
-            settings.meso,
-            settings.nx,
-            settings.vp,
+            settings.expRate,
+            settings.dropRate,
+            settings.mesoRate,
+            settings.nxColumn,
+            settings.vpColumn,
             settings.gmLevel
         );
 
-        await DBConn.instance.addDownload('Setup',download.downloadSetup);
-        await  DBConn.instance.addDownload('Client',download.downloadClient);
+        await DBConn.instance.addDownload('Setup',setup);
+        await  DBConn.instance.addDownload('Client',client);
     }
     saveInstallerObject(data)
     {

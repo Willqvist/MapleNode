@@ -26,8 +26,16 @@ const Logger_1 = __importDefault(require("./src/logger/Logger"));
 function setup(server, setupListeners, setupComplete) {
     return __awaiter(this, void 0, void 0, function* () {
         let installer = new InstallationHandler_1.default();
-        let data = yield installer.getInstallerObject();
         setupListeners();
+        let data;
+        try {
+            data = yield installer.getInstallerObject();
+        }
+        catch (err) {
+            Logger_1.default.log("To begin setup, visit /setup");
+            return;
+        }
+        console.log("setup!");
         if (!data.prefix) {
             Logger_1.default.warn("prefix value is not set... have you finished setup? go to: localhost:" + server.address().port + "/setup/");
         }

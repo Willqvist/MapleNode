@@ -1,9 +1,9 @@
 import fs from 'fs';
 import Logger from "../../src/logger/Logger";
-import {PaletteInterface} from "../../src/tools/Interfaces";
+import { PalettesInterface } from '../../src/database/DatabaseInterfaces';
 export default class CSSGenerator
 {
-    static async generateCSS(palette : PaletteInterface) : Promise<void>
+    static async generateCSS(palette : PalettesInterface) : Promise<void>
     {
         return new Promise<void>(resolve => {
             let i = 0;

@@ -19,6 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+//libaries
 const main = __importStar(require("./startup"));
 const express_1 = __importDefault(require("express"));
 const express_session_1 = __importDefault(require("express-session"));
@@ -46,6 +47,7 @@ let server = app.listen(in_1.default.port);
 const socket_io_1 = __importDefault(require("socket.io"));
 socket_io_1.default.listen(server);
 const CSSGenerator_1 = __importDefault(require("./scripts/CSSGenerator/CSSGenerator"));
+const SetupRouter_1 = __importDefault(require("./routers/SetupRouter"));
 //PacketHandler.setupGlobalPackets(app);
 app.set('view engine', 'ejs');
 app.set("views", __dirname + "/views");
@@ -69,7 +71,9 @@ function setupListeners() {
             saveUninitialized: true,
         }));
         app.use(express_1.default.static(__dirname + "/public"));
-        app.use("/setup", routeApp("SetupRouter"));
+        console.log("setu2 p!");
+        app.use("/setup", SetupRouter_1.default(app));
+        console.log("setu3 p!");
         //app.use("/",        route("GlobalRouter"));
         app.use((req, res, next) => __awaiter(this, void 0, void 0, function* () {
             let paletteInterface = {

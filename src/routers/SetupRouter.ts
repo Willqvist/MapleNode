@@ -1,12 +1,15 @@
-const express = require("express");
+import express from "express";
+import InstallationHandler from "../src/tools/InstallationHandler";
+import mnHandler from "../src/tools/MNHandler";
+import * as constants from "../src/tools/Constants";
+import DBConn from "../src/database/DatabaseConnection";
+import * as startup from "../startup";
+import { SettingsInterface } from "../src/database/DatabaseInterfaces";
+
 const router = express.Router();
-const InstallationHandler = require("../src/tools/InstallationHandler");
-const mnHandler = require("../src/tools/MNHandler");
-let installHandler = new InstallationHandler();
-const constants = require("../src/tools/Constants");
-const DBConn = require("../src/database/DatabaseConnection");
-const startup = require("../src/startup");
 let app;
+let installHandler = new InstallationHandler();
+
 router.all("*",async (req,res,next)=>
 {
     let data = await installHandler.installationComplete();
@@ -31,7 +34,7 @@ router.all("/:id/",async (req,res,next)=>
             switch(number)
             {
                 case 1:
-                    let data = {};
+                    let data;
                     let prefix = req.body.prefix;
                     data.user = req.body.user;
                     data.password = req.body.password;
@@ -52,7 +55,12 @@ router.all("/:id/",async (req,res,next)=>
                 break;
                 case 2:
                     try {
-                        let res = await installHandler.setSetupComplete(req.body);
+                        let settings : SettingsInterface = {
+                            version: req.body.version,
+                            expRate: req.body.exp,
+                            vpColumn: req.body.vp,
+                        }
+                        await installHandler.setSetupComplete(settings,req.body.setupDownload,req.body.clientDownload);
                         constants.setConstant("setup-status", 1);
                         app.locals.palette = constants.getConstant("palette");
                         app.locals.heroImage = "headerImage.png";
@@ -84,7 +92,7 @@ router.all("/:id/",async (req,res,next)=>
         return res.redirect("/");
     }
 });
-module.exports = function(applet)
+export default function(applet)
 {
     app = applet;
     return router;
