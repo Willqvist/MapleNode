@@ -3,35 +3,54 @@ import * as constants from "./Constants";
 import DBConn from "../database/DatabaseConnection";
 import { PalettesInterface, SettingsInterface, DownloadsInterface } from "../database/DatabaseInterfaces";
 import {HOME} from "../../Paths";
-import { resolve } from "dns";
 
 export interface InstallerI {
     mysqlSetupComplete : boolean;
     prefix?: string;
+    settingsComplete : boolean;
     done : boolean;
 };
 
 export default class InstallationHandler
 {
+    installObj : InstallerI = null;
     async installationComplete(src : string) : Promise<InstallerI>
     {
         return new Promise((resolve:(InstallerI)=>void,reject) => {
+
+            if(this.installObj) {
+                return resolve(this.installObj);
+            }
+
             fs.access(HOME+src,fs.constants.F_OK, (err) => {
-                let data : InstallerI =
-                {
-                    done: false,
-                    mysqlSetupComplete: false,
+                let data : InstallerI = {
+                    mysqlSetupComplete:false,
+                    done:false,
+                    settingsComplete:false
                 };
+                this.installObj = data;
                 if (!err) {
                     fs.readFile(HOME+src, "utf8", (err, text) => {
-                        data = JSON.parse(text);
-                        let ret : InstallerI = {
-                            mysqlSetupComplete: data.mysqlSetupComplete,
-                            prefix: data.prefix,
-                            done:data.done
-                        };
-                        constants.setConstant("prefix",data.prefix);
-                        resolve(ret);
+                        if(err) reject(err);
+                        try {
+                            console.log(HOME + src);
+                            let data = JSON.parse(text);
+                            let ret: InstallerI = {
+                                mysqlSetupComplete: data.mysqlSetupComplete,
+                                prefix: data.prefix,
+                                done: data.done,
+                                settingsComplete: data.settingsComplete
+                            };
+                            constants.setConstant("prefix", data.prefix);
+                            this.installObj = ret;
+                            resolve(ret);
+                        }catch(err) {
+                            fs.writeFile(HOME+src,JSON.stringify(data),{flag:'w'},(err)=> {
+                                if(err) reject(err);
+                                this.installObj = data;
+                                resolve(data);
+                            })
+                        }
                     });
                 } else {
                     fs.writeFile(HOME+src,JSON.stringify(data),{flag:'wx'},(err)=> {
@@ -49,7 +68,7 @@ export default class InstallationHandler
         data.prefix = userData.prefix;
         constants.setConstant("prefix",userData.prefix);
         console.log("stop that fear!");
-        await this.saveInstallerObject({done:false,mysqlSetupComplete:true,prefix:userData.prefix});
+        await this.saveInstallerObject({done:false,settingsComplete:false,mysqlSetupComplete:true,prefix:userData.prefix});
         await DBConn.instance.rebuildDatabase(data.prefix);
         await DBConn.instance.addPalette('Happy Green','#69DC9E','#3E78B2','#D3F3EE','#20063B','#CC3363',1);
         await DBConn.instance.addDesign('headerImage.png','svgs/logo.svg');
@@ -75,9 +94,8 @@ export default class InstallationHandler
         });
     }
 
-    async setSetupComplete(settings : SettingsInterface, setup : string, client : string)
+    async saveSettings(settings : SettingsInterface, setup : string, client : string,src:string = "/settings/setup.MN")
     {
-        console.log("here i1");
         try {
         await DBConn.instance.addSettings(settings.serverName,
             settings.version,
@@ -88,29 +106,36 @@ export default class InstallationHandler
             settings.vpColumn,
             settings.gmLevel
         );
-        console.log("here i2");
         await DBConn.instance.addDownload('Setup',setup);
         await  DBConn.instance.addDownload('Client',client);
 
-        let data : InstallerI = await this.getInstallerObject("/settings/setup.MN");
-        data.done = true;
+        let data : InstallerI = await this.getInstallerObject(src);
+        data.settingsComplete = true;
         await this.saveInstallerObject(data);
 
         } catch(err) {
             console.log(err);
         }
     }
-    saveInstallerObject(data : InstallerI)
+
+    async setupComplete(src:string = "/settings/setup.MN") {
+        let data : InstallerI = await this.getInstallerObject(HOME+src);
+        data.done = true;
+        await this.saveInstallerObject(data);
+    }
+
+    saveInstallerObject(data : InstallerI,src:string = "/settings/setup.MN")
     {
+        this.installObj = data;
         return new Promise((resolve,reject) => {
-            console.log("path: ",HOME+"/settings/setup.MN");
-            fs.writeFile(HOME+"/settings/setup.MN", JSON.stringify(data), (err) => {
+            console.log("path: ",HOME+src);
+            fs.writeFile(HOME+src, JSON.stringify(data), (err) => {
                 if(err) reject(err);
                 resolve(data);
             });
         });
     }
-    async getInstallerObject(src: string)
+    async getInstallerObject(src: string) : Promise<InstallerI>
     {
       return await this.installationComplete(src);
     }

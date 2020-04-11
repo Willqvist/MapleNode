@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../CSS/setup.css">            
+    </head>
+    <body>
+        <p id="fillField">
+            You must fill this field
+        </p>
+        <div id="wrapper">
+            <div id="container">
+                <h4>Logo</h4>
+                <h1>Website Setup</h1>
+                <form id="form" method="POST" action="">
+                    <div class="inputWrapper">
+                        <input id="serverName" required name="serverName">
+                        <label for="serverName">Logo image</label>
+                    </div>
+                </form>
+                <div class="btn next-btn">
+                    <div class="btn-wrapper" id="submitForm">
+                    <span>Finish</span>
+                    <svg id="arrow_right" viewBox="5 5 14 14">
+                            <title>keyboard_arrow_right</title>
+                            <path d="M8.578 16.359l4.594-4.594-4.594-4.594 1.406-1.406 6 6-6 6z"></path>
+                        </svg>   
+                    </div>
+                </div>            
+            </div>
+        </div>
+    </body>
+        <script>
+        var form = document.getElementById("form");
+        var submitForm = document.getElementById("submitForm");
+        var fillField = document.getElementById("fillField");
+        var size = fillField.getBoundingClientRect();
+        var middle = (size.bottom - size.top) / 2;
+        var inputs = form.getElementsByTagName("input");
+        submitForm.addEventListener("click",function()
+        {
+            var canSend = true;
+            for(var i = 0; i < inputs.length; i++)
+            {
+                if(inputs[i].value.length == 0 && inputs[i].getAttribute("required") != null)
+                {
+                    console.log(inputs[i]);
+                    var pos = inputs[i].getBoundingClientRect();
+                    //console.log(pos.);
+                    fillField.style.left = "calc("+pos.right + "px + 2em)";
+                    fillField.style.top = pos.top - middle + ((pos.bottom - pos.top) / 2) + window.pageYOffset + "px";
+                    canSend = false;
+                    break;
+                }
+            }
+            if(canSend)
+                form.submit();
+        },false);
+    </script>
+</html>

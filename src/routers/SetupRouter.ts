@@ -10,6 +10,8 @@ const router = express.Router();
 let app;
 let installHandler = new InstallationHandler();
 const settingsSrc = "/settings/setup.MN"
+
+
 router.all("*",async (req,res,next)=>
 {
     let data;
@@ -19,10 +21,17 @@ router.all("*",async (req,res,next)=>
     return next();
 });
 
-router.all(["/","index"],(req,res)=>
+router.all("/logo",async (req,res)=>
+{
+    console.log("logo");
+    return res.render("setup/setup_logo");
+});
+
+router.all(["/","index"],async (req,res)=>
 {
     return res.render("setup/index");
 });
+
 router.all("/:id/",async (req,res,next)=>
 {
     let number = parseInt(req.params.id);
@@ -65,12 +74,12 @@ router.all("/:id/",async (req,res,next)=>
                             nxColumn: req.body.nx,
                             gmLevel: req.body.gmLevel
                         }
-                        await installHandler.setSetupComplete(settings,req.body.downloadSetup,req.body.downloadClient);
+                        await installHandler.saveSettings(settings,req.body.downloadSetup,req.body.downloadClient,settingsSrc);
                         constants.setConstant("setup-status", 1);
                         app.locals.palette = constants.getConstant("palette");
                         app.locals.heroImage = "headerImage.png";
                         app.locals.logo = "svgs/logo.svg";
-                        return res.redirect("/");
+                        return res.redirect("/setup/logo");
                     }catch(err) {
                         return res.redirect(301,"setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err.code)}});
                     }
@@ -81,13 +90,19 @@ router.all("/:id/",async (req,res,next)=>
             }
         }
         else{
-            if(number != 1 && !DBConn.isConnected()) {
+            let iObj = await installHandler.getInstallerObject(settingsSrc);
+            console.log(iObj);
+            if(number != 1 && (!DBConn.isConnected() || !iObj.prefix)) {
                 return res.redirect("1");
             }
             if(number == 1) {
-                if(await mnHandler.isDatabaseSetup()) {
+                if(iObj.prefix && await mnHandler.isDatabaseSetup()) {
                     return res.redirect("2");
                 }
+            }
+            if(number == 2 && iObj.settingsComplete) {
+                console.log("here!");
+                return res.redirect("logo");
             }
             return res.render("setup/setup_"+number);
         }
@@ -97,6 +112,12 @@ router.all("/:id/",async (req,res,next)=>
         return res.redirect("/");
     }
 });
+
+async function hasFinishedSetup() : Promise<boolean> {
+    let iObj = await installHandler.getInstallerObject(settingsSrc);
+    return iObj.done;
+}
+
 export default function(applet)
 {
     app = applet;

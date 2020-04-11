@@ -14,19 +14,11 @@ export default async function setup(server : any,setupListeners : ()=>void,setup
         Logger.log("To begin setup, visit /setup");
         return;
     }
-
-    if(!data.prefix)
-    {
-        Logger.warn("prefix value is not set... have you finished setup? go to: localhost:" + server.address().port + "/setup/");
-    }
-    else
-    {
-        consts.setConstant("prefix",data.prefix);
-        consts.setConstant("realPath",__dirname);
-    }
     if(data.done && data.prefix)
     {
         try {
+            consts.setConstant("prefix",data.prefix);
+            consts.setConstant("realPath",__dirname);
             let settings = await DatabaseConnection.instance.getSettings();
             let design = await DatabaseConnection.instance.getDesign({select:["heroImage","logo"]});
             let palette = await DatabaseConnection.instance.getActivePalette();

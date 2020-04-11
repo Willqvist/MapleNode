@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import helmet from "helmet";
 import * as consts from "./src/tools/Constants";
 import {HOME} from "./Paths";
-
+import {UrlSlicer} from "./Middleware";
 //const PacketHandler = require("../src/packets/PacketHandler");
 import setup from "./setup";
 import input from "./in";
@@ -39,6 +39,7 @@ app.set("views",HOME+"/views");
 app.use(bodyParser.json({limit:'1000mb',extended: true})); 
 app.use(bodyParser.urlencoded({limit:'1000mb',extended: true, parameterLimit: 1000000}));
 app.use(helmet());
+app.use(UrlSlicer);
 
 run().then((res)=>{
     if(!res) {
@@ -63,6 +64,7 @@ async function setupListeners(){
             saveUninitialized: true,
         }
     ));
+
     app.use(express.static(HOME+"/public"));
     app.use("/setup",SetupRouter(app));
 
