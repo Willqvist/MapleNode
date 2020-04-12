@@ -1,2 +1,4 @@
-const error = {errno:0,msg:""};
-export default error;
+export default interface Errno {
+    errno: any,
+    msg: string
+};

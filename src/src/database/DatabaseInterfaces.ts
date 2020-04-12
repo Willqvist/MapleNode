@@ -53,6 +53,7 @@ export interface AllianceInterface {
    guild4?: number;
    guild5?: number;
 }
+
 export interface BosslogInterface {
    bosslogid?: number;
    characterid?: number;

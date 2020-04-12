@@ -55,10 +55,10 @@
             <div id="container">
                 <h4>Setup <%= name %></h4>
                 <h1>Design</h1>
-                <form id="form" method="POST" action="" enctype="multipart/form-data">
+                <form id="form" method="POST" action="">
                     <div class="inputWrapper">
                         <input id="logoUpload" name="logoUpload" size=1 type="file" accept="image/*">
-                        <input id="logo" name="logo" placeholder="Upload logo..." readonly="readonly">
+                        <input id="logo" required name="logo" placeholder="Upload logo..." readonly="readonly">
                         <label for="logo">Logo image</label>
                     </div>
                     <div id="prev">
@@ -72,7 +72,7 @@
 
                     <div class="inputWrapper">
                         <input id="heroUpload" name="heroUpload" size=1 type="file" accept="image/*">
-                        <input id="hero" name="hero" placeholder="Upload Hero image..." readonly="readonly">
+                        <input id="hero" required name="hero" placeholder="Upload Hero image..." readonly="readonly">
                         <label for="hero">Hero image</label>
                     </div>
                     <div id="prev">
@@ -82,12 +82,12 @@
 
                 </form>
                 <div class="btn prev-btn">
-                    <a href="./palette" class="btn-wrapper">
+                    <div class="btn-wrapper" id="submitForm">
                         <span>Skip</span>
                         <div class="ip">
                             <i class="fas fa-times"></i>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 <div class="btn next-btn">
                     <div class="btn-wrapper" id="submitForm">
@@ -159,10 +159,8 @@
                         break;
                     }
                 }
-                if(canSend) {
-                    submitForm.getElementsByClassName("fas")[0].className = "fas fa-circle-notch fa-spin";
+                if(canSend)
                     form.submit();
-                }
             },false);
     </script>
 </html>

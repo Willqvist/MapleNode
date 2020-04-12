@@ -3,8 +3,7 @@
 } %>
 <!doctype html>
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="../CSS/setup.css">    
+    <% include head %>
     </head>
     <body>
     <div id="wrapper">
@@ -17,10 +16,9 @@
             </h1> 
             <div class="btn prev-btn">
                 <a href="./<%= page %>" class="btn-wrapper">
-                    <svg id="arrow_left" viewBox="5 5 14 14">
-                        <title>keyboard_arrow_right</title>
-                        <path d="M8.578 16.359l4.594-4.594-4.594-4.594 1.406-1.406 6 6-6 6z"></path>
-                    </svg> 
+                    <div class="ip">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
                     <span>Previous</span>  
                 </a>
             </div>          

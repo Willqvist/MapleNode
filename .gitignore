@@ -9,3 +9,5 @@ settings/database.MN
 dist/
 dist/*
 src/MapleCharacterGenerator/gd/
+upload/*
+upload/

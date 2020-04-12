@@ -36,8 +36,8 @@ import SetupRouter from "./routers/SetupRouter";
 //PacketHandler.setupGlobalPackets(app);
 app.set('view engine', 'ejs');
 app.set("views",HOME+"/views");
-app.use(bodyParser.json({limit:'1000mb',extended: true})); 
-app.use(bodyParser.urlencoded({limit:'1000mb',extended: true, parameterLimit: 1000000}));
+app.use(bodyParser.json({limit:'1000mb',extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(helmet());
 app.use(UrlSlicer);
 
@@ -47,6 +47,7 @@ run().then((res)=>{
         process.exit(0);
     }
 });
+
 async function run() : Promise<boolean> {
     Logger.log("Starting server...");
 

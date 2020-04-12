@@ -3,7 +3,7 @@ import * as constants from "./Constants";
 import DBConn from "../database/DatabaseConnection";
 import { PalettesInterface, SettingsInterface, DownloadsInterface } from "../database/DatabaseInterfaces";
 import {HOME} from "../../Paths";
-
+import Errno from "./Errno";
 export interface InstallerI {
     mysqlSetupComplete : boolean;
     prefix?: string;
@@ -139,9 +139,10 @@ export default class InstallationHandler
     {
       return await this.installationComplete(src);
     }
-    getInstallErrors(error : string) : string
+    getInstallErrors(error : Errno) : string
     {
-        switch(error)
+        console.log(error.errno);
+        switch(error.errno)
         {
             case "ECONNREFUSED":
                 return "connection refused.. is mysql on?";
@@ -152,7 +153,7 @@ export default class InstallationHandler
             case "ER_BAD_DB_ERROR":
                 return "Could not find database";
             default:
-                return "something went wrong... error code: " + error;
+                return error.msg;
         }
     }
 }

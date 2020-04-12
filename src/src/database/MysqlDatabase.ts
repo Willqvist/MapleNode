@@ -17,6 +17,7 @@ import {
     SettingsInterface, VoteInterface
 } from "./DatabaseInterfaces";
 import { EquipmentInterface } from "../tools/Interfaces";
+import Errno from "../tools/Errno";
 
 const Constants = require("../tools/Constants");
 const Logger = require("../logger/Logger");
@@ -31,8 +32,8 @@ export class MysqlDatabase implements Database {
         try {
             this.connection = await mysql.createConnection(data);
         } catch(err) {
-            errno.errno = err.errno;
-            errno.msg = err.message;
+            let errno : Errno = {errno:err.errno,msg: err.message};
+            throw errno;
             return false;
         }
         return true;
@@ -110,7 +111,7 @@ export class MysqlDatabase implements Database {
         obj.select.push("id");
         let [rows, err] = await this.exec(obj, "characters",charactersConversion);
         if(err) {
-            throw {errorCode:0,errorMsg:err};
+            throw {errno:0,msg:err};
         }
         return rows[0];
     }
@@ -118,14 +119,14 @@ export class MysqlDatabase implements Database {
     async getSettings(obj : SWO) :Promise<SettingsInterface> {
         let [rows, err] = await this.exec(obj, "settings",mn_settingsConversion);
         if(err) {
-            throw {errorCode:0,errorMsg:err};
+            throw {errno:0,msg:err};
         }
         return rows[0];
     }
     async getDesign(obj : SWO) :Promise<DesignInterface> {
         let [rows, err] = await this.exec(obj, "design",mn_designConversion);
         if(err) {
-            throw {errorCode:0,errorMsg:err};
+            throw {errno:0,msg:err};
         }
         return rows[0];
     }
@@ -138,21 +139,21 @@ export class MysqlDatabase implements Database {
         obj.where["active"] = 1;
         let [rows, err] = await this.exec(obj, "palettes",mn_palettesConversion);
         if(err) {
-            throw {errorCode:0,errorMsg:err};
+            throw {errno:0,msg:err};
         }
         return rows[0];
     }
     async getDownloads(obj : SWO) :Promise<DownloadsInterface> {
         let [rows, err] = await this.exec(obj, "downloads",mn_downloadsConversion);
         if(err) {
-            throw {errorCode:0,errorMsg:err};
+            throw {errno:0,msg:err};
         }
         return rows[0];
     }
     async getVotes(obj : SWO) :Promise<VoteInterface[]> {
         let [rows, err] = await this.exec(obj, "votes",mn_voteConversion);
         if(err) {
-            throw {errorCode:0,errorMsg:err};
+            throw {errno:0,msg:err};
         }
         return rows;
     }
@@ -165,7 +166,7 @@ export class MysqlDatabase implements Database {
         obj.where["id"] = id;
         let [rows, err] = await this.exec(obj, "votes",mn_voteConversion);
         if(err) {
-            throw {errorCode:0,errorMsg:err};
+            throw {errno:0,msg:err};
         }
         return rows[0];
     }
@@ -178,7 +179,7 @@ export class MysqlDatabase implements Database {
         obj.where["id"] = id;
         let [rows, err] = await this.exec(obj, "palettes",mn_palettesConversion);
         if(err) {
-            throw {errorCode:0,errorMsg:err};
+            throw {errno:0,msg:err};
         }
         return rows[0];
     }
@@ -191,7 +192,7 @@ export class MysqlDatabase implements Database {
         obj.where["name"] = name;
         let [rows, err] = await this.exec(obj, "layout",mn_layoutConversion);
         if(err) {
-            throw {errorCode:0,errorMsg:err};
+            throw {errno:0,msg:err};
         }
         return rows[0];
     }
@@ -205,7 +206,7 @@ export class MysqlDatabase implements Database {
         obj.where["name"] = name;
         let [rows, err] = await this.exec(obj, "accounts",accountsConversion);
         if(err) {
-            throw {errorCode:0,errorMsg:err};
+            throw {errno:0,msg:err};
         }
         return rows[0];
     }
