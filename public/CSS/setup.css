@@ -79,6 +79,15 @@ body
     width:1.3em;
     height:2em;
 }
+.btn .ip{
+    width:1.3em;
+    height:2em;
+    color:#FFF;
+    display:flex;
+}
+.btn i {
+    margin:auto;
+}
 .btn .btn-wrapper:Hover
 {
     background:#3E78B2;
