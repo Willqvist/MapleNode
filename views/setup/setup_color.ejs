@@ -1,10 +1,8 @@
 <!doctype html>
 <html>
-    <head>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet"/>
-        <link rel="stylesheet" type="text/css" href="../CSS/setup.css">
+        <% include head %>
         <style>
-            #logoUpload,#heroUpload {
+           .hidden {
                 visibility: hidden;
                 display:none;
             }
@@ -45,6 +43,118 @@
                 background-size:cover;
                 background-position: center;
             }
+            .colors {
+                width:100%;
+                height:8em;
+                background:red;
+                border-radius:2em;
+                overflow: hidden;
+                display:flex;
+                position: relative;
+            }
+            .color {
+                flex:1;
+                position: relative;
+                cursor:pointer;
+                transition:ease 0.2s;
+            }
+            #mainColor {
+                background:#69DC9E;
+            }
+            #secondaryMainColor {
+               background:#3E78B2;
+            }
+            #fontColorLight {
+               background:#D3F3EE;
+            }
+            #fontColorDark {
+               background:#20063B;
+            }
+           #fillColor {
+               background:#CC3363;
+            }
+           .color .edit {
+               position: absolute;
+               width:2.5em;
+               height:2.5em;
+               background:#FFF;
+               left:0;
+               top:0;
+               right:0;
+               bottom:0;
+               margin:auto;
+               content:"<i class=\"fas fa-pen\"></i>";
+               border-radius:3em;
+               display:flex;
+               margin:auto;
+               opacity:0.2;
+               transform: translate(1.2em,-2.2em) scale(0.8);
+               transition:ease 0.2s;
+           }
+           .color:hover .edit {
+               transform: translate(0,0) scale(1.1);
+               opacity:1 !important;
+
+           }
+           .color .edit::before {
+               margin:auto;
+               color:#000;
+               font-size:1.4em;
+           }
+           .color:hover {
+
+            }
+            .colorInput {
+                width:80%;
+                position: absolute;
+                z-index:99;
+                left:0;
+                right:0;
+                top:0;
+                bottom:0;
+                margin:auto;
+                display:flex;
+                display:none;
+                opacity:0;
+                transition:ease 0.2s;
+            }
+           .colorInput input {
+               margin-top:0;
+               margin:auto;
+           }
+           .colorInput label {
+               top:0.3em;
+               margin:0;
+           }
+            #saveColor,#exitColor {
+                background:#69DC9E;
+                width:2.6em;
+                height:2.6em;
+                position: absolute;
+                top:0;
+                right:0.6em;
+                bottom:0;
+                margin:auto;
+                border-radius:220em;
+                display:flex;
+                cursor: pointer;
+                transition: ease 0.2s;
+            }
+           #saveColor i,#exitColor i {
+               margin:auto;
+               font-size:1em;
+               color:#FFF;
+           }
+           #exitColor {
+               right:3.8em;
+               background:#cc0000;
+           }
+           #exitColor:hover {
+               background: #963862;
+           }
+           #saveColor:hover {
+               background:#3E78B2;
+           }
         </style>
     </head>
     <body>
@@ -54,32 +164,32 @@
         <div id="wrapper">
             <div id="container">
                 <h4>Setup <%= name %></h4>
-                <h1>Design</h1>
+                <h1>Colors</h1>
                 <form id="form" method="POST" action="">
                     <div class="inputWrapper">
-                        <input id="logoUpload" name="logoUpload" size=1 type="file" accept="image/*">
-                        <input id="logo" required name="logo" placeholder="Upload logo..." readonly="readonly">
-                        <label for="logo">Logo image</label>
-                    </div>
-                    <div id="prev">
-                    <div class="pp pp1">
-                        <div id="logoPreview" class="pc"></div>
-                    </div>
-                    <div class="pp pp2">
-                        <div id="logoPreview-black" class="pc"></div>
-                    </div>
+                        <input id="logo" required name="logo" placeholder="BreezySummer">
+                        <label for="logo">Palette name</label>
                     </div>
 
                     <div class="inputWrapper">
-                        <input id="heroUpload" name="heroUpload" size=1 type="file" accept="image/*">
-                        <input id="hero" required name="hero" placeholder="Upload Hero image..." readonly="readonly">
-                        <label for="hero">Hero image</label>
+                        <input id="mainColorInput" value="#69DC9E" name="mainColor" class="hidden">
+                        <input id="secondaryMainColorInput" value="#3E78B2" name="secondaryMainColor" class="hidden">
+                        <input id="fillColorInput" value="#CC3363" name="fillColor" class="hidden">
+                        <input id="fontColorDarkInput" value="#20063B" name="fontColorDark" class="hidden">
+                        <input id="fontColorLightInput" value="#D3F3EE" name="fontColorLight" class="hidden">
                     </div>
-                    <div id="prev">
-                        <div class="pp pp3" id="heroPreview">
+                    <div class="colors">
+                        <div id="colorInput" class="colorInput inputWrapper">
+                            <input id="color" required name="color" placeholder="#000, rgba(0,0,0,0), black...">
+                            <div id="saveColor"><i class="fas fa-check"></i></div>
+                            <div id="exitColor"><i class="fas fa-times"></i></div>
                         </div>
+                        <div class="color" id="mainColor"><i class="fas fa-pen edit"></i></div>
+                        <div class="color" id="secondaryMainColor"><i class="fas fa-pen edit"></i></div>
+                        <div class="color" id="fillColor"><i class="fas fa-pen edit"></i></div>
+                        <div class="color" id="fontColorDark"><i class="fas fa-pen edit"></i></div>
+                        <div class="color" id="fontColorLight"><i class="fas fa-pen edit"></i></div>
                     </div>
-
                 </form>
                 <div class="btn prev-btn">
                     <div class="btn-wrapper" id="submitForm">
@@ -101,41 +211,112 @@
         </div>
     </body>
         <script>
-            let uploadFormLogo = document.getElementById("logoUpload");
-            let logoImage = document.getElementById("logo");
-            let prevsLogo = [
-                document.getElementById("logoPreview"),
-                document.getElementById("logoPreview-black")
-            ];
-            addImageEventListeners(uploadFormLogo,prevsLogo,logoImage);
 
-            let uploadFormHero = document.getElementById("heroUpload");
-            let hero = document.getElementById("hero");
-            let prevsHero = [
-                document.getElementById("heroPreview"),
-            ];
-            addImageEventListeners(uploadFormHero,prevsHero,hero,{size:"cover"});
+            function isColor(strColor){
+                var s = new Option().style;
+                s.color = strColor;
+                return s.color == strColor;
+            }
 
-            function addImageEventListeners(fileInput,previews,image, settings = {size:"contain"}) {
-                let reader = new FileReader();
-                fileInput.addEventListener("change",(e)=> {
-                    if(e.target.files.length == 0) return;
-                    reader.onload = (ev)=> {
-                        for(let i = 0; i < previews.length; i++) {
-                            let prev = previews[i];
-                            prev.style.backgroundImage = "url(" + reader.result + ")";
-                            prev.style.backgroundSize = settings.size;
-                            prev.style.backgroundRepeat = "no-repeat";
-                            prev.style.backgroundPosition = "center";
-                        }
-                    };
-                    image.value = e.target.files[0].name;
-                    reader.readAsDataURL(e.target.files[0]);
-                },false);
-                image.addEventListener("click",()=> {
-                    fileInput.click();
+            function isHexColor (hex) {
+                return typeof hex === 'string'
+                    && hex.length === 7
+                    && hex.charAt(0) == '#'
+                    && !isNaN(Number('0X'+hex.substring(1)))
+            }
+
+            function isRgbaColor(str) {
+                if(str.substring(0,4) != 'rgba' && str.substring(0,3) != 'rgb') return false;
+                if(str.substring(str.length-1) != ')') return false;
+                let regex = str.match(/rgba\(\d+,\d+,\d+,\d+\)/g);
+                let regex2 = str.match(/rgb\(\d+,\d+,\d+\)/g);
+                return regex != null || regex2 != null;
+            }
+
+            function sleep(time) {
+                return new Promise(resolve => setTimeout(()=>{
+                    resolve();
+                },time));
+            }
+            let colorLabel = document.getElementById("colorLabel");
+            let colorInput = document.getElementById("color");
+            let colorInputParent = document.getElementById("colorInput");
+            let colors = document.getElementsByClassName("color");
+            let boundColor = null;
+            let colorInputs = {
+                mainColor:document.getElementById("mainColorInput"),
+                secondaryMainColor:document.getElementById("secondaryMainColorInput"),
+                fillColor:document.getElementById("fillColorInput"),
+                fontColorDark:document.getElementById("fontColorDarkInput"),
+                fontColorLight:document.getElementById("fontColorLightInput"),
+            };
+            let correctColor = true;
+            colorInput.addEventListener("keyup",(e)=> {
+                let value = colorInput.value;
+                console.log(value,correctColor);
+                if(value.length == 0) return;
+                if(isColor(value) || isHexColor(value) || isRgbaColor(value)) {
+                    console.log("is valid color: ",value);
+                    boundColor.style.background=value;
+                    if(!correctColor) {
+                        correctColor = true;
+                        save.innerHTML = `<i class="fas fa-check"></i>`;
+                    }
+                }
+                else if(correctColor) {
+                    correctColor = false;
+                    save.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`;
+                }
+            },false);
+
+            for(let i = 0; i < colors.length; i++) {
+                let color = colors[i];
+                let editBtn = color.getElementsByClassName("edit")[0];
+                color.addEventListener("click",async ()=> {
+                    colorInput.value = colorInputs[color.id].value;
+                    color.style.flex = "0 0 100%";
+                    editBtn.style.opacity="0";
+                    colorInputParent.style.display="flex";
+                    await sleep(300);
+                    colorInputParent.style.opacity="1";
+                    editBtn.style.display="none";
+                    boundColor = color;
                 },false);
             }
+
+            let save = document.getElementById("saveColor");
+            let cancel = document.getElementById("exitColor");
+
+            save.addEventListener("click",async ()=> {
+                let value = colorInput.value;
+                if(value.length == 0) return;
+                if(isColor(value) || isHexColor(value) || isRgbaColor(value)) {
+                    colorInputs[boundColor.id].value = value;
+                    await animateOut();
+                }
+            });
+
+            cancel.addEventListener("click",async ()=> {
+                let bg = colorInputs[boundColor.id].value;
+                boundColor.style.background = bg;
+                await animateOut();
+            });
+
+            async function animateOut() {
+                let editBtn = boundColor.getElementsByClassName("edit")[0];
+                editBtn.style.display="flex";
+                colorInputParent.style.opacity="0";
+                await sleep(10);
+                boundColor.style.flex = "1";
+                editBtn.style.opacity="0.2";
+                await sleep(300);
+                colorInputParent.style.display="none";
+                colorInput.value = "";
+                boundColor = null;
+                correctColor = true;
+                save.innerHTML = `<i class="fas fa-check"></i>`;
+            }
+
 
             let form = document.getElementById("form");
             let submitForm = document.getElementById("submitForm");

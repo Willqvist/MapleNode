@@ -1,5 +1,5 @@
 import express from "express";
-import InstallationHandler from "../src/tools/InstallationHandler";
+import InstallationHandler, {InstallerI} from "../src/tools/InstallationHandler";
 import mnHandler from "../src/tools/MNHandler";
 import * as constants from "../src/tools/Constants";
 import DBConn from "../src/database/DatabaseConnection";
@@ -24,17 +24,19 @@ router.all("*",async (req,res,next)=>
     return next();
 });
 
-
 //DESIGN
 router.get("/design",async (req,res)=>
 {
-    console.log("logo");
+    let [mysql,sett] = await isAllowed(req,res);
+    if(!mysql || !sett) return;
     let settings = constants.getConstant<SettingsInterface>("settings");
     return res.render("setup/setup_logo",{name:settings.serverName});
 });
 
 router.post("/design",upload.fields([{name:'logoUpload',maxCount:1},{name:'heroUpload',maxCount:1}]),async (req,res,next)=>
 {
+    let [mysql,sett] = await isAllowed(req,res);
+    if(!mysql || !sett) return;
     let logo = req.files.logoUpload;
     let hero = req.files.heroUpload;
     let move = async (file,name)=>{
@@ -53,12 +55,13 @@ router.post("/design",upload.fields([{name:'logoUpload',maxCount:1},{name:'heroU
 //PALETTE
 router.get("/palette",async (req,res)=>
 {
-    console.log("logo");
+    let [mysql,sett] = await isAllowed(req,res);
+    if(!mysql || !sett) return;
     let settings = constants.getConstant<SettingsInterface>("settings");
-    return res.render("setup/setup_logo",{name:settings.serverName});
+    return res.render("setup/setup_color",{name:settings.serverName});
 });
 
-router.all(["/","index"],async (req,res)=>
+router.all(["/","index"], (req,res)=>
 {
     return res.render("setup/index");
 });
@@ -147,6 +150,19 @@ router.all("/:id/",async (req,res,next)=>
 async function hasFinishedSetup() : Promise<boolean> {
     let iObj = await installHandler.getInstallerObject(settingsSrc);
     return iObj.done;
+}
+
+async function isAllowed(req,res) {
+    let settings = await installHandler.getInstallerObject(settingsSrc);
+    if(!settings.mysqlSetupComplete) {
+        res.redirect("1");
+        return [true,false];
+    }
+    if(!settings.settingsComplete) {
+        res.redirect("2");
+        return [false,true];
+    }
+    return [true,true];
 }
 
 export default function(applet)
