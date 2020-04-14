@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "tsc && node dist/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "echo Downloading packages... && npm install > /dev/null && echo Packages Installed && echo Building code... && tsc && echo Code compiled. && echo Starting server... && node dist/app.js"
   },
   "author": "William Lundqvist",
   "license": "ISC",
