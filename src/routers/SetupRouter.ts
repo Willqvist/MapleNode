@@ -37,8 +37,8 @@ router.post("/design",upload.fields([{name:'logoUpload',maxCount:1},{name:'heroU
 {
     let [mysql,sett] = await isAllowed(req,res);
     if(!mysql || !sett) return;
-    let logo = req.files.logoUpload;
-    let hero = req.files.heroUpload;
+    let logo = req.files["logoUpload"];
+    let hero = req.files["heroUpload"];
     let move = async (file,name)=>{
         if(!file || file.length == 0) return;
         file = file[0];
@@ -88,7 +88,7 @@ router.all("/:id/",async (req,res,next)=>
                         let mysqlRes = await mnHandler.saveMysql(data);
                         data.prefix = prefix;
                         let err = await installHandler.setMysqlSetupComplete(data);
-                        return res.redirect(number + 1);
+                        return res.redirect(number + 1 + "");
                     }catch(err) {
                         return res.render("setup/error", {
                             page: number,
@@ -115,11 +115,11 @@ router.all("/:id/",async (req,res,next)=>
                         app.locals.logo = "svgs/logo.svg";
                         return res.redirect("/setup/design");
                     }catch(err) {
-                        return res.redirect(301,"setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err)}});
+                        return res.render("setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err)}});
                     }
                 break;
                 default:
-                    return res.render("error",{page:number,error:{reason:"something went wrong"}});  
+                    return res.render("error",{page:number,error:{reason:"something went wrong"}});
                 break;
             }
         }

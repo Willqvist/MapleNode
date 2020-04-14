@@ -23,7 +23,7 @@ export default class MNHandler
             });
         });
     }
-    static getMysql(path) : Promise<any>
+    static getDatabaseInformation(path) : Promise<any>
     {
         return new Promise(resolve =>
         {

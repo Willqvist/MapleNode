@@ -19,7 +19,7 @@ class MapleLibrary
     }
     instantiate(callback)
     {
-        let data = mnHandler.getMysql();
+        let data = mnHandler.getDatabaseInformation();
         this.mysql = this.mysql.createConnection(data);
         this.mysql.connect((err)=>
         {

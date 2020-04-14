@@ -11,9 +11,14 @@ import {UrlSlicer} from "./Middleware";
 import setup from "./setup";
 import input from "./in";
 import Logger from "./src/logger/Logger"
-
+import cGen from "./scripts/CSSGenerator/CSSGenerator";
+import {PalettesInterface, SettingsInterface} from "./src/database/DatabaseInterfaces";
+import SetupRouter from "./routers/SetupRouter";
+import {Server} from "http";
 import path from 'path';
-
+import MNHandler from "./src/tools/MNHandler";
+import DatabaseConnection from "./src/database/DatabaseConnection";
+import {getDatabase} from "./startup";
 //PacketHandler.setup();
 /*
 let data = {};
@@ -26,91 +31,121 @@ DBConn.createInstance(main.getDatabase(),data);
 new IH().setMysqlSetupComplete(data);
 */
 
-
-//setup
-let app = express();
-let server = app.listen(input.port);
-import cGen from "./scripts/CSSGenerator/CSSGenerator";
-import {PalettesInterface, SettingsInterface} from "./src/database/DatabaseInterfaces";
-import SetupRouter from "./routers/SetupRouter";
-//PacketHandler.setupGlobalPackets(app);
-app.set('view engine', 'ejs');
-app.set("views",HOME+"/views");
-app.use(bodyParser.json({limit:'1000mb',extended: true}));
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(helmet());
-app.use(UrlSlicer);
-
-run().then((res)=>{
-    if(!res) {
-        server.close();
-        process.exit(0);
+class App {
+    private app : express.Application;
+    private server : Server;
+    constructor() {
+        this.app = express();
+        this.server = this.app.listen(input.port);
     }
-});
 
-async function run() : Promise<boolean> {
-    Logger.log("Starting server...");
+    async init() {
+        this.config();
+        await this.exitOnFailure(this.setupDatabase);
+        await this.exitOnFailure(this.setup);
+    }
 
-    let res = await main.onStart();
-    if(!res) return false;
-    await setup(server, setupListeners, setupComplete);
-    return true;
-}
-//listeners
-async function setupListeners(){
-    app.use(session(
-        {
-            secret:"XCDGREV34432",
-            resave:false,
-            saveUninitialized: true,
+    public getApp() : express.Application {
+        return this.app;
+    }
+
+    private config() {
+        this.app.set('view engine', 'ejs');
+        this.app.set("views",HOME+"/views");
+        this.app.use(bodyParser.json({limit:'1000mb',}));
+        this.app.use(bodyParser.urlencoded({extended: true}));
+        this.app.use(helmet());
+        this.app.use(UrlSlicer);
+    }
+
+    private async setupDatabase() : Promise<boolean> {
+        let exists = await MNHandler.isDatabaseSetup();
+        if(exists) {
+            try {
+                let data = await MNHandler.getDatabaseInformation("./settings/database.MN");
+                await DatabaseConnection.createInstance(getDatabase(), data);
+            }
+            catch(err) {
+                Logger.warn("Could not connected to database.");
+                Logger.error(`[${err.errno}] ${err.msg}`);
+                return false;
+            }
         }
-    ));
+        return true;
+    }
 
-    app.use(express.static(HOME+"/public"));
-    app.use("/setup",SetupRouter(app));
 
-    //app.use("/",        route("GlobalRouter"));
-    app.use(async (req,res,next)=>
-    {
-        let paletteInterface : PalettesInterface = {
-            name:'Happy Green',
-            mainColor:'#69DC9E',
-            secondaryMainColor:'#3E78B2',
-            fontColorLight:'#D3F3EE',
-            fontColorDark:'#20063B',
-            fillColor:'#CC3363'
-        };
-        await cGen.generateCSS(paletteInterface);
-        //let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        //req.ip = ip;
-        //PacketHandler.handlePackets(app,req,res,next);
-    });
+    private async setup() : Promise<boolean> {
+        await setup(this.server, this.setupListeners.bind(this), this.setupComplete.bind(this));
+        return true;
+    }
 
-    //app.use("/library",     route("LibraryRouter"));
-    //app.use("/",            route("PagesRouter"));
-    //app.use("/dashboard",   routeApp("DashboardRouter"));
-    //app.use("/IO/",         route("IORouter"));
-    app.use((req, res, next)=>
-    {
-        Logger.log(`[${req.ip}] tried to visit ${req.originalUrl}`);
-        res.status(404).render('error/404')
-    });
-    //app.use((err, req, res, next)=>res.status(500).send('Something went wrong!'));
+    private async await(func) : Promise<any> {
+        return await func.bind(this)();
+    }
+
+    private async exitOnFailure(func) {
+        let success = await this.await(func);
+        if(!success)
+            this.exit();
+    }
+
+    private setupListeners() {
+        this.app.use(session(
+            {
+                secret:"XCDGREV34432",
+                resave:false,
+                saveUninitialized: true,
+            }
+        ));
+
+        this.app.use(express.static(HOME+"/public"));
+        this.app.use("/setup",SetupRouter(this.app));
+
+        //app.use("/",        route("GlobalRouter"));
+        this.app.use(async (req,res,next)=>
+        {
+            let paletteInterface : PalettesInterface = {
+                name:'Happy Green',
+                mainColor:'#69DC9E',
+                secondaryMainColor:'#3E78B2',
+                fontColorLight:'#D3F3EE',
+                fontColorDark:'#20063B',
+                fillColor:'#CC3363'
+            };
+            await cGen.generateCSS(paletteInterface);
+            //let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            //req.ip = ip;
+            //PacketHandler.handlePackets(app,req,res,next);
+        });
+
+        //app.use("/library",     route("LibraryRouter"));
+        //app.use("/",            route("PagesRouter"));
+        //app.use("/dashboard",   routeApp("DashboardRouter"));
+        //app.use("/IO/",         route("IORouter"));
+        this.app.use((req, res, next)=>
+        {
+            Logger.log(`[${req.ip}] tried to visit ${req.originalUrl}`);
+            res.status(404).render('error/404')
+        });
+    }
+
+    private setupComplete() {
+        this.app.locals.palette = consts.getConstant("palette");
+        this.app.locals.heroImage = consts.getConstant("heroImage");
+        this.app.locals.logo = consts.getConstant("logo");
+        this.app.locals.settings = consts.getConstant("settings");
+        Logger.log(`setup complete`);
+        Logger.log(`${consts.getConstant<SettingsInterface>("settings").serverName} is Online on port ${input.port}`);
+    }
+
+    public exit() {
+        this.server.close();
+        process.exit(0);
+        console.log("here!");
+    }
+
 }
-async function setupComplete()
-{
-    app.locals.palette = consts.getConstant("palette");
-    app.locals.heroImage = consts.getConstant("heroImage");
-    app.locals.logo = consts.getConstant("logo");
-    app.locals.settings = consts.getConstant("settings");
-    Logger.log(`setup complete`);
-    Logger.log(`${consts.getConstant<SettingsInterface>("settings").serverName} is Online on port ${input.port}`);
-
-}
-
-function route(name) {
-    return require("./routers/"+name);
-}
-function routeApp(name) {
-    return route(name)(app);
-}
+const app = new App();
+app.init();
+export default app.getApp();
