@@ -5,8 +5,8 @@ import {
     DownloadsInterface, LayoutInterface,
     PalettesInterface,
     SettingsInterface, VoteInterface
-} from "./DatabaseInterfaces";
-import { EquipmentInterface } from "../tools/Interfaces";
+} from "../Interfaces/DatabaseInterfaces";
+import { EquipmentInterface } from "../Interfaces/Interfaces";
 
 export interface SWO {
     select?:string[];

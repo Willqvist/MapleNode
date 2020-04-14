@@ -50,7 +50,7 @@ class WZPngProperty extends ImageProperty
             this.reader.seek(pos);
         }
         //pipe image to file...
-        //console.log(src);
+        //console.log(core);
         if(this.png)
             storer.addImage(this.png,src,callback);
     }
@@ -122,7 +122,7 @@ class WZPngProperty extends ImageProperty
                 }
             }
             dataStream.pos = 2;
-            
+
             if(!dataStream.inflate())
             {
                 process.exit();
@@ -170,8 +170,8 @@ class WZPngProperty extends ImageProperty
                 decBuf = dataStream.read(0,uncompressedSize);
                 for(let i = 0; i < uncompressedSize; i++)
                     bmp.data[i] = decBuf[i];
-                
-                break;              
+
+                break;
             }
             case 517:
             {
@@ -197,7 +197,7 @@ class WZPngProperty extends ImageProperty
                         }
                     }
                 }
-                break;    
+                break;
             }
         }
         this.parsed=true;

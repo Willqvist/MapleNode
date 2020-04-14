@@ -4,20 +4,20 @@ import express from "express";
 import session from 'express-session';
 import bodyParser from "body-parser";
 import helmet from "helmet";
-import * as consts from "./src/tools/Constants";
+import * as consts from "./core/Constants";
 import {HOME} from "./Paths";
 import {UrlSlicer} from "./Middleware";
-//const PacketHandler = require("../src/packets/PacketHandler");
+//const PacketHandler = require("../core/packets/PacketHandler");
 import setup from "./setup";
 import input from "./in";
-import Logger from "./src/logger/Logger"
+import Logger from "./core/logger/Logger"
 import cGen from "./scripts/CSSGenerator/CSSGenerator";
-import {PalettesInterface, SettingsInterface} from "./src/database/DatabaseInterfaces";
+import {PalettesInterface, SettingsInterface} from "./core/Interfaces/DatabaseInterfaces";
 import SetupRouter from "./routers/SetupRouter";
 import {Server} from "http";
 import path from 'path';
-import MNHandler from "./src/tools/MNHandler";
-import DatabaseConnection from "./src/database/DatabaseConnection";
+import MNHandler from "./setup/MNHandler";
+import DatabaseConnection from "./core/database/DatabaseConnection";
 import {getDatabase} from "./startup";
 //PacketHandler.setup();
 /*

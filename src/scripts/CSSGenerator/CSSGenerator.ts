@@ -1,6 +1,6 @@
 import fs from 'fs';
-import Logger from "../../src/logger/Logger";
-import { PalettesInterface } from '../../src/database/DatabaseInterfaces';
+import Logger from "../../core/logger/Logger";
+import { PalettesInterface } from '../../core/Interfaces/DatabaseInterfaces';
 import {HOME} from "../../Paths";
 
 export default class CSSGenerator

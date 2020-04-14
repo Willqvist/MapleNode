@@ -1,5 +1,5 @@
 import {Database} from "./Database";
-import Errno from "../tools/Errno";
+import Errno from "../Errno";
 export default class DatabaseConnection {
 
     static instance : Database;

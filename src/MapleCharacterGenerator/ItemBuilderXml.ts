@@ -1,7 +1,7 @@
 import fs, {PathLike} from "fs";
 import Canvas from "./Canvas";
 import ImageBuilder from "./ImageBuilder";
-import {PartsInterface} from "../src/tools/Interfaces";
+import {PartsInterface} from "../core/Interfaces/Interfaces";
 import DOMParser from "xmldom"
 import {Player,EqiupItem} from "./MCG";
 export default class ItemBuilder extends ImageBuilder
@@ -31,12 +31,12 @@ export default class ItemBuilder extends ImageBuilder
         this.faceOffset = {x:0,y:1};
         this.bowOffset ={x:-0,y:-0};
 
-        this.prefixes = 
+        this.prefixes =
         {
             hairShade:".0"
         };
 
-        this.body = 
+        this.body =
         {
             stand1:
             {
@@ -76,7 +76,7 @@ export default class ItemBuilder extends ImageBuilder
     }
 
     getPath(type,id){
-        return __dirname+`/src/gd//${type}/${(id+"").padStart(8,'0')}.img/`; 
+        return __dirname+`/src/gd//${type}/${(id+"").padStart(8,'0')}.img/`;
     }
 
     setHair(id : number,z : string,next : ()=>void)
@@ -88,7 +88,7 @@ export default class ItemBuilder extends ImageBuilder
         let hairs = file.getElementsByTagName("_"+z);
         if(hairs.length == 0)
             return next();
-        
+
         let hair = hairs[0];
         let prefix = "";
         if(typeof this.prefixes[z] !== "undefined")
@@ -96,12 +96,12 @@ export default class ItemBuilder extends ImageBuilder
         let x = hair.getElementsByTagName("x")[0].firstChild.textContent;
         let y = hair.getElementsByTagName("y")[0].firstChild.textContent;
         this.loadImage(__dirname + "/gd//Hair/000"+id+".img/default."+(z+prefix)+".png",(image)=>
-        { 
+        {
             this.canvas.drawImage(image,this.offsetX + parseInt(x),this.offsetY + parseInt(y) + this.faceOffset.y);
             next();
         });
     }
-    
+
     setFace(id : number,z : string,next : ()=>void)
     {
         let file = this.getParsed("Face",id);
@@ -166,7 +166,7 @@ export default class ItemBuilder extends ImageBuilder
     {
         let file = this.getParsed("Accessory",id);
         let zElem;
-        let elements = file.getElementsByTagName("z"); 
+        let elements = file.getElementsByTagName("z");
         let nodeName;
         for(let i = 0; i < elements.length; i++)
         {
@@ -187,7 +187,7 @@ export default class ItemBuilder extends ImageBuilder
 
             this.canvas.drawImage(image,this.faceOffset.x + this.offsetX + parseInt(x),this.faceOffset.y + this.offsetY + parseInt(y));
             next();
-        });       
+        });
     }
     setUpperBodyCloth(id : number,z : string,next : ()=>void,type : string)
     {
@@ -216,7 +216,7 @@ export default class ItemBuilder extends ImageBuilder
         });
     }
     setCoat(id : number,z : string,next : ()=>void)
-    { 
+    {
         if(!fs.existsSync(this.getPath("Coat",id)+"coord.xml"))
             return next();
         this.setUpperBodyCloth(id,z,next,"Coat");
@@ -250,7 +250,7 @@ export default class ItemBuilder extends ImageBuilder
             let position = this.body["stand"+this.parts.stand].body.position;
             this.canvas.drawImage(image,this.clothOffset.x + this.offsetX + parseInt(x),this.clothOffset.y + position.y + this.offsetY + parseInt(y));
             next();
-        }); 
+        });
     }
     setShoes(id : number,z : string,next : ()=>void)
     {
@@ -307,7 +307,7 @@ export default class ItemBuilder extends ImageBuilder
                 this.canvas.drawImage(image,this.clothOffset.x + this.offsetX + parseInt(positions[i].x),this.clothOffset.y + position.y + this.offsetY + parseInt(positions[i].y));
             }
             next();
-        }); 
+        });
     }
     setCape(id : number,z : string,next : ()=>void)
     {
@@ -333,8 +333,8 @@ export default class ItemBuilder extends ImageBuilder
             let position = this.body["stand"+this.parts.stand].body.position;
             this.canvas.drawImage(image,this.clothOffset.x + this.offsetX + parseInt(x),this.clothOffset.y + position.y + this.offsetY + parseInt(y));
             next();
-        });        
-    }  
+        });
+    }
     setShield(id : number,z : string,next : ()=>void)
     {
         if(this.parts.stand != 1)
@@ -434,7 +434,7 @@ export default class ItemBuilder extends ImageBuilder
             let position = this.body["stand"+this.parts.stand].arm.position;
             this.canvas.drawImage(image,this.offsetX + position.x,this.offsetY + position.y);
             next();
-        });  
+        });
     }
     equipItems(player : Player,items : EqiupItem[],callback : (player:Player)=>void,index=0)
     {
@@ -442,14 +442,14 @@ export default class ItemBuilder extends ImageBuilder
         {
             return callback(player);
         }
-        
+
         let item = items[index];
         let id = item.parameters.id;
         let z = item.parameters.z;
 
         if(typeof id === "undefined")
         {
- 
+
             if(z == "mailChestOverHighest" || z == "mailChest"){
                 id = 1040036;
                 z = "mailChest";
@@ -460,7 +460,7 @@ export default class ItemBuilder extends ImageBuilder
         }
         let method = item.method.bind(this);
         method(id,z,()=>this.equipItems(player,items,callback,++index));
-    } 
+    }
     setWeaponInfo(id : number)
     {
         let file = this.parser.parseFromString(fs.readFileSync(__dirname + "/gd//Weapon/0"+id+".img/coord.xml","utf8"),"text/xml");

@@ -1,9 +1,9 @@
 import * as fs from "fs";
-import * as constants from "./Constants";
-import DBConn from "../database/DatabaseConnection";
-import { PalettesInterface, SettingsInterface, DownloadsInterface } from "../database/DatabaseInterfaces";
-import {HOME} from "../../Paths";
-import Errno from "./Errno";
+import * as constants from "../core/Constants";
+import DBConn from "../core/database/DatabaseConnection";
+import { PalettesInterface, SettingsInterface, DownloadsInterface } from "../core/Interfaces/DatabaseInterfaces";
+import {HOME} from "../Paths";
+import Errno from "../core/Errno";
 export interface InstallerI {
     mysqlSetupComplete : boolean;
     prefix?: string;

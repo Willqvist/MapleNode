@@ -1,6 +1,6 @@
 import {Database,SWO,Error} from "./Database";
 import mysql from "mysql2/promise";
-import errno from "../tools/Errno"
+import errno from "../Errno"
 import {
     accountsConversion,
     charactersConversion,
@@ -15,11 +15,11 @@ import {
     DownloadsInterface, LayoutInterface,
     PalettesInterface,
     SettingsInterface, VoteInterface
-} from "./DatabaseInterfaces";
-import { EquipmentInterface } from "../tools/Interfaces";
-import Errno from "../tools/Errno";
+} from "../Interfaces/DatabaseInterfaces";
+import { EquipmentInterface } from "../Interfaces/Interfaces";
+import Errno from "../Errno";
 
-const Constants = require("../tools/Constants");
+const Constants = require("../Constants");
 const Logger = require("../logger/Logger");
 const fs = require("fs").promises;
 

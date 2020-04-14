@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const constants = require("../src/tools/Constants");
-const library = require("../src/tools/Library").getLibrary();
+const constants = require("../core/Constants");
+const library = require("../core/library/Library").getLibrary();
 const fs = require("fs");
-const parser = require("../src/wz_parser/parser");
+const parser = require("../core/wz_parser/parser");
 const multer  = require('multer');
-const WritableBuffer = require("../src/wz_parser/SimpleWritableBuffer")
+const WritableBuffer = require("../core/wz_parser/SimpleWritableBuffer")
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, './uploads')
@@ -49,7 +49,7 @@ router.get("/upload",(req,res)=>
 
 
 //UPLOAD POST
-let uploadSettings = 
+let uploadSettings =
 {
     uploadedString:false
 }
@@ -85,7 +85,7 @@ router.post("/upload/:name/:uid",(req,res)=>
                 return res.send(JSON.stringify({error:result.err.reason,uid:req.params.uid}));
             else
                 return res.send(JSON.stringify({error:"Error parsing " + file.originalname,uid:req.params.uid}));
-        
+
         uploadSettings.loadedString = true;
         return res.send(JSON.stringify({success:true,uid:req.params.uid}));
     }).bind(file));

@@ -1,6 +1,6 @@
-import InputListener from "./src/tools/InputListener";
-import Logger from "./src/logger/Logger";
-import CmdLogger from "./src/logger/CmdLogger";
+import InputListener from "./core/tools/InputListener";
+import Logger from "./core/logger/Logger";
+import CmdLogger from "./core/logger/CmdLogger";
 
 //tools
 const stdIn = getStdinVars();

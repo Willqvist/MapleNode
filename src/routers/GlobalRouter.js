@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const MapleCharacterGenerator = require("../MapleCharacterGenerator/MCG");
-const constants = require("../src/tools/Constants");
+const constants = require("../core/Constants");
 let mcg = new MapleCharacterGenerator(60*5);
 router.get("/Characters/*.chr",(req,res)=>
 {

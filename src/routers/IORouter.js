@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const MapleCharacterGenerator = require("../MapleCharacterGenerator/MCG");
-const mysql = require("../src/tools/mysql").getMysql();
-const InstallHandler = require("../src/tools/InstallationHandler");
-const constants = require("../src/tools/Constants");
+const mysql = require("../core/tools/mysql").getMysql();
+const InstallHandler = require("../setup/InstallationHandler");
+const constants = require("../core/Constants");
 const md5 = require("md5");
-const Logger = require("../src/logger/Logger");
+const Logger = require("../core/logger/Logger");
 const async = require("async");
 let mcg = new MapleCharacterGenerator(mysql.connection,60*5);
 let installHandler = new InstallHandler(mysql.mysql);
@@ -33,7 +33,7 @@ router.post("/login",(req,res)=>
             {
                 Logger.log("["+req.ip+"] tried to login with username " + req.body.username + "");
             }
-            res.send(JSON.stringify(data)); 
+            res.send(JSON.stringify(data));
         });
     },100);
 });
@@ -57,7 +57,7 @@ router.post("/register",(req,res)=>
                 req.session.cookie.expires = new Date(Date.now() + hour);
                 req.session.cookie.maxAge = hour;
             }
-            res.send(JSON.stringify(data)); 
+            res.send(JSON.stringify(data));
         });
     },00);
     */
@@ -118,7 +118,7 @@ router.get("/vote/:name",(req,res)=>
                 {
                     sql += ` OR ID='${ress[i].voteid}'`;
                 }
-                mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_vote ${sql}`,(err,votes)=>   
+                mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_vote ${sql}`,(err,votes)=>
                 {
                     return res.send(JSON.stringify({success:true,reason:"Found username",userid:result[0].id, occupied:ress,votes:votes}));
                 });
@@ -160,7 +160,7 @@ router.post("/ranking",(req,res)=>
         whereStatement = "AND";
     }
     if(req.body.rank === "Fame")
-        orderBy = "Fame"; 
+        orderBy = "Fame";
     queryData.push(Math.max(parseInt(req.body.page),0)*5);
     /*
     let sql = `
@@ -177,7 +177,7 @@ router.post("/ranking",(req,res)=>
                  FROM characters JOIN (SELECT @rownum := 0) r ORDER BY characters.${orderBy} DESC) player,
     () ${whereString} LIMIT 5 OFFSET ?`;
     */
-    let sql = 
+    let sql =
     `
     SELECT 
     player.name,
@@ -217,7 +217,7 @@ router.post("/ranking",(req,res)=>
             for(let i = 0; i < result.length; i++)
                 result[i].job = (!jobs[result[i].job]) ? "?" : jobs[result[i].job];
             console.log(result);
-            res.send(JSON.stringify(result));  
+            res.send(JSON.stringify(result));
         })
     },200);
 });
@@ -238,7 +238,7 @@ router.post("/search",(req,res)=>
         res.send(JSON.stringify({players:result,pages:menus.filter(w=>w.includes(search))}));
 
     });
-        
+
 });
 router.get("/ranking/:player",(req,res,next)=>
 {

@@ -32,7 +32,7 @@ class ImageStorer
         /*
 
         image.image.pack()
-        .pipe(fs.createWriteStream(image.src))
+        .pipe(fs.createWriteStream(image.core))
         .on('finish',(function() {
             console.log("done piping image",this.piping);
             this.piping --;

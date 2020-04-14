@@ -1,11 +1,11 @@
-import {PartsInterface} from "../src/tools/Interfaces";
+import {PartsInterface} from "../core/Interfaces/Interfaces";
 
 import ItemBuilderXml from "./ItemBuilderXml";
 import ItemBuilderJson from "./ItemBuilderJson";
 import util from "util";
 import fs from "fs";
-import * as Constants from "../src/tools/Constants";
-import DatabaseConnection from "../src/database/DatabaseConnection";
+import * as Constants from "../core/Constants";
+import DatabaseConnection from "../core/database/DatabaseConnection";
 import { resolve } from "dns";
 
 export interface Player{
@@ -44,7 +44,7 @@ export default class MapleCharacterGenerator
     }
     addToQueue(player : Player)
     {
-            
+
         this.que.push(player);
         if(this.que.length == 1)
             this.buildPlayer(player);
@@ -147,7 +147,7 @@ export default class MapleCharacterGenerator
                 {method:this.builder.setShoes,parameters:{id:player.parts.shoes,z:"shoes"}},
                 {method:this.builder.setPants,parameters:{id:player.parts.pants,z:"pants"}},
                 {method:this.builder.setShoes,parameters:{id:player.parts.shoes,z:"shoesOverPants"}},
-                {method:this.builder.setLongCoat,parameters:{id:player.parts.coat,z:"mailChestOverPants"}},                        
+                {method:this.builder.setLongCoat,parameters:{id:player.parts.coat,z:"mailChestOverPants"}},
                 {method:this.builder.setCoat,parameters:{id:player.parts.coat,z:"mailChest"}},
                 {method:this.builder.setLongCoat,parameters:{id:player.parts.coat,z:"mailChest"}},
                 {method:this.builder.setLongCoat,parameters:{id:player.parts.coat,z:"mailChestOverHighest"}},

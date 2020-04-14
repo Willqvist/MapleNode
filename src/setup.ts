@@ -1,8 +1,8 @@
-import DatabaseConnection from "./src/database/DatabaseConnection";
-import InstallationHandler from "./src/tools/InstallationHandler";
-import * as consts from "./src/tools/Constants";
-import Logger from "./src/logger/Logger";
-import {DesignInterface, PalettesInterface, SettingsInterface} from "./src/database/DatabaseInterfaces";
+import DatabaseConnection from "./core/database/DatabaseConnection";
+import InstallationHandler from "./setup/InstallationHandler";
+import * as consts from "./core/Constants";
+import Logger from "./core/logger/Logger";
+import {DesignInterface, PalettesInterface, SettingsInterface} from "./core/Interfaces/DatabaseInterfaces";
 import {HOME} from "./Paths";
 export default async function setup(server : any,setupListeners : ()=>void,setupComplete : ()=>void) : Promise<void>{
 

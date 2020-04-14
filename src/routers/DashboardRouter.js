@@ -1,22 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const mysql = require("../src/tools/mysql").getMysql();
-const constants = require("../src/tools/Constants");
+const mysql = require("../core/tools/mysql").getMysql();
+const constants = require("../core/Constants");
 const fs = require("fs");
-const Logger = require("../src/logger/Logger");
+const Logger = require("../core/logger/Logger");
 const CSSGenerator = require("../scripts/CSSGenerator/CSSGenerator");
 let app;
 router.get("/",(req,res)=>
-{ 
+{
     if(!isLoggedIn(req)) return res.render("pages/dashboardLogin");
     let user = getUser(req);
     if(user.gm == 0)
         return renderDashboard(req,res);
     else if(user.gm >= 1)
-        return renderGMDashboard(req,res);   
+        return renderGMDashboard(req,res);
 });
 router.post("/vote/update",(req,res)=>
-{ 
+{
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
     mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_vote SET name = '${req.body.name}',url='${req.body.url}',nx='${req.body.nx}',time='${req.body.time}' WHERE id='${req.body.key}'`,(err,result)=>
     {
@@ -52,7 +52,7 @@ router.post("/palette/add",(req,res)=>
     let palette = req.body;
     mysql.connection.query(`INSERT INTO ${constants.getConstant("prefix")}_palettes (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES('${palette.name}','${palette.mainColor}','${palette.secondaryMainColor}','${palette.fontColorDark}','${palette.fontColorLight}','${palette.fillColor}','0')`,(err,result)=>
     {
-       if(err) return res.send(JSON.stringify({success:false})); 
+       if(err) return res.send(JSON.stringify({success:false}));
        return res.send(JSON.stringify({success:true,key:result.insertId}));
     });
 });
@@ -95,18 +95,18 @@ router.post("/palette/update",(req,res)=>
         app.locals.palette = palette;
         CSSGenerator.generateCSS(palette.mainColor,palette.secondaryMainColor,palette.fontColorDark,palette.fontColorLight,palette.fillColor,()=>
         {
-            return res.send(JSON.stringify({success:true})); 
+            return res.send(JSON.stringify({success:true}));
         });
     });
 });
 router.post("/changeImage",(req,res)=>
 {
-    
+
     readImages((files)=>
     {
         return res.send(JSON.stringify({success:true,files:files}));
     });
-}); 
+});
 function readImages(callback,dir='./public/images/',start="",images=[])
 {
     fs.readdir(dir+start,(err,files)=>
@@ -157,7 +157,7 @@ router.post("/heroImage/change",(req,res)=>
         app.locals.heroImage = req.body.file;
         return res.send(JSON.stringify({success:true}));
     })
-}); 
+});
 router.post("/logo/change",(req,res)=>
 {
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
@@ -167,20 +167,20 @@ router.post("/logo/change",(req,res)=>
         app.locals.logo = req.body.file;
         return res.send(JSON.stringify({success:true}));
     })
-}); 
+});
 router.post("/download/update",(req,res)=>
 {
     console.log(req.body);
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
     console.log(req.body.name.length == 0);
     if(!req.body.name || !req.body.url || (req.body.name.length == 0 || req.body.url.length == 0)) return res.status(406).send(JSON.stringify({success:false,reason:"Input may not be empty!"}));
-    
+
     mysql.connection.query(`UPDATE ${constants.getConstant("prefix")}_downloads SET name = '${req.body.name}',url='${req.body.url}' WHERE id='${req.body.key}'`,(err,result)=>
     {
         if(err) throw err;
         res.send(JSON.stringify({success:true}));
     });
-}); 
+});
 router.post("/download/remove",(req,res)=>
 {
     console.log(req.body);
@@ -223,7 +223,7 @@ router.get("/layout/:name",(req,res)=>
             res.send(JSON.stringify({success:true,json:result[0],content:files}));
         });
     });
-}); 
+});
 router.post("/layout",(req,res)=>
 {
     if(!isLoggedIn(req) || !isAdmin(req)) return res.status(403).send(JSON.stringify({success:false,reason:"access denied"}));
@@ -239,7 +239,7 @@ router.post("/layout",(req,res)=>
         CSSGenerator.generateHomeLayout(JSON.parse(req.body.json));
         res.send(JSON.stringify({success:true}));
     });
-}); 
+});
 //USER FUNCTIONS
 function isLoggedIn(req)
 {
