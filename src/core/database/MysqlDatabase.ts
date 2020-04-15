@@ -1,6 +1,5 @@
 import {Database,SWO,Error} from "./Database";
 import mysql from "mysql2/promise";
-import errno from "../Errno"
 import {
     accountsConversion,
     charactersConversion,
@@ -19,13 +18,15 @@ import {
 import { EquipmentInterface } from "../Interfaces/Interfaces";
 import Errno from "../Errno";
 
-const Constants = require("../Constants");
-const Logger = require("../logger/Logger");
-const fs = require("fs").promises;
+import * as Constants from "../Constants";
+import FileTools from "../tools/FileTools";
 
-export class MysqlDatabase implements Database {
+export default class MysqlDatabase implements Database {
 
     connection : any;
+
+    constructor() {
+    }
 
     async onInstansiate(data) : Promise<boolean> {
         data.multipleStatements = true;
@@ -248,11 +249,11 @@ export class MysqlDatabase implements Database {
     }
 
     async rebuildDatabase(prefix) : Promise<boolean> {
-        let file = await fs.readFile("./settings/setup.sql","utf8");
-        file = file.replace(/prefix/g,prefix).split(";");
-        for(let i = 0; i < file.length; i++) {
-            if(file[i].length == 0) continue;
-            let [rows, tables] = await this.connection.query(file[i]);
+        let file = await FileTools.readFile("./settings/setup.sql","utf8");
+        let files = file.replace(/prefix/g,prefix).split(";");
+        for(let i = 0; i < files.length; i++) {
+            if(files[i].length == 0) continue;
+            let [rows, tables] = await this.connection.query(files[i]);
         }
         return true;
     }

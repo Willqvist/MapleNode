@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-<% include head %>
+<%- include('head') %>
 </head>
     <body>
         <p id="fillField">
@@ -17,19 +17,19 @@
                     </div>
                      <div class="inputWrapper">
                         <input id="version" name="version" placeholder="v62">
-                        <label for="version">Version</label>               
+                        <label for="version">Version</label>
                     </div>
                     <div class="inputWrapper">
                         <input id="downloadSetup" name="downloadSetup" placeholder="">
-                        <label for="downloadSetup">Download Setup</label>               
+                        <label for="downloadSetup">Download Setup</label>
                     </div>
                     <div class="inputWrapper">
                         <input id="downloadClient" name="downloadClient" placeholder="">
-                        <label for="downloadClient">Download Client</label>               
+                        <label for="downloadClient">Download Client</label>
                     </div>
                     <div class="inputWrapper">
                         <input id="exp" required name="exp" placeholder="10x">
-                        <label for="exp">Exp Rate</label>                
+                        <label for="exp">Exp Rate</label>
                     </div>
                     <div class="inputWrapper">
                         <input id="drop" required name="drop" placeholder="10x">
@@ -43,7 +43,7 @@
                         <input id="nx" required name="nx" placeholder="nx">
                         <label for="nx">NX column</label>
                         <p><span>?</span>What column in the database that stores the NX</p>
-  
+
                     </div>
                     <div class="inputWrapper">
                         <input id="vp" required name="vp" placeholder="vp">
@@ -63,7 +63,7 @@
                             <i class="fas fa-save"></i>
                         </div>
                     </div>
-                </div>            
+                </div>
             </div>
         </div>
     </body>

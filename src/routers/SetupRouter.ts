@@ -3,16 +3,16 @@ import InstallationHandler, {InstallerI} from "../setup/InstallationHandler";
 import mnHandler from "../setup/MNHandler";
 import * as constants from "../core/Constants";
 import DBConn from "../core/database/DatabaseConnection";
-import * as startup from "../startup";
 import {PalettesInterface, SettingsInterface} from "../core/Interfaces/DatabaseInterfaces";
 import multer from "multer";
 import fs from "fs";
 import FileTools from "../core/tools/FileTools";
 import mime from 'mime-types';
+import app from '../app';
 const router = express.Router();
-let app;
-let installHandler = new InstallationHandler();
 const settingsSrc = "/settings/setup.MN"
+
+let installHandler = new InstallationHandler();
 let upload = multer({dest:'upload/'});
 
 router.all("*",async (req,res,next)=>
@@ -49,11 +49,11 @@ router.post("/design",upload.fields([{name:'logoUpload',maxCount:1},{name:'heroU
     await move(logo,"logo");
     await move(hero,"heroImage");
 
-    return res.redirect("./design");
+    return res.redirect("./palette");
 });
 
 //PALETTE
-router.get("/palette",async (req,res)=>
+router.get("/colors",async (req,res)=>
 {
     let [mysql,sett] = await isAllowed(req,res);
     if(!mysql || !sett) return;
@@ -61,8 +61,16 @@ router.get("/palette",async (req,res)=>
     return res.render("setup/setup_color",{name:settings.serverName});
 });
 
+router.post("/colors",(req,res)=>
+{
+    console.log("here!");
+    console.log(req.body);
+    return res.send("wew");
+});
+
 router.all(["/","index"], (req,res)=>
 {
+    console.log("here!!!");
     return res.render("setup/index");
 });
 
@@ -84,7 +92,7 @@ router.all("/:id/",async (req,res,next)=>
                     data.host = req.body.host;
                     data.database = req.body.database;
                     try {
-                        let status = await DBConn.createInstance(startup.getDatabase(), data);
+                        let status = await DBConn.createInstance(app.getDatabase(), data);
                         let mysqlRes = await mnHandler.saveMysql(data);
                         data.prefix = prefix;
                         let err = await installHandler.setMysqlSetupComplete(data);
@@ -110,9 +118,9 @@ router.all("/:id/",async (req,res,next)=>
                         await installHandler.saveSettings(settings,req.body.downloadSetup,req.body.downloadClient,settingsSrc);
                         constants.setConstant("setup-status", 1);
                         constants.setConstant("settings", settings);
-                        app.locals.palette = constants.getConstant<PalettesInterface>("palette");
-                        app.locals.heroImage = "headerImage.png";
-                        app.locals.logo = "svgs/logo.svg";
+                        app.getApp().locals.palette = constants.getConstant<PalettesInterface>("palette");
+                        app.getApp().locals.heroImage = "headerImage.png";
+                        app.getApp().locals.logo = "svgs/logo.svg";
                         return res.redirect("/setup/design");
                     }catch(err) {
                         return res.render("setup/error",{page:number,error:{reason:installHandler.getInstallErrors(err)}});
@@ -164,9 +172,4 @@ async function isAllowed(req,res) {
     }
     return [true,true];
 }
-
-export default function(applet)
-{
-    app = applet;
-    return router;
-};
+export default router;

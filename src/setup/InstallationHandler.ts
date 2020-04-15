@@ -33,7 +33,6 @@ export default class InstallationHandler
                     fs.readFile(HOME+src, "utf8", (err, text) => {
                         if(err) reject(err);
                         try {
-                            console.log(HOME + src);
                             let data = JSON.parse(text);
                             let ret: InstallerI = {
                                 mysqlSetupComplete: data.mysqlSetupComplete,

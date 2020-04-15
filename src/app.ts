@@ -1,5 +1,4 @@
 //libaries
-import * as main from "./startup";
 import express from "express";
 import session from 'express-session';
 import bodyParser from "body-parser";
@@ -18,7 +17,8 @@ import {Server} from "http";
 import path from 'path';
 import MNHandler from "./setup/MNHandler";
 import DatabaseConnection from "./core/database/DatabaseConnection";
-import {getDatabase} from "./startup";
+import {Config, getConfig} from "./core/Config";
+import {Database} from "./core/database/Database";
 //PacketHandler.setup();
 /*
 let data = {};
@@ -30,10 +30,10 @@ data.prefix = "MN";
 DBConn.createInstance(main.getDatabase(),data);
 new IH().setMysqlSetupComplete(data);
 */
-
 class App {
     private app : express.Application;
     private server : Server;
+    private appConfig : Config;
     constructor() {
         this.app = express();
         this.server = this.app.listen(input.port);
@@ -41,6 +41,7 @@ class App {
 
     async init() {
         this.config();
+        this.appConfig = await getConfig();
         await this.exitOnFailure(this.setupDatabase);
         await this.exitOnFailure(this.setup);
     }
@@ -49,13 +50,16 @@ class App {
         return this.app;
     }
 
+    public getConfig() : Config {
+        return this.appConfig
+    }
+
     private config() {
         this.app.set('view engine', 'ejs');
         this.app.set("views",HOME+"/views");
         this.app.use(bodyParser.json({limit:'1000mb',}));
         this.app.use(bodyParser.urlencoded({extended: true}));
         this.app.use(helmet());
-        this.app.use(UrlSlicer);
     }
 
     private async setupDatabase() : Promise<boolean> {
@@ -63,7 +67,7 @@ class App {
         if(exists) {
             try {
                 let data = await MNHandler.getDatabaseInformation("./settings/database.MN");
-                await DatabaseConnection.createInstance(getDatabase(), data);
+                await DatabaseConnection.createInstance(this.getConfig().database, data);
             }
             catch(err) {
                 Logger.warn("Could not connected to database.");
@@ -98,9 +102,9 @@ class App {
                 saveUninitialized: true,
             }
         ));
-
-        this.app.use(express.static(HOME+"/public"));
-        this.app.use("/setup",SetupRouter(this.app));
+        this.app.use(express.static(HOME+"/public",{redirect:false}));
+        this.app.use(UrlSlicer);
+        this.app.use("/setup",SetupRouter);
 
         //app.use("/",        route("GlobalRouter"));
         this.app.use(async (req,res,next)=>
@@ -122,12 +126,13 @@ class App {
         //app.use("/library",     route("LibraryRouter"));
         //app.use("/",            route("PagesRouter"));
         //app.use("/dashboard",   routeApp("DashboardRouter"));
-        //app.use("/IO/",         route("IORouter"));
+        //app.use("/IO",         route("IORouter"));
         this.app.use((req, res, next)=>
         {
             Logger.log(`[${req.ip}] tried to visit ${req.originalUrl}`);
             res.status(404).render('error/404')
         });
+
     }
 
     private setupComplete() {
@@ -145,7 +150,10 @@ class App {
         console.log("here!");
     }
 
+    getDatabase() : Database{
+        return this.getConfig().database;
+    }
 }
 const app = new App();
 app.init();
-export default app.getApp();
+export default app;

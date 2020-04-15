@@ -22,4 +22,13 @@ export default class FileTools {
         ret.pop();
         return( ret.join('/') );
     }
+
+    static readFile(src: string, options: string) {
+        return new Promise<string>((resolve,reject) => {
+            fs.readFile(src,options,(err,data)=> {
+                if(err) reject(err);
+                resolve(data);
+            })
+        })
+    }
 }

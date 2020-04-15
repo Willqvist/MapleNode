@@ -4,8 +4,10 @@
   "description": "Backend for a maplestory website",
   "main": "app.js",
   "scripts": {
-    "start": "tsc && node dist/app.js",
-    "build": "echo Downloading packages... && npm install > /dev/null && echo Packages Installed && echo Building code... && tsc && echo Code compiled. && echo Starting server... && node dist/app.js"
+    "start": "cls && node dist/app.js",
+    "compile": "tsc && cls",
+    "cs": "npm run compile && cls && npm start",
+    "build": "setup.bat"
   },
   "author": "William Lundqvist",
   "license": "ISC",
@@ -15,6 +17,7 @@
     "JSONStream": "^1.3.5",
     "async": "^2.6.3",
     "body-parser": "^1.19.0",
+    "ejs": "^3.0.2",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "filequeue": "^0.5.0",
@@ -34,7 +37,11 @@
   "devDependencies": {
     "@types/node": "^13.11.1",
     "eslint": "^6.8.0",
-    "tslint": "^6.1.1",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^2.5.0",
     "typescript": "^3.8.3"
   }
 }
