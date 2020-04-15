@@ -57,6 +57,8 @@ export interface Database {
     addSettings(serverName: string,version: string,expRate: string,dropRate: string,mesoRate: string,
                 nxColumn: string,vpColumn: string,gmLevel: number) : Promise<boolean>;
 
+    printError(errno: number);
+
 }
 
 /*

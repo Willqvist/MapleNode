@@ -309,4 +309,8 @@ export default class MysqlDatabase implements Database {
     getEquipment(character: number): Promise<EquipmentInterface[]> {
         return undefined;
     }
+
+    printError(errno: any) {
+
+    }
 }

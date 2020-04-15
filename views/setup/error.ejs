@@ -3,7 +3,7 @@
 } %>
 <!doctype html>
 <html>
-    <% include head %>
+    <%- include("head") %>
     </head>
     <body>
     <div id="wrapper">
@@ -13,15 +13,15 @@
             <% if(locals.error){ %>
                 <%= error.reason %>
             <% } %>
-            </h1> 
+            </h1>
             <div class="btn prev-btn">
                 <a href="./<%= page %>" class="btn-wrapper">
                     <div class="ip">
                         <i class="fas fa-chevron-left"></i>
                     </div>
-                    <span>Previous</span>  
+                    <span>Previous</span>
                 </a>
-            </div>          
+            </div>
         </div>
     </div>
     </body>

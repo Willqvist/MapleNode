@@ -61,11 +61,27 @@ router.get("/colors",async (req,res)=>
     return res.render("setup/setup_color",{name:settings.serverName});
 });
 
-router.post("/colors",(req,res)=>
+router.post("/colors",async (req,res)=>
 {
     console.log("here!");
-    console.log(req.body);
-    return res.send("wew");
+    try {
+        let result = await DBConn.instance.addPalette(
+            req.body.name,
+            req.body.mainColor,
+            req.body.secondaryMainColor,
+            req.body.fillColor,
+            req.body.fontColorDark,
+            req.body.fontColorLight,
+            1
+        );
+    }catch(err) {
+        console.log(err);
+        return res.render("setup/error", {
+            page: "colors",
+            error: {reason: err.message}});
+    }
+    console.log("Safe:",req.body);
+    return res.redirect("complete");
 });
 
 router.all(["/","index"], (req,res)=>
