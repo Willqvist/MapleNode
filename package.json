@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "cls && node dist/app.js",
-    "compile": "tsc && cls",
-    "cs": "npm run compile && cls && npm start",
+    "compile": "cls && tsc",
+    "cs": "npm run compile && npm start",
     "build": "setup.bat"
   },
   "author": "William Lundqvist",
