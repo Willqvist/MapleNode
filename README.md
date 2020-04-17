@@ -16,10 +16,10 @@ MapleNode is a Maplestory CMS built using.
 * [Typescript](https://www.typescriptlang.org/)
 * [EJS](https://ejs.co/)
 
-##Notice
+## Notice
 MapleNode is still in development and is not currently functional
 
-##Installation
+## Installation
 Before installing, [Download and Install Node.js](https://nodejs.org/en/download/) and setup a [MySQL](https://www.mysql.com/) database.
 
 Download MapleNode 
@@ -32,8 +32,9 @@ $ npm run build
 ```
 When the building is done the server is up and running on port 80 and visit `/setup` to start the website setup.
 
-##Commands
-###npm
+## Commands
+
+### npm
 To start the server:
 
 ```
@@ -50,7 +51,7 @@ To compile and start server:
 $ npm run cs
 ``` 
 
-###MapleNode
+### MapleNode
 . To stop the server. Either type `Ctrl+C` or
 ```$xslt
 MapleNode> quit
