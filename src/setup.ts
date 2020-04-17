@@ -27,7 +27,7 @@ export default async function setup(server : any,setupListeners : ()=>void,setup
         let palette = await DatabaseConnection.instance.getActivePalette();
         setConstants(settings,design,palette);
         } catch(err) {
-            console.log(err);
+            console.log("ERROR HERE: ",err);
         }
     }
     if(!data.done){
