@@ -54,7 +54,7 @@ $ npm run cs
 ```$xslt
 MapleNode> quit
 ```
-and type and write **Y** when asked `Terminate batch job (Y/N)?`.
+and type **Y** when asked `Terminate batch job (Y/N)?`.
 
 ## Maple character image generator.
 Maple character image generator is an application that generates a maple character image with information from the database. This application uses files provided by greenelfx. To download them visit the following link.
