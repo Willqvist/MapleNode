@@ -1,11 +1,9 @@
 <p align="center">
-  <a href="https://nodejs.org/">
     <img
-      alt="Node.js"
+      alt="MapleNode"
       src="https://i.imgur.com/kMAiROs.png"
       width="320"
     />
-  </a>
 </p>
 
 
