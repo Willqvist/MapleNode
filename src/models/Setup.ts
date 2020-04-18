@@ -1,11 +1,12 @@
-import InstallationHandler from "../../setup/InstallationHandler";
-import FileTools from "../tools/FileTools";
+import InstallationHandler, {InstallerI} from "../setup/InstallationHandler";
+import FileTools from "../core/tools/FileTools";
 import mime from 'mime-types';
-import DBConn from "../database/DatabaseConnection";
-import app from "../../app";
-import mnHandler from "../../setup/MNHandler";
-import {SettingsInterface} from "../Interfaces/DatabaseInterfaces";
-import * as constants from "../Constants";
+import DBConn from "../core/database/DatabaseConnection";
+import app from "../app";
+import mnHandler from "../setup/MNHandler";
+import {SettingsInterface} from "../core/Interfaces/DatabaseInterfaces";
+import * as constants from "../core/Constants";
+import {openConfig} from "../core/config/Config";
 
 export default class Setup {
 
@@ -34,9 +35,24 @@ export default class Setup {
         );
     }
 
+
+    /*
+                        data.user = req.body.user;
+                    data.password = req.body.password;
+                    data.host = req.body.host;
+                    data.database = req.body.database;
+                    data.prefix = prefix;
+     */
     public async connectToDatabase(data: any) {
         await DBConn.createInstance(app.getDatabase(), data);
-        await mnHandler.saveMysql(data);
+        let writer = await openConfig();
+        await writer.write("server/database/prefix",data.prefix);
+        await writer.write("server/database/auth",{
+            user:data.user,
+            password:data.password,
+            host:data.host,
+            table:data.database
+        });
         await this.installHandler.setMysqlSetupComplete(data);
     }
 
@@ -51,7 +67,7 @@ export default class Setup {
         let success = await FileTools.move(`upload/${file.fileName}`,`public/upload/${file.destName}.${ext}`);
     }
 
-    public async setupData(){
+    public async setupData() : Promise<InstallerI>{
         return await this.installHandler.installationComplete(this.settingsSrc);
     }
 }

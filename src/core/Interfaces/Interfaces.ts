@@ -22,6 +22,13 @@ export interface PartsInterface {
     stand?: number;
 }
 
+export interface DatabaseAuthInterface {
+    host: string,
+    user: string,
+    password: string,
+    table : string
+}
+
 export interface EquipmentInterface {
     itemid: number,
     position: number

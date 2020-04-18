@@ -6,7 +6,8 @@ import DBConn from "../core/database/DatabaseConnection";
 import {PalettesInterface, SettingsInterface} from "../core/Interfaces/DatabaseInterfaces";
 import multer from "multer";
 import app from '../app';
-import Setup, {SetupFile} from "../core/models/Setup";
+import Setup, {SetupFile} from "../models/Setup";
+import {getConfig} from "../core/config/Config";
 const router = express.Router();
 const setup = new Setup();
 let upload = multer({dest:'upload/'});
@@ -129,16 +130,17 @@ router.all("/:id/",async (req,res,next)=>
             }
         }
         else{
-            let iObj = await setup.setupData();
-            if(number != 1 && (!DBConn.isConnected() || !iObj.prefix)) {
+            let config = await getConfig();
+            let setupStatus = await setup.setupData();
+            if(number != 1 && (!DBConn.isConnected() || config.server.database.prefix.length == 0)) {
                 return res.redirect("1");
             }
             if(number == 1) {
-                if(iObj.prefix && await mnHandler.isDatabaseSetup()) {
+                if(config.server.database.prefix.length > 0) {
                     return res.redirect("2");
                 }
             }
-            if(number == 2 && iObj.settingsComplete) {
+            if(number == 2 && setupStatus.settingsComplete) {
                 return res.redirect("design");
             }
             return res.render("setup/setup_"+number);

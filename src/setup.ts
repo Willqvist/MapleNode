@@ -4,20 +4,28 @@ import * as consts from "./core/Constants";
 import Logger from "./core/logger/Logger";
 import {DesignInterface, PalettesInterface, SettingsInterface} from "./core/Interfaces/DatabaseInterfaces";
 import {HOME} from "./Paths";
+import {getConfig} from "./core/config/Config";
+
 export default async function setup(server : any,setupListeners : ()=>void,setupComplete : ()=>void) : Promise<void>{
 
     let installer = new InstallationHandler();
     setupListeners();
     let data;
+    let config = await getConfig();
+    let prefix = config.server.database.prefix;
     try{
     data = await installer.getInstallerObject("/settings/setup.MN");
     }catch(err) {
         Logger.log("To begin setup, visit /setup");
         return;
     }
+    if(!data.mysqlSetupComplete) {
+        Logger.log("To begin setup, visit /setup");
+        return;
+    }
     if(data.prefix)
     {
-        consts.setConstant("prefix",data.prefix);
+        consts.setConstant("prefix",prefix);
         consts.setConstant("realPath",HOME);
     }
     if(data.mysqlSetupComplete) {

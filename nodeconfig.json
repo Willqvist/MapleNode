@@ -1,0 +1,19 @@
+{
+	"server": {
+		"database": {
+			"instance": "MysqlDatabase",
+			"auth": {
+				"user": "root",
+				"password": "",
+				"host": "localhost",
+				"table": "leaderms"
+			},
+			"prefix": "MN"
+		},
+		"port": 80
+	},
+	"run": {
+		"mode": "debug",
+		"showError": true
+	}
+}

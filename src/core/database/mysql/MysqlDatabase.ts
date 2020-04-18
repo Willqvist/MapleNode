@@ -1,4 +1,4 @@
-import {Database,SWO,Error} from "./Database";
+import {Database,SWO,Error} from "../Database";
 import mysql from "mysql2/promise";
 import {
     accountsConversion,
@@ -14,12 +14,12 @@ import {
     DownloadsInterface, LayoutInterface,
     PalettesInterface,
     SettingsInterface, VoteInterface
-} from "../Interfaces/DatabaseInterfaces";
-import { EquipmentInterface } from "../Interfaces/Interfaces";
-import Errno from "../Errno";
+} from "../../Interfaces/DatabaseInterfaces";
+import { EquipmentInterface } from "../../Interfaces/Interfaces";
+import Errno from "../../Errno";
 
-import * as Constants from "../Constants";
-import FileTools from "../tools/FileTools";
+import * as Constants from "../../Constants";
+import FileTools from "../../tools/FileTools";
 
 export default class MysqlDatabase implements Database {
 

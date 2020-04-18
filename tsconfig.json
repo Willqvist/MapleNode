@@ -6,16 +6,17 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "resolveJsonModule": true,
     "noEmit": false,
+    "rootDir": "src",
     "lib": [
       "es2017"
     ]
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./nodeconfig.json"
   ]
 }

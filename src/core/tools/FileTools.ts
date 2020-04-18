@@ -1,4 +1,6 @@
 import fs from "fs";
+import ErrnoException = NodeJS.ErrnoException;
+import {HOME} from "../../Paths";
 
 export default class FileTools {
     public static async move(src  : string, dest: string) : Promise<boolean> {
@@ -14,6 +16,16 @@ export default class FileTools {
                     });
                 });
             });
+        });
+    }
+
+    public static async write(dest : string, src: string) : Promise<void> {
+        return new Promise<void>((resolve,reject) =>
+        {
+           fs.writeFile(dest,src,"utf8",(err)=>{
+               if(err) reject(err);
+               resolve();
+           });
         });
     }
 

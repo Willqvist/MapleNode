@@ -14,10 +14,9 @@ import cGen from "./scripts/CSSGenerator/CSSGenerator";
 import {PalettesInterface, SettingsInterface} from "./core/Interfaces/DatabaseInterfaces";
 import SetupRouter from "./routers/SetupRouter";
 import {Server} from "http";
-import path from 'path';
 import MNHandler from "./setup/MNHandler";
 import DatabaseConnection from "./core/database/DatabaseConnection";
-import {Config, getConfig} from "./core/Config";
+import {ConfigInterface, getConfig, openConfig} from "./core/config/Config";
 import {Database} from "./core/database/Database";
 //PacketHandler.setup();
 /*
@@ -33,7 +32,7 @@ new IH().setMysqlSetupComplete(data);
 class App {
     private app : express.Application;
     private server : Server;
-    private appConfig : Config;
+    private appConfig : ConfigInterface;
     constructor() {
         this.app = express();
         this.server = this.app.listen(input.port);
@@ -50,7 +49,7 @@ class App {
         return this.app;
     }
 
-    public getConfig() : Config {
+    public getConfig() : ConfigInterface {
         return this.appConfig
     }
 
@@ -63,15 +62,17 @@ class App {
     }
 
     private async setupDatabase() : Promise<boolean> {
-        let exists = await MNHandler.isDatabaseSetup();
+        let exists = this.getConfig().server.database.prefix.length != 0;
         if(exists) {
             try {
-                let data = await MNHandler.getDatabaseInformation("./settings/database.MN");
-                await DatabaseConnection.createInstance(this.getConfig().database, data);
+                await DatabaseConnection.createInstance(this.getConfig().server.database.instance, this.getConfig().server.database.auth);
             }
             catch(err) {
                 Logger.warn("Could not connected to database.");
-                Logger.error(`[${err.errno}] ${err.msg}`);
+                if(err.errno)
+                    Logger.error(`[${err.errno}] ${err.msg}`);
+                else
+                    Logger.error(err);
                 return false;
             }
         }
@@ -151,7 +152,7 @@ class App {
     }
 
     getDatabase() : Database{
-        return this.getConfig().database;
+        return this.getConfig().server.database.instance;
     }
 }
 const app = new App();

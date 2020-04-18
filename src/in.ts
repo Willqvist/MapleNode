@@ -1,6 +1,7 @@
 import InputListener from "./core/tools/InputListener";
 import Logger from "./core/logger/Logger";
 import CmdLogger from "./core/logger/CmdLogger";
+import Observer from "./core/Observer";
 
 //tools
 const stdIn = getStdinVars();
@@ -87,7 +88,7 @@ function getInputVariables(data,start=0)
 
 
 
-
+Observer.register("EXIT");
 
 
 //CLEANUP ON EXIT
@@ -98,8 +99,10 @@ function exitHandler(options, exitCode) {
     }
 }
 
-process.on('exit', (code)=>
+process.on('exit', async (code)=>
 {
+    console.log("exited");
+    await Observer.notify("EXIT");
 });
 process.on('SIGINT', exitHandler.bind(null, {exit:true}));
 process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));

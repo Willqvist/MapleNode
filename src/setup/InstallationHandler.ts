@@ -4,9 +4,9 @@ import DBConn from "../core/database/DatabaseConnection";
 import { PalettesInterface, SettingsInterface, DownloadsInterface } from "../core/Interfaces/DatabaseInterfaces";
 import {HOME} from "../Paths";
 import Errno from "../core/Errno";
+import {openConfig} from "../core/config/Config";
 export interface InstallerI {
     mysqlSetupComplete : boolean;
-    prefix?: string;
     settingsComplete : boolean;
     done : boolean;
 };
@@ -36,7 +36,6 @@ export default class InstallationHandler
                             let data = JSON.parse(text);
                             let ret: InstallerI = {
                                 mysqlSetupComplete: data.mysqlSetupComplete,
-                                prefix: data.prefix,
                                 done: data.done,
                                 settingsComplete: data.settingsComplete
                             };
@@ -64,10 +63,9 @@ export default class InstallationHandler
     {
         let data : any = {};
         data.mysqlSetupComplete = true;
-        data.prefix = userData.prefix;
         constants.setConstant("prefix",userData.prefix);
         console.log("stop that fear!");
-        await this.saveInstallerObject({done:false,settingsComplete:false,mysqlSetupComplete:true,prefix:userData.prefix});
+        await this.saveInstallerObject({done:false,settingsComplete:false,mysqlSetupComplete:true});
         await DBConn.instance.rebuildDatabase(data.prefix);
         await DBConn.instance.addPalette('Happy Green','#69DC9E','#3E78B2','#D3F3EE','#20063B','#CC3363',1);
         await DBConn.instance.addDesign('headerImage.png','svgs/logo.svg');
