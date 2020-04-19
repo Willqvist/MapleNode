@@ -61,12 +61,9 @@ export default class InstallationHandler
     }
     async setMysqlSetupComplete(userData)
     {
-        let data : any = {};
-        data.mysqlSetupComplete = true;
         constants.setConstant("prefix",userData.prefix);
-        console.log("stop that fear!");
         await this.saveInstallerObject({done:false,settingsComplete:false,mysqlSetupComplete:true});
-        await DBConn.instance.rebuildDatabase(data.prefix);
+        await DBConn.instance.rebuildDatabase(userData.prefix);
         await DBConn.instance.addPalette('Happy Green','#69DC9E','#3E78B2','#D3F3EE','#20063B','#CC3363',1);
         await DBConn.instance.addDesign('headerImage.png','svgs/logo.svg');
         await DBConn.instance.updateLayout('home','{"0":{"name":"info_box","panel":"none","columns":{"pos":1,"size":7},"rows":{"pos":1,"size":6}},"1":{"name":"control_box","panel":"none","columns":{"pos":7,"size":10},"rows":{"pos":1,"size":4}},"2":{"name":"news_box","panel":"none","columns":{"pos":1,"size":7},"rows":{"pos":6,"size":8}},"3":{"name":"server_box","panel":"none","columns":{"pos":7,"size":10},"rows":{"pos":4,"size":8}},"4":{"name":"stats_box","panel":"none","columns":{"pos":1,"size":10},"rows":{"pos":8,"size":10}},"5":{"name":"ranking_box","panel":"none","columns":{"pos":1,"size":10},"rows":{"pos":10,"size":14}}}');

@@ -23,17 +23,16 @@ export default async function setup(server : any,setupListeners : ()=>void,setup
         Logger.log("To begin setup, visit /setup");
         return;
     }
-    if(data.prefix)
+    console.log("LENGTH: ",prefix.length);
+    if(prefix.length != 0)
     {
         consts.setConstant("prefix",prefix);
         consts.setConstant("realPath",HOME);
-    }
-    if(data.mysqlSetupComplete) {
         try {
-        let settings = await DatabaseConnection.instance.getSettings();
-        let design = await DatabaseConnection.instance.getDesign({select:["heroImage","logo"]});
-        let palette = await DatabaseConnection.instance.getActivePalette();
-        setConstants(settings,design,palette);
+            let settings = await DatabaseConnection.instance.getSettings();
+            let design = await DatabaseConnection.instance.getDesign({select:["heroImage","logo"]});
+            let palette = await DatabaseConnection.instance.getActivePalette();
+            setConstants(settings,design,palette);
         } catch(err) {
             console.log("ERROR HERE: ",err);
         }

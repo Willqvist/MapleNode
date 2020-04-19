@@ -7,6 +7,7 @@ import mnHandler from "../setup/MNHandler";
 import {SettingsInterface} from "../core/Interfaces/DatabaseInterfaces";
 import * as constants from "../core/Constants";
 import {openConfig} from "../core/config/Config";
+import {DatabaseAuthInterface} from "../core/Interfaces/Interfaces";
 
 export default class Setup {
 
@@ -44,15 +45,16 @@ export default class Setup {
                     data.prefix = prefix;
      */
     public async connectToDatabase(data: any) {
-        await DBConn.createInstance(app.getDatabase(), data);
-        let writer = await openConfig();
-        await writer.write("server/database/prefix",data.prefix);
-        await writer.write("server/database/auth",{
+        let auth : DatabaseAuthInterface = {
             user:data.user,
             password:data.password,
             host:data.host,
-            table:data.database
-        });
+            database:data.database
+        };
+        await DBConn.createInstance(app.getDatabase(), auth);
+        let writer = await openConfig();
+        await writer.write("server/database/prefix",data.prefix);
+        await writer.write("server/database/auth",auth);
         await this.installHandler.setMysqlSetupComplete(data);
     }
 

@@ -26,7 +26,7 @@ export interface DatabaseAuthInterface {
     host: string,
     user: string,
     password: string,
-    table : string
+    database : string
 }
 
 export interface EquipmentInterface {

@@ -29,19 +29,9 @@ let configFile : ConfigFile;
 export async function getConfig() : Promise<ConfigInterface> {
     if(config !=null) return config;
 
-    let file = JSON.parse(await FileTools.readFile("./nodeconfig.json","utf8"));
-
-    config = new class implements ConfigInterface {
-        server: {
-            database: {
-                instance: Database,
-                auth: DatabaseAuthInterface,
-                prefix: string
-            };
-            port: number;
-        } = {database:null,port:0};
-        run: RunInterface;
-    };
+    let content = await FileTools.readFile("./nodeconfig.json","utf8");
+    let file = JSON.parse(content);
+    config = JSON.parse(content);
     configParser = new ConfigParser(file);
     await applyParsers(configParser);
     configFile = new ConfigFile(config,file);
@@ -61,17 +51,16 @@ async function applyParsers(obj : ConfigParser) {
     try {
         const db = await database.import<Database>("instance","core/database/mysql/");
         let auth = await database.interface<DatabaseAuthInterface>("auth");
+        let prefix = await obj.string("server/database/prefix");
         config.server.database = {
             instance:db,
             auth:auth,
-            prefix:"",
+            prefix:prefix,
         };
     } catch(err) {
         Logger.error(err.message);
     }
-
     config.run = await obj.interface<RunInterface>("run");
     config.server.port = await obj.number("server/port");
-    config.server.database.prefix = await obj.string("server/database/prefix");
 
 }

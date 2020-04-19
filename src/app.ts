@@ -65,7 +65,8 @@ class App {
         let exists = this.getConfig().server.database.prefix.length != 0;
         if(exists) {
             try {
-                await DatabaseConnection.createInstance(this.getConfig().server.database.instance, this.getConfig().server.database.auth);
+                console.log(this.getConfig().server.database.auth);
+                await DatabaseConnection.createInstance(this.getDatabase(), this.getConfig().server.database.auth);
             }
             catch(err) {
                 Logger.warn("Could not connected to database.");
