@@ -67,8 +67,37 @@ router.post("/colors",async (req,res)=>
             page: "colors",
             error: {reason: err.message}});
     }
+    return res.redirect("./template");
+});
+
+//TEMPLATE
+router.get("/template",async (req,res)=>
+{
+    let [mysql,sett] = await isAllowed(req,res);
+    if(!mysql || !sett) return;
+    let settings = constants.getConstant<SettingsInterface>("settings");
+    return res.render("setup/setup_design",{name:settings.serverName});
+});
+
+router.post("/template",async (req,res)=>
+{
+    try {
+        let result = await setup.addPalette(
+            req.body.name,
+            req.body.mainColor,
+            req.body.secondaryMainColor,
+            req.body.fillColor,
+            req.body.fontColorDark,
+            req.body.fontColorLight
+        );
+    }catch(err) {
+        return res.render("setup/error", {
+            page: "colors",
+            error: {reason: err.message}});
+    }
     return res.redirect("complete");
 });
+
 
 router.all(["/","index"], (req,res)=>
 {

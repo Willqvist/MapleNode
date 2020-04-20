@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+        <%- include('head') %>
+        <style>
+            #logoUpload,#heroUpload {
+                visibility: hidden;
+                display:none;
+            }
+            .pp2 {
+                background:black;
+                border-top-right-radius: 2em;
+                border-bottom-right-radius: 2em;
+            }
+            .pp1 {
+                background:#F3F3F3;
+                border-top-left-radius: 2em;
+                border-bottom-left-radius: 2em;
+            }
+            #prev {
+                width:100%;
+                height:12em;
+                display:flex;
+            }
+            .pp {
+                height:100%;
+                height:120%;
+                flex:1;
+                box-sizing: border-box;
+                display:flex;
+
+            }
+            .pc {
+                flex:1;
+                background: url("../images/svgs/logo_single.svg") no-repeat;
+                background-size:contain;
+                background-position: center;
+            }
+            .pp3 {
+                border-radius: 2em;
+                background:#F3F3F3;
+                background: url("../images/headerImage.png") no-repeat;
+                background-size:cover;
+                background-position: center;
+            }
+        </style>
+    </head>
+    <body>
+        <p id="fillField">
+            You must fill this field
+        </p>
+        <div id="wrapper">
+            <div id="container">
+                <h4>Setup <%= name %></h4>
+                <h1>Choose Website Template</h1>
+                <form id="form" method="POST" action="" enctype="multipart/form-data">
+                    <div class="inputWrapper">
+                        <select id="logo" name="logo" required>
+                            <option>MapleNode</option>
+                            <option>Nostalgic</option>
+                        </select>
+                        <label for="logo">Template</label>
+                    </div>
+                    <div id="prev">
+                        <div class="pp pp3" id="websitePrev">
+                        </div>
+                    </div>
+
+
+                </form>
+                <div class="btn prev-btn">
+                    <a href="./colors" class="btn-wrapper">
+                        <span>Skip</span>
+                        <div class="ip">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </a>
+                </div>
+                <div class="btn next-btn">
+                    <div class="btn-wrapper" id="submitForm">
+                    <span>Upload</span>
+                        <div class="ip">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+        <script>
+            let uploadFormLogo = document.getElementById("logoUpload");
+            let logoImage = document.getElementById("logo");
+            let prevsLogo = [
+                document.getElementById("logoPreview"),
+                document.getElementById("logoPreview-black")
+            ];
+            addImageEventListeners(uploadFormLogo,prevsLogo,logoImage);
+
+            let uploadFormHero = document.getElementById("heroUpload");
+            let hero = document.getElementById("hero");
+            let prevsHero = [
+                document.getElementById("heroPreview"),
+            ];
+            addImageEventListeners(uploadFormHero,prevsHero,hero,{size:"cover"});
+
+            function addImageEventListeners(fileInput,previews,image, settings = {size:"contain"}) {
+                let reader = new FileReader();
+                fileInput.addEventListener("change",(e)=> {
+                    if(e.target.files.length == 0) return;
+                    reader.onload = (ev)=> {
+                        for(let i = 0; i < previews.length; i++) {
+                            let prev = previews[i];
+                            prev.style.backgroundImage = "url(" + reader.result + ")";
+                            prev.style.backgroundSize = settings.size;
+                            prev.style.backgroundRepeat = "no-repeat";
+                            prev.style.backgroundPosition = "center";
+                        }
+                    };
+                    image.value = e.target.files[0].name;
+                    reader.readAsDataURL(e.target.files[0]);
+                },false);
+                image.addEventListener("click",()=> {
+                    fileInput.click();
+                },false);
+            }
+    </script>
+    <script src="./FormSubmitter.js"></script>
+</html>
