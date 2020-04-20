@@ -12,6 +12,12 @@
       "es2017"
     ]
   },
+  "typedocOptions": {
+    "mode": "file",
+    "out": "docs",
+    "name": "MapleNode Documentation"
+  },
+
   "include": [
     "src/**/*"
   ],

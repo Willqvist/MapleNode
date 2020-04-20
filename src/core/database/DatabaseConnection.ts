@@ -1,10 +1,10 @@
 import {Database} from "./Database";
-import Errno from "../Errno";
+import {DatabaseAuthInterface} from "../Interfaces/Interfaces";
 export default class DatabaseConnection {
 
     static instance : Database;
     static connected : boolean;
-    static async createInstance(database : Database,data : object) : Promise<boolean> {
+    static async createInstance(database : Database,data : DatabaseAuthInterface) : Promise<boolean> {
         DatabaseConnection.instance = database;
         let connected = await database.onInstansiate(data);
         DatabaseConnection.connected = connected;

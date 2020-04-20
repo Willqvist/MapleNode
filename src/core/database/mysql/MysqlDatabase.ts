@@ -1,4 +1,4 @@
-import {Database,SWO,Error} from "../Database";
+import {Database, RANK, SWO} from "../Database";
 import mysql from "mysql2/promise";
 import {
     accountsConversion,
@@ -287,7 +287,7 @@ export default class MysqlDatabase implements Database {
         return undefined;
     }
 
-    loadRank(searchFlag, page: number, order: number): Promise<boolean> {
+    loadRank(searchFlag : RANK, page: number, order: "asc"|"desc"): Promise<boolean> {
         return undefined;
     }
 
