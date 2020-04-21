@@ -10,7 +10,7 @@
 			},
 			"prefix": ""
 		},
-		"port": 800
+		"port": 8080
 	},
 	"run": {
 		"mode": "debug",

@@ -17,8 +17,6 @@ import DatabaseConnection from "./core/database/DatabaseConnection";
 import {ConfigInterface, getConfig, openConfig} from "./core/config/Config";
 import {Database} from "./core/database/Database";
 
-console.log("HOME",HOME);
-
 /**
  * The Main Application class that is created on launch.
  * This class holds information about the database, express application and
@@ -30,15 +28,16 @@ class App {
     private appConfig : ConfigInterface;
     constructor() {
         this.app = express();
-        this.server = this.app.listen(input.port);
     }
 
     /**
      * This method is called at start of the program.
      */
     async init() {
-        this.config();
         this.appConfig = await getConfig();
+        console.log(this.appConfig.server.port);
+        this.server = this.app.listen(this.appConfig.server.port);
+        this.config();
         await this.exitOnFailure(this.setupDatabase);
         await this.exitOnFailure(this.setup);
     }

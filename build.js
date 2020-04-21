@@ -9,7 +9,7 @@ function puts(error, stdout, stderr) {
       return;
   }
   console.log(stdout); 
-   }
+}
 
 var os = require('os');
 var runType = process.argv[2];
