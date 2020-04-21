@@ -13,7 +13,7 @@
     "build": "node build build",
     "compile": "node build compile",
     "cs": "npm run compile && npm start",
-    "start":"node build start"
+    "start": "node build start"
   },
   "author": "William Lundqvist",
   "license": "ISC",
