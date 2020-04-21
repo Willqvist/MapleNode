@@ -15,6 +15,7 @@ let upload = multer({dest:'upload/'});
 router.all("*",async (req,res,next)=>
 {
     let data;
+
     data = await setup.setupData();
     if(data.done)
         return res.status(403).send('403 - access denied');

@@ -17,6 +17,8 @@ import DatabaseConnection from "./core/database/DatabaseConnection";
 import {ConfigInterface, getConfig, openConfig} from "./core/config/Config";
 import {Database} from "./core/database/Database";
 
+console.log("HOME",HOME);
+
 /**
  * The Main Application class that is created on launch.
  * This class holds information about the database, express application and

@@ -4,10 +4,16 @@
   "description": "Backend for a maplestory website",
   "main": "app.js",
   "scripts": {
-    "start": "cls && node dist/app.js",
-    "compile": "cls && tsc",
+    "start-windows": "cls && node dist/app",
+    "start-linux": "clear && node dist/app",
+    "compile-windows": "cls && tsc",
+    "compile-linux": "clear && tsc",
+    "build-windows": "setup.bat",
+    "build-linux": "npm install && tsc && echo done",
+    "build": "node build build",
+    "compile": "node build compile",
     "cs": "npm run compile && npm start",
-    "build": "setup.bat"
+    "start":"node build start"
   },
   "author": "William Lundqvist",
   "license": "ISC",
