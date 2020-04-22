@@ -19,7 +19,8 @@ export interface ConfigInterface {
 }
 export interface RunInterface {
     mode: string,
-    showError : boolean
+    showError : boolean,
+    template: string
 }
 
 let config : ConfigInterface;
@@ -28,8 +29,12 @@ let configFile : ConfigFile;
 
 export async function getConfig() : Promise<ConfigInterface> {
     if(config !=null) return config;
-
-    let content = await FileTools.readFile("./nodeconfig.json","utf8");
+    let content;
+    try {
+        content = await FileTools.readFile("./nodeconfig.json", "utf8");
+    } catch(err) {
+        content = writeDefault();
+    }
     let file = JSON.parse(content);
     config = JSON.parse(content);
     configParser = new ConfigParser(file);
@@ -38,6 +43,32 @@ export async function getConfig() : Promise<ConfigInterface> {
     return config;
 }
 
+function writeDefault() {
+    let str = `{
+    "server": {
+    "database": {
+        "instance": "MysqlDatabase",
+        "auth": {
+            "user": "",
+            "password": "",
+            "host": "",
+            "database": ""
+        },
+        "prefix": ""
+    },
+    "port": 80
+},
+    "run": {
+        "mode": "debug",
+        "showError": true,
+        "template": "MapleNode"
+    }
+}       
+`;
+    console.log("writing here!!");
+    FileTools.write("./nodeconfig.json",str);
+    return str;
+}
 
 export async function openConfig(): Promise<ConfigFile> {
     if(!config) await getConfig();

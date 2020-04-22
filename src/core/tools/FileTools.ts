@@ -3,6 +3,12 @@ import ErrnoException = NodeJS.ErrnoException;
 import {HOME} from "../../Paths";
 
 export default class FileTools {
+
+    /**
+     * 
+     * @param src
+     * @param dest
+     */
     public static async move(src  : string, dest: string) : Promise<boolean> {
         return new Promise<boolean>((resolve,reject) => {
             let dir = this.removeLastDirectory(dest);
@@ -24,7 +30,10 @@ export default class FileTools {
         {
            fs.writeFile(dest,src,"utf8",(err)=>{
                if(err) reject(err);
-               resolve();
+               fs.chmod(dest, 0o666, (error) => {
+                   if(error) reject(error);
+                   resolve();
+               });
            });
         });
     }
