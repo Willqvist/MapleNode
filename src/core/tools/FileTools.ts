@@ -5,7 +5,7 @@ import {HOME} from "../../Paths";
 export default class FileTools {
 
     /**
-     * 
+     *
      * @param src
      * @param dest
      */

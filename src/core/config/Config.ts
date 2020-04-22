@@ -65,7 +65,6 @@ function writeDefault() {
     }
 }       
 `;
-    console.log("writing here!!");
     FileTools.write("./nodeconfig.json",str);
     return str;
 }
