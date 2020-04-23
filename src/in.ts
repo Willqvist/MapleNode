@@ -2,7 +2,7 @@ import InputListener from "./core/tools/InputListener";
 import Logger from "./core/logger/Logger";
 import CmdLogger from "./core/logger/CmdLogger";
 import Observer from "./core/Observer";
-
+process.stdout.write("MapleNode> ");
 //tools
 const stdIn = getStdinVars();
 if(stdIn.logger)
@@ -16,16 +16,19 @@ stdIn.port = !stdIn.port ? 80 : stdIn.port;
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 
+Logger.onData(()=> {
+    process.stdout.write("MapleNode> ");
+})
+
 //PROCESS INPUT
 process.stdin.on('data', function (text : string) {
 
-    if(text.charAt(0) == '-')
-    {
-        return getInputVariables(text.split(' '));
-    }
+    let processed : boolean = getInputVariables(text.split(' '));
+    //if(!processed)
+        //process.stdout.write("MapleNode> ");
 });
 
-InputListener.listen("stop",(data)=>
+InputListener.listen(["stop","quit"],(data)=>
 {
     process.exit(1);
 });
@@ -33,21 +36,6 @@ InputListener.listen("stop",(data)=>
 InputListener.listen("ping",(data)=>
 {
     Logger.log("pong");
-});
-InputListener.listen("sql",(data)=>
-{
-    let sqlData = data.join(" ");
-    /*
-    mysql.connection.query(sqlData,(err,result)=>
-    {
-        if(err)
-        {
-            Logger.warn("Error in sql command: " + sql);
-            return;
-        }
-    });
-
-     */
 });
 
 //INPUT HELPER METHODS
@@ -68,9 +56,10 @@ function getStdinVars() : any
     return data;
 }
 
-function getInputVariables(data,start=0)
+function getInputVariables(data,start=0) : boolean
 {
-    let variable = data[start].substring(1);
+    process.stdout.write("MapleNode> ");
+    /*
     data.shift();
     let i = start;
     let attribs = data;
@@ -82,8 +71,11 @@ function getInputVariables(data,start=0)
         }
         i++;
     });
+    */
+    InputListener.recive(data[0].substring(0,data[0].length-1), {});
 
-    InputListener.recive(variable.trim(),attribs);
+
+    return true;
 }
 
 
@@ -101,7 +93,6 @@ function exitHandler(options, exitCode) {
 
 process.on('exit', async (code)=>
 {
-    console.log("exited");
     await Observer.notify("EXIT");
 });
 process.on('SIGINT', exitHandler.bind(null, {exit:true}));

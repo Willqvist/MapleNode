@@ -16,6 +16,10 @@ export default class ExeLogger extends Logger
     }
     protected warn(msg)
     {
-        console.log(`[${Time.getTime()} WARNING] : ${msg}`);   
+        console.log(`[${Time.getTime()} WARNING] : ${msg}`);
+    }
+
+    protected clear(): void {
+        this.log("MapleNode>");
     }
 }

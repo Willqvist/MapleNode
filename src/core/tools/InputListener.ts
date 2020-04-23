@@ -8,10 +8,30 @@ export default class InputListener
         this.listeners = {};
     }
 
-    static listen(name : string,cb : (any)=>void)
+    /**
+     * listens to input from the stdin.
+     * @param name the string to match to
+     * @param cb the callback when {name} ahs been written.
+     */
+    static listen(name : string|string[],cb : (any)=>void)
     {
-        this.instance.listen(name,cb);
+        if(!(name instanceof Array)) {
+
+            this.instance.listen(<string>name,cb);
+        } else {
+            let names = <string[]> name;
+            for(let i = 0; i < names.length; i++) {
+                this.instance.listen(names[i], cb);
+            }
+        }
     }
+
+
+    /**
+     * executes all listeners that is listening to {name}
+     * @param name the name of the listeners to execute.
+     * @param data data to send to all listeners.
+     */
     static recive(name : string,data : any)
     {
         this.instance.recive(name,data);

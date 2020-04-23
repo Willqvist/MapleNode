@@ -253,7 +253,6 @@ export default class MysqlDatabase implements Database {
         let files = file.replace(/prefix/g,prefix).split(";");
         for(let i = 0; i < files.length; i++) {
             if(files[i].length == 0) continue;
-            console.log(files[i]);
             let [rows, tables] = await this.connection.query(files[i]);
         }
         return true;

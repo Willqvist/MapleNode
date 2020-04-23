@@ -35,7 +35,6 @@ class App {
      */
     async init() {
         this.appConfig = await getConfig();
-        console.log(this.appConfig.server.port);
         this.server = this.app.listen(this.appConfig.server.port);
         this.config();
         await this.exitOnFailure(this.setupDatabase);
@@ -97,7 +96,7 @@ class App {
      * and {@link App.setupComplete} when setup is finished.
      */
     private async setup() : Promise<boolean> {
-        await setup(this.server, this.setupListeners.bind(this), this.setupComplete.bind(this));
+        await setup(this.setupListeners.bind(this), this.setupComplete.bind(this));
         return true;
     }
 

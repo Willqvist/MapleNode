@@ -9,7 +9,6 @@ class CharactersPacket extends Packet
 
     onPageLoad(req,res,callback)
     {
-        console.log("override");
         RankLoader.loadRank({max:5},((result)=>
         {
             res.locals.characters = result;

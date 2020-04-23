@@ -6,24 +6,31 @@ import {DesignInterface, PalettesInterface, SettingsInterface} from "./core/Inte
 import {HOME} from "./Paths";
 import {getConfig} from "./core/config/Config";
 
-export default async function setup(server : any,setupListeners : ()=>void,setupComplete : ()=>void) : Promise<void>{
+/**
+ * sets up the server with constans and configs.
+ * @param setupListeners callback to setup all listeners
+ * @param setupComplete callback when the setup is complete.
+ */
+export default async function setup(setupListeners : ()=>void,setupComplete : ()=>void) : Promise<void>{
 
     let installer = new InstallationHandler();
     setupListeners();
     let data;
     let config = await getConfig();
     let prefix = config.server.database.prefix;
+
     try{
     data = await installer.getInstallerObject("/settings/setup.MN");
     }catch(err) {
-        Logger.log("To begin setup, visit /setup");
+        Logger.info("To begin setup, visit /setup");
         return;
     }
+
     if(!data.mysqlSetupComplete) {
-        Logger.log("To begin setup, visit /setup");
+        Logger.info("To begin setup, visit /setup");
         return;
     }
-    console.log("LENGTH: ",prefix.length);
+
     if(prefix.length != 0)
     {
         consts.setConstant("prefix",prefix);
