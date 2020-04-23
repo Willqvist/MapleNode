@@ -16,6 +16,7 @@ import {Server} from "http";
 import DatabaseConnection from "./core/database/DatabaseConnection";
 import {ConfigInterface, getConfig, openConfig} from "./core/config/Config";
 import {Database} from "./core/database/Database";
+import {ServerListenError} from "./core/tools/ErrnoConversion";
 
 /**
  * The Main Application class that is created on launch.
@@ -35,10 +36,18 @@ class App {
      */
     async init() {
         this.appConfig = await getConfig();
-        this.server = this.app.listen(this.appConfig.server.port);
+        this.listenToServer();
         this.config();
         await this.exitOnFailure(this.setupDatabase);
         await this.exitOnFailure(this.setup);
+    }
+
+    private listenToServer() {
+        this.server = this.app.listen(this.appConfig.server.port);
+        this.server.on('error', function(err) {
+            Logger.error(err.message);
+            process.exit(0);
+        });
     }
 
     /**
@@ -75,7 +84,6 @@ class App {
         let exists = this.getConfig().server.database.prefix.length != 0;
         if(exists) {
             try {
-                console.log(this.getConfig().server.database.auth);
                 await DatabaseConnection.createInstance(this.getDatabase(), this.getConfig().server.database.auth);
             }
             catch(err) {

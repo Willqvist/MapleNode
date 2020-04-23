@@ -1,4 +1,4 @@
-import Errno from "../Errno";
+import Errno from "../tools/Errno";
 import {HOME} from "../../Paths";
 import Logger from "../logger/Logger";
 

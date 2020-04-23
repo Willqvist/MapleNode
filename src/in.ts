@@ -3,6 +3,7 @@ import Logger from "./core/logger/Logger";
 import CmdLogger from "./core/logger/CmdLogger";
 import Observer from "./core/Observer";
 process.stdout.write("MapleNode> ");
+
 //tools
 const stdIn = getStdinVars();
 if(stdIn.logger)
@@ -11,32 +12,40 @@ if(stdIn.logger)
 } else {
     Logger.setLogger(new CmdLogger());
 }
-stdIn.port = !stdIn.port ? 80 : stdIn.port;
 
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 
 Logger.onData(()=> {
     process.stdout.write("MapleNode> ");
-})
+});
 
 //PROCESS INPUT
 process.stdin.on('data', function (text : string) {
-
     let processed : boolean = getInputVariables(text.split(' '));
-    //if(!processed)
-        //process.stdout.write("MapleNode> ");
 });
 
-InputListener.listen(["stop","quit"],(data)=>
+InputListener.listen(["stop","quit","exit","!q"],(data)=>
 {
-    process.exit(1);
+    Logger.close();
+    process.exit(0);
 });
 
 InputListener.listen("ping",(data)=>
 {
     Logger.log("pong");
 });
+
+InputListener.listen(["help","!h"],(data)=>
+{
+    Logger.log(`
+\x1b[1mCommands\x1b[0m
+    \x1b[1mhelp, !h\x1b[0m:                      Lists all commands
+    \x1b[1mquit, stop, exit, !q, ^C\x1b[0m:      Stops the server
+    \x1b[1mping\x1b[0m:                          pong
+    `);
+});
+
 
 //INPUT HELPER METHODS
 function getStdinVars() : any
@@ -58,7 +67,7 @@ function getStdinVars() : any
 
 function getInputVariables(data,start=0) : boolean
 {
-    process.stdout.write("MapleNode> ");
+
     /*
     data.shift();
     let i = start;
@@ -72,8 +81,10 @@ function getInputVariables(data,start=0) : boolean
         i++;
     });
     */
-    InputListener.recive(data[0].substring(0,data[0].length-1), {});
-
+    let recieved : boolean = InputListener.recive(data[0].substring(0,data[0].length-1), {});
+    if(!recieved) {
+        process.stdout.write("MapleNode> ");
+    }
 
     return true;
 }

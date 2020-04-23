@@ -7,24 +7,29 @@ export default abstract class Logger{
     }
     static log(msg : string)
     {
-        Logger.logger.log(msg);
+        if(Logger.logger)
+            Logger.logger.log(msg);
     }
     static error(msg : string)
     {
-        Logger.logger.error(msg);
+        if(Logger.logger)
+            Logger.logger.error(msg);
     }
     static warn(msg : string)
     {
-        Logger.logger.warn(msg);
+        if(Logger.logger)
+            Logger.logger.warn(msg);
     }
     
     static info(msg : string)
     {
-        Logger.logger.info(msg);
+        if(Logger.logger)
+            Logger.logger.info(msg);
     }
 
     static clear() {
-        Logger.logger.clear();
+        if(Logger.logger)
+            Logger.logger.clear();
     }
 
     static onData(clb:(data)=>void) {
@@ -42,4 +47,8 @@ export default abstract class Logger{
     protected abstract error(msg : string) : void;
     protected abstract log(msg : string) : void;
     protected abstract clear() : void;
+
+    static close() {
+        Logger.logger = null;
+    }
 }

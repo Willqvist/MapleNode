@@ -8,6 +8,7 @@ import multer from "multer";
 import app from '../app';
 import Setup, {SetupFile} from "../models/Setup";
 import {getConfig} from "../core/config/Config";
+import Logger from "../core/logger/Logger";
 const router = express.Router();
 const setup = new Setup();
 let upload = multer({dest:'upload/'});
@@ -128,7 +129,7 @@ router.all("/:id/",async (req,res,next)=>
                         await setup.connectToDatabase(data);
                         return res.redirect(number + 1 + "");
                     }catch(err) {
-                        console.log(err);
+                        Logger.log(err);
                         return res.render("setup/error", {
                             page: number,
                             error: {reason: app.getDatabase().printError(err)}});

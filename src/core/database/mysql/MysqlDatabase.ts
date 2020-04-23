@@ -16,7 +16,7 @@ import {
     SettingsInterface, VoteInterface
 } from "../../Interfaces/DatabaseInterfaces";
 import { EquipmentInterface } from "../../Interfaces/Interfaces";
-import Errno from "../../Errno";
+import Errno from "../../tools/Errno";
 
 import * as Constants from "../../Constants";
 import FileTools from "../../tools/FileTools";

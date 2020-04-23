@@ -3,7 +3,7 @@ import * as constants from "../core/Constants";
 import DBConn from "../core/database/DatabaseConnection";
 import { PalettesInterface, SettingsInterface, DownloadsInterface } from "../core/Interfaces/DatabaseInterfaces";
 import {HOME} from "../Paths";
-import Errno from "../core/Errno";
+import Errno from "../core/tools/Errno";
 import {openConfig} from "../core/config/Config";
 export interface InstallerI {
     mysqlSetupComplete : boolean;

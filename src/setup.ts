@@ -22,12 +22,12 @@ export default async function setup(setupListeners : ()=>void,setupComplete : ()
     try{
     data = await installer.getInstallerObject("/settings/setup.MN");
     }catch(err) {
-        Logger.info("To begin setup, visit /setup");
+        Logger.warn("To begin setup, visit /setup");
         return;
     }
 
     if(!data.mysqlSetupComplete) {
-        Logger.info("To begin setup, visit /setup");
+        Logger.warn("To begin setup, visit /setup");
         return;
     }
 
@@ -41,7 +41,7 @@ export default async function setup(setupListeners : ()=>void,setupComplete : ()
             let palette = await DatabaseConnection.instance.getActivePalette();
             setConstants(settings,design,palette);
         } catch(err) {
-            console.log("ERROR HERE: ",err);
+
         }
     }
     if(!data.done){

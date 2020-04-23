@@ -32,9 +32,9 @@ export default class InputListener
      * @param name the name of the listeners to execute.
      * @param data data to send to all listeners.
      */
-    static recive(name : string,data : any)
+    static recive(name : string,data : any) : boolean
     {
-        this.instance.recive(name,data);
+        return this.instance.recive(name,data);
     }
 
     private listen(name : string,cb : (any)=>void)
@@ -43,11 +43,13 @@ export default class InputListener
             this.listeners[name] = [];
         this.listeners[name].push(cb);
     }
-    private recive(name : string,data : any)
+    private recive(name : string,data : any) : boolean
     {
 
-        if(!this.listeners[name]) return;
+        if(!this.listeners[name]) return false;
         for (let i = 0; i < this.listeners[name].length; i++)
             this.listeners[name][i](data);
+
+        return true;
     }
 }
