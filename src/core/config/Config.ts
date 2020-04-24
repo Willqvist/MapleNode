@@ -88,7 +88,7 @@ async function applyParsers(obj : ConfigParser) {
             prefix:prefix,
         };
     } catch(err) {
-        Logger.error(err.message);
+        Logger.error("error",err.message);
     }
     config.run = await obj.interface<RunInterface>("run");
     config.server.port = await obj.number("server/port");

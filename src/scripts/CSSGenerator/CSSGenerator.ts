@@ -14,7 +14,7 @@ export default class CSSGenerator
                 files.forEach((file) => {
                     fs.readFile(HOME+"/templates/CSSTemplates/" + file, "utf8", ((err, text) => {
                         i++;
-                        if (err) Logger.error(err);
+                        if (err) Logger.error("error",err);
                         text = text.replace(/var\(--mainColor\)/g, palette.mainColor);
                         text = text.replace(/var\(--secondaryMainColor\)/g, palette.secondaryMainColor);
                         text = text.replace(/var\(--fontColorDark\)/g, palette.fontColorDark);
@@ -44,7 +44,7 @@ export default class CSSGenerator
             `
             });
             fs.readFile("./scripts/CSSGenerator/HTMLTemplates/index.ejs", "utf8", (err, file) => {
-                if (err) Logger.error(err.message);
+                if (err) Logger.error("error",err.message);
                 file = file.replace(/<!--var\(--content\)-->/g, html);
                 fs.writeFile("./views/index.ejs", file, ()=> {
                     resolve();

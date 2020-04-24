@@ -22,12 +22,12 @@ export default async function setup(setupListeners : ()=>void,setupComplete : ()
     try{
     data = await installer.getInstallerObject("/settings/setup.MN");
     }catch(err) {
-        Logger.warn("To begin setup, visit /setup");
+        Logger.warn("debug","To begin setup, visit /setup");
         return;
     }
 
     if(!data.mysqlSetupComplete) {
-        Logger.warn("To begin setup, visit /setup");
+        Logger.warn("debug","To begin setup, visit /setup");
         return;
     }
 
@@ -46,7 +46,7 @@ export default async function setup(setupListeners : ()=>void,setupComplete : ()
     }
     if(!data.done){
         consts.setConstant("setup-status",-1);
-        Logger.warn("setup incomplete: visit localhost/setup");
+        Logger.warn("debug","setup incomplete: visit localhost/setup");
     } else {
         setupComplete();
     }

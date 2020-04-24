@@ -36,16 +36,25 @@ class App {
      */
     async init() {
         this.appConfig = await getConfig();
+        this.setRunMode(this.appConfig.run.mode);
         this.listenToServer();
         this.config();
         await this.exitOnFailure(this.setupDatabase);
         await this.exitOnFailure(this.setup);
     }
 
+    private setRunMode(mode : string) {
+        if(mode.toLocaleLowerCase() == "release") {
+            Logger.listenTo("release");
+        } else {
+            Logger.listenTo(["release","debug"]);
+        }
+    }
+
     private listenToServer() {
         this.server = this.app.listen(this.appConfig.server.port);
         this.server.on('error', function(err) {
-            Logger.error(err.message);
+            Logger.error("error",err.message);
             process.exit(0);
         });
     }
@@ -87,11 +96,11 @@ class App {
                 await DatabaseConnection.createInstance(this.getDatabase(), this.getConfig().server.database.auth);
             }
             catch(err) {
-                Logger.warn("Could not connected to database.");
+                Logger.warn("debug","Could not connected to database.");
                 if(err.errno)
-                    Logger.error(`[${err.errno}] ${err.msg}`);
+                    Logger.error("error",`[${err.errno}] ${err.msg}`);
                 else
-                    Logger.error(err);
+                    Logger.error("error",err);
                 return false;
             }
         }
@@ -158,7 +167,7 @@ class App {
         //app.use("/IO",         route("IORouter"));
         this.app.use((req, res, next)=>
         {
-            Logger.log(`[${req.ip}] tried to visit ${req.originalUrl}`);
+            Logger.log("debug",`[${req.ip}] tried to visit ${req.originalUrl}`);
             res.status(404).render('error/404')
         });
 
@@ -169,8 +178,8 @@ class App {
         this.app.locals.heroImage = consts.getConstant("heroImage");
         this.app.locals.logo = consts.getConstant("logo");
         this.app.locals.settings = consts.getConstant("settings");
-        Logger.log(`setup complete`);
-        Logger.log(`${consts.getConstant<SettingsInterface>("settings").serverName} is Online on port ${input.port}`);
+        Logger.log("debug",`setup complete`);
+        Logger.log("debug",`${consts.getConstant<SettingsInterface>("settings").serverName} is Online on port ${input.port}`);
     }
 
     /**

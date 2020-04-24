@@ -8,7 +8,7 @@ export default class ExeLogger extends Logger
     }
     protected error(msg)
     {
-        console.log(`[${Time.getTime()} ERROR]   : ${msg}`); 
+        console.log(`[${Time.getTime()} ERROR]   : ${msg}`);
     }
     protected info(msg)
     {

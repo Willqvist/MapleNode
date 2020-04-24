@@ -129,7 +129,7 @@ router.all("/:id/",async (req,res,next)=>
                         await setup.connectToDatabase(data);
                         return res.redirect(number + 1 + "");
                     }catch(err) {
-                        Logger.log(err);
+                        Logger.log("error",err);
                         return res.render("setup/error", {
                             page: number,
                             error: {reason: app.getDatabase().printError(err)}});

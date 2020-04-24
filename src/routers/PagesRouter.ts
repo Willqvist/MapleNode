@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import DBConn from "../core/database/DatabaseConnection";
 const router = express.Router();
-const DBConn = require("../core/database/DatabaseConnection");
+
 router.get(["/"],(req,res)=>
 {
     return res.render("index");
@@ -37,4 +38,4 @@ router.get("/vote",async (req,res)=>
     let data = await DBConn.instance.getVotes();
     res.render("pages/vote",{user:req.session.user,votes:data});
 });
-module.exports = router;
+export default router;

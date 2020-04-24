@@ -14,7 +14,7 @@ export function parsePath(root:any, val : string,settings={build:false,parent:fa
             if(settings.build) {
                 parent[path[i]] = {};
             } else {
-                Logger.error(`No path "${path[i]}" found in ${val}`);
+                Logger.error("error",`No path "${path[i]}" found in ${val}`);
                 return null;
             }
         }

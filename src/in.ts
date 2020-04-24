@@ -2,8 +2,8 @@ import InputListener from "./core/tools/InputListener";
 import Logger from "./core/logger/Logger";
 import CmdLogger from "./core/logger/CmdLogger";
 import Observer from "./core/Observer";
+import {getConfig} from "./core/config/Config";
 process.stdout.write("MapleNode> ");
-
 //tools
 const stdIn = getStdinVars();
 if(stdIn.logger)
@@ -33,12 +33,12 @@ InputListener.listen(["stop","quit","exit","!q"],(data)=>
 
 InputListener.listen("ping",(data)=>
 {
-    Logger.log("pong");
+    Logger.log("release","pong");
 });
 
 InputListener.listen(["help","!h"],(data)=>
 {
-    Logger.log(`
+    Logger.log("release",`
     \x1b[1mCommands\x1b[0m
     \x1b[1mhelp, !h\x1b[0m:                      Lists all commands
     \x1b[1mquit, stop, exit, !q, ^C\x1b[0m:      Stops the server

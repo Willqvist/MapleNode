@@ -114,6 +114,7 @@ export default class MysqlDatabase implements Database {
         if(err) {
             throw {errno:0,msg:err};
         }
+        if(rows.length == 0) return null;
         return rows[0];
     }
 
@@ -122,6 +123,7 @@ export default class MysqlDatabase implements Database {
         if(err) {
             throw {errno:0,msg:err};
         }
+        if(rows.length == 0) return null;
         return rows[0];
     }
     async getDesign(obj : SWO) :Promise<DesignInterface> {
@@ -129,6 +131,7 @@ export default class MysqlDatabase implements Database {
         if(err) {
             throw {errno:0,msg:err};
         }
+        if(rows.length == 0) return null;
         return rows[0];
     }
     async getActivePalette(obj) :Promise<PalettesInterface> {
@@ -142,6 +145,7 @@ export default class MysqlDatabase implements Database {
         if(err) {
             throw {errno:0,msg:err};
         }
+        if(rows.length == 0) return null;
         return rows[0];
     }
     async getDownloads(obj : SWO) :Promise<DownloadsInterface> {
@@ -149,6 +153,7 @@ export default class MysqlDatabase implements Database {
         if(err) {
             throw {errno:0,msg:err};
         }
+        if(rows.length == 0) return null;
         return rows[0];
     }
     async getVotes(obj : SWO) :Promise<VoteInterface[]> {
@@ -156,6 +161,7 @@ export default class MysqlDatabase implements Database {
         if(err) {
             throw {errno:0,msg:err};
         }
+        if(rows.length == 0) return null;
         return rows;
     }
     async getVote(id : number, obj : SWO) :Promise<VoteInterface> {
@@ -169,6 +175,7 @@ export default class MysqlDatabase implements Database {
         if(err) {
             throw {errno:0,msg:err};
         }
+        if(rows.length == 0) return null;
         return rows[0];
     }
     async getPalette(id : string, obj : SWO) :Promise<PalettesInterface> {
@@ -182,6 +189,7 @@ export default class MysqlDatabase implements Database {
         if(err) {
             throw {errno:0,msg:err};
         }
+        if(rows.length == 0) return null;
         return rows[0];
     }
     async getLayout(name : string,obj : SWO) :Promise<LayoutInterface> {
@@ -195,6 +203,7 @@ export default class MysqlDatabase implements Database {
         if(err) {
             throw {errno:0,msg:err};
         }
+        if(rows.length == 0) return null;
         return rows[0];
     }
 
@@ -209,8 +218,21 @@ export default class MysqlDatabase implements Database {
         if(err) {
             throw {errno:0,msg:err};
         }
+        if(rows.length == 0) return null;
         return rows[0];
     }
+
+
+    getAccountWithPassword(name: string, password: string, obj?: SWO): Promise<AccountsInterface> {
+        if(!obj) {
+            obj = {
+                where:[]
+            }
+        }
+        obj.where["password"] = password;
+        return this.getAccount(name,obj);
+    }
+
     async addPalette(name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) {
         let [rows,l] = await this.connection.query(`INSERT INTO ${this.table("palettes")} (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES
         ('${name}','${mainColor}','${secondaryMainColor}','${fontColorDark}','${fontColorLight}','${fillColor}','${active}')`);
