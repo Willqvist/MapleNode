@@ -67,20 +67,6 @@ function getStdinVars() : any
 
 function getInputVariables(data,start=0) : boolean
 {
-
-    /*
-    data.shift();
-    let i = start;
-    let attribs = data;
-    data.forEach(element => {
-        if(element.charAt(0) == "-")
-        {
-            attribs = attribs.slice(start,i);
-            return getInputVariables(data,i);
-        }
-        i++;
-    });
-    */
     let recieved : boolean = InputListener.recive(data[0].substring(0,data[0].length-1), {});
     if(!recieved) {
         process.stdout.write("MapleNode> ");
