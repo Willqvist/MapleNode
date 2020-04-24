@@ -39,7 +39,7 @@ InputListener.listen("ping",(data)=>
 InputListener.listen(["help","!h"],(data)=>
 {
     Logger.log(`
-\x1b[1mCommands\x1b[0m
+    \x1b[1mCommands\x1b[0m
     \x1b[1mhelp, !h\x1b[0m:                      Lists all commands
     \x1b[1mquit, stop, exit, !q, ^C\x1b[0m:      Stops the server
     \x1b[1mping\x1b[0m:                          pong
