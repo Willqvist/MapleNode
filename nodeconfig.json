@@ -3,15 +3,14 @@
 		"database": {
 			"instance": "MysqlDatabase",
 			"auth": {
-				"user": "root",
+				"user": "",
 				"password": "",
-				"host": "localhost",
-				"database": "leaderms",
-				"multipleStatements": true
+				"host": "",
+				"database": "",
 			},
-			"prefix": "MN"
+			"prefix": ""
 		},
-		"port": 800
+		"port": 80
 	},
 	"run": {
 		"mode": "debug",
