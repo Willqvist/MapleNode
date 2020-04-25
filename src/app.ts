@@ -32,7 +32,7 @@ class App {
     }
 
     /**
-     * This method is called at start of the program.
+     * This method is called at start of the program
      */
     async init() {
         this.appConfig = await getConfig();
