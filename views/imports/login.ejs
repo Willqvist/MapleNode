@@ -1,0 +1,69 @@
+<div id="login_form">
+    <form id="login_form_login" method="POST" action="<%= action %>">
+        <input name="form" value="login" hidden>
+        <div class="inputWrapper">
+            <input id="username" name="username" required placeholder="Name">
+            <label for="username">Username</label>
+        </div>
+        <div class="inputWrapper">
+            <input id="password" name="password" type="password" required placeholder="Name">
+            <label for="password">Password</label>
+        </div>
+        <p class="switch">Create Account</p>
+        <div class="btn next-btn">
+            <div class="btn-wrapper" id="submitLoginForm">
+                <span>Login</span>
+                <div class="ip">
+                    <i class="fas fa-key"></i>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form id="login_form_register" method="POST" action="<%= action %>">
+        <input name="form" value="register" hidden>
+        <div class="inputWrapper">
+            <input id="username" name="username" required placeholder="Name">
+            <label for="username">Username</label>
+        </div>
+        <div class="inputWrapper">
+            <input id="password" name="password" type="password" required placeholder="Name">
+            <label for="password">Password</label>
+        </div>
+        <div class="inputWrapper">
+            <input id="confirm_password" name="confirm_password" type="password" required placeholder="Name">
+            <label for="confirm_password">Confirm Password</label>
+        </div>
+        <div class="inputWrapper">
+            <input id="email" name="email" type="email" required placeholder="Name">
+            <label for="email">Email</label>
+        </div>
+        <p class="switch">Use already created account</p>
+        <div class="btn next-btn">
+            <div class="btn-wrapper" id="submitRegisterForm">
+                <span>Register</span>
+                <div class="ip">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    let isRegister = true;
+    let register_form = document.getElementById("login_form_register");
+    let login_form = document.getElementById("login_form_login");
+    login_form.style.display="none";
+    let s = document.getElementsByClassName("switch");
+    for(let i = 0; i < s.length; i++) {
+        s[i].addEventListener("click",()=> {
+            if(isRegister) {
+                register_form.style.display="none";
+                login_form.style.display="block";
+            } else {
+                register_form.style.display="block";
+                login_form.style.display="none";
+            }
+            isRegister = !isRegister;
+        },false);
+    }
+</script>

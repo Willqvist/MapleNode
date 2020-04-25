@@ -72,6 +72,12 @@ export default class Setup {
     public async setupData() : Promise<InstallerI>{
         return await this.installHandler.installationComplete(this.settingsSrc);
     }
+
+    async complete() {
+        let installer = await this.installHandler.getInstallerObject(this.settingsSrc);
+        installer.done = true;
+        await this.installHandler.saveInstallerObject(installer,this.settingsSrc);
+    }
 }
 
 export interface SetupFile {

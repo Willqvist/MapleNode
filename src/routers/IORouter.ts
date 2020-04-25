@@ -25,12 +25,9 @@ let installHandler = new InstallHandler();
  */
 router.post("/login",async (req,res)=>
 {
-    let response = await io.login(req.body.username,md5(req.body.password));
+    let response = await io.login(req.session,req.body.username,md5(req.body.password));
     if(response.REST.success)
     {
-        req.session.user = {name:response.account.name,id:response.account.id,gm:response.account.gm};
-        req.session.cookie.expires = response.expire;
-        req.session.cookie.maxAge = response.lifetime;
         Logger.log("debug","["+req.ip+"] " + req.body.username + " loggedin");
     }
     else
@@ -69,7 +66,7 @@ router.post("/register",async (req,res)=>
     if(body.year <= 1800)
         return sendJSON(res,{success:false,error:"Are you really over 200 years old?"});
 
-    let response = await io.register(body.username,md5(body.password),new Date(body.year,body.month,body.day),body.email);
+    let response = await io.register(req.session,body.username,md5(body.password),new Date(body.year,body.month,body.day),body.email);
     Logger.log("debug","["+req.ip+"] " + body.username + " registered");
     return sendJSON(res,{success:true,error:"Register complete! You will be directed to a new page in 3 sec..."});
 });

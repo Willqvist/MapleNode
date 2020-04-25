@@ -8,9 +8,11 @@ import multer from "multer";
 import app from '../app';
 import Setup, {SetupFile} from "../models/Setup";
 import {getConfig} from "../core/config/Config";
-import Logger from "../core/logger/Logger";
+import md5 from "md5";
+import IO from "../models/IO";
 const router = express.Router();
 const setup = new Setup();
+const io = new IO();
 let upload = multer({dest:'upload/'});
 
 router.all("*",async (req,res,next)=>
@@ -41,7 +43,7 @@ router.post("/design",upload.fields([{name:'logoUpload',maxCount:1},{name:'heroU
     let logoDest : SetupFile = {fileName:logo.filename,mimetype:logo.mimetype,destName:"logo"};
     let heroDest : SetupFile = {fileName:hero.filename,mimetype:hero.mimetype,destName:"heroImage"};
     await setup.setDesign(logoDest,heroDest);
-    return res.redirect("./palette");
+    return res.redirect("./complete");
 });
 
 //PALETTE
@@ -100,6 +102,58 @@ router.post("/template",async (req,res)=>
     return res.redirect("complete");
 });
 
+//COMPLETE
+router.get("/complete",async (req,res)=>
+{
+    let [mysql,sett] = await isAllowed(req,res);
+    if(!mysql || !sett) return;
+    let settings = constants.getConstant<SettingsInterface>("settings");
+    await setup.complete();
+    return res.render("setup/setup_complete",{name:settings.serverName});
+});
+
+//LOGIN WEBADMIN
+router.get("/webadmin",async (req,res)=>
+{
+    let [mysql,sett] = await isAllowed(req,res);
+    let account = io.getAccount(req.session);
+    if(account) {
+        return res.redirect("./colors");
+    }
+    if(!mysql) return;
+    let settings = constants.getConstant<SettingsInterface>("settings");
+    return res.render("./setup/setup_login",{name:settings.serverName});
+});
+
+router.post("/webadmin",async (req,res)=>
+{
+    let [mysql,sett] = await isAllowed(req,res);
+    if(!mysql) return;
+
+    //error prevention
+    if(!req.body.form || (req.body.form !== "register" && req.body.form !== "login")) {
+        return res.render("setup/error", {
+            page: "webadmin",
+            error: {reason: "Invalid post form"}});
+    }
+
+    if(req.body.form === "register") {
+        if(req.body.password !== req.body.confirm_password) {
+            return res.render("setup/error", {
+                page: "webadmin",
+                error: {reason: "Passwords does not match!"}});
+        }
+        await io.register(req.session,req.body.username,md5(req.body.password),new Date(),req.body.email);
+    } else if(req.body.form === "login") {
+        let response = await io.login(req.session,req.body.username,md5(req.body.password));
+        if(!response.REST.loggedin) {
+            return res.render("setup/error", {
+                page: "webadmin",
+                error: {reason: response.REST.reason}});
+        }
+    }
+    return res.redirect("./colors");
+});
 
 router.all(["/","index"], (req,res)=>
 {
@@ -129,10 +183,9 @@ router.all("/:id/",async (req,res,next)=>
                         await setup.connectToDatabase(data);
                         return res.redirect(number + 1 + "");
                     }catch(err) {
-                        Logger.log("error",err);
                         return res.render("setup/error", {
                             page: number,
-                            error: {reason: app.getDatabase().printError(err)}});
+                            error: {reason: app.getDatabase().printError(err.errno)}});
                     }
                 break;
                 case 2:
@@ -151,7 +204,7 @@ router.all("/:id/",async (req,res,next)=>
                         app.getApp().locals.palette = constants.getConstant<PalettesInterface>("palette");
                         app.getApp().locals.heroImage = "headerImage.png";
                         app.getApp().locals.logo = "svgs/logo.svg";
-                        return res.redirect("/setup/design");
+                        return res.redirect("./webadmin");
                     }catch(err) {
                         return res.render("setup/error",{page:number,error:{reason:err.message}});
                     }
@@ -173,7 +226,7 @@ router.all("/:id/",async (req,res,next)=>
                 }
             }
             if(number == 2 && setupStatus.settingsComplete) {
-                return res.redirect("design");
+                return res.redirect("webadmin");
             }
             return res.render("setup/setup_"+number);
         }

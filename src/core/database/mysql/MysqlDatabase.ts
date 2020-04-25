@@ -20,6 +20,7 @@ import Errno from "../../tools/Errno";
 
 import * as Constants from "../../Constants";
 import FileTools from "../../tools/FileTools";
+import {MysqlListenError} from "../../tools/ErrnoConversion";
 
 export default class MysqlDatabase implements Database {
 
@@ -333,6 +334,6 @@ export default class MysqlDatabase implements Database {
     }
 
     printError(errno: any) {
-
+        return MysqlListenError.error(errno);
     }
 }

@@ -1,8 +1,6 @@
 import DatabaseConnection from "../core/database/DatabaseConnection";
 import {AccountsInterface} from "../core/Interfaces/DatabaseInterfaces";
 
-const Database = DatabaseConnection.getInstance();
-
 export interface SessionInterface {
     lifetime:number,
     expire : Date,
@@ -19,11 +17,18 @@ export default class IO {
     /**
      * tries to login the user if username and password matches.
      * otherwise false it returned.
+     * @param session current session to bind active login to.
      * @param username the username of the account
      * @param password the password of the account.
      */
-    async login(username: string, password: string) : Promise<SessionInterface> {
-        let account = await Database.getAccountWithPassword(username,password);
+    async login(session : Express.Session,username: string, password: string) : Promise<SessionInterface> {
+        let account;
+        try {
+            account = await DatabaseConnection.getInstance().getAccountWithPassword(username, password);
+        } catch(err) {
+            console.log(err);
+        }
+        console.log(account);
         let response = {
             lifetime:0,
             expire:null,
@@ -41,6 +46,9 @@ export default class IO {
             let hour = 3600000/2;
             response.expire = new Date(Date.now() + hour);
             response.lifetime = hour;
+            session.user = account;
+            session.cookie.expires = response.expire;
+            session.cookie.maxAge = response.lifetime;
             return response;
         }
         return response
@@ -53,7 +61,11 @@ export default class IO {
      * @param username the username of the account
      * @param password the password of the account.
      */
-    async register(username: string, password: string, date : Date, email: string) {
+    async register(session : Express.Session,username: string, password: string, date : Date, email: string) {
 
+    }
+
+    getAccount(session: Express.Session) : AccountsInterface {
+        return <AccountsInterface>session.user;
     }
 }

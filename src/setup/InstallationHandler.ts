@@ -122,7 +122,6 @@ export default class InstallationHandler
     {
         this.installObj = data;
         return new Promise((resolve,reject) => {
-            console.log("path: ",HOME+src);
             fs.writeFile(HOME+src, JSON.stringify(data), (err) => {
                 if(err) reject(err);
                 resolve(data);
