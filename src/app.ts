@@ -45,9 +45,9 @@ class App {
 
     private setRunMode(mode : string) {
         if(mode.toLocaleLowerCase() == "release") {
-            Logger.listenTo("release");
+            Logger.listenTo(["release","info","error"]);
         } else {
-            Logger.listenTo(["release","debug"]);
+            Logger.listenTo(["all"]);
         }
     }
 

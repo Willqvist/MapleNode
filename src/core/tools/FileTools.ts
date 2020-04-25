@@ -38,10 +38,7 @@ export default class FileTools {
         {
            fs.writeFile(dest,src,"utf8",(err)=>{
                if(err) reject(err);
-               fs.chmod(dest, 0o666, (error) => {
-                   if(error) reject(error);
-                   resolve();
-               });
+               resolve();
            });
         });
     }

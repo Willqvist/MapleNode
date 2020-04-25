@@ -33,7 +33,7 @@ export async function getConfig() : Promise<ConfigInterface> {
     try {
         content = await FileTools.readFile("./nodeconfig.json", "utf8");
     } catch(err) {
-        content = writeDefault();
+        content = await writeDefault();
     }
     let file = JSON.parse(content);
     config = JSON.parse(content);
@@ -43,7 +43,7 @@ export async function getConfig() : Promise<ConfigInterface> {
     return config;
 }
 
-function writeDefault() {
+async function writeDefault() {
     let str = `{
     "server": {
     "database": {
@@ -65,7 +65,7 @@ function writeDefault() {
     }
 }       
 `;
-    FileTools.write("./nodeconfig.json",str);
+    await FileTools.write("./nodeconfig.json",str);
     return str;
 }
 
@@ -92,5 +92,4 @@ async function applyParsers(obj : ConfigParser) {
     }
     config.run = await obj.interface<RunInterface>("run");
     config.server.port = await obj.number("server/port");
-
 }
