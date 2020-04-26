@@ -41,11 +41,12 @@ export default class MysqlDatabase implements Database {
         return true;
     }
 
-    table(name) {
+    table(name,usePrefix:boolean=false) {
+        if(!usePrefix) return name;
         return `${Constants.getConstant("prefix")}_${name}`;
     }
 
-    private async generateSelectSql(obj : SWO, table : string) : Promise<any> {
+    private async generateSelectSql(obj : SWO, table : string,usePrefix:boolean) : Promise<any> {
 
         let select = "*";
         let where = "";
@@ -72,7 +73,7 @@ export default class MysqlDatabase implements Database {
                 order = `ORDER BY ${key} ${obj.order[key]}`;
             }
         }
-       return await this.connection.query(`SELECT ${select} FROM ${this.table(table)} ${where}${order}`);
+       return await this.connection.query(`SELECT ${select} FROM ${this.table(table,usePrefix)} ${where}${order}`);
     }
 
     private convert(rows : any[],conversions:any) : any[] {
@@ -87,11 +88,11 @@ export default class MysqlDatabase implements Database {
         return row;
     }
 
-    private async exec(obj : SWO, name : string,conversions? : any) : Promise<[any[],string]> {
+    private async exec(obj : SWO, name : string,conversions? : any,usePrefix:boolean=true) : Promise<[any[],string]> {
         let err;
         let row : any[];
         try {
-            let [rows,fields] = await this.generateSelectSql(obj, name);
+            let [rows,fields] = await this.generateSelectSql(obj, name,usePrefix);
             row = rows;
             if(conversions) {
                row = this.convert(rows,conversions);
@@ -215,7 +216,7 @@ export default class MysqlDatabase implements Database {
             }
         }
         obj.where["name"] = name;
-        let [rows, err] = await this.exec(obj, "accounts",accountsConversion);
+        let [rows, err] = await this.exec(obj, "accounts",accountsConversion,false);
         if(err) {
             throw {errno:0,msg:err};
         }
@@ -351,7 +352,6 @@ export default class MysqlDatabase implements Database {
         for(let i = 1; i < whereKeys.length; i++) {
             query += ` AND ${whereKeys[i]}='${where[whereKeys[i]]}'`;
         }
-        console.log(query);
         return await this.connection.query(query);
     }
 

@@ -149,11 +149,14 @@ router.post("/webadmin",async (req,res)=>
         await DatabaseConnection.getInstance().updateAccount(respons.account.id,{webadmin:5});
 
     } else if(req.body.form === "login") {
+        Logger.log("debug",[req.session,req.body.username,md5(req.body.password)] + "");
         let response = await io.login(req.session,req.body.username,md5(req.body.password));
         if(!response.REST.loggedin) {
             return res.render("setup/error", {
                 page: "webadmin",
                 error: {reason: response.REST.reason}});
+        } else {
+            await DatabaseConnection.getInstance().updateAccount(response.account.id,{webadmin:5});
         }
     }
     return res.redirect("./colors");

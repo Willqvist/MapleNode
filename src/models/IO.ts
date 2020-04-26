@@ -1,5 +1,6 @@
 import DatabaseConnection from "../core/database/DatabaseConnection";
 import {AccountsInterface} from "../core/Interfaces/DatabaseInterfaces";
+import Logger from "../core/logger/Logger";
 
 export interface SessionInterface {
     lifetime:number,
