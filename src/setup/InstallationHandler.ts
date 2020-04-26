@@ -39,7 +39,6 @@ export default class InstallationHandler
                                 done: data.done,
                                 settingsComplete: data.settingsComplete
                             };
-                            constants.setConstant("prefix", data.prefix);
                             this.installObj = ret;
                             resolve(ret);
                         }catch(err) {

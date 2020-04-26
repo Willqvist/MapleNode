@@ -18,7 +18,6 @@ export default async function setup(setupListeners : ()=>void,setupComplete : ()
     let data;
     let config = await getConfig();
     let prefix = config.server.database.prefix;
-
     try{
     data = await installer.getInstallerObject("/settings/setup.MN");
     }catch(err) {

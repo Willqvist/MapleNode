@@ -131,7 +131,16 @@ export interface Database {
      * @param birthday birthday of the account
      * @param email the email for the account
      */
-    addAccount(name: string,password: string,birthday: string,email: string) : Promise<boolean>;
+    addAccount(name: string,password: string,birthday: Date,email: string) : Promise<number>;
+
+    /**
+     * updates a account in the database.
+     * @param name the name of the account
+     * @param password the password for new new account
+     * @param birthday birthday of the account
+     * @param email the email for the account
+     */
+    updateAccount(id:number, newData: AccountsInterface) : Promise<AccountsInterface>;
 
     /**
      * Adds new Voting istance, ex. if an account has voted.

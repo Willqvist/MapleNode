@@ -10,6 +10,8 @@ import Setup, {SetupFile} from "../models/Setup";
 import {getConfig} from "../core/config/Config";
 import md5 from "md5";
 import IO from "../models/IO";
+import Logger from "../core/logger/Logger";
+import DatabaseConnection from "../core/database/DatabaseConnection";
 const router = express.Router();
 const setup = new Setup();
 const io = new IO();
@@ -143,7 +145,9 @@ router.post("/webadmin",async (req,res)=>
                 page: "webadmin",
                 error: {reason: "Passwords does not match!"}});
         }
-        await io.register(req.session,req.body.username,md5(req.body.password),new Date(),req.body.email);
+        let respons = await io.register(req.session,req.body.username,md5(req.body.password),new Date(),req.body.email);
+        await DatabaseConnection.getInstance().updateAccount(respons.account.id,{webadmin:5});
+
     } else if(req.body.form === "login") {
         let response = await io.login(req.session,req.body.username,md5(req.body.password));
         if(!response.REST.loggedin) {

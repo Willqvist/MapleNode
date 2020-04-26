@@ -26,9 +26,8 @@ export default class IO {
         try {
             account = await DatabaseConnection.getInstance().getAccountWithPassword(username, password);
         } catch(err) {
-            console.log(err);
+            account = null;
         }
-        console.log(account);
         let response = {
             lifetime:0,
             expire:null,
@@ -46,22 +45,69 @@ export default class IO {
             let hour = 3600000/2;
             response.expire = new Date(Date.now() + hour);
             response.lifetime = hour;
-            session.user = account;
-            session.cookie.expires = response.expire;
-            session.cookie.maxAge = response.lifetime;
+            this.loginUserToSession(session,account,response.expire,response.lifetime);
             return response;
         }
         return response
     }
 
+    private loginUserToSession(session: Express.Session, account: AccountsInterface, expire: Date, maxAge: number) {
+        session.user = account;
+        session.cookie.expires = expire;
+        session.cookie.maxAge = maxAge;
+    }
+
     /**
-     * registers a user and stores it into the databse.
+     * registers a user and stores it into the database.
      * if error occured, return.success will be false and
      * return.errorMessage will be filled with the reason why.
      * @param username the username of the account
      * @param password the password of the account.
      */
-    async register(session : Express.Session,username: string, password: string, date : Date, email: string) {
+    async register(session : Express.Session,username: string, password: string, date : Date, email: string) : Promise<SessionInterface> {
+        let account : number;
+        try {
+            console.log("IM HERE");
+            account = await DatabaseConnection.getInstance().addAccount(username, password, date, email);
+        } catch(err) {
+            console.log("IM HERE",err);
+            return {
+                lifetime:0,
+                expire:null,
+                account:null,
+                REST:{
+                    loggedin:false,
+                    success:false,
+                    reason:err.message
+                }
+            };
+        }
+
+        let response = {
+            lifetime:0,
+            expire:null,
+            account:null,
+            REST:{
+                loggedin:false,
+                success:false,
+                reason:"Wrong username or password!"
+            }
+        };
+        let acc : AccountsInterface = {
+            id:account,
+            name:username,
+            password:password
+        }
+        if(response) {
+            response.REST.success = true;
+            response.REST.loggedin = true;
+            response.account = acc;
+            let hour = 3600000/2;
+            response.expire = new Date(Date.now() + hour);
+            response.lifetime = hour;
+            this.loginUserToSession(session,acc,response.expire,response.lifetime);
+        }
+        return response;
 
     }
 

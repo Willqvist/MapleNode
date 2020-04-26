@@ -281,8 +281,10 @@ export default class MysqlDatabase implements Database {
         return true;
     }
 
-    addAccount(name: string, password: string, birthday: string, email: string): Promise<boolean> {
-        return undefined;
+    async addAccount(name: string, password: string, birthday: Date, email: string): Promise<number> {
+        let birth = birthday.toISOString().slice(0, 19).replace('T', ' ');
+        let [rows,l] = await this.connection.query(`INSERT INTO accounts (name,password,birthday,email,lastknownip,NomePessoal,fb,twt) VALUES('${name}','${password}','${birth}','${email}','0',' ',' ',' ')`);
+        return rows.insertId;
     }
 
     addVote(name: string, url: string, nx: number, time: number): Promise<boolean> {
@@ -335,5 +337,28 @@ export default class MysqlDatabase implements Database {
 
     printError(errno: any) {
         return MysqlListenError.error(errno);
+    }
+
+    private async update(database: string, where: any, data: any) {
+        let query = "UPDATE " + database;
+        let keys = Object.keys(data);
+        for(let i = 0; i < keys.length; i++) {
+            query += ` SET ${keys[i]}='${data[keys[i]]}'`;
+        }
+
+        let whereKeys = Object.keys(where);
+        query += ` WHERE ${whereKeys[0]}='${where[whereKeys[0]]}'`;
+        for(let i = 1; i < whereKeys.length; i++) {
+            query += ` AND ${whereKeys[i]}='${where[whereKeys[i]]}'`;
+        }
+        console.log(query);
+        return await this.connection.query(query);
+    }
+
+    async updateAccount(id: number, newData: AccountsInterface): Promise<AccountsInterface> {
+        let keys = Object.keys(newData);
+        let data = newData;
+        let [row,l] = await this.update("accounts",{id:id},newData);
+        return data;
     }
 }
