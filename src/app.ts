@@ -11,11 +11,16 @@ import input from "./in";
 import Logger from "./core/logger/Logger"
 import cGen from "./scripts/CSSGenerator/CSSGenerator";
 import {PalettesInterface, SettingsInterface} from "./core/Interfaces/DatabaseInterfaces";
-import SetupRouter from "./routers/SetupRouter";
 import {Server} from "http";
 import DatabaseConnection from "./core/database/DatabaseConnection";
-import {ConfigInterface, getConfig, openConfig} from "./core/config/Config";
+import {ConfigInterface, getConfig} from "./core/config/Config";
 import {Database} from "./core/database/Database";
+
+//Routers
+import SetupRouter from "./routers/SetupRouter";
+import GlobalRouter from "./routers/GlobalRouter";
+import IORouter from "./routers/IORouter";
+import PagesRouter from "./routers/PagesRouter";
 import {ServerListenError} from "./core/tools/ErrnoConversion";
 
 /**
@@ -145,8 +150,8 @@ class App {
         this.app.use(express.static(HOME+"/public",{redirect:false}));
         this.app.use(UrlSlicer);
         this.app.use("/setup",SetupRouter);
-
-        //app.use("/",        route("GlobalRouter"));
+        this.app.use("/", GlobalRouter);
+        this.app.use("/",PagesRouter);
         this.app.use(async (req,res,next)=>
         {
             //TODO: move to only build when changeing theme.
@@ -159,12 +164,12 @@ class App {
                 fillColor:'#CC3363'
             };
             await cGen.generateCSS(paletteInterface);
-        });
 
+        });
         //app.use("/library",     route("LibraryRouter"));
-        //app.use("/",            route("PagesRouter"));
+
         //app.use("/dashboard",   routeApp("DashboardRouter"));
-        //app.use("/IO",         route("IORouter"));
+        //this.app.use("/IO",         IORouter);
         this.app.use((req, res, next)=>
         {
             Logger.log("debug",`[${req.ip}] tried to visit ${req.originalUrl}`);
@@ -174,12 +179,15 @@ class App {
     }
 
     private setupComplete() {
+        //to include in.ts file. if removed, functions will not load.
+        input;
         this.app.locals.palette = consts.getConstant("palette");
         this.app.locals.heroImage = consts.getConstant("heroImage");
         this.app.locals.logo = consts.getConstant("logo");
         this.app.locals.settings = consts.getConstant("settings");
-        Logger.log("debug",`setup complete`);
-        Logger.log("debug",`${consts.getConstant<SettingsInterface>("settings").serverName} is Online on port ${input.port}`);
+        Logger.log("debug", `setup complete`);
+        Logger.log("release", `${consts.getConstant<SettingsInterface>("settings").serverName} is Online on port ${this.appConfig.server.port}`);
+
     }
 
     /**

@@ -2,8 +2,9 @@ import express from "express";
 import DBConn from "../core/database/DatabaseConnection";
 const router = express.Router();
 
-router.get(["/"],(req,res)=>
+router.get("/",(req,res)=>
 {
+    console.log("IM HERE");
     return res.render("index");
 });
 router.get("/ranking",(req,res)=>

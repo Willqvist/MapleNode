@@ -68,7 +68,8 @@ router.post("/register",async (req,res)=>
 
     let response = await io.register(req.session,body.username,md5(body.password),new Date(body.year,body.month,body.day),body.email);
     Logger.log("debug","["+req.ip+"] " + body.username + " registered");
-    return sendJSON(res,{success:true,error:"Register complete! You will be directed to a new page in 3 sec..."});
+
+    return sendJSON(res,{success:true,error:"Register complete! You will be directed to a new page in 3 seconds..."});
 });
 function isBetween(data,min,max)
 {
@@ -230,5 +231,4 @@ router.get("/ranking/:player",(req,res,next)=>
     next();
 });
 
-
-module.exports = router;
+export default router;

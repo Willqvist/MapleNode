@@ -41,7 +41,7 @@ export default class MysqlDatabase implements Database {
         return true;
     }
 
-    table(name,usePrefix:boolean=false) {
+    table(name,usePrefix:boolean=true) {
         if(!usePrefix) return name;
         return `${Constants.getConstant("prefix")}_${name}`;
     }
@@ -236,7 +236,7 @@ export default class MysqlDatabase implements Database {
     }
 
     async addPalette(name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) {
-        let [rows,l] = await this.connection.query(`INSERT INTO ${this.table("palettes")} (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES
+        let [rows,l] = await this.connection.query(`INSERT INTO ${this.table("palettes",true)} (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES
         ('${name}','${mainColor}','${secondaryMainColor}','${fontColorDark}','${fontColorLight}','${fillColor}','${active}')`);
         return rows;
     }

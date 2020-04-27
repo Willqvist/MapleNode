@@ -20,7 +20,7 @@ export interface EqiupItem {
     parameters:{id:number,z:string}
 }
 
-enum ERROR {
+export enum GENERATOR_ERROR {
     INVALID_PLAYER,
     CANT_FIND_ITEM
 }
@@ -93,7 +93,7 @@ export default class MapleCharacterGenerator
         try {
             let result = await DatabaseConnection.instance.getCharacter(name,{select:["face","hair","skincolor"]});
             if(!result)
-                return {success:false,errorID:ERROR.INVALID_PLAYER,reason:"cant find player: " + name};
+                return {success:false,errorID:GENERATOR_ERROR.INVALID_PLAYER,reason:"cant find player: " + name};
             player.parts.face = result.face;
             player.parts.hair = result.hair;
             player.parts.skincolor = result.skincolor;

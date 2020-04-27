@@ -2,7 +2,7 @@ import fs, {PathLike} from "fs";
 import Canvas from "./Canvas";
 import ImageBuilder from "./ImageBuilder";
 import {PartsInterface} from "../core/Interfaces/Interfaces";
-import DOMParser from "xmldom"
+import {DOMParser} from "xmldom"
 import {Player,EqiupItem} from "./MCG";
 export default class ItemBuilder extends ImageBuilder
 {

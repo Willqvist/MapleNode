@@ -1,4 +1,4 @@
-import PNG from "pngjs";
+import {PNG} from "pngjs";
 export default class Canvas
 {
     private width : number;
@@ -24,7 +24,7 @@ export default class Canvas
     clearCanvas()
     {
         let can = new PNG({width:this.canvas.width,height:this.canvas.height});
-        this.canvas = can; 
+        this.canvas = can;
     }
     drawImage(image,x : number,y : number)
     {
@@ -47,7 +47,7 @@ export default class Canvas
                 this.canvas.data[position + ColorIndex.GREEN] = col.green * col.alpha + this.canvas.data[position + ColorIndex.GREEN] * (1-col.alpha);
                 this.canvas.data[position + ColorIndex.BLUE] = col.blue * col.alpha + this.canvas.data[position + ColorIndex.BLUE] * (1-col.alpha);
                 this.canvas.data[position + ColorIndex.ALPHA] = 0xFF;
-            }  
+            }
         }
     }
     drawRect(x,y,width,height)
@@ -61,7 +61,7 @@ export default class Canvas
                 this.canvas.data[position + ColorIndex.GREEN] = (this.color >> 8) & 0xFF;
                 this.canvas.data[position + ColorIndex.BLUE] = (this.color >> 0) & 0xFF;
                 this.canvas.data[position + ColorIndex.ALPHA] = 0xff;
-            }  
+            }
         }
     }
 }

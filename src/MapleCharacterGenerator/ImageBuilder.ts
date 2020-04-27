@@ -1,5 +1,5 @@
 import fs, {PathLike} from "fs";
-import PNG from "pngjs";
+import {PNG} from "pngjs";
 import Canvas from "./Canvas";
 export default class ImageBuilder
 {
