@@ -64,7 +64,15 @@ export default class MysqlDatabase implements Database {
                 let pre = "WHERE"
                 for (let key in obj.where) {
                     if(key === "iterate") continue;
-                    where += `${pre} ${key}='${obj.where[key]}' `;
+                    if(obj.where[key] instanceof Array) {
+                        let arr = <string[]> obj.where[key];
+                        for(let j = 0; j < arr.length; j++) {
+                            where += `${pre} ${key}='${arr[j]}' `;
+                            pre = 'OR';
+                        }
+                    } else {
+                        where += `${pre} ${key}='${obj.where[key]}' `;
+                    }
                     pre = "AND";
                 }
             }
@@ -73,6 +81,7 @@ export default class MysqlDatabase implements Database {
                 order = `ORDER BY ${key} ${obj.order[key]}`;
             }
         }
+        console.log(`SELECT ${select} FROM ${this.table(table,usePrefix)} ${where}${order}`);
        return await this.connection.query(`SELECT ${select} FROM ${this.table(table,usePrefix)} ${where}${order}`);
     }
 

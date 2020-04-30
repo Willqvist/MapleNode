@@ -8,9 +8,13 @@ if(!runType) {
 if (os.type() === 'Linux') {
    spawn('npm', ["run",runType+"-linux"], { stdio: 'inherit' });
 }
-else if (os.type() === 'Darwin') 
+else if (os.type() === 'Darwin')
 throw new Error("Mac OS is not supported yet! Sorry: ");
-else if (os.type() === 'Windows_NT') 
-spawn('npm', ["run",runType+"-windows"], { stdio: 'inherit' });
+else if (os.type() === 'Windows_NT')
+    try {
+        spawn('npm.cmd', ["run", runType + "-windows"], {stdio: 'inherit'});
+    } catch(err) {
+    console.log(err);
+    }
 else
    throw new Error("Unsupported OS found: " + os.type());

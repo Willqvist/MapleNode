@@ -35,7 +35,6 @@ export default class CSSGenerator
             let html = "";
             Object.keys(json).forEach((key) => {
                 let obj = json[key];
-                console.log(obj);
                 html += `
             <div class="control box ${obj.panel}_box" style="grid-column:${obj.columns.pos}/${obj.columns.size};grid-row:${obj.rows.pos}/${obj.rows.size}">
                 <h2 class="box_title">${obj.name}</h2>

@@ -67,7 +67,12 @@ function getStdinVars() : any
 
 function getInputVariables(data,start=0) : boolean
 {
-    let recieved : boolean = InputListener.recive(data[0].substring(0,data[0].length-1), {});
+    let sub = data[0].substring(0,data[0].length-1);
+
+    //if windows, remove \r
+    if(sub.charAt(sub.length-1) == '\r') sub = sub.substring(0,sub.length-1);
+
+    let recieved : boolean = InputListener.recive(sub, {});
     if(!recieved) {
         process.stdout.write("MapleNode> ");
     }

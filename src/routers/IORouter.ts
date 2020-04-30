@@ -101,7 +101,7 @@ router.get("/vote/:name",async (req,res)=>
     }
     else
     {
-        return res.send(JSON.stringify({success:true,reason:"Found username",userid:result[0].id, occupied:ress,votes:[]}));
+        return res.send(JSON.stringify({success:true,reason:"Found username",userid:acc.id, occupied:votes,votes:[]}));
     }
 });
 router.post("/vote",(req,res)=>

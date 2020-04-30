@@ -108,6 +108,8 @@ class App {
                     Logger.error("error",err);
                 return false;
             }
+        } else {
+            //fix so that id setup is done, set it to false...
         }
         return true;
     }
