@@ -6,6 +6,7 @@ import Logger from "../core/logger/Logger";
 import DatabaseConnection from "../core/database/DatabaseConnection";
 import IO from "../models/IO";
 import md5 from "md5";
+import {AccountsInterface} from "../core/Interfaces/DatabaseInterfaces";
 
 const router = express.Router();
 const Database = DatabaseConnection.getInstance();
@@ -80,36 +81,28 @@ function sendJSON(res,json) {
     return res.send(JSON.stringify(json));
 }
 
-router.get("/vote/:name",(req,res)=>
+router.get("/vote/:name",async (req,res)=>
 {
-    /*
-    let name = req.params.name;
-    mysql.connection.query(`SELECT * FROM accounts WHERE name = '${name}'`,(err,result)=>
+
+    let { name } = req.params;
+    let acc: AccountsInterface = await io.getAccountByName(name);
+    if(!acc) return res.send(JSON.stringify({success:false,reason:"Could not find username"}));
+    let votes = await io.getVotes(acc.id);
+    if(votes.length >= 1)
     {
-        if(result.length == 0) return res.send(JSON.stringify({success:false,reason:"Could not find username"}));
-        mysql.connection.query(`SELECT voteid FROM ${constants.getConstant("prefix")}_voting WHERE accountid = '${result[0].id}'`,(err,ress)=>
+        let ids = [];
+        for(let i = 1; i < votes.length; i++)
         {
-            if(ress.length >= 1)
-            {
-                let sql = `WHERE ID='${ress[0].voteid}'`;
-                for(let i = 1; i < ress.length; i++)
-                {
-                    sql += ` OR ID='${ress[i].voteid}'`;
-                }
-                mysql.connection.query(`SELECT * FROM ${constants.getConstant("prefix")}_vote ${sql}`,(err,votes)=>
-                {
-                    return res.send(JSON.stringify({success:true,reason:"Found username",userid:result[0].id, occupied:ress,votes:votes}));
-                });
-            }
-            else
-            {
-                return res.send(JSON.stringify({success:true,reason:"Found username",userid:result[0].id, occupied:ress,votes:[]}));
+            ids.push(votes[i].voteid);
+        }
 
-            }
-        });
-    });
-
-     */
+        let voteSites = DatabaseConnection.instance.getVotes({where: {id: ids}});
+        return res.send(JSON.stringify({success:true,reason:"Found username",userid:acc.id, occupied:votes,votes:voteSites}));
+    }
+    else
+    {
+        return res.send(JSON.stringify({success:true,reason:"Found username",userid:result[0].id, occupied:ress,votes:[]}));
+    }
 });
 router.post("/vote",(req,res)=>
 {

@@ -147,7 +147,7 @@ export interface Database {
      * @param accountid the id of the account that voted
      * @param voteid the vote id that the account voted in.
      */
-    addVoting(accountid: number, voteid: number) : Promise<boolean>;
+    setAccountVoted(accountid: number, voteid: number) : Promise<boolean>;
 
     /**
      * adds a new Vote url to the database
@@ -270,6 +270,7 @@ export interface Database {
 
     addDesign(heroImage: string, logo: string);
 
+    getAccountVote(accountId: number): Promise<VoteInterface[]>;
 }
 
 /*

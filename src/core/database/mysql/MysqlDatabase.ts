@@ -292,7 +292,7 @@ export default class MysqlDatabase implements Database {
         return undefined;
     }
 
-    addVoting(accountid: number, voteid: number): Promise<boolean> {
+    setAccountVoted(accountid: number, voteid: number): Promise<boolean> {
         return undefined;
     }
 
@@ -360,5 +360,9 @@ export default class MysqlDatabase implements Database {
         let data = newData;
         let [row,l] = await this.update("accounts",{id:id},newData);
         return data;
+    }
+
+    getAccountVote(accountId: number): Promise<VoteInterface[]> {
+        return undefined;
     }
 }

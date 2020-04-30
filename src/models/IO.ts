@@ -1,6 +1,5 @@
 import DatabaseConnection from "../core/database/DatabaseConnection";
-import {AccountsInterface} from "../core/Interfaces/DatabaseInterfaces";
-import Logger from "../core/logger/Logger";
+import {AccountsInterface, VoteInterface, VotingInterface} from "../core/Interfaces/DatabaseInterfaces";
 
 export interface SessionInterface {
     lifetime:number,
@@ -112,7 +111,29 @@ export default class IO {
 
     }
 
+    /**
+     * registers a vote for an account
+     * @param accountId the account that has voted
+     * @param voteId the id of the vote site.
+     */
+    async vote(accountId: number, voteId: number) {
+        await DatabaseConnection.instance.setAccountVoted(accountId,voteId);
+    }
+
+    /**
+     * returns all pages that account with account id has voted in within the cooldown
+     * for that vote site.
+     * @param accountId the account to get the vote sites from.
+     */
+    async getVotes(accountId: number): Promise<VotingInterface[]>  {
+        return await DatabaseConnection.instance.getAccountVote(accountId);
+    }
+
     getAccount(session: Express.Session) : AccountsInterface {
         return <AccountsInterface>session.user;
+    }
+
+    async getAccountByName(name: string) : Promise<AccountsInterface> {
+        return await DatabaseConnection.instance.getAccount(name);
     }
 }
