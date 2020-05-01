@@ -17,6 +17,11 @@ export default class Setup {
         this.installHandler= new InstallationHandler();
     }
 
+    /**
+     * sets the images in public/images
+     * @param logo, the logo image
+     * @param hero, the hero image
+     */
     public async setDesign(logo? : SetupFile, hero? : SetupFile) {
         if(logo)
             await this.move(logo);
@@ -24,6 +29,16 @@ export default class Setup {
             await this.move(hero);
     }
 
+    /**
+     * adds a new color palette to the database
+     * @param name the name of the new palette
+     * @param mainColor the main color of the palette
+     * @param secondaryMainColor the secondary main color
+     * @param fontColorDark font color dark, used on light backgrounds
+     * @param fontColorLight font color light, used on dark backgrounds
+     * @param fillColor fillColor.
+     * @param active if active is 1, the palette will be set as the new active palette.
+     */
     public async addPalette(name,mainColor,secondaryMainColor,fillColor,fontColorDark,fontColorLight) {
         let result = await DBConn.instance.addPalette(
             name,
@@ -36,26 +51,16 @@ export default class Setup {
         );
     }
 
-
-    /*
-                        data.user = req.body.user;
-                    data.password = req.body.password;
-                    data.host = req.body.host;
-                    data.database = req.body.database;
-                    data.prefix = prefix;
+    /**
+     * connects to the database.
+     * @param data, authentication for the database and prefix.
      */
-    public async connectToDatabase(data: any) {
-        let auth : DatabaseAuthInterface = {
-            user:data.user,
-            password:data.password,
-            host:data.host,
-            database:data.database
-        };
+    public async connectToDatabase(auth: DatabaseAuthInterface & {prefix: number}) {
         await DBConn.createInstance(app.getDatabase(), auth);
         let writer = await openConfig();
-        await writer.write("server/database/prefix",data.prefix);
+        await writer.write("server/database/prefix",auth.prefix);
         await writer.write("server/database/auth",auth);
-        await this.installHandler.setMysqlSetupComplete(data);
+        await this.installHandler.setMysqlSetupComplete(auth);
     }
 
     public async settings(data : SettingsInterface, clientUrl : string, setupUrl : string) {

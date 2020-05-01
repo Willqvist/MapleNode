@@ -1,6 +1,4 @@
 import express from "express";
-import MapleCharacterGenerator from "../MapleCharacterGenerator/MCG";
-import InstallHandler from "../setup/InstallationHandler";
 import * as constants from "../core/Constants";
 import Logger from "../core/logger/Logger";
 import DatabaseConnection from "../core/database/DatabaseConnection";
@@ -9,10 +7,7 @@ import md5 from "md5";
 import {AccountsInterface} from "../core/Interfaces/DatabaseInterfaces";
 
 const router = express.Router();
-const Database = DatabaseConnection.getInstance();
 const io = new IO();
-let mcg = new MapleCharacterGenerator(60*5);
-let installHandler = new InstallHandler();
 
 /**
  * REST api on post to /login.

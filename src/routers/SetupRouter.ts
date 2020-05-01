@@ -1,6 +1,4 @@
 import express from "express";
-import InstallationHandler, {InstallerI} from "../setup/InstallationHandler";
-import mnHandler from "../setup/MNHandler";
 import * as constants from "../core/Constants";
 import DBConn from "../core/database/DatabaseConnection";
 import {PalettesInterface, SettingsInterface} from "../core/Interfaces/DatabaseInterfaces";
@@ -10,8 +8,9 @@ import Setup, {SetupFile} from "../models/Setup";
 import {getConfig} from "../core/config/Config";
 import md5 from "md5";
 import IO from "../models/IO";
-import Logger from "../core/logger/Logger";
 import DatabaseConnection from "../core/database/DatabaseConnection";
+import {DatabaseAuthInterface} from "../core/Interfaces/Interfaces";
+
 const router = express.Router();
 const setup = new Setup();
 const io = new IO();
@@ -60,18 +59,20 @@ router.get("/colors",async (req,res)=>
 router.post("/colors",async (req,res)=>
 {
     try {
+        const {name, mainColor, secondaryMainColor, fillColor, fontColorDark, fontColorLight } = req.body;
         let result = await setup.addPalette(
-            req.body.name,
-            req.body.mainColor,
-            req.body.secondaryMainColor,
-            req.body.fillColor,
-            req.body.fontColorDark,
-            req.body.fontColorLight
+            name,
+            mainColor,
+            secondaryMainColor,
+            fillColor,
+            fontColorDark,
+            fontColorLight
         );
     }catch(err) {
+        const { message } = err.message;
         return res.render("setup/error", {
             page: "colors",
-            error: {reason: err.message}});
+            error: {reason: message}});
     }
     return res.redirect("./template");
 });
@@ -82,26 +83,14 @@ router.get("/template",async (req,res)=>
     let [mysql,sett] = await isAllowed(req,res);
     if(!mysql || !sett) return;
     let settings = constants.getConstant<SettingsInterface>("settings");
-    return res.render("setup/setup_design",{name:settings.serverName});
+
+    const { serverName } = settings;
+    return res.render("setup/setup_design",{name: serverName});
 });
 
 router.post("/template",async (req,res)=>
 {
-    try {
-        let result = await setup.addPalette(
-            req.body.name,
-            req.body.mainColor,
-            req.body.secondaryMainColor,
-            req.body.fillColor,
-            req.body.fontColorDark,
-            req.body.fontColorLight
-        );
-    }catch(err) {
-        return res.render("setup/error", {
-            page: "colors",
-            error: {reason: err.message}});
-    }
-    return res.redirect("complete");
+    //TODO: implemented code...
 });
 
 //COMPLETE
@@ -110,21 +99,27 @@ router.get("/complete",async (req,res)=>
     let [mysql,sett] = await isAllowed(req,res);
     if(!mysql || !sett) return;
     let settings = constants.getConstant<SettingsInterface>("settings");
+
+    const { serverName } = settings;
     await setup.complete();
-    return res.render("setup/setup_complete",{name:settings.serverName});
+    return res.render("setup/setup_complete",{name:serverName});
 });
 
 //LOGIN WEBADMIN
 router.get("/webadmin",async (req,res)=>
 {
     let [mysql,sett] = await isAllowed(req,res);
-    let account = io.getAccount(req.session);
+
+    const { session } = req.session;
+    let account = io.getAccount(session);
     if(account) {
         return res.redirect("./colors");
     }
     if(!mysql) return;
     let settings = constants.getConstant<SettingsInterface>("settings");
-    return res.render("./setup/setup_login",{name:settings.serverName});
+
+    const { serverName } = settings;
+    return res.render("./setup/setup_login",{name:serverName});
 });
 
 router.post("/webadmin",async (req,res)=>
@@ -132,31 +127,33 @@ router.post("/webadmin",async (req,res)=>
     let [mysql,sett] = await isAllowed(req,res);
     if(!mysql) return;
 
+    const { form, password, confirm_password, username, email } = this.body;
+
     //error prevention
-    if(!req.body.form || (req.body.form !== "register" && req.body.form !== "login")) {
+    if(!form || (form !== "register" && form !== "login")) {
         return res.render("setup/error", {
             page: "webadmin",
             error: {reason: "Invalid post form"}});
     }
 
-    if(req.body.form === "register") {
-        if(req.body.password !== req.body.confirm_password) {
+    if(form === "register") {
+        if(password !== confirm_password) {
             return res.render("setup/error", {
                 page: "webadmin",
                 error: {reason: "Passwords does not match!"}});
         }
-        let respons = await io.register(req.session,req.body.username,md5(req.body.password),new Date(),req.body.email);
-        await DatabaseConnection.getInstance().updateAccount(respons.account.id,{webadmin:5});
+        let { account } = await io.register(req.session,username,md5(password),new Date(),email);
+        await DatabaseConnection.getInstance().updateAccount(account.id,{ webadmin: 5 });
 
-    } else if(req.body.form === "login") {
-        Logger.log("debug",[req.session,req.body.username,md5(req.body.password)] + "");
-        let response = await io.login(req.session,req.body.username,md5(req.body.password));
-        if(!response.REST.loggedin) {
+    } else if(form === "login") {
+        const { REST, account } = await io.login(req.session,username,md5(password));
+        const { loggedin, reason } = REST;
+        if(!loggedin) {
             return res.render("setup/error", {
                 page: "webadmin",
-                error: {reason: response.REST.reason}});
+                error: {reason: reason}});
         } else {
-            await DatabaseConnection.getInstance().updateAccount(response.account.id,{webadmin:5});
+            await DatabaseConnection.getInstance().updateAccount(account.id,{ webadmin: 5 });
         }
     }
     return res.redirect("./colors");
@@ -164,7 +161,6 @@ router.post("/webadmin",async (req,res)=>
 
 router.all(["/","index"], (req,res)=>
 {
-    console.log("here!!!");
     return res.render("setup/index");
 });
 
@@ -179,41 +175,44 @@ router.all("/:id/",async (req,res,next)=>
             switch(number)
             {
                 case 1:
-                    let data : any = {};
-                    let prefix = req.body.prefix;
-                    data.user = req.body.user;
-                    data.password = req.body.password;
-                    data.host = req.body.host;
-                    data.database = req.body.database;
-                    data.prefix = prefix;
+                    const { prefix, user, password, host, database } = req.body;
+                    let auth : DatabaseAuthInterface & {prefix: number} = {
+                        user,
+                        host,
+                        database,
+                        password,
+                        prefix
+                    };
                     try {
-                        await setup.connectToDatabase(data);
+                        await setup.connectToDatabase(auth);
                         return res.redirect(number + 1 + "");
-                    }catch(err) {
+                    }catch({ errno }) {
+
                         return res.render("setup/error", {
                             page: number,
-                            error: {reason: app.getDatabase().printError(err.errno)}});
+                            error: {reason: app.getDatabase().printError(errno)}});
                     }
                 break;
                 case 2:
                     try {
+                        const { version, exp, vp, serverName, drop, meso, nx, gmLevel, downloadSetup, downloadClient } = req.body;
                         let settings : SettingsInterface = {
-                            version: req.body.version,
-                            expRate: req.body.exp,
-                            vpColumn: req.body.vp,
-                            serverName : req.body.serverName,
-                            dropRate: req.body.drop,
-                            mesoRate : req.body.meso,
-                            nxColumn: req.body.nx,
-                            gmLevel: req.body.gmLevel
+                            version,
+                            gmLevel,
+                            serverName,
+                            expRate: exp,
+                            vpColumn: vp,
+                            dropRate: drop,
+                            mesoRate : meso,
+                            nxColumn: nx,
                         }
-                        await setup.settings(settings,req.body.downloadSetup,req.body.downloadClient);
+                        await setup.settings(settings,downloadSetup,downloadClient);
                         app.getApp().locals.palette = constants.getConstant<PalettesInterface>("palette");
                         app.getApp().locals.heroImage = "headerImage.png";
                         app.getApp().locals.logo = "svgs/logo.svg";
                         return res.redirect("./webadmin");
-                    }catch(err) {
-                        return res.render("setup/error",{page:number,error:{reason:err.message}});
+                    }catch({ message }) {
+                        return res.render("setup/error",{page:number,error:{reason:message}});
                     }
                 break;
                 default:
@@ -222,17 +221,17 @@ router.all("/:id/",async (req,res,next)=>
             }
         }
         else{
-            let config = await getConfig();
-            let setupStatus = await setup.setupData();
-            if(number != 1 && (!DBConn.isConnected() || config.server.database.prefix.length == 0)) {
+            const { server } = await getConfig();
+            const { settingsComplete } = await setup.setupData();
+            if(number != 1 && (!DBConn.isConnected() || server.database.prefix.length == 0)) {
                 return res.redirect("1");
             }
             if(number == 1) {
-                if(config.server.database.prefix.length > 0) {
+                if(server.database.prefix.length > 0) {
                     return res.redirect("2");
                 }
             }
-            if(number == 2 && setupStatus.settingsComplete) {
+            if(number == 2 && settingsComplete) {
                 return res.redirect("webadmin");
             }
             return res.render("setup/setup_"+number);
@@ -245,12 +244,12 @@ router.all("/:id/",async (req,res,next)=>
 });
 
 async function isAllowed(req,res) {
-    let settings = await setup.setupData();
-    if(!settings.mysqlSetupComplete) {
+    const { mysqlSetupComplete, settingsComplete } = await setup.setupData();
+    if(!mysqlSetupComplete) {
         res.redirect("1");
         return [true,false];
     }
-    if(!settings.settingsComplete) {
+    if(!settingsComplete) {
         res.redirect("2");
         return [false,true];
     }
