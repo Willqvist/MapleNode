@@ -1,4 +1,4 @@
-import {Database, RANK, SWO} from "../Database";
+import {Database, Rank, RANK, SWO} from "../Database";
 import mysql from "mysql2/promise";
 import {
     accountsConversion,
@@ -373,5 +373,92 @@ export default class MysqlDatabase implements Database {
 
     getAccountVote(accountId: number): Promise<VoteInterface[]> {
         return undefined;
+    }
+
+    async rank(orderby: "level" | "fame" | "job", rankby: {job?:string;search?:string},page: number, limit: number = 5): Promise<Rank[]> {
+        let where = "";
+        let searches = [];
+        if(rankby.job) {
+            searches.push(`job='${rankby.job}'`);
+        }
+        if(rankby.search) {
+            searches.push(`name LIKE '%${rankby.search}%'`);
+        }
+        if(searches.length != 0) {
+            let pre = "WHERE";
+            for(let i in searches) {
+                where += `${pre} ${searches[i]}`
+                pre = "AND";
+            }
+        }
+
+        let offset = Math.max(page,0)*limit;
+
+        let [rows,cols] = await this.connection.query(` 
+            SELECT 
+              id, 
+              level, 
+              global._order as global_level_order, 
+              # what rank that character is in on level.
+              fame._order as global_fame_order, 
+              J.job_rank as job_order, 
+              job 
+            FROM 
+              characters 
+              INNER JOIN (
+                #Calculates rank by level.
+                SELECT 
+                  id as _id, 
+                  @pos := @pos + 1 as _order 
+                FROM 
+                  characters 
+                  INNER JOIN (
+                    SELECT 
+                      @pos := 0
+                  ) R 
+                ORDER BY 
+                  level DESC
+              ) as global ON global._id = id 
+              INNER JOIN (
+                #Calculates rank by fame.
+                SELECT 
+                  id as _id, 
+                  @fame_pos := @fame_pos + 1 as _order 
+                FROM 
+                  characters 
+                  INNER JOIN (
+                    SELECT 
+                      @fame_pos := 0
+                  ) R 
+                ORDER BY 
+                  fame DESC
+              ) as fame ON fame._id = id 
+              INNER JOIN (
+                #Calculates rank by level grouped by job.
+                SELECT 
+                  id as _id, 
+                  @job_rank := IF(@job = job, @job_rank + 1, 1) as job_rank, 
+                  @job := job 
+                FROM 
+                  characters 
+                ORDER BY 
+                  job
+              ) as J ON J._id = id 
+            ? ORDER BY ? LIMIT ? OFFSET ?
+        `, [where, orderby, limit,offset]);
+        if(rows.length == 0) return null;
+        let ret: Rank[] = [];
+        for(let i = 0; i < rows.length; i++) {
+            ret.push({
+                id: rows[i].id,
+                level: rows[i].level,
+                fame: rows[i].level,
+                globalLevelOrder: rows[i].global_level_order,
+                globalFameOrder: rows[i].global_fame_order,
+                jobOrder: rows[i].job_order,
+                job: rows[i].job,
+            });
+        }
+        return ret;
     }
 }

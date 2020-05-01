@@ -262,15 +262,29 @@ export interface Database {
     addSettings(serverName: string,version: string,expRate: string,dropRate: string,mesoRate: string,
                 nxColumn: string,vpColumn: string,gmLevel: number) : Promise<boolean>;
 
+    addDesign(heroImage: string, logo: string);
+
+    /**
+     * returns all what urls a account has voted
+     * and when.
+     * @param accountId, id of the account to check.
+     */
+    getAccountVote(accountId: number): Promise<VoteInterface[]>;
+
+    /**
+     * returns a list of ranks depending on search
+     * @param orderby, what to order by, level or fame.
+     * @param rankby, rank by options, rank by jobs, rank by users name contaning search
+     * @param page, page defined by limit, if apge is 1 and limit 10 it will return results between 10 and 20.
+     * @param limit, max size of return array.
+     */
+    rank(orderby: "level" | "fame",rankby: {job?:string;search?:string},page: number, limit: number) : Promise<Rank[]>;
+
     /**
      * prints a database error depending on id.
      * @param errno the error id to print.
      */
     printError(errno: number);
-
-    addDesign(heroImage: string, logo: string);
-
-    getAccountVote(accountId: number): Promise<VoteInterface[]>;
 }
 
 /*
@@ -295,4 +309,14 @@ export enum RANK {
  */
 export enum ACCOUNT_FLAGS {
     voting=1
+}
+
+export interface Rank {
+    id: number;
+    level: number;
+    fame: number;
+    globalLevelOrder: number;
+    globalFameOrder: number;
+    jobOrder: number;
+    job: number;
 }
