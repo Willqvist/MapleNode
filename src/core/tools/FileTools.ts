@@ -1,7 +1,6 @@
-import fs from "fs";
-import ErrnoException = NodeJS.ErrnoException;
-import {HOME} from "../../Paths";
-
+import fs, {PathLike} from "fs";
+import {File} from "../Interfaces/Interfaces";
+import mime from 'mime-types';
 /**
  * Helper class for file handling.
  */
@@ -28,9 +27,28 @@ export default class FileTools {
         });
     }
 
+    public static async readDir(dir: PathLike): Promise<File[]> {
+        return new Promise<File[]>((resolve, reject) => {
+           fs.readdir(dir,(err, files) => {
+                if(err) return reject(err);
+                let res: File[] = [];
+                for(let i in files) {
+                    const file = files[i];
+                    const mimeType = mime.extname(file);
+                    res.push({
+                        fileName: file,
+                        mimetype: mimeType,
+                        destName: dir + file
+                    })
+                }
+                resolve(res);
+           });
+        });
+    }
+
     /**
      * writes utf8 data to a file
-     * @param dest the destination file to write to.
+     * @paramm dest the destination file to write to.
      * @param src the data to write to the file. will be written as utf8.
      */
     public static async write(dest : string, src: string) : Promise<void> {

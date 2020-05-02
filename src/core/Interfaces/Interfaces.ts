@@ -33,3 +33,9 @@ export interface EquipmentInterface {
     itemid: number,
     position: number
 }
+
+export interface File {
+    fileName : string,
+    mimetype: string,
+    destName : string
+}

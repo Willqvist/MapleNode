@@ -7,7 +7,7 @@ import mnHandler from "../setup/MNHandler";
 import {SettingsInterface} from "../core/Interfaces/DatabaseInterfaces";
 import * as constants from "../core/Constants";
 import {openConfig} from "../core/config/Config";
-import {DatabaseAuthInterface} from "../core/Interfaces/Interfaces";
+import {DatabaseAuthInterface, File} from "../core/Interfaces/Interfaces";
 
 export default class Setup {
 
@@ -22,7 +22,7 @@ export default class Setup {
      * @param logo, the logo image
      * @param hero, the hero image
      */
-    public async setDesign(logo? : SetupFile, hero? : SetupFile) {
+    public async setDesign(logo? : File, hero? : File) {
         if(logo)
             await this.move(logo);
         if(hero)
@@ -69,7 +69,7 @@ export default class Setup {
         constants.setConstant("settings", data);
     }
 
-    private async move(file : SetupFile) {
+    private async move(file : File) {
         let ext = mime.extension(file.mimetype);
         let success = await FileTools.move(`upload/${file.fileName}`,`public/upload/${file.destName}.${ext}`);
     }
@@ -83,10 +83,4 @@ export default class Setup {
         installer.done = true;
         await this.installHandler.saveInstallerObject(installer,this.settingsSrc);
     }
-}
-
-export interface SetupFile {
-    fileName : string,
-    mimetype: string,
-    destName : string
 }

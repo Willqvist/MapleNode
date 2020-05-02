@@ -4,12 +4,12 @@ import DBConn from "../core/database/DatabaseConnection";
 import {PalettesInterface, SettingsInterface} from "../core/Interfaces/DatabaseInterfaces";
 import multer from "multer";
 import app from '../app';
-import Setup, {SetupFile} from "../models/Setup";
+import Setup from "../models/Setup";
 import {getConfig} from "../core/config/Config";
 import md5 from "md5";
 import IO from "../models/IO";
 import DatabaseConnection from "../core/database/DatabaseConnection";
-import {DatabaseAuthInterface} from "../core/Interfaces/Interfaces";
+import {DatabaseAuthInterface, File} from "../core/Interfaces/Interfaces";
 
 const router = express.Router();
 const setup = new Setup();
@@ -41,8 +41,8 @@ router.post("/design",upload.fields([{name:'logoUpload',maxCount:1},{name:'heroU
     if(!mysql || !sett) return;
     let logo : Express.Multer.File = req.files["logoUpload"][0];
     let hero : Express.Multer.File = req.files["heroUpload"][0];
-    let logoDest : SetupFile = {fileName:logo.filename,mimetype:logo.mimetype,destName:"logo"};
-    let heroDest : SetupFile = {fileName:hero.filename,mimetype:hero.mimetype,destName:"heroImage"};
+    let logoDest : File = {fileName:logo.filename,mimetype:logo.mimetype,destName:"logo"};
+    let heroDest : File = {fileName:hero.filename,mimetype:hero.mimetype,destName:"heroImage"};
     await setup.setDesign(logoDest,heroDest);
     return res.redirect("./complete");
 });

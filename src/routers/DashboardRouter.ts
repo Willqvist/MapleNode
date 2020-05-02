@@ -107,50 +107,11 @@ router.post("/palette/update",async (req,res)=>
         send(res, {success: false, reason: message});
     }
 });
-router.post("/changeImage",(req,res)=>
+router.post("/changeImage",async (req,res)=>
 {
-    readImages((files)=>
-    {
-        return res.send(JSON.stringify({success:true,files:files}));
-    });
+    let filePaths = (await FileTools.readDir('./public/images/')).map( file => `./public/images/${file.fileName}`);
+    return res.send(JSON.stringify({ success: true, files: filePaths }));
 });
-function readImages(callback,dir='./public/images/',start="",images=[])
-{
-    fs.readdir(dir+start,(err,files)=>
-    {
-        if(err) throw err;
-        files.iterate((file,next)=>
-        {
-            if(fs.lstatSync('./public/images/'+start+"/"+file).isDirectory())
-            {
-                readImages((imgs)=>
-                {
-                    images = images.concat(imgs);
-                    next();
-                },dir,start+"/"+file);
-            }
-            else
-            {
-                let ending = file.split(".")[1];
-                if(ending && (ending === "png" || ending === "jpg" || ending === "gif" || ending === "svg"))
-                    images.push((start+"/"+file).substr(1));
-                next();
-            }
-        },()=>
-        {
-            callback(images);
-        });
-    });
-}
-Array.prototype.iterate = function(callback,done,index=0)
-{
-    if(index==this.length) return done();
-    if(this.length == 0) return;
-    callback(this[index],()=>
-    {
-        this.iterate(callback,done,index+1);
-    });
-};
 
 router.post("/heroImage/change",async (req,res)=>
 {
