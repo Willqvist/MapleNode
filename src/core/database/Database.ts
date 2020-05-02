@@ -88,6 +88,8 @@ export interface Database {
      */
     getPalette(name : string, obj?: SWO) : Promise<PalettesInterface>;
 
+    getPalettes() : Promise<PalettesInterface[]>;
+
     /**
      * returns the layout by a given name, layout is in json format.
      * @param name name of the layout
@@ -155,8 +157,9 @@ export interface Database {
      * @param url the url wher ethe user votes.
      * @param nx amount of nx per vote
      * @param time cooldown between each vote, in minutes.
+     * @return id of the new vote in the database.
      */
-    addVote(name: string,url: string,nx: number,time: number) : Promise<boolean>;
+    addVote(name: string,url: string,nx: number,time: number) : Promise<number>;
 
     /**
      * deletes a vote from the database.
@@ -168,7 +171,7 @@ export interface Database {
      * sets the id of the palette to active.
      * @param id the id of the palette
      */
-    enablePalette(id: number) : Promise<boolean>;
+    enablePalette(id: number) : Promise<PalettesInterface>;
 
     /**
      * removes a palette from the database.
@@ -216,6 +219,8 @@ export interface Database {
      */
     updateLayout(name: string,json: string) : Promise<boolean>;
 
+    updateVote(id: number, name: string, url: string, nx: number, time: number ): boolean;
+
     /**
      * rebuilds the database from the ground up with a new prefix
      * @param prefix the new prefix to rebuild the database with.
@@ -233,7 +238,7 @@ export interface Database {
      * @param active if active is 1, the palette will be set as the new active palette.
      */
     addPalette(name: string,mainColor: string,secondaryMainColor: string,fontColorDark: string,
-               fontColorLight: string,fillColor: string,active: number) : Promise<boolean>;
+               fontColorLight: string,fillColor: string,active: number) : Promise<number>;
 
     /**
      * updates a palette with new colors
@@ -285,6 +290,8 @@ export interface Database {
      * @param errno the error id to print.
      */
     printError(errno: number);
+
+    removeVote(id: any): Promise<boolean>;
 }
 
 /*

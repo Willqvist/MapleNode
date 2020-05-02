@@ -136,4 +136,16 @@ export default class IO {
     async getAccountByName(name: string) : Promise<AccountsInterface> {
         return await DatabaseConnection.instance.getAccount(name);
     }
+
+    isLoggedIn(session: Express.Session): boolean {
+        return session.user;
+    }
+
+    isAdmin(session: Express.Session): boolean {
+        return this.getAccount(session).gm >= 1;
+    }
+
+    isWebAdmin(session: Express.Session): boolean {
+        return this.getAccount(session).webadmin >= 1;
+    }
 }
