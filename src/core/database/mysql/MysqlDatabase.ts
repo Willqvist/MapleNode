@@ -297,7 +297,7 @@ export default class MysqlDatabase implements Database {
         return rows.insertId;
     }
 
-    addVote(name: string, url: string, nx: number, time: number): Promise<boolean> {
+    addVote(name: string, url: string, nx: number, time: number): Promise<number> {
         return undefined;
     }
 
@@ -317,7 +317,7 @@ export default class MysqlDatabase implements Database {
         return undefined;
     }
 
-    enablePalette(id: number): Promise<boolean> {
+    enablePalette(id: number): Promise<PalettesInterface> {
         return undefined;
     }
 
@@ -460,5 +460,17 @@ export default class MysqlDatabase implements Database {
             });
         }
         return ret;
+    }
+
+    getPalettes(): Promise<PalettesInterface[]> {
+        return Promise.resolve([]);
+    }
+
+    removeVote(id: any): Promise<boolean> {
+        return Promise.resolve(false);
+    }
+
+    updateVote(id: number, name: string, url: string, nx: number, time: number): boolean {
+        return false;
     }
 }

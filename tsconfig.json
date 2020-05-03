@@ -8,6 +8,12 @@
     "outDir": "dist",
     "noEmit": false,
     "rootDir": "src",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
     "lib": [
       "es2017"
     ]
@@ -23,6 +29,7 @@
   ],
   "exclude": [
     "node_modules",
+    "babel.config.js",
     "./nodeconfig.json"
   ]
 }

@@ -1,11 +1,12 @@
-const express = require("express");
+import express from "express";
+import * as constants from "../core/Constants";
+//import * as lib  from "../core/library/Library";
+import fs from "fs";
+import parser from "../core/wz_parser/parser";
+import multer from 'multer';
+
 const router = express.Router();
-const constants = require("../core/Constants");
-const library = require("../core/library/Library").getLibrary();
-const fs = require("fs");
-const parser = require("../core/wz_parser/parser");
-const multer  = require('multer');
-const WritableBuffer = require("../core/wz_parser/SimpleWritableBuffer")
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, './uploads')
@@ -14,6 +15,7 @@ const storage = multer.diskStorage({
       cb(null, file.originalname)
     }
   });
+
 const upload = multer({
     limits: {
         fileSize: 1000000*1000

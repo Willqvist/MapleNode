@@ -1,6 +1,6 @@
 const HOME : string = parseHome(__dirname);
 export {
-    HOME
+  HOME,
 };
 
 
