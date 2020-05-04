@@ -1,27 +1,39 @@
-//libaries
-import express from "express";
+// libaries
+import express from 'express';
 import session from 'express-session';
-import bodyParser from "body-parser";
-import helmet from "helmet";
-import * as consts from "./core/Constants";
-import {HOME} from "./Paths";
-import {UrlSlicer} from "./Middleware";
-import setup from "./setup";
-import input from "./in";
-import Logger from "./core/logger/Logger"
-import cGen from "./scripts/CSSGenerator/CSSGenerator";
-import {PalettesInterface, SettingsInterface} from "./core/Interfaces/DatabaseInterfaces";
-import {Server} from "http";
-import DatabaseConnection from "./core/database/DatabaseConnection";
-import {ConfigInterface, getConfig} from "./core/config/Config";
-import {Database} from "./core/database/Database";
+import bodyParser from 'body-parser';
+import helmet from 'helmet';
+import { Server } from 'http';
+import * as consts from './core/Constants';
+import HOME from './Paths';
+import UrlSlicer from './Middleware';
+import setup from './setup';
+import input from './in';
+import Logger from './core/logger/Logger';
+import cGen from './scripts/CSSGenerator/CSSGenerator';
+import { PalettesInterface, SettingsInterface } from './core/Interfaces/DatabaseInterfaces';
+import DatabaseConnection from './core/database/DatabaseConnection';
+import { ConfigInterface, getConfig } from './core/config/Config';
+import { Database } from './core/database/Database';
 
-//Routers
-import SetupRouter from "./routers/SetupRouter";
-import GlobalRouter from "./routers/GlobalRouter";
-import IORouter from "./routers/IORouter";
-import PagesRouter from "./routers/PagesRouter";
-import {ServerListenError} from "./core/tools/ErrnoConversion";
+// Routers
+import SetupRouter from './routers/SetupRouter';
+import GlobalRouter from './routers/GlobalRouter';
+import IORouter from './routers/IORouter';
+import PagesRouter from './routers/PagesRouter';
+import DashboardRouter from './routers/DashboardRouter';
+
+/**
+ * sets the log level depending on mode string
+ * @param mode is either release or debug.
+ */
+function setRunMode(mode: string) {
+  if (mode.toLocaleLowerCase() === 'release') {
+    Logger.listenTo(['release', 'info', 'error']);
+  } else {
+    Logger.listenTo(['all']);
+  }
+}
 
 /**
  * The Main Application class that is created on launch.
@@ -29,184 +41,173 @@ import {ServerListenError} from "./core/tools/ErrnoConversion";
  * the nodeconfig.json file.
  */
 class App {
-    private app : express.Application;
-    private server : Server;
-    private appConfig : ConfigInterface;
-    constructor() {
-        this.app = express();
+  private readonly app: express.Application;
+
+  private server: Server;
+
+  private appConfig: ConfigInterface;
+
+  constructor() {
+    this.app = express();
+  }
+
+  /**
+   * This method is called at start of the program
+   */
+  async init() {
+    this.appConfig = await getConfig();
+    setRunMode(this.appConfig.run.mode);
+    this.listenToServer();
+    this.config();
+    await this.exitOnFailure(this.setupDatabase);
+    await this.exitOnFailure(this.setup);
+  }
+
+  private listenToServer() {
+    this.server = this.app.listen(this.appConfig.server.port);
+    this.server.on('error', (err) => {
+      Logger.error('error', err.message);
+      process.exit(0);
+    });
+  }
+
+  /**
+   * @return The express Application
+   */
+  public getApp(): express.Application {
+    return this.app;
+  }
+
+  /**
+   * @return config file, from nodeconfig.json
+   */
+  public getConfig(): ConfigInterface {
+    return this.appConfig;
+  }
+
+  /**
+   * setup middleware for express.
+   */
+  private config() {
+    this.app.set('view engine', 'ejs');
+    this.app.set('views', `${HOME}/views`);
+    this.app.use(bodyParser.json({ limit: '1000mb' }));
+    this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use(helmet());
+  }
+
+  /**
+   * tries to connect to the database given in server/database/instance in
+   * nodeconfig.json
+   * @return true if connection was successful.
+   */
+  private async setupDatabase(): Promise<boolean> {
+    const exists = this.getConfig().server.database.prefix.length !== 0;
+    if (exists) {
+      try {
+        await DatabaseConnection.createInstance(this.getDatabase(), this.getConfig().server.database.auth);
+      } catch (err) {
+        Logger.warn('debug', 'Could not connected to database.');
+        if (err.errno) Logger.error('error', `[${err.errno}] ${err.msg}`);
+        else Logger.error('error', err);
+        return false;
+      }
+    } else {
+      // fix so that id setup is done, set it to false...
     }
+    return true;
+  }
 
-    /**
-     * This method is called at start of the program
-     */
-    async init() {
-        this.appConfig = await getConfig();
-        this.setRunMode(this.appConfig.run.mode);
-        this.listenToServer();
-        this.config();
-        await this.exitOnFailure(this.setupDatabase);
-        await this.exitOnFailure(this.setup);
-    }
+  /**
+   * @return true if setup was successful.
+   * will call {@link App.setupListeners} to setup listeners
+   * and {@link App.setupComplete} when setup is finished.
+   */
+  private async setup(): Promise<boolean> {
+    await setup(this.setupListeners.bind(this), this.setupComplete.bind(this));
+    return true;
+  }
 
-    private setRunMode(mode : string) {
-        if(mode.toLocaleLowerCase() == "release") {
-            Logger.listenTo(["release","info","error"]);
-        } else {
-            Logger.listenTo(["all"]);
-        }
-    }
+  private async await<S, T>(func: (S) => Promise<T>): Promise<T> {
+    return func.bind(this)();
+  }
 
-    private listenToServer() {
-        this.server = this.app.listen(this.appConfig.server.port);
-        this.server.on('error', function(err) {
-            Logger.error("error",err.message);
-            process.exit(0);
-        });
-    }
+  /**
+   * will exit the program if a given function returns false or null.
+   * @param func the function to exit on failure.
+   */
+  private async exitOnFailure(func) {
+    const success = await this.await<any, any>(func);
+    if (!success) this.exit();
+  }
 
-    /**
-     * @return The express Application
-     */
-    public getApp() : express.Application {
-        return this.app;
-    }
+  /**
+   * setups all listeners/routers for Express application.
+   */
+  private setupListeners() {
+    const { use } = this.app;
+    use(
+      session({
+        secret: 'XCDGREV34432',
+        resave: false,
+        saveUninitialized: true,
+      })
+    );
+    use(express.static(`${HOME}/public`, { redirect: false }));
+    use(UrlSlicer);
+    use('/setup', SetupRouter);
+    use('/', GlobalRouter);
+    use('/', PagesRouter);
+    use('/dashboard', DashboardRouter);
+    use('/IO', IORouter);
+    use(async () => {
+      // TODO: move to only build when changeing theme.
+      const paletteInterface: PalettesInterface = {
+        name: 'Happy Green',
+        mainColor: '#69DC9E',
+        secondaryMainColor: '#3E78B2',
+        fontColorLight: '#D3F3EE',
+        fontColorDark: '#20063B',
+        fillColor: '#CC3363',
+      };
+      await cGen.generateCSS(paletteInterface);
+    });
+    use((req, res) => {
+      Logger.log('debug', `[${req.ip}] tried to visit ${req.originalUrl}`);
+      res.status(404).render('error/404');
+    });
+  }
 
-    /**
-     * @return config file, from nodeconfig.json
-     */
-    public getConfig() : ConfigInterface {
-        return this.appConfig
-    }
+  private setupComplete() {
+    // to include in.ts file. if removed, functions will not load. fix later...
+    // eslint-disable-next-line no-unused-expressions
+    input;
+    this.app.locals.palette = consts.getConstant('palette');
+    this.app.locals.heroImage = consts.getConstant('heroImage');
+    this.app.locals.logo = consts.getConstant('logo');
+    this.app.locals.settings = consts.getConstant('settings');
+    Logger.log('debug', `setup complete`);
+    Logger.log(
+      'release',
+      `${consts.getConstant<SettingsInterface>('settings').serverName} is Online on port ${this.appConfig.server.port}`
+    );
+  }
 
-    /**
-     * setup middleware for express.
-     */
-    private config() {
-        this.app.set('view engine', 'ejs');
-        this.app.set("views",HOME+"/views");
-        this.app.use(bodyParser.json({limit:'1000mb',}));
-        this.app.use(bodyParser.urlencoded({extended: true}));
-        this.app.use(helmet());
-    }
+  /**
+   * closes the server and exits the program
+   */
+  public exit() {
+    this.server.close();
+    process.exit(0);
+  }
 
-    /**
-     * tries to connect to the database given in server/database/instance in
-     * nodeconfig.json
-     * @return true if connection was successful.
-     */
-    private async setupDatabase() : Promise<boolean> {
-        let exists = this.getConfig().server.database.prefix.length != 0;
-        if(exists) {
-            try {
-                await DatabaseConnection.createInstance(this.getDatabase(), this.getConfig().server.database.auth);
-            }
-            catch(err) {
-                Logger.warn("debug","Could not connected to database.");
-                if(err.errno)
-                    Logger.error("error",`[${err.errno}] ${err.msg}`);
-                else
-                    Logger.error("error",err);
-                return false;
-            }
-        } else {
-            //fix so that id setup is done, set it to false...
-        }
-        return true;
-    }
-
-    /**
-     * @return true if setup was successful.
-     * will call {@link App.setupListeners} to setup listeners
-     * and {@link App.setupComplete} when setup is finished.
-     */
-    private async setup() : Promise<boolean> {
-        await setup(this.setupListeners.bind(this), this.setupComplete.bind(this));
-        return true;
-    }
-
-    private async await(func) : Promise<any> {
-        return await func.bind(this)();
-    }
-
-    /**
-     * will exit the program if a given function returns false or null.
-     * @param func the function to exit on failure.
-     */
-    private async exitOnFailure(func) {
-        let success = await this.await(func);
-        if(!success)
-            this.exit();
-    }
-
-    /**
-     * setups all listeners/routers for Express application.
-     */
-    private setupListeners() {
-        this.app.use(session(
-            {
-                secret:"XCDGREV34432",
-                resave:false,
-                saveUninitialized: true,
-            }
-        ));
-        this.app.use(express.static(HOME+"/public",{redirect:false}));
-        this.app.use(UrlSlicer);
-        this.app.use("/setup",SetupRouter);
-        this.app.use("/", GlobalRouter);
-        this.app.use("/",PagesRouter);
-        this.app.use(async (req,res,next)=>
-        {
-            //TODO: move to only build when changeing theme.
-            let paletteInterface : PalettesInterface = {
-                name:'Happy Green',
-                mainColor:'#69DC9E',
-                secondaryMainColor:'#3E78B2',
-                fontColorLight:'#D3F3EE',
-                fontColorDark:'#20063B',
-                fillColor:'#CC3363'
-            };
-            await cGen.generateCSS(paletteInterface);
-
-        });
-        //app.use("/library",     route("LibraryRouter"));
-
-        //app.use("/dashboard",   routeApp("DashboardRouter"));
-        //this.app.use("/IO",         IORouter);
-        this.app.use((req, res, next)=>
-        {
-            Logger.log("debug",`[${req.ip}] tried to visit ${req.originalUrl}`);
-            res.status(404).render('error/404')
-        });
-
-    }
-
-    private setupComplete() {
-        //to include in.ts file. if removed, functions will not load.
-        input;
-        this.app.locals.palette = consts.getConstant("palette");
-        this.app.locals.heroImage = consts.getConstant("heroImage");
-        this.app.locals.logo = consts.getConstant("logo");
-        this.app.locals.settings = consts.getConstant("settings");
-        Logger.log("debug", `setup complete`);
-        Logger.log("release", `${consts.getConstant<SettingsInterface>("settings").serverName} is Online on port ${this.appConfig.server.port}`);
-
-    }
-
-    /**
-     * closes the server and exits the program
-     */
-    public exit() {
-        this.server.close();
-        process.exit(0);
-    }
-
-    /**
-     * returns the established database
-     */
-    getDatabase() : Database{
-        return this.getConfig().server.database.instance;
-    }
+  /**
+   * returns the established database
+   */
+  getDatabase(): Database {
+    return this.getConfig().server.database.instance;
+  }
 }
 const app = new App();
-app.init();
+app.init().then(() => {});
 export default app;
