@@ -1,13 +1,22 @@
-import express from "express";
-import * as constants from "../core/Constants";
-import Logger from "../core/logger/Logger";
-import DatabaseConnection from "../core/database/DatabaseConnection";
-import IO from "../models/IO";
-import md5 from "md5";
-import {AccountsInterface} from "../core/Interfaces/DatabaseInterfaces";
+import express from 'express';
+import md5 from 'md5';
+import * as constants from '../core/Constants';
+import Logger from '../core/logger/Logger';
+import DatabaseConnection from '../core/database/DatabaseConnection';
+import IO from '../models/IO';
+import { AccountsInterface } from '../core/Interfaces/DatabaseInterfaces';
 
 const router = express.Router();
 const io = new IO();
+
+//Helper methods
+function isBetween(data, min, max) {
+  return data > min && data < max;
+}
+
+function sendJSON(res, json) {
+  return res.send(JSON.stringify(json));
+}
 
 /**
  * REST api on post to /login.
@@ -19,19 +28,15 @@ const io = new IO();
  * }
  * ```
  */
-router.post("/login",async (req,res)=>
-{
-    let response = await io.login(req.session,req.body.username,md5(req.body.password));
-    const { REST } = response;
-    if(REST.success)
-    {
-        Logger.log("debug","["+req.ip+"] " + req.body.username + " loggedin");
-    }
-    else
-    {
-        Logger.log("debug","["+req.ip+"] tried to login with username " + req.body.username + "");
-    }
-    res.send(JSON.stringify(REST));
+router.post('/login', async (req, res) => {
+  const response = await io.login(req.session, req.body.username, md5(req.body.password));
+  const { REST } = response;
+  if (REST.success) {
+    Logger.log('debug', `[${req.ip}] ${req.body.username} loggedin`);
+  } else {
+    Logger.log('debug', `[${req.ip}] tried to login with username ${req.body.username}`);
+  }
+  res.send(JSON.stringify(REST));
 });
 
 /**
@@ -57,32 +62,21 @@ router.post("/login",async (req,res)=>
  * }
  * ```
  */
-router.post("/register",async (req,res)=>
-{
-   const { username, password, email, c_email, c_password, year, month, day } = this.body;
+router.post('/register', async (req, res) => {
+  const { username, password, email, c_email, c_password, year, month, day } = this.body;
 
-   if(!isBetween(username.length,3,15) && isBetween(username.length,3,15))
-       return sendJSON(res,{success:false,error:"Username and password most be between 3 and 15 characters"});
-    if(c_password != password)
-        return sendJSON(res,{success:false,error:"Passwords does not match"});
-    if(c_email != email)
-        return sendJSON(res,{success:false,error:"Emails does not match"});
-    if(year <= 1800)
-        return sendJSON(res,{success:false,error:"Are you really over 200 years old?"});
+  if (!isBetween(username.length, 3, 15) && isBetween(username.length, 3, 15))
+    return sendJSON(res, { success: false, error: 'Username and password most be between 3 and 15 characters' });
+  if (c_password != password) return sendJSON(res, { success: false, error: 'Passwords does not match' });
+  if (c_email != email) return sendJSON(res, { success: false, error: 'Emails does not match' });
+  if (year <= 1800) return sendJSON(res, { success: false, error: 'Are you really over 200 years old?' });
 
-    let response = await io.register(req.session,username,md5(password),new Date(year,month,day),email);
-    Logger.log("debug","["+req.ip+"] " + username + " registered");
-    return sendJSON(res,{success:true,error:"Register complete! You will be directed to a new page in 3 seconds..."});
+  await io.register(req.session, username, md5(password), new Date(year, month, day), email);
+  return sendJSON(res, {
+    success: true,
+    error: 'Register complete! You will be directed to a new page in 3 seconds...',
+  });
 });
-
-function isBetween(data,min,max)
-{
-    return data > min && data < max;
-}
-
-function sendJSON(res,json) {
-    return res.send(JSON.stringify(json));
-}
 
 /**
  * REST api on get on /vote/:name where :name is a name of a account,
@@ -104,28 +98,25 @@ function sendJSON(res,json) {
  * }
  * ```
  */
-router.get("/vote/:name",async (req,res)=>
-{
-
-    let { name } = req.params;
-    let acc: AccountsInterface = await io.getAccountByName(name);
-    if(!acc) return res.send(JSON.stringify({success:false,reason:"Could not find username"}));
-    let votes = await io.getVotes(acc.id);
-    if(votes.length >= 1)
-    {
-        let ids = [];
-        for(let i = 1; i < votes.length; i++)
-        {
-            ids.push(votes[i].voteid);
-        }
-
-        let voteSites = await DatabaseConnection.instance.getVotes({where: {id: ids}});
-        return res.send(JSON.stringify({success:true,reason:"Found username",userid:acc.id, occupied:votes,votes:voteSites}));
+router.get('/vote/:name', async (req, res) => {
+  const { name } = req.params;
+  const acc: AccountsInterface = await io.getAccountByName(name);
+  if (!acc) return res.send(JSON.stringify({ success: false, reason: 'Could not find username' }));
+  const votes = await io.getVotes(acc.id);
+  if (votes.length >= 1) {
+    const ids = [];
+    for (let i = 1; i < votes.length; i++) {
+      ids.push(votes[i].voteid);
     }
-    else
-    {
-        return res.send(JSON.stringify({success:true,reason:"Found username",userid:acc.id, occupied:votes,votes:[]}));
-    }
+
+    const voteSites = await DatabaseConnection.instance.getVotes({ where: { id: ids } });
+    return res.send(
+      JSON.stringify({ success: true, reason: 'Found username', userid: acc.id, occupied: votes, votes: voteSites })
+    );
+  }
+  return res.send(
+    JSON.stringify({ success: true, reason: 'Found username', userid: acc.id, occupied: votes, votes: [] })
+  );
 });
 
 /**
@@ -145,11 +136,10 @@ router.get("/vote/:name",async (req,res)=>
  * }
  * ```
  */
-router.post("/vote",async (req,res)=>
-{
-    const { accid, id } = req.body;
-    await DatabaseConnection.instance.setAccountVoted(accid, id);
-    return sendJSON(res,{success:true,reason:"Found username"});
+router.post('/vote', async (req, res) => {
+  const { accid, id } = req.body;
+  await DatabaseConnection.instance.setAccountVoted(accid, id);
+  return sendJSON(res, { success: true, reason: 'Found username' });
 });
 
 /**
@@ -172,24 +162,21 @@ router.post("/vote",async (req,res)=>
  * }
  * ```
  */
-router.post("/ranking",async (req,res)=>
-{
-    const jobs = constants.getConstant("jobs");
+router.post('/ranking', async (req, res) => {
+  const jobs = constants.getConstant('jobs');
 
-    const { search, job, rank, page } = this.body;
-    let ranks = await DatabaseConnection.instance.rank(rank.toLowerCase(), {job:job,search:search},page,5);
-    let jobNames: string[] = [];
-    for(let i in ranks) {
-        let jobName = jobs[ranks[i].job];
-        jobNames.push(!jobName?'?':jobName);
-    }
-    return sendJSON(res,{characters:ranks,jobNames:jobNames});
+  const { search, job, rank, page } = this.body;
+  const ranks = await DatabaseConnection.instance.rank(rank.toLowerCase(), { job, search }, page, 5);
+  const jobNames: string[] = [];
+  for (let i = 0; i < ranks.length; i++) {
+    const jobName = jobs[ranks[i].job];
+    jobNames.push(!jobName ? '?' : jobName);
+  }
+  return sendJSON(res, { characters: ranks, jobNames });
 });
 
-
-router.post("/search",(req,res)=>
-{
-    /*
+router.post('/search', (req, res) => {
+  /*
     let search = req.body.search;
     if(search.length == 0)
     return res.send(JSON.stringify({empty:"search for a word"}));
@@ -208,10 +195,8 @@ router.post("/search",(req,res)=>
     */
 });
 
-
-router.get("/ranking/:player",(req,res,next)=>
-{
-    next();
+router.get('/ranking/:player', (req, res, next) => {
+  next();
 });
 
 export default router;

@@ -10,10 +10,42 @@ import app from '../app';
 const router = express.Router();
 const io = new IO();
 
+// Helper methods
+async function renderGMDashboard(req, res) {
+  try {
+    const votes = await DatabaseConnection.instance.getVotes();
+    const palettes = await DatabaseConnection.instance.getPalettes();
+    const downloads = await DatabaseConnection.instance.getDownloads();
+    let activePalette = palettes[0];
+    for (let i = 0; i < palettes.length; i++) {
+      if (palettes[i].active === 1) {
+        activePalette = palettes[i];
+        break;
+      }
+    }
+    res.render('pages/dashboardGM', {
+      votes,
+      downloads,
+      palettes: { all: palettes, active: activePalette },
+      user: io.getAccount(req.session),
+    });
+  } catch ({ message }) {
+    Logger.log('debug', `Error rendering gm dashboard ${message}`);
+  }
+}
+
+function renderDashboard(req, res) {
+  res.render('pages/dashboardUser');
+}
+
+function send(res: Response, msg: any, status: number = 404) {
+  res.status(status).send(JSON.stringify(msg));
+}
+
 router.get('/', (req, res) => {
   if (!io.isLoggedIn(req)) return res.render('pages/dashboardLogin');
   const user = io.getAccount(req.session);
-  if (user.gm == 0) return renderDashboard(req, res);
+  if (user.gm === 0) return renderDashboard(req, res);
   if (user.gm >= 1) return renderGMDashboard(req, res);
 });
 
@@ -27,7 +59,7 @@ router.post('*', (req, res, next) => {
 router.post('/vote/update', async (req, res) => {
   const { name, url, nx, time, key } = req.body;
   try {
-    const result = await DatabaseConnection.instance.updateVote(key, name, url, nx, time);
+    await DatabaseConnection.instance.updateVote(key, name, url, nx, time);
     return send(res, { success: true });
   } catch ({ message }) {
     return send(res, { success: false, reason: message });
@@ -51,7 +83,7 @@ router.post('/vote/add', async (req, res) => {
 router.post('/vote/remove', async (req, res) => {
   try {
     const { id } = req.body;
-    const removed = await DatabaseConnection.instance.removeVote(id);
+    await DatabaseConnection.instance.removeVote(id);
     send(res, { success: true });
   } catch ({ message }) {
     send(res, { success: false, reason: message });
@@ -88,7 +120,7 @@ router.post('/palette/select', async (req, res) => {
 router.post('/palette/remove', async (req, res) => {
   const { key } = req.body;
   try {
-    const result = await DatabaseConnection.instance.deletePalette(key);
+    await DatabaseConnection.instance.deletePalette(key);
     return send(res, { success: true });
   } catch ({ message }) {
     send(res, { success: true, reason: message });
@@ -119,19 +151,19 @@ router.post('/changeImage', async (req, res) => {
 router.post('/heroImage/change', async (req, res) => {
   const { file } = req.body;
   try {
-    const result = DatabaseConnection.instance.updateHeroImage(file);
-    app.locals.heroImage = file;
+    await DatabaseConnection.instance.updateHeroImage(file);
+    app.getApp().locals.heroImage = file;
     return send(res, { success: true });
   } catch ({ message }) {
     send(res, { success: true, reason: message });
   }
 });
 
-router.post('/logo/change', (req, res) => {
+router.post('/logo/change', async (req, res) => {
   const { file } = req.body;
   try {
-    const result = DatabaseConnection.instance.updateLogo(file);
-    app.locals.logo = file;
+    await DatabaseConnection.instance.updateLogo(file);
+    app.getApp().locals.logo = file;
     return send(res, { success: true });
   } catch ({ message }) {
     send(res, { success: true, reason: message });
@@ -140,11 +172,11 @@ router.post('/logo/change', (req, res) => {
 
 router.post('/download/update', async (req, res) => {
   const { name, url, key } = req.body;
-  if (!name || !url || name.length == 0 || url.length == 0)
+  if (!name || !url || name.length === 0 || url.length === 0)
     return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
 
   try {
-    const result = await DatabaseConnection.instance.updateDownload(key, name, url);
+    await DatabaseConnection.instance.updateDownload(key, name, url);
     return send(res, { success: true });
   } catch ({ message }) {
     send(res, { success: true, reason: message });
@@ -156,7 +188,7 @@ router.post('/download/remove', async (req, res) => {
   if (!id) return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
 
   try {
-    const result = await DatabaseConnection.instance.deleteDownload(id);
+    await DatabaseConnection.instance.deleteDownload(id);
     return send(res, { success: true });
   } catch ({ message }) {
     send(res, { success: true, reason: message });
@@ -165,7 +197,7 @@ router.post('/download/remove', async (req, res) => {
 
 router.post('/download/add', async (req, res) => {
   const { name, url, key } = req.body;
-  if (!name || !url || name.length == 0 || url.length == 0)
+  if (!name || !url || name.length === 0 || url.length === 0)
     return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
 
   try {
@@ -179,7 +211,7 @@ router.post('/download/add', async (req, res) => {
 router.get('/layout/:name', async (req, res) => {
   const { name } = req.params;
 
-  if (!name || name.length == 0) return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
+  if (!name || name.length === 0) return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
   try {
     const layout = await DatabaseConnection.instance.getLayout(name);
     fs.readdir('./views/panels/', (err, files) => {
@@ -196,52 +228,12 @@ router.post('/layout', async (req, res) => {
   if (json.length == 0 || name.length == 0)
     return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
   try {
-    const result = await DatabaseConnection.instance.updateLayout(name, json);
+    await DatabaseConnection.instance.updateLayout(name, json);
     await CSSGenerator.generateHomeLayout(JSON.parse(json));
     return send(res, { success: true });
   } catch ({ message }) {
     return send(res, { success: false, reason: message });
   }
 });
-function getUser(req) {
-  return req.session.user;
-}
 
-async function renderGMDashboard(req, res) {
-  try {
-    const votes = await DatabaseConnection.instance.getVotes();
-    const palettes = await DatabaseConnection.instance.getPalettes();
-    const downloads = await DatabaseConnection.instance.getDownloads();
-    let activePalette = palettes[0];
-    for (let i = 0; i < palettes.length; i++) {
-      if (palettes[i].active == 1) {
-        activePalette = palettes[i];
-        break;
-      }
-    }
-    res.render('pages/dashboardGM', {
-      votes,
-      downloads,
-      palettes: { all: palettes, active: activePalette },
-      user: io.getAccount(req.session),
-    });
-  } catch ({ message }) {
-    Logger.log('debug', `Error rendering gm dashboard ${message}`);
-  }
-}
-
-function readDir(dir, callback) {
-  fs.readdir(dir, (err, files) => {
-    if (err) throw err;
-    callback(files);
-  });
-}
-
-function renderDashboard(req, res) {
-  res.render('pages/dashboardUser');
-}
-
-function send(res: Response, msg: any, status: number = 404) {
-  res.status(status).send(JSON.stringify(msg));
-}
 export default router;
