@@ -43,7 +43,7 @@ function send(res: Response, msg: any, status: number = 404) {
 }
 
 router.get('/', (req, res) => {
-  if (!io.isLoggedIn(req)) return res.render('pages/dashboardLogin');
+  if (!io.isLoggedIn(req.session)) return res.render('pages/dashboardLogin');
   const user = io.getAccount(req.session);
   if (user.gm === 0) return renderDashboard(req, res);
   if (user.gm >= 1) return renderGMDashboard(req, res);
@@ -69,7 +69,7 @@ router.post('/vote/update', async (req, res) => {
 router.post('/vote/add', async (req, res) => {
   const { name, nx, time, url } = req.body;
 
-  if (!name || !nx || !time || name.length == 0 || url.length == 0 || nx.length == 0 || time.length == 0)
+  if (!name || !nx || !time || name.length === 0 || url.length === 0 || nx.length === 0 || time.length === 0)
     return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
 
   try {
@@ -135,8 +135,7 @@ router.post('/palette/update', async (req, res) => {
       secondaryMainColor,
       fontColorDark,
       fontColorLight,
-      fillColor,
-      0
+      fillColor
     );
     return send(res, { success: true });
   } catch ({ message }) {
@@ -196,7 +195,7 @@ router.post('/download/remove', async (req, res) => {
 });
 
 router.post('/download/add', async (req, res) => {
-  const { name, url, key } = req.body;
+  const { name, url } = req.body;
   if (!name || !url || name.length === 0 || url.length === 0)
     return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
 
@@ -225,7 +224,7 @@ router.get('/layout/:name', async (req, res) => {
 
 router.post('/layout', async (req, res) => {
   const { json, name } = req.body;
-  if (json.length == 0 || name.length == 0)
+  if (json.length === 0 || name.length === 0)
     return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
   try {
     await DatabaseConnection.instance.updateLayout(name, json);
