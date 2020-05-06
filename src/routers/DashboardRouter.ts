@@ -6,9 +6,9 @@ import IO from '../models/IO';
 import DatabaseConnection from '../core/database/DatabaseConnection';
 import FileTools from '../core/tools/FileTools';
 import app from '../app';
+import { getAccount, isLoggedIn, isWebAdmin } from '../models/SessionHandler';
 
 const router = express.Router();
-const io = new IO();
 
 // Helper methods
 async function renderGMDashboard(req, res) {
@@ -27,7 +27,7 @@ async function renderGMDashboard(req, res) {
       votes,
       downloads,
       palettes: { all: palettes, active: activePalette },
-      user: io.getAccount(req.session),
+      user: getAccount(req.session),
     });
   } catch ({ message }) {
     Logger.log('debug', `Error rendering gm dashboard ${message}`);
@@ -43,16 +43,21 @@ function send(res: Response, msg: any, status: number = 404) {
 }
 
 router.get('/', (req, res) => {
-  if (!io.isLoggedIn(req.session)) return res.render('pages/dashboardLogin');
-  const user = io.getAccount(req.session);
+  if (!isLoggedIn(req.session)) return res.render('pages/dashboardLogin');
+  const user = getAccount(req.session);
   if (user.gm === 0) return renderDashboard(req, res);
   if (user.gm >= 1) return renderGMDashboard(req, res);
 });
 
 router.post('*', (req, res, next) => {
   const { session } = req;
-  if (!io.isLoggedIn(session) || !io.isWebAdmin(session))
-    return send(res, { success: false, reason: 'access denied' }, 403);
+  if (!isLoggedIn(session) || !isWebAdmin(session)) return send(res, { success: false, reason: 'access denied' }, 403);
+  next();
+});
+
+router.get('*', (req, res, next) => {
+  const { session } = req;
+  if (!isLoggedIn(session) || !isWebAdmin(session)) return res.render('/dashboardLogin');
   next();
 });
 

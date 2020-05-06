@@ -9,7 +9,7 @@ import { AccountsInterface } from '../core/Interfaces/DatabaseInterfaces';
 const router = express.Router();
 const io = new IO();
 
-//Helper methods
+// Helper methods
 function isBetween(data, min, max) {
   return data > min && data < max;
 }
@@ -67,8 +67,8 @@ router.post('/register', async (req, res) => {
 
   if (!isBetween(username.length, 3, 15) && isBetween(username.length, 3, 15))
     return sendJSON(res, { success: false, error: 'Username and password most be between 3 and 15 characters' });
-  if (c_password != password) return sendJSON(res, { success: false, error: 'Passwords does not match' });
-  if (c_email != email) return sendJSON(res, { success: false, error: 'Emails does not match' });
+  if (c_password !== password) return sendJSON(res, { success: false, error: 'Passwords does not match' });
+  if (c_email !== email) return sendJSON(res, { success: false, error: 'Emails does not match' });
   if (year <= 1800) return sendJSON(res, { success: false, error: 'Are you really over 200 years old?' });
 
   await io.register(req.session, username, md5(password), new Date(year, month, day), email);
@@ -100,13 +100,13 @@ router.post('/register', async (req, res) => {
  */
 router.get('/vote/:name', async (req, res) => {
   const { name } = req.params;
-  const acc: AccountsInterface = await io.getAccountByName(name);
+  const acc: AccountsInterface = await DatabaseConnection.instance.getAccount(name);
   if (!acc) return res.send(JSON.stringify({ success: false, reason: 'Could not find username' }));
-  const votes = await io.getVotes(acc.id);
+  const votes = await DatabaseConnection.instance.getAccountVote(acc.id);
   if (votes.length >= 1) {
     const ids = [];
     for (let i = 1; i < votes.length; i++) {
-      ids.push(votes[i].voteid);
+      ids.push(votes[i].ID);
     }
 
     const voteSites = await DatabaseConnection.instance.getVotes({ where: { id: ids } });
@@ -175,7 +175,7 @@ router.post('/ranking', async (req, res) => {
   return sendJSON(res, { characters: ranks, jobNames });
 });
 
-router.post('/search', (req, res) => {
+router.post('/search', () => {
   /*
     let search = req.body.search;
     if(search.length == 0)

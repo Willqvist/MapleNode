@@ -1,86 +1,72 @@
-import InstallationHandler, {InstallerI} from "../setup/InstallationHandler";
-import FileTools from "../core/tools/FileTools";
 import mime from 'mime-types';
-import DBConn from "../core/database/DatabaseConnection";
-import app from "../app";
-import mnHandler from "../setup/MNHandler";
-import {SettingsInterface} from "../core/Interfaces/DatabaseInterfaces";
-import * as constants from "../core/Constants";
-import {openConfig} from "../core/config/Config";
-import {DatabaseAuthInterface, File} from "../core/Interfaces/Interfaces";
+import InstallationHandler, { InstallerI } from '../setup/InstallationHandler';
+import FileTools from '../core/tools/FileTools';
+import DBConn from '../core/database/DatabaseConnection';
+import app from '../app';
+import { SettingsInterface } from '../core/Interfaces/DatabaseInterfaces';
+import * as constants from '../core/Constants';
+import { openConfig } from '../core/config/Config';
+import { DatabaseAuthInterface, File } from '../core/Interfaces/Interfaces';
+
+/**
+ * moves a file from upload/ to public/upload/
+ * @param file the file to move.
+ */
+async function moveImage(file: File) {
+  const ext = mime.extension(file.mimetype);
+  await FileTools.move(`upload/${file.fileName}`, `public/upload/${file.destName}.${ext}`);
+}
 
 export default class Setup {
+  private installHandler: InstallationHandler;
 
-    private installHandler : InstallationHandler;
-    private readonly settingsSrc : string = "/settings/setup.MN";
-    constructor() {
-        this.installHandler= new InstallationHandler();
-    }
+  private readonly settingsSrc: string = '/settings/setup.MN';
 
-    /**
-     * sets the images in public/images
-     * @param logo, the logo image
-     * @param hero, the hero image
-     */
-    public async setDesign(logo? : File, hero? : File) {
-        if(logo)
-            await this.move(logo);
-        if(hero)
-            await this.move(hero);
-    }
+  constructor() {
+    this.installHandler = new InstallationHandler();
+  }
 
-    /**
-     * adds a new color palette to the database
-     * @param name the name of the new palette
-     * @param mainColor the main color of the palette
-     * @param secondaryMainColor the secondary main color
-     * @param fontColorDark font color dark, used on light backgrounds
-     * @param fontColorLight font color light, used on dark backgrounds
-     * @param fillColor fillColor.
-     * @param active if active is 1, the palette will be set as the new active palette.
-     */
-    public async addPalette(name,mainColor,secondaryMainColor,fillColor,fontColorDark,fontColorLight) {
-        let result = await DBConn.instance.addPalette(
-            name,
-            mainColor,
-            secondaryMainColor,
-            fillColor,
-            fontColorDark,
-            fontColorLight,
-            1
-        );
-    }
+  /**
+   * sets the images in public/images
+   * @param logo, the logo image
+   * @param hero, the hero image
+   */
+  public async setDesign(logo?: File, hero?: File): Promise<void> {
+    if (logo) await moveImage(logo);
+    if (hero) await moveImage(hero);
+  }
 
-    /**
-     * connects to the database.
-     * @param data, authentication for the database and prefix.
-     */
-    public async connectToDatabase(auth: DatabaseAuthInterface & {prefix: number}) {
-        await DBConn.createInstance(app.getDatabase(), auth);
-        let writer = await openConfig();
-        await writer.write("server/database/prefix",auth.prefix);
-        await writer.write("server/database/auth",auth);
-        await this.installHandler.setMysqlSetupComplete(auth);
-    }
+  /**
+   * connects to the database.
+   * @param data, authentication for the database and prefix.
+   */
+  public async connectToDatabase(auth: DatabaseAuthInterface & { prefix: number }) {
+    await DBConn.createInstance(app.getDatabase(), auth);
+    const writer = await openConfig();
+    await writer.write('server/database/prefix', auth.prefix);
+    await writer.write('server/database/auth', auth);
+    await this.installHandler.setMysqlSetupComplete(auth);
+  }
 
-    public async settings(data : SettingsInterface, clientUrl : string, setupUrl : string) {
-        await this.installHandler.saveSettings(data,setupUrl,clientUrl,this.settingsSrc);
-        constants.setConstant("setup-status", 1);
-        constants.setConstant("settings", data);
-    }
+  /**
+   *
+   * @param data
+   * @param clientUrl
+   * @param setupUrl
+   */
+  public async settings(data: SettingsInterface, clientUrl: string, setupUrl: string) {
+    await this.installHandler.saveSettings(data, setupUrl, clientUrl, this.settingsSrc);
+    constants.setConstant('setup-status', 1);
+    constants.setConstant('settings', data);
+  }
 
-    private async move(file : File) {
-        let ext = mime.extension(file.mimetype);
-        let success = await FileTools.move(`upload/${file.fileName}`,`public/upload/${file.destName}.${ext}`);
-    }
+  public async setupData(): Promise<InstallerI> {
+    return this.installHandler.installationComplete(this.settingsSrc);
+  }
 
-    public async setupData() : Promise<InstallerI>{
-        return await this.installHandler.installationComplete(this.settingsSrc);
-    }
-
-    async complete() {
-        let installer = await this.installHandler.getInstallerObject(this.settingsSrc);
-        installer.done = true;
-        await this.installHandler.saveInstallerObject(installer,this.settingsSrc);
-    }
+  async complete() {
+    const installer = await this.installHandler.getInstallerObject(this.settingsSrc);
+    installer.done = true;
+    await this.installHandler.saveInstallerObject(installer, this.settingsSrc);
+  }
 }

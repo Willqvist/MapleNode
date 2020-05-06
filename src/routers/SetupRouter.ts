@@ -73,7 +73,15 @@ router.get('/colors', async (req, res) => {
 router.post('/colors', async (req, res) => {
   try {
     const { name, mainColor, secondaryMainColor, fillColor, fontColorDark, fontColorLight } = req.body;
-    await setup.addPalette(name, mainColor, secondaryMainColor, fillColor, fontColorDark, fontColorLight);
+    await DatabaseConnection.instance.addPalette(
+      name,
+      mainColor,
+      secondaryMainColor,
+      fillColor,
+      fontColorDark,
+      fontColorLight,
+      1
+    );
   } catch (err) {
     const { message } = err.message;
     return res.render('setup/error', {
