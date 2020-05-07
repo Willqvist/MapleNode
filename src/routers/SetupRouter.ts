@@ -9,6 +9,7 @@ import { getConfig } from '../core/config/Config';
 import IO from '../models/IO';
 import DatabaseConnection from '../core/database/DatabaseConnection';
 import { DatabaseAuthInterface, File } from '../core/Interfaces/Interfaces';
+import { getAccount } from '../models/SessionHandler';
 
 const router = express.Router();
 const setup = new Setup();
@@ -122,7 +123,7 @@ router.get('/webadmin', async (req, res) => {
   const [mysql] = await isAllowed(req, res);
 
   const { session } = req.session;
-  const account = io.getAccount(session);
+  const account = getAccount(session);
   if (account) {
     return res.redirect('./colors');
   }

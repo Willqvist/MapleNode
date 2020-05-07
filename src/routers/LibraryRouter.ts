@@ -3,7 +3,7 @@ import fs from 'fs';
 import multer from 'multer';
 import * as constants from '../core/Constants';
 // import * as lib  from "../core/library/Library";
-import parser from '../core/wz_parser/parser';
+// import parser from '../core/wz_parser/parser';
 import FileTools from '../core/tools/FileTools';
 
 const router = express.Router();
@@ -71,7 +71,7 @@ router.post('/upload/:name/:uid', (req, res) => {
   if (file.originalname !== 'String.wz' && !uploadSettings.loadedString) {
     return res.send(JSON.stringify({ error: 'Upload String.wz first!', uid: req.params.uid }));
   }
-
+  /*
   parser.add_to_parse({ name: file.originalname, data: file.buffer }, (result) => {
     if (result.err.hasError)
       if (result.err.reason) return res.send(JSON.stringify({ error: result.err.reason, uid: req.params.uid }));
@@ -80,10 +80,12 @@ router.post('/upload/:name/:uid', (req, res) => {
     uploadSettings.loadedString = true;
     return res.send(JSON.stringify({ success: true, uid: req.params.uid }));
   });
+
+ */
 });
 
 router.get('/:type/:id', (req, res) => {
-  //const { id } = req.params;
+  // const { id } = req.params;
   const { type } = req.params;
   if (!constants.getConstant('type_mapper')[type]) return res.send('hmm');
   /*

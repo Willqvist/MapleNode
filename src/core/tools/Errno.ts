@@ -1,4 +1,4 @@
 export default interface Errno {
-    errno: any,
-    msg: string
-};
+  errno: any;
+  msg: string;
+}

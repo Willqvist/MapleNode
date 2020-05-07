@@ -1,6 +1,7 @@
 import fs, { PathLike } from 'fs';
-import { File } from '../Interfaces/Interfaces';
 import mime from 'mime-types';
+import { File } from '../Interfaces/Interfaces';
+import { pipe, fun, waitFor } from './Utils';
 /**
  * Helper class for file handling.
  */
@@ -11,27 +12,47 @@ export default class FileTools {
    * @param dest the destination to move the file to.
    */
   public static async move(src: string, dest: string): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
-      let dir = this.removeLastDirectory(dest);
+    const dir = this.removeLastDirectory(dest);
+    const errCallback = (err) => {
+      if (err) {
+        throw err;
+      }
+      return true;
+    };
+
+    const complete = (err) => {
+      if (err) {
+        throw err;
+      }
+      return true;
+    };
+
+    await pipe(
+      fun(fs.mkdir).props(dir, { recursive: true }, waitFor(errCallback)).stopOnError(),
+      fun(fs.copyFile).props(src, dest, waitFor(errCallback)).stopOnError(),
+      fun(fs.unlink).props(src, waitFor(complete)).stopOnError()
+    );
+    return true;
+    /*
       fs.mkdir(dir, { recursive: true }, (err) => {
         if (err) reject(err);
-        fs.copyFile(src, dest, (err) => {
-          if (err) reject(err);
+        fs.copyFile(src, dest, (errCopy) => {
+          if (errCopy) reject(errCopy);
           fs.unlink(src, (err) => {
             if (err) reject(err);
             resolve(true);
           });
         });
       });
-    });
+       */
   }
 
   public static async readDir(dir: PathLike): Promise<File[]> {
     return new Promise<File[]>((resolve, reject) => {
       fs.readdir(dir, (err, files) => {
         if (err) return reject(err);
-        let res: File[] = [];
-        for (let i in files) {
+        const res: File[] = [];
+        for (let i = 0; i < files.length; i++) {
           const file = files[i];
           const mimeType = mime.extname(file);
           res.push({
@@ -64,7 +85,7 @@ export default class FileTools {
    * @param path the path to remove last directory from.
    */
   public static removeLastDirectory(path: string) {
-    let ret = path.split('/');
+    const ret = path.split('/');
     ret.pop();
     return ret.join('/');
   }
