@@ -105,14 +105,6 @@ export interface Database {
   getEquipment(character: number): Promise<EquipmentInterface[]>;
 
   /**
-   * loads the ranks of all characters. the order depends on searchFlag
-   * @param searchFlag what to rank by.
-   * @param page the page number to get from.
-   * @param order order by asc or desc
-   */
-  loadRank(searchFlag: RANK, page: number, order: 'asc' | 'desc'): Promise<any>;
-
-  /**
    * returns the account of a given name
    * @param name the name of the account to return
    * @param obj extra conditions on the returned data.
@@ -150,7 +142,7 @@ export interface Database {
    * @param accountid the id of the account that voted
    * @param voteid the vote id that the account voted in.
    */
-  setAccountVoted(accountid: number, voteid: number): Promise<boolean>;
+  setAccountVoted(accountid: number, voteid: number): Promise<number>;
 
   /**
    * adds a new Vote url to the database
@@ -166,7 +158,7 @@ export interface Database {
    * deletes a vote from the database.
    * @param id the id of the vote to remove.
    */
-  deleteVote(id: number): Promise<boolean>;
+  deleteVote(id: number): Promise<number>;
 
   /**
    * sets the id of the palette to active.
@@ -176,9 +168,9 @@ export interface Database {
 
   /**
    * removes a palette from the database.
-   * @param id the id of the palette to remove.
+   * @param name the name of the palette to remove.
    */
-  deletePalette(id: number): Promise<boolean>;
+  deletePalette(name: string): Promise<number>;
 
   /**
    * updates the hero image to a new image url.
@@ -204,7 +196,7 @@ export interface Database {
    * removs a download with the given id
    * @param id the id of the download to remove.
    */
-  deleteDownload(id: number): Promise<boolean>;
+  deleteDownload(id: number): Promise<number>;
 
   /**
    * adds a new download to the database
@@ -220,7 +212,7 @@ export interface Database {
    */
   updateLayout(name: string, json: string): Promise<boolean>;
 
-  updateVote(id: number, name: string, url: string, nx: number, time: number): boolean;
+  updateVote(id: number, name: string, url: string, nx: number, time: number): Promise<number>;
 
   /**
    * rebuilds the database from the ground up with a new prefix
@@ -259,13 +251,13 @@ export interface Database {
    * @param fillColor
    */
   updatePalette(
-    id: number,
+    name: string,
     mainColor: string,
     secondaryMainColor: string,
     fontColorDark: string,
     fontColorLight: string,
     fillColor: string
-  ): Promise<boolean>;
+  ): Promise<number>;
 
   /**
    * adds new settings to the database.
@@ -318,7 +310,6 @@ export interface Database {
    */
   printError(errno: number);
 
-  removeVote(id: any): Promise<boolean>;
 }
 
 /*

@@ -88,7 +88,7 @@ router.post('/vote/add', async (req, res) => {
 router.post('/vote/remove', async (req, res) => {
   try {
     const { id } = req.body;
-    await DatabaseConnection.instance.removeVote(id);
+    await DatabaseConnection.instance.deleteVote(id);
     send(res, { success: true });
   } catch ({ message }) {
     send(res, { success: false, reason: message });

@@ -19,6 +19,7 @@ import {
   PalettesInterface,
   SettingsInterface,
   VoteInterface,
+  VotingInterface,
 } from '../../Interfaces/DatabaseInterfaces';
 import { EquipmentInterface } from '../../Interfaces/Interfaces';
 import Errno from '../../tools/Errno';
@@ -319,72 +320,116 @@ export default class MysqlDatabase implements Database {
 
   async addAccount(name: string, password: string, birthday: Date, email: string): Promise<number> {
     const birth = birthday.toISOString().slice(0, 19).replace('T', ' ');
-    const [rows] = await this.connection.query(
+    const [result] = await this.connection.query(
       `INSERT INTO accounts (name,password,birthday,email,lastknownip,NomePessoal,fb,twt) VALUES('${name}','${password}','${birth}','${email}','0',' ',' ',' ')`
     );
-    return rows.insertId;
+    return result.insertId;
   }
 
   async addVote(name: string, url: string, nx: number, time: number): Promise<number> {
     const tableName = table('vote');
-    const [ret] = await this.connection.execute(`INSERT INTO ${tableName} (name, url, nx, time) VALUES(?,?,?,?)`, [
+    const [result] = await this.connection.execute(`INSERT INTO ${tableName} (name, url, nx, time) VALUES(?,?,?,?)`, [
       name,
       url,
       nx,
       time,
     ]);
-    return ret;
+    return result.insertId;
   }
 
-  setAccountVoted(accountid: number, voteid: number): Promise<boolean> {
-    return undefined;
+  async setAccountVoted(accountid: number, voteid: number): Promise<number> {
+    const tableName = table('voting');
+    const [
+      result,
+    ] = await this.connection.execute(`INSERT INTO ${tableName} (accountid, voteid, date) VALUES(?,?,NOW())`, [
+      accountid,
+      voteid,
+    ]);
+    return result.insertId;
   }
 
-  deleteDownload(id): Promise<boolean> {
-    return undefined;
+  async deleteDownload(id: number): Promise<number> {
+    const tableName = table('downloads');
+    const [result] = await this.connection.execute(`DELETE FROM ${tableName} WHERE id=?`, [id]);
+    return result.affectedRows;
   }
 
-  deletePalette(id: number): Promise<boolean> {
-    return undefined;
+  async deletePalette(name: string): Promise<number> {
+    const tableName = table('palettes');
+    const [result] = await this.connection.execute(`DELETE FROM ${tableName} WHERE name=?`, [name]);
+    return result.affectedRows;
   }
 
-  deleteVote(id: number): Promise<boolean> {
-    return undefined;
+  async deleteVote(id: number): Promise<number> {
+    const tableName = table('vote');
+    const [result] = await this.connection.execute(`DELETE FROM ${tableName} WHERE id=?`, [id]);
+    return result.affectedRows;
   }
 
-  enablePalette(id: number): Promise<PalettesInterface> {
-    return undefined;
+  async enablePalette(id: number): Promise<PalettesInterface> {
+    const tableName = table('palettes');
+    await this.connection.query(`UPDATE ${tableName} SET active=0 WHERE active=1`);
+    await this.connection.execute(`UPDATE ${tableName} SET active=1 WHERE id=?`, [id]);
+    const [result] = await this.connection.execute(`SELECT ${tableName} WHERE id=?`, [id]);
+    return result[0];
   }
 
-  loadRank(searchFlag: RANK, page: number, order: 'asc' | 'desc'): Promise<boolean> {
-    return undefined;
+  async updateDownload(id: number, name: string, url: string): Promise<boolean> {
+    const tableName = table('downloads');
+    const [result] = await this.connection.execute(`UPDATE ${tableName} SET name=?, url=? WHERE id=?`, [name, url, id]);
+    return result.affectedRows;
   }
 
-  updateDownload(id, name: string, url: string): Promise<boolean> {
-    return undefined;
+  async updateHeroImage(heroImage: string): Promise<boolean> {
+    const tableName = table('design');
+    const [result] = await this.connection.execute(`UPDATE ${tableName} SET heroImage=?`, [heroImage]);
+    return result.affectedRows;
   }
 
-  updateHeroImage(heroImage: string): Promise<boolean> {
-    return undefined;
+  async updateLogo(logo: string): Promise<boolean> {
+    const tableName = table('design');
+    const [result] = await this.connection.execute(`UPDATE ${tableName} SET logo=?`, [logo]);
+    return result.affectedRows;
   }
 
-  updateLogo(logo: string): Promise<boolean> {
-    return undefined;
-  }
-
-  updatePalette(
-    id: number,
+  async updatePalette(
+    name: string,
     mainColor: string,
     secondaryMainColor: string,
     fontColorDark: string,
     fontColorLight: string,
     fillColor: string
-  ): Promise<boolean> {
-    return undefined;
+  ): Promise<number> {
+    const tableName = table('palettes');
+    const [
+      result,
+    ] = await this.connection.execute(
+      `UPDATE ${tableName} SET mainColor=? secondaryMainColor=? fontColorDark=? fontColorLight=? fillColor=? WHERE name=?`,
+      [mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, name]
+    );
+    return result.affectedRows;
   }
 
-  getEquipment(character: number): Promise<EquipmentInterface[]> {
-    return undefined;
+  async getEquipment(character: number): Promise<EquipmentInterface[]> {
+    const [
+      result,
+    ] = await this.connection.execute(
+      `SELECT inventoryequipment.* FROM inventoryitems INNER JOIN inventoryequipment ON inventoryitems.inventoryitemid = inventoryequipment.inventoryitemid WHERE characterid=?`,
+      [character]
+    );
+    return result;
+  }
+
+  async getAccountVote(accountId: number): Promise<VotingInterface[]> {
+    const sqlObj = {
+      where: { accountId },
+    };
+    const [rows, err] = await this.exec<VotingInterface>(sqlObj, 'voting', accountsConversion, false);
+    if (err) {
+      throw new MysqlError({ errno: 0, msg: err });
+    }
+    if (rows.length === 0) return null;
+    return rows;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -414,10 +459,6 @@ export default class MysqlDatabase implements Database {
     return data;
   }
 
-  getAccountVote(accountId: number): Promise<VoteInterface[]> {
-    return undefined;
-  }
-
   async rank(
     orderby: 'level' | 'fame' | 'job',
     rankby: { job?: string; search?: string },
@@ -432,7 +473,7 @@ export default class MysqlDatabase implements Database {
     if (rankby.search) {
       searches.push(`name LIKE '%${rankby.search}%'`);
     }
-    if (searches.length != 0) {
+    if (searches.length !== 0) {
       let pre = 'WHERE';
       for (let i = 0; i < searches.length; i++) {
         where += `${pre} ${searches[i]}`;
@@ -442,7 +483,7 @@ export default class MysqlDatabase implements Database {
 
     const offset = Math.max(page, 0) * limit;
 
-    const [rows] = await this.connection.query(
+    const [rows] = await this.connection.execute(
       ` 
             SELECT 
               id, 
@@ -513,15 +554,14 @@ export default class MysqlDatabase implements Database {
     return ret;
   }
 
-  getPalettes(): Promise<PalettesInterface[]> {
-    return Promise.resolve([]);
+  async getPalettes(): Promise<PalettesInterface[]> {
+    const [result] = await this.exec<PalettesInterface>({}, 'palettes', mn_palettesConversion);
+    return result;
   }
 
-  removeVote(id: any): Promise<boolean> {
-    return Promise.resolve(false);
-  }
-
-  updateVote(id: number, name: string, url: string, nx: number, time: number): boolean {
-    return false;
+  async updateVote(id: number, name: string, url: string, nx: number, time: number): Promise<number> {
+    const tableName = table('vote');
+    const [result] = await this.connection.execute(`UPDATE ${tableName} SET name=?, url=? nx=?, time=? WHERE id=?`, [name, url, nx, time, id]);
+    return result.affectedRows;
   }
 }

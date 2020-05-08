@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Backend for a maplestory website",
   "main": "app.js",
-  "eslintIgnore": ["test/*"],
+  "eslintIgnore": [
+    "test/*"
+  ],
   "scripts": {
     "start-windows": "cls && node dist/App",
     "start-linux": "clear && node dist/App",
