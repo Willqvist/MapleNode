@@ -3,7 +3,7 @@ import multer from 'multer';
 import md5 from 'md5';
 import * as constants from '../core/Constants';
 import { PalettesInterface, SettingsInterface } from '../core/Interfaces/DatabaseInterfaces';
-import app from '../app';
+import app from '../App';
 import Setup from '../models/Setup';
 import { getConfig } from '../core/config/Config';
 import IO from '../models/IO';

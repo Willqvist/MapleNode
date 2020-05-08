@@ -5,8 +5,8 @@
   "main": "app.js",
   "eslintIgnore": ["test/*"],
   "scripts": {
-    "start-windows": "cls && node dist/app",
-    "start-linux": "clear && node dist/app",
+    "start-windows": "cls && node dist/App",
+    "start-linux": "clear && node dist/App",
     "compile-windows": "cls && tsc",
     "compile-linux": "clear && tsc",
     "build-windows": "setup.bat",

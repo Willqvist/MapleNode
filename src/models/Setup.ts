@@ -2,7 +2,7 @@ import mime from 'mime-types';
 import InstallationHandler, { InstallerI } from '../setup/InstallationHandler';
 import FileTools from '../core/tools/FileTools';
 import DBConn from '../core/database/DatabaseConnection';
-import app from '../app';
+import app from '../App';
 import { SettingsInterface } from '../core/Interfaces/DatabaseInterfaces';
 import * as constants from '../core/Constants';
 import { openConfig } from '../core/config/Config';

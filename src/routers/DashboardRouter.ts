@@ -5,7 +5,7 @@ import CSSGenerator from '../scripts/CSSGenerator/CSSGenerator';
 import IO from '../models/IO';
 import DatabaseConnection from '../core/database/DatabaseConnection';
 import FileTools from '../core/tools/FileTools';
-import app from '../app';
+import app from '../App';
 import { getAccount, isLoggedIn, isWebAdmin } from '../models/SessionHandler';
 
 const router = express.Router();

@@ -8,7 +8,7 @@ import * as consts from './core/Constants';
 import HOME from './Paths';
 import UrlSlicer from './Middleware';
 import setup from './setup';
-import input from './in';
+import input from './In';
 import Logger from './core/logger/Logger';
 import cGen from './scripts/CSSGenerator/CSSGenerator';
 import { PalettesInterface, SettingsInterface } from './core/Interfaces/DatabaseInterfaces';
@@ -179,7 +179,7 @@ class App {
   }
 
   private setupComplete() {
-    // to include in.ts file. if removed, functions will not load. fix later...
+    // to include In.ts file. if removed, functions will not load. fix later...
     // eslint-disable-next-line no-unused-expressions
     input;
     this.app.locals.palette = consts.getConstant('palette');
