@@ -26,6 +26,26 @@ import Errno from '../../tools/Errno';
 import * as Constants from '../../Constants';
 import FileTools from '../../tools/FileTools';
 import { MysqlListenError } from '../../tools/ErrnoConversion';
+import MysqlError from './MysqlError';
+
+// Helper methods
+function table(name: string, usePrefix: boolean = true): string {
+  if (!usePrefix) return name;
+  return `${Constants.getConstant('prefix')}_${name}`;
+}
+
+function convert(rows: any[], conversions: any): any[] {
+  const row = new Array(rows.length);
+  for (let i = 0; i < rows.length; i++) {
+    row[i] = {};
+    const keys = Object.keys(rows[i]);
+    for (let j = 0; j < keys.length; j++) {
+      const key = keys[j];
+      row[i][keys[key]] = conversions[keys[key]](rows[i][keys[key]]);
+    }
+  }
+  return row;
+}
 
 export default class MysqlDatabase implements Database {
   connection: any;
@@ -41,27 +61,25 @@ export default class MysqlDatabase implements Database {
     return true;
   }
 
-  table(name, usePrefix: boolean = true) {
-    if (!usePrefix) return name;
-    return `${Constants.getConstant('prefix')}_${name}`;
-  }
-
-  private async generateSelectSql(obj: SWO, table: string, usePrefix: boolean): Promise<any> {
+  private async generateSelectSql(obj: SWO, tableName: string, usePrefix: boolean): Promise<any> {
     let select = '*';
     let where = '';
     let order = '';
     if (obj) {
+      // builds select statement into sql string.
       if (obj.select) {
         select = '';
         for (let i = 0; i < obj.select.length; i++) select += `${obj.select[i]},`;
         select = select.substring(0, select.length - 1);
       }
 
+      // Builds where statement into string.
       if (obj.where) {
         where = '';
         let pre = 'WHERE';
-        for (const key in obj.where) {
-          if (key === 'iterate') continue;
+        const whereKeys = Object.keys(obj.where);
+        for (let i = 0; i < whereKeys.length; i++) {
+          const key = whereKeys[i];
           if (obj.where[key] instanceof Array) {
             const arr = <string[]>obj.where[key];
             for (let j = 0; j < arr.length; j++) {
@@ -74,35 +92,23 @@ export default class MysqlDatabase implements Database {
           pre = 'AND';
         }
       }
+      // builds order statement into sql string.
       if (obj.order) {
         const key = Object.keys(obj.order)[0];
         order = `ORDER BY ${key} ${obj.order[key]}`;
       }
     }
-    console.log(`SELECT ${select} FROM ${this.table(table, usePrefix)} ${where}${order}`);
-    return this.connection.query(`SELECT ${select} FROM ${this.table(table, usePrefix)} ${where}${order}`);
+    return this.connection.query(`SELECT ${select} FROM ${table(tableName, usePrefix)} ${where}${order}`);
   }
 
-  private convert(rows: any[], conversions: any): any[] {
-    const row = new Array(rows.length);
-    for (let i = 0; i < rows.length; i++) {
-      row[i] = {};
-      const keys = Object.keys(rows[i]);
-      for (const key in keys) {
-        row[i][keys[key]] = conversions[keys[key]](rows[i][keys[key]]);
-      }
-    }
-    return row;
-  }
-
-  private async exec(obj: SWO, name: string, conversions?: any, usePrefix: boolean = true): Promise<[any[], string]> {
+  private async exec<T>(obj: SWO, name: string, conversions?: any, usePrefix: boolean = true): Promise<[T[], string]> {
     let err;
     let row: any[];
     try {
       const [rows] = await this.generateSelectSql(obj, name, usePrefix);
       row = rows;
       if (conversions) {
-        row = this.convert(rows, conversions);
+        row = convert(rows, conversions);
       }
     } catch (error) {
       err = error.message;
@@ -111,145 +117,152 @@ export default class MysqlDatabase implements Database {
   }
 
   async getCharacter(name: string, obj?: SWO): Promise<CharactersInterface> {
-    if (!obj) {
-      obj = {
+    let sqlObj = obj;
+    if (!sqlObj) {
+      sqlObj = {
         where: {},
         select: [],
       };
     }
-    obj.where['name'] = name;
-    obj.select.push('id');
-    const [rows, err] = await this.exec(obj, 'characters', charactersConversion);
+    sqlObj.where['name'] = name;
+    sqlObj.select.push('id');
+    const [rows, err] = await this.exec<CharactersInterface>(sqlObj, 'characters', charactersConversion);
     if (err) {
-      throw { errno: 0, msg: err };
+      throw new MysqlError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows[0];
   }
 
   async getSettings(obj: SWO): Promise<SettingsInterface> {
-    const [rows, err] = await this.exec(obj, 'settings', mn_settingsConversion);
+    const [rows, err] = await this.exec<SettingsInterface>(obj, 'settings', mn_settingsConversion);
     if (err) {
-      throw { errno: 0, msg: err };
+      throw new MysqlError({ errno: 0, msg: err });
     }
-    if (rows.length == 0) return null;
+    if (rows.length === 0) return null;
     return rows[0];
   }
 
   async getDesign(obj: SWO): Promise<DesignInterface> {
-    const [rows, err] = await this.exec(obj, 'design', mn_designConversion);
+    const [rows, err] = await this.exec<DesignInterface>(obj, 'design', mn_designConversion);
     if (err) {
-      throw { errno: 0, msg: err };
+      throw new MysqlError({ errno: 0, msg: err });
     }
-    if (rows.length == 0) return null;
+    if (rows.length === 0) return null;
     return rows[0];
   }
 
-  async getActivePalette(obj): Promise<PalettesInterface> {
-    if (!obj) {
-      obj = {
+  async getActivePalette(obj?: SWO): Promise<PalettesInterface> {
+    let sqlObj = obj;
+    if (!sqlObj) {
+      sqlObj = {
         where: [],
       };
     }
-    obj.where['active'] = 1;
-    const [rows, err] = await this.exec(obj, 'palettes', mn_palettesConversion);
+    sqlObj.where['active'] = 1;
+    const [rows, err] = await this.exec<PalettesInterface>(obj, 'palettes', mn_palettesConversion);
     if (err) {
-      throw { errno: 0, msg: err };
+      throw new MysqlError({ errno: 0, msg: err });
     }
-    if (rows.length == 0) return null;
+    if (rows.length === 0) return null;
     return rows[0];
   }
 
-  async getDownloads(obj: SWO): Promise<DownloadsInterface> {
-    const [rows, err] = await this.exec(obj, 'downloads', mn_downloadsConversion);
+  async getDownloads(obj?: SWO): Promise<DownloadsInterface> {
+    const [rows, err] = await this.exec<DownloadsInterface>(obj, 'downloads', mn_downloadsConversion);
     if (err) {
-      throw { errno: 0, msg: err };
+      throw new MysqlError({ errno: 0, msg: err });
     }
-    if (rows.length == 0) return null;
+    if (rows.length === 0) return null;
     return rows[0];
   }
 
-  async getVotes(obj: SWO): Promise<VoteInterface[]> {
-    const [rows, err] = await this.exec(obj, 'votes', mn_voteConversion);
+  async getVotes(obj?: SWO): Promise<VoteInterface[]> {
+    const [rows, err] = await this.exec<VoteInterface>(obj, 'votes', mn_voteConversion);
     if (err) {
-      throw { errno: 0, msg: err };
+      throw new MysqlError({ errno: 0, msg: err });
     }
-    if (rows.length == 0) return null;
+    if (rows.length === 0) return null;
     return rows;
   }
 
-  async getVote(id: number, obj: SWO): Promise<VoteInterface> {
-    if (!obj) {
-      obj = {
+  async getVote(id: number, obj?: SWO): Promise<VoteInterface> {
+    let sqlObj = obj;
+    if (!sqlObj) {
+      sqlObj = {
         where: [],
       };
     }
-    obj.where['id'] = id;
-    const [rows, err] = await this.exec(obj, 'votes', mn_voteConversion);
+    sqlObj.where['id'] = id;
+    const [rows, err] = await this.exec<VoteInterface>(sqlObj, 'votes', mn_voteConversion);
     if (err) {
-      throw { errno: 0, msg: err };
+      throw new MysqlError({ errno: 0, msg: err });
     }
-    if (rows.length == 0) return null;
+    if (rows.length === 0) return null;
     return rows[0];
   }
 
   async getPalette(id: string, obj: SWO): Promise<PalettesInterface> {
-    if (!obj) {
-      obj = {
+    let sqlObj = obj;
+    if (!sqlObj) {
+      sqlObj = {
         where: [],
       };
     }
-    obj.where['id'] = id;
-    const [rows, err] = await this.exec(obj, 'palettes', mn_palettesConversion);
+    sqlObj.where['id'] = id;
+    const [rows, err] = await this.exec<PalettesInterface>(sqlObj, 'palettes', mn_palettesConversion);
     if (err) {
-      throw { errno: 0, msg: err };
+      throw new MysqlError({ errno: 0, msg: err });
     }
-    if (rows.length == 0) return null;
+    if (rows.length === 0) return null;
     return rows[0];
   }
 
   async getLayout(name: string, obj: SWO): Promise<LayoutInterface> {
-    if (!obj) {
-      obj = {
+    let sqlObj = obj;
+    if (!sqlObj) {
+      sqlObj = {
         where: [],
       };
     }
-    obj.where['name'] = name;
-    const [rows, err] = await this.exec(obj, 'layout', mn_layoutConversion);
+    sqlObj.where['name'] = name;
+    const [rows, err] = await this.exec<LayoutInterface>(sqlObj, 'layout', mn_layoutConversion);
     if (err) {
-      throw { errno: 0, msg: err };
+      throw new MysqlError({ errno: 0, msg: err });
     }
-    if (rows.length == 0) return null;
+    if (rows.length === 0) return null;
     return rows[0];
   }
 
   async getAccount(name: string, obj: SWO): Promise<AccountsInterface> {
-    if (!obj) {
-      obj = {
+    let sqlObj = obj;
+    if (!sqlObj) {
+      sqlObj = {
         where: [],
       };
     }
-    obj.where['name'] = name;
-    const [rows, err] = await this.exec(obj, 'accounts', accountsConversion, false);
+    sqlObj.where['name'] = name;
+    const [rows, err] = await this.exec<AccountsInterface>(sqlObj, 'accounts', accountsConversion, false);
     if (err) {
-      throw { errno: 0, msg: err };
+      throw new MysqlError({ errno: 0, msg: err });
     }
-    if (rows.length == 0) return null;
+    if (rows.length === 0) return null;
     return rows[0];
   }
 
   getAccountWithPassword(name: string, password: string, obj?: SWO): Promise<AccountsInterface> {
-    if (!obj) {
-      obj = {
+    let sqlObj = obj;
+    if (!sqlObj) {
+      sqlObj = {
         where: [],
       };
     }
-    obj.where['password'] = password;
+    sqlObj.where['password'] = password;
     return this.getAccount(name, obj);
   }
 
   async addPalette(name, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, active) {
-    const [rows, l] = await this.connection.query(`INSERT INTO ${this.table(
+    const [rows] = await this.connection.query(`INSERT INTO ${table(
       'palettes',
       true
     )} (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES
@@ -258,25 +271,25 @@ export default class MysqlDatabase implements Database {
   }
 
   async addDownload(name, url) {
-    const [rows, l] = await this.connection.query(`INSERT INTO ${this.table('downloads')} (name,url) VALUES
+    const [rows] = await this.connection.query(`INSERT INTO ${table('downloads')} (name,url) VALUES
         ('${name}','${url}')`);
     return rows;
   }
 
   async updateLayout(name: string, json: string): Promise<boolean> {
-    const [rows, l] = await this.connection.query(`INSERT INTO ${this.table('layout')} (name,json) VALUES
+    const [rows] = await this.connection.query(`INSERT INTO ${table('layout')} (name,json) VALUES
         ('${name}','${json}')`);
     return rows;
   }
 
   async addDesign(heroImage, logo): Promise<boolean> {
-    const [rows, l] = await this.connection.query(`INSERT INTO ${this.table('design')} (heroImage,logo) VALUES
+    const [rows] = await this.connection.query(`INSERT INTO ${table('design')} (heroImage,logo) VALUES
         ('${heroImage}','${logo}')`);
     return rows;
   }
 
   async addSettings(serverName, version, expRate, dropRate, mesoRate, nxColumn, vpColumn, gmLevel): Promise<boolean> {
-    const [rows, l] = await this.connection.query(`INSERT INTO ${this.table(
+    const [rows] = await this.connection.query(`INSERT INTO ${table(
       'settings'
     )} (serverName,version,expRate,dropRate,mesoRate,nxColumn,vpColumn,gmLevel)
                 VALUES(
@@ -296,22 +309,31 @@ export default class MysqlDatabase implements Database {
     const file = await FileTools.readFile('./settings/setup.sql', 'utf8');
     const files = file.replace(/prefix/g, prefix).split(';');
     for (let i = 0; i < files.length; i++) {
-      if (files[i].length == 0) continue;
-      const [rows, tables] = await this.connection.query(files[i]);
+      if (files[i].length !== 0) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.connection.query(files[i]);
+      }
     }
     return true;
   }
 
   async addAccount(name: string, password: string, birthday: Date, email: string): Promise<number> {
     const birth = birthday.toISOString().slice(0, 19).replace('T', ' ');
-    const [rows, l] = await this.connection.query(
+    const [rows] = await this.connection.query(
       `INSERT INTO accounts (name,password,birthday,email,lastknownip,NomePessoal,fb,twt) VALUES('${name}','${password}','${birth}','${email}','0',' ',' ',' ')`
     );
     return rows.insertId;
   }
 
-  addVote(name: string, url: string, nx: number, time: number): Promise<number> {
-    return undefined;
+  async addVote(name: string, url: string, nx: number, time: number): Promise<number> {
+    const tableName = table('vote');
+    const [ret] = await this.connection.execute(`INSERT INTO ${tableName} (name, url, nx, time) VALUES(?,?,?,?)`, [
+      name,
+      url,
+      nx,
+      time,
+    ]);
+    return ret;
   }
 
   setAccountVoted(accountid: number, voteid: number): Promise<boolean> {
@@ -365,6 +387,7 @@ export default class MysqlDatabase implements Database {
     return undefined;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   printError(errno: any) {
     return MysqlListenError.error(errno);
   }
@@ -381,13 +404,13 @@ export default class MysqlDatabase implements Database {
     for (let i = 1; i < whereKeys.length; i++) {
       query += ` AND ${whereKeys[i]}='${where[whereKeys[i]]}'`;
     }
-    return await this.connection.query(query);
+    return this.connection.query(query);
   }
 
   async updateAccount(id: number, newData: AccountsInterface): Promise<AccountsInterface> {
-    const keys = Object.keys(newData);
+    Object.keys(newData);
     const data = newData;
-    const [row, l] = await this.update('accounts', { id }, newData);
+    await this.update('accounts', { id }, newData);
     return data;
   }
 
@@ -411,7 +434,7 @@ export default class MysqlDatabase implements Database {
     }
     if (searches.length != 0) {
       let pre = 'WHERE';
-      for (const i in searches) {
+      for (let i = 0; i < searches.length; i++) {
         where += `${pre} ${searches[i]}`;
         pre = 'AND';
       }
@@ -419,7 +442,7 @@ export default class MysqlDatabase implements Database {
 
     const offset = Math.max(page, 0) * limit;
 
-    const [rows, cols] = await this.connection.query(
+    const [rows] = await this.connection.query(
       ` 
             SELECT 
               id, 
@@ -474,7 +497,7 @@ export default class MysqlDatabase implements Database {
         `,
       [where, orderby, limit, offset]
     );
-    if (rows.length == 0) return null;
+    if (rows.length === 0) return null;
     const ret: Rank[] = [];
     for (let i = 0; i < rows.length; i++) {
       ret.push({
