@@ -3,8 +3,8 @@ import InstallationHandler from './setup/InstallationHandler';
 import * as consts from './core/Constants';
 import Logger from './core/logger/Logger';
 import { DesignInterface, PalettesInterface, SettingsInterface } from './core/Interfaces/DatabaseInterfaces';
-import HOME from './Paths';
 import { getConfig } from './core/config/Config';
+import HOME from './Paths';
 
 function setConstants(settings: SettingsInterface, design: DesignInterface, palette: PalettesInterface) {
   consts.setConstant('settings', settings);
@@ -27,12 +27,12 @@ export default async function setup(setupListeners: () => void, setupComplete: (
   try {
     data = await installer.getInstallerObject('/settings/setup.MN');
   } catch (err) {
-    Logger.warn('debug', 'To begin setup, visit /setup');
+    Logger.warn('debug', `To begin setup, visit .:${config.server.port}/setup`);
     return;
   }
 
   if (!data.mysqlSetupComplete) {
-    Logger.warn('debug', 'To begin setup, visit /setup');
+    Logger.warn('debug', `To begin setup, visit .:${config.server.port}/setup`);
     return;
   }
 
@@ -45,13 +45,22 @@ export default async function setup(setupListeners: () => void, setupComplete: (
       const palette = await DatabaseConnection.instance.getActivePalette();
       setConstants(settings, design, palette);
     } catch (err) {
-      Logger.log('debug', err.message);
+      Logger.log('debug', err);
+      return;
     }
-  }
-  if (!data.done) {
-    consts.setConstant('setup-status', -1);
-    Logger.warn('debug', 'setup incomplete: visit localhost/setup');
   } else {
-    setupComplete();
+    Logger.warn('debug', `setup incomplete, visit .:${config.server.port}/setup`);
+    data.mysqlSetupComplete = false;
+    data.done = false;
+    await installer.saveInstallerObject(data, '/settings/setup.MN');
+    return;
   }
+
+  if (!data.done) {
+    Logger.warn('debug', `setup incomplete visit .:${config.server.port}/setup`);
+    consts.setConstant('setup-status', -1);
+    return;
+  }
+
+  return setupComplete();
 }

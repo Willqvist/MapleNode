@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise';
-import { Database, Rank, RANK, SWO } from '../Database';
+import { Database, Rank, SWO } from '../Database';
 import {
   accountsConversion,
   charactersConversion,
@@ -21,13 +21,13 @@ import {
   VoteInterface,
   VotingInterface,
 } from '../../Interfaces/DatabaseInterfaces';
-import { EquipmentInterface } from '../../Interfaces/Interfaces';
+import { DatabaseAuthInterface, EquipmentInterface } from '../../Interfaces/Interfaces';
 import Errno from '../../tools/Errno';
 
 import * as Constants from '../../Constants';
 import FileTools from '../../tools/FileTools';
 import { MysqlListenError } from '../../tools/ErrnoConversion';
-import MysqlError from './MysqlError';
+import DatabaseError from './DatabaseError';
 
 // Helper methods
 function table(name: string, usePrefix: boolean = true): string {
@@ -42,7 +42,7 @@ function convert(rows: any[], conversions: any): any[] {
     const keys = Object.keys(rows[i]);
     for (let j = 0; j < keys.length; j++) {
       const key = keys[j];
-      row[i][keys[key]] = conversions[keys[key]](rows[i][keys[key]]);
+      row[i][key] = conversions[key](rows[i][key]);
     }
   }
   return row;
@@ -51,13 +51,15 @@ function convert(rows: any[], conversions: any): any[] {
 export default class MysqlDatabase implements Database {
   connection: any;
 
-  async onInstansiate(data): Promise<boolean> {
-    data.multipleStatements = true;
+  async onInstansiate(data: DatabaseAuthInterface): Promise<boolean> {
+    const connectionData: DatabaseAuthInterface & { multipleStatements: boolean } = {
+      ...data,
+      multipleStatements: true,
+    };
     try {
-      this.connection = await mysql.createConnection(data);
+      this.connection = await mysql.createConnection(connectionData);
     } catch (err) {
-      const errno: Errno = { errno: err.errno, msg: err.message };
-      throw errno;
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
     return true;
   }
@@ -129,7 +131,7 @@ export default class MysqlDatabase implements Database {
     sqlObj.select.push('id');
     const [rows, err] = await this.exec<CharactersInterface>(sqlObj, 'characters', charactersConversion);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows[0];
@@ -138,16 +140,16 @@ export default class MysqlDatabase implements Database {
   async getSettings(obj: SWO): Promise<SettingsInterface> {
     const [rows, err] = await this.exec<SettingsInterface>(obj, 'settings', mn_settingsConversion);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows[0];
   }
 
-  async getDesign(obj: SWO): Promise<DesignInterface> {
+  async getDesign(obj?: SWO): Promise<DesignInterface> {
     const [rows, err] = await this.exec<DesignInterface>(obj, 'design', mn_designConversion);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows[0];
@@ -163,7 +165,7 @@ export default class MysqlDatabase implements Database {
     sqlObj.where['active'] = 1;
     const [rows, err] = await this.exec<PalettesInterface>(obj, 'palettes', mn_palettesConversion);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows[0];
@@ -172,7 +174,7 @@ export default class MysqlDatabase implements Database {
   async getDownloads(obj?: SWO): Promise<DownloadsInterface> {
     const [rows, err] = await this.exec<DownloadsInterface>(obj, 'downloads', mn_downloadsConversion);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows[0];
@@ -181,7 +183,7 @@ export default class MysqlDatabase implements Database {
   async getVotes(obj?: SWO): Promise<VoteInterface[]> {
     const [rows, err] = await this.exec<VoteInterface>(obj, 'votes', mn_voteConversion);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows;
@@ -197,7 +199,7 @@ export default class MysqlDatabase implements Database {
     sqlObj.where['id'] = id;
     const [rows, err] = await this.exec<VoteInterface>(sqlObj, 'votes', mn_voteConversion);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows[0];
@@ -213,7 +215,7 @@ export default class MysqlDatabase implements Database {
     sqlObj.where['id'] = id;
     const [rows, err] = await this.exec<PalettesInterface>(sqlObj, 'palettes', mn_palettesConversion);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows[0];
@@ -229,7 +231,7 @@ export default class MysqlDatabase implements Database {
     sqlObj.where['name'] = name;
     const [rows, err] = await this.exec<LayoutInterface>(sqlObj, 'layout', mn_layoutConversion);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows[0];
@@ -245,7 +247,7 @@ export default class MysqlDatabase implements Database {
     sqlObj.where['name'] = name;
     const [rows, err] = await this.exec<AccountsInterface>(sqlObj, 'accounts', accountsConversion, false);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows[0];
@@ -308,12 +310,20 @@ export default class MysqlDatabase implements Database {
 
   async rebuildDatabase(prefix): Promise<boolean> {
     const file = await FileTools.readFile('./settings/setup.sql', 'utf8');
-    const files = file.replace(/prefix/g, prefix).split(';');
-    for (let i = 0; i < files.length; i++) {
-      if (files[i].length !== 0) {
-        // eslint-disable-next-line no-await-in-loop
-        await this.connection.query(files[i]);
+    const files = file
+      .replace(/prefix/g, prefix)
+      .replace(/\n/g, '')
+      .replace(/\t/g, '')
+      .split(';');
+    try {
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].length !== 0 && !(files[i].charAt(0) === '-' && files[i].charAt(1) === '-')) {
+          // eslint-disable-next-line no-await-in-loop
+          await this.connection.query(files[i]);
+        }
       }
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.sqlMessage });
     }
     return true;
   }
@@ -426,7 +436,7 @@ export default class MysqlDatabase implements Database {
     };
     const [rows, err] = await this.exec<VotingInterface>(sqlObj, 'voting', accountsConversion, false);
     if (err) {
-      throw new MysqlError({ errno: 0, msg: err });
+      throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
     return rows;
@@ -561,7 +571,13 @@ export default class MysqlDatabase implements Database {
 
   async updateVote(id: number, name: string, url: string, nx: number, time: number): Promise<number> {
     const tableName = table('vote');
-    const [result] = await this.connection.execute(`UPDATE ${tableName} SET name=?, url=? nx=?, time=? WHERE id=?`, [name, url, nx, time, id]);
+    const [result] = await this.connection.execute(`UPDATE ${tableName} SET name=?, url=? nx=?, time=? WHERE id=?`, [
+      name,
+      url,
+      nx,
+      time,
+      id,
+    ]);
     return result.affectedRows;
   }
 }

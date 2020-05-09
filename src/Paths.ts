@@ -5,12 +5,12 @@
 function parseHome(path: string) {
   if (path.includes('\\')) {
     return path.substring(0, path.lastIndexOf('\\'));
-  } if (path.includes('/')) {
+  }
+  if (path.includes('/')) {
     return path.substring(0, path.lastIndexOf('/'));
   }
   return path;
 }
 
-
-const HOME : string = parseHome(__dirname);
+const HOME: string = parseHome(__dirname);
 export default HOME;

@@ -42,4 +42,5 @@ export const MysqlListenError = transform({
   '1045': 'Access denied. Correct password or user?',
   '-3001': 'Invalid MySQL host',
   '1049': 'Unknown database',
+  '1064': 'Error in mysql code...',
 });

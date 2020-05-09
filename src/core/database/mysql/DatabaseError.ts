@@ -1,6 +1,6 @@
 type ErrorObject = { errno: number; msg: string };
 
-export default class MysqlError extends Error {
+export default class DatabaseError extends Error {
   private errorObj: ErrorObject;
 
   constructor(error: ErrorObject) {

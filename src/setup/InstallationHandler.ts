@@ -59,7 +59,6 @@ export default class InstallationHandler {
 
   async setMysqlSetupComplete(userData) {
     constants.setConstant('prefix', userData.prefix);
-    await this.saveInstallerObject({ done: false, settingsComplete: false, mysqlSetupComplete: true });
     await DBConn.instance.rebuildDatabase(userData.prefix);
     await DBConn.instance.addPalette('Happy Green', '#69DC9E', '#3E78B2', '#D3F3EE', '#20063B', '#CC3363', 1);
     await DBConn.instance.addDesign('headerImage.png', 'svgs/logo.svg');
@@ -78,6 +77,7 @@ export default class InstallationHandler {
     };
 
     constants.setConstant('palette', paletteInterface);
+    await this.saveInstallerObject({ done: false, settingsComplete: false, mysqlSetupComplete: true });
   }
 
   async saveSettings(settings: SettingsInterface, setup: string, client: string, src: string = '/settings/setup.MN') {

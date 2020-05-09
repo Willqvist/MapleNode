@@ -23,8 +23,10 @@ export interface RunInterface {
 }
 
 let config: ConfigInterface;
-export let configParser: ConfigParser;
+// eslint-disable-next-line import/no-mutable-exports
+let configParser: ConfigParser;
 let configFile: ConfigFile;
+export default configParser;
 
 async function writeDefault() {
   const str = `{
@@ -78,12 +80,17 @@ export async function getConfig(): Promise<ConfigInterface> {
   } catch (err) {
     content = await writeDefault();
   }
-  const file = JSON.parse(content);
-  config = JSON.parse(content);
-  configParser = new ConfigParser(file);
-  await applyParsers(configParser);
-  configFile = new ConfigFile(config, file);
-  return config;
+  try {
+    const file = JSON.parse(content);
+    config = JSON.parse(content);
+    configParser = new ConfigParser(file);
+    await applyParsers(configParser);
+    configFile = new ConfigFile(config, file);
+    return config;
+  } catch (err) {
+    Logger.error('release', `Error parsing nodeconfig.json: ${err}`);
+    process.exit(0);
+  }
 }
 
 export async function openConfig(): Promise<ConfigFile> {

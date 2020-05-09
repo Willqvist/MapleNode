@@ -138,7 +138,7 @@ router.post('/webadmin', async (req, res) => {
   const [mysql] = await isAllowed(req, res);
   if (!mysql) return;
 
-  const { form, password, confirm_password, username, email } = this.body;
+  const { form, password, confirm_password, username, email } = req.body;
 
   // error prevention
   if (!form || (form !== 'register' && form !== 'login')) {
@@ -183,20 +183,19 @@ router.all('/:id/', async (req, res, next) => {
       switch (number) {
         case 1: {
           const { prefix, user, password, host, database } = req.body;
-          const auth: DatabaseAuthInterface & { prefix: number } = {
+          const auth: DatabaseAuthInterface = {
             user,
             host,
             database,
             password,
-            prefix,
           };
           try {
-            await setup.connectToDatabase(auth);
+            await setup.connectToDatabase(auth, prefix);
             return res.redirect(`${number + 1}`);
-          } catch ({ errno }) {
+          } catch (err) {
             return res.render('setup/error', {
               page: number,
-              error: { reason: app.getDatabase().printError(errno) },
+              error: { reason: app.getDatabase().printError(err.getErrorCode()) },
             });
           }
         }

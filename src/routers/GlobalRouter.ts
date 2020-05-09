@@ -20,7 +20,7 @@ router.get('/Characters/*.chr', (req, res) => {
 });
 
 router.all('/*', (req, res, next) => {
-  if (!constants.getConstant('prefix') || constants.getConstant('setup-status') == -1) return res.redirect('/setup/');
+  if (!constants.getConstant('prefix') || constants.getConstant('setup-status') === -1) return res.redirect('/setup/');
   return next();
 });
 

@@ -89,11 +89,12 @@ class App {
    * setup middleware for express.
    */
   private config() {
-    this.app.set('view engine', 'ejs');
-    this.app.set('views', `${HOME}/views`);
-    this.app.use(bodyParser.json({ limit: '1000mb' }));
-    this.app.use(bodyParser.urlencoded({ extended: true }));
-    this.app.use(helmet());
+    const { app } = this;
+    app.set('view engine', 'ejs');
+    app.set('views', `${HOME}/views`);
+    app.use(bodyParser.json({ limit: '1000mb' }));
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(helmet());
   }
 
   /**
@@ -145,22 +146,22 @@ class App {
    * setups all listeners/routers for Express application.
    */
   private setupListeners() {
-    const { use } = this.app;
-    use(
+    const { app } = this;
+    app.use(
       session({
         secret: 'XCDGREV34432',
         resave: false,
         saveUninitialized: true,
       })
     );
-    use(express.static(`${HOME}/public`, { redirect: false }));
-    use(UrlSlicer);
-    use('/setup', SetupRouter);
-    use('/', GlobalRouter);
-    use('/', PagesRouter);
-    use('/dashboard', DashboardRouter);
-    use('/IO', IORouter);
-    use(async () => {
+    app.use(express.static(`${HOME}/public`, { redirect: false }));
+    app.use(UrlSlicer);
+    app.use('/setup', SetupRouter);
+    app.use('/', GlobalRouter);
+    app.use('/', PagesRouter);
+    app.use('/dashboard', DashboardRouter);
+    app.use('/IO', IORouter);
+    app.use(async () => {
       // TODO: move to only build when changeing theme.
       const paletteInterface: PalettesInterface = {
         name: 'Happy Green',
@@ -172,7 +173,7 @@ class App {
       };
       await cGen.generateCSS(paletteInterface);
     });
-    use((req, res) => {
+    app.use((req, res) => {
       Logger.log('debug', `[${req.ip}] tried to visit ${req.originalUrl}`);
       res.status(404).render('error/404');
     });
@@ -182,11 +183,11 @@ class App {
     // to include In.ts file. if removed, functions will not load. fix later...
     // eslint-disable-next-line no-unused-expressions
     input;
-    this.app.locals.palette = consts.getConstant('palette');
-    this.app.locals.heroImage = consts.getConstant('heroImage');
-    this.app.locals.logo = consts.getConstant('logo');
-    this.app.locals.settings = consts.getConstant('settings');
-    Logger.log('debug', `setup complete`);
+    const { app } = this;
+    app.locals.palette = consts.getConstant('palette');
+    app.locals.heroImage = consts.getConstant('heroImage');
+    app.locals.logo = consts.getConstant('logo');
+    app.locals.settings = consts.getConstant('settings');
     Logger.log(
       'release',
       `${consts.getConstant<SettingsInterface>('settings').serverName} is Online on port ${this.appConfig.server.port}`

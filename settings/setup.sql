@@ -1,4 +1,4 @@
--- SETUP SQL FILE
+-- SETUP SQL FILE;
 
 DROP TABLE IF EXISTS prefix_settings;
 DROP TABLE IF EXISTS prefix_vote;
@@ -10,64 +10,64 @@ DROP TABLE IF EXISTS prefix_layout;
 
 CREATE TABLE prefix_settings
 (
-    ID int NOT NULL AUTO_INCREMENT,
-    serverName varchar(255),
-    version varchar(8),
-    expRate varchar(8),
-    dropRate varchar(8),
-    mesoRate varchar(8),
-    nxColumn varchar(8),
-    vpColumn varchar(8),
-    gmLevel int(1),
+    ID INT NOT NULL AUTO_INCREMENT,
+    serverName VARCHAR(255),
+    version VARCHAR(8),
+    expRate VARCHAR(8),
+    dropRate VARCHAR(8),
+    mesoRate VARCHAR(8),
+    nxColumn VARCHAR(8),
+    vpColumn VARCHAR(8),
+    gmLevel INT(1),
     PRIMARY KEY(ID)
 );
 CREATE TABLE prefix_vote
 (
-    ID int NOT NULL AUTO_INCREMENT,
-    name varchar(255),
-    nx int(20),
-    time varchar(255),
-    url varchar(255),
+    ID INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255),
+    nx INT(20),
+    time VARCHAR(255),
+    url VARCHAR(255),
     PRIMARY KEY(id)
 );
 CREATE TABLE prefix_voting
 (
-    ID int NOT NULL AUTO_INCREMENT,
-    ip varchar(255)
-    accountid int(22),
-    voteid int(22),
-    date timestamp,
+    ID INT NOT NULL AUTO_INCREMENT,
+    ip VARCHAR(255),
+    accountid INT(22),
+    voteid INT(22),
+    date TIMESTAMP,
     PRIMARY KEY(id)
 );
 CREATE TABLE prefix_palettes
 (
-    name varchar(255),
-    mainColor varchar(20),
-    secondaryMainColor varchar(20),
-    fontColorLight varchar(20),
-    fontColorDark varchar(20),
-    fillColor varchar(20),
-    active int(1),
+    name VARCHAR(255),
+    mainColor VARCHAR(20),
+    secondaryMainColor VARCHAR(20),
+    fontColorLight VARCHAR(20),
+    fontColorDark VARCHAR(20),
+    fillColor VARCHAR(20),
+    active INT(1),
     PRIMARY KEY(name)
 );
 CREATE TABLE prefix_design
 (
-    ID int NOT NULL AUTO_INCREMENT,
-    heroImage varchar(80),
-    logo varchar(80),
+    ID INT NOT NULL AUTO_INCREMENT,
+    heroImage VARCHAR(80),
+    logo VARCHAR(80),
     PRIMARY KEY(id)
 );
 CREATE TABLE prefix_downloads
 (
-    ID int NOT NULL AUTO_INCREMENT,
-    name varchar(80),
-    url varchar(80),
+    ID INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(80),
+    url VARCHAR(80),
     PRIMARY KEY(id)
 );
 CREATE TABLE prefix_layout
 (
-    ID int NOT NULL AUTO_INCREMENT,
-    name varchar(22),
+    ID INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(22),
     json mediumtext,
     PRIMARY KEY(id)
 );

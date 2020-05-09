@@ -40,12 +40,13 @@ export default class Setup {
    * connects to the database.
    * @param data, authentication for the database and prefix.
    */
-  public async connectToDatabase(auth: DatabaseAuthInterface & { prefix: number }) {
+  public async connectToDatabase(auth: DatabaseAuthInterface, prefix: number) {
     await DBConn.createInstance(app.getDatabase(), auth);
+    const mysqlData = { ...auth, prefix };
+    await this.installHandler.setMysqlSetupComplete(mysqlData);
     const writer = await openConfig();
-    await writer.write('server/database/prefix', auth.prefix);
+    await writer.write('server/database/prefix', prefix);
     await writer.write('server/database/auth', auth);
-    await this.installHandler.setMysqlSetupComplete(auth);
   }
 
   /**
@@ -68,5 +69,6 @@ export default class Setup {
     const installer = await this.installHandler.getInstallerObject(this.settingsSrc);
     installer.done = true;
     await this.installHandler.saveInstallerObject(installer, this.settingsSrc);
+    constants.setConstant('setup-status', 1);
   }
 }
