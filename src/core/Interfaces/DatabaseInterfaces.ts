@@ -8,77 +8,75 @@
  * is used in {@link Database}
  */
 export interface AccountsInterface {
-   id?: number;
-   name?: string;
-   password?: string;
-   salt?: string;
-   loggedin?: number;
-   lastlogin?: Date;
-   createdat?: Date;
-   birthday?: Date;
-   banned?: number;
-   banreason?: string;
-   gm?: number;
-   email?: string;
-   emailcode?: string;
-   forumaccid?: number;
-   macs?: string;
-   lastpwemail?: Date;
-   tempban?: Date;
-   greason?: number;
-   paypalNX?: number;
-   mPoints?: number;
-   cardNX?: number;
-   donatorPoints?: number;
-   guest?: number;
-   LastLoginInMilliseconds?: number;
-   LeaderPoints?: number;
-   pqPoints?: number;
-   lastknownip?: string;
-   pin?: string;
-   NomePessoal?: string;
-   fb?: string;
-   twt?: string;
-   BetaPoints?: number;
-   sitelogged?: string;
-   webadmin?: number;
-   nick?: string;
-   mute?: number;
-   ip?: string;
+  id?: number;
+  name?: string;
+  password?: string;
+  salt?: string;
+  loggedin?: number;
+  lastlogin?: Date;
+  createdat?: Date;
+  birthday?: Date;
+  banned?: number;
+  banreason?: string;
+  gm?: number;
+  email?: string;
+  emailcode?: string;
+  forumaccid?: number;
+  macs?: string;
+  lastpwemail?: Date;
+  tempban?: Date;
+  greason?: number;
+  paypalNX?: number;
+  mPoints?: number;
+  cardNX?: number;
+  donatorPoints?: number;
+  guest?: number;
+  LastLoginInMilliseconds?: number;
+  LeaderPoints?: number;
+  pqPoints?: number;
+  lastknownip?: string;
+  pin?: string;
+  NomePessoal?: string;
+  fb?: string;
+  twt?: string;
+  BetaPoints?: number;
+  sitelogged?: string;
+  webadmin?: number;
+  nick?: string;
+  mute?: number;
+  ip?: string;
 }
-
 
 /**
  * Interface mapped to the database table with the same name,
  * is used in {@link Database}
  */
 export interface AllianceInterface {
-   id?: number;
-   name?: string;
-   notice?: string;
-   capacity?: number;
-   rank_title1?: string;
-   rank_title2?: string;
-   rank_title3?: string;
-   rank_title4?: string;
-   rank_title5?: string;
-   guild1?: number;
-   guild2?: number;
-   guild3?: number;
-   guild4?: number;
-   guild5?: number;
+  id?: number;
+  name?: string;
+  notice?: string;
+  capacity?: number;
+  rank_title1?: string;
+  rank_title2?: string;
+  rank_title3?: string;
+  rank_title4?: string;
+  rank_title5?: string;
+  guild1?: number;
+  guild2?: number;
+  guild3?: number;
+  guild4?: number;
+  guild5?: number;
 }
-
 
 /**
  * Interface mapped to the database table with the same name,
  * is used in {@link Database}
  */
 export interface BosslogInterface {
-   bosslogid?: number;
-   characterid?: number;
-   bossid?: string;
-   lastattempt?: Date;
+  bosslogid?: number;
+  characterid?: number;
+  bossid?: string;
+  lastattempt?: Date;
 }
 
 /**
@@ -86,10 +84,10 @@ export interface BosslogInterface {
  * is used in {@link Database}
  */
 export interface BuddiesInterface {
-   id?: number;
-   characterid?: number;
-   buddyid?: number;
-   pending?: number;
+  id?: number;
+  characterid?: number;
+  buddyid?: number;
+  pending?: number;
 }
 
 /**
@@ -97,10 +95,10 @@ export interface BuddiesInterface {
  * is used in {@link Database}
  */
 export interface CashshopInterface {
-   sn?: number;
-   arg1?: number;
-   arg2?: number;
-   arg3?: number;
+  sn?: number;
+  arg1?: number;
+  arg2?: number;
+  arg3?: number;
 }
 
 /**
@@ -108,10 +106,10 @@ export interface CashshopInterface {
  * is used in {@link Database}
  */
 export interface ChannelconfigInterface {
-   channelconfigid?: number;
-   channelid?: number;
-   name?: string;
-   value?: string;
+  channelconfigid?: number;
+  channelid?: number;
+  name?: string;
+  value?: string;
 }
 
 /**
@@ -119,10 +117,10 @@ export interface ChannelconfigInterface {
  * is used in {@link Database}
  */
 export interface ChannelsInterface {
-   channelid?: number;
-   world?: number;
-   number?: number;
-   key?: string;
+  channelid?: number;
+  world?: number;
+  number?: number;
+  key?: string;
 }
 
 /**
@@ -130,84 +128,84 @@ export interface ChannelsInterface {
  * is used in {@link Database}
  */
 export interface CharactersInterface {
-   id?: number;
-   accountid?: number;
-   world?: number;
-   name?: string;
-   level?: number;
-   exp?: number;
-   str?: number;
-   dex?: number;
-   luk?: number;
-   int?: number;
-   hp?: number;
-   mp?: number;
-   maxhp?: number;
-   maxmp?: number;
-   meso?: number;
-   hpApUsed?: number;
-   mpApUsed?: number;
-   job?: number;
-   skincolor?: number;
-   gender?: number;
-   fame?: number;
-   hair?: number;
-   face?: number;
-   ap?: number;
-   sp?: number;
-   map?: number;
-   spawnpoint?: number;
-   gm?: number;
-   party?: number;
-   buddyCapacity?: number;
-   createdate?: Date;
-   rank?: number;
-   rankMove?: number;
-   jobRank?: number;
-   jobRankMove?: number;
-   guildid?: number;
-   guildrank?: number;
-   allianceRank?: number;
-   messengerid?: number;
-   messengerposition?: number;
-   reborns?: number;
-   pvpkills?: number;
-   pvpdeaths?: number;
-   clan?: number;
-   mountlevel?: number;
-   mountexp?: number;
-   mounttiredness?: number;
-   married?: number;
-   partnerid?: number;
-   cantalk?: number;
-   zakumlvl?: number;
-   marriagequest?: number;
-   omok?: number;
-   matchcard?: number;
-   omokwins?: number;
-   omoklosses?: number;
-   omokties?: number;
-   matchcardwins?: number;
-   matchcardlosses?: number;
-   matchcardties?: number;
-   MerchantMesos?: number;
-   HasMerchant?: number;
-   gmtext?: number;
-   equipslots?: number;
-   useslots?: number;
-   setupslots?: number;
-   etcslots?: number;
-   bosspoints?: number;
-   bossrepeats?: number;
-   nextBQ?: number;
-   LeaderPoints?: number;
-   pqPoints?: number;
-   votePoints?: number;
-   occupation?: number;
-   jqpoints?: number;
-   CashPoints?: number;
-   jqrank?: number;
-   webhide?: number;
+  id?: number;
+  accountid?: number;
+  world?: number;
+  name?: string;
+  level?: number;
+  exp?: number;
+  str?: number;
+  dex?: number;
+  luk?: number;
+  int?: number;
+  hp?: number;
+  mp?: number;
+  maxhp?: number;
+  maxmp?: number;
+  meso?: number;
+  hpApUsed?: number;
+  mpApUsed?: number;
+  job?: number;
+  skincolor?: number;
+  gender?: number;
+  fame?: number;
+  hair?: number;
+  face?: number;
+  ap?: number;
+  sp?: number;
+  map?: number;
+  spawnpoint?: number;
+  gm?: number;
+  party?: number;
+  buddyCapacity?: number;
+  createdate?: Date;
+  rank?: number;
+  rankMove?: number;
+  jobRank?: number;
+  jobRankMove?: number;
+  guildid?: number;
+  guildrank?: number;
+  allianceRank?: number;
+  messengerid?: number;
+  messengerposition?: number;
+  reborns?: number;
+  pvpkills?: number;
+  pvpdeaths?: number;
+  clan?: number;
+  mountlevel?: number;
+  mountexp?: number;
+  mounttiredness?: number;
+  married?: number;
+  partnerid?: number;
+  cantalk?: number;
+  zakumlvl?: number;
+  marriagequest?: number;
+  omok?: number;
+  matchcard?: number;
+  omokwins?: number;
+  omoklosses?: number;
+  omokties?: number;
+  matchcardwins?: number;
+  matchcardlosses?: number;
+  matchcardties?: number;
+  MerchantMesos?: number;
+  HasMerchant?: number;
+  gmtext?: number;
+  equipslots?: number;
+  useslots?: number;
+  setupslots?: number;
+  etcslots?: number;
+  bosspoints?: number;
+  bossrepeats?: number;
+  nextBQ?: number;
+  LeaderPoints?: number;
+  pqPoints?: number;
+  votePoints?: number;
+  occupation?: number;
+  jqpoints?: number;
+  CashPoints?: number;
+  jqrank?: number;
+  webhide?: number;
 }
 
 /**
@@ -215,9 +213,9 @@ export interface CharactersInterface {
  * is used in {@link Database}
  */
 export interface CharactersonlineInterface {
-   id?: number;
-   characterName?: string;
-   date?: Date;
+  id?: number;
+  characterName?: string;
+  date?: Date;
 }
 
 /**
@@ -225,12 +223,12 @@ export interface CharactersonlineInterface {
  * is used in {@link Database}
  */
 export interface CheatlogInterface {
-   id?: number;
-   characterid?: number;
-   offense?: string;
-   count?: number;
-   lastoffensetime?: Date;
-   param?: string;
+  id?: number;
+  characterid?: number;
+  offense?: string;
+  count?: number;
+  lastoffensetime?: Date;
+  param?: string;
 }
 
 /**
@@ -238,11 +236,11 @@ export interface CheatlogInterface {
  * is used in {@link Database}
  */
 export interface CooldownsInterface {
-   id?: number;
-   charid?: number;
-   SkillID?: number;
-   length?: number;
-   StartTime?: number;
+  id?: number;
+  charid?: number;
+  SkillID?: number;
+  length?: number;
+  StartTime?: number;
 }
 
 /**
@@ -250,28 +248,28 @@ export interface CooldownsInterface {
  * is used in {@link Database}
  */
 export interface DueyitemsInterface {
-   id?: number;
-   PackageId?: number;
-   itemid?: number;
-   quantity?: number;
-   upgradeslots?: number;
-   level?: number;
-   str?: number;
-   dex?: number;
-   int?: number;
-   luk?: number;
-   hp?: number;
-   mp?: number;
-   watk?: number;
-   matk?: number;
-   wdef?: number;
-   mdef?: number;
-   acc?: number;
-   avoid?: number;
-   hands?: number;
-   speed?: number;
-   jump?: number;
-   owner?: string;
+  id?: number;
+  PackageId?: number;
+  itemid?: number;
+  quantity?: number;
+  upgradeslots?: number;
+  level?: number;
+  str?: number;
+  dex?: number;
+  int?: number;
+  luk?: number;
+  hp?: number;
+  mp?: number;
+  watk?: number;
+  matk?: number;
+  wdef?: number;
+  mdef?: number;
+  acc?: number;
+  avoid?: number;
+  hands?: number;
+  speed?: number;
+  jump?: number;
+  owner?: string;
 }
 
 /**
@@ -279,13 +277,13 @@ export interface DueyitemsInterface {
  * is used in {@link Database}
  */
 export interface DueypackagesInterface {
-   PackageId?: number;
-   RecieverId?: number;
-   SenderName?: string;
-   Mesos?: number;
-   TimeStamp?: string;
-   Checked?: number;
-   Type?: number;
+  PackageId?: number;
+  RecieverId?: number;
+  SenderName?: string;
+  Mesos?: number;
+  TimeStamp?: string;
+  Checked?: number;
+  Type?: number;
 }
 
 /**
@@ -293,9 +291,9 @@ export interface DueypackagesInterface {
  * is used in {@link Database}
  */
 export interface EngagementsInterface {
-   engagementid?: number;
-   husbandid?: number;
-   wifeid?: number;
+  engagementid?: number;
+  husbandid?: number;
+  wifeid?: number;
 }
 
 /**
@@ -303,12 +301,12 @@ export interface EngagementsInterface {
  * is used in {@link Database}
  */
 export interface EventstatsInterface {
-   eventstatid?: number;
-   event?: string;
-   instance?: string;
-   characterid?: number;
-   channel?: number;
-   time?: Date;
+  eventstatid?: number;
+  event?: string;
+  instance?: string;
+  characterid?: number;
+  channel?: number;
+  time?: Date;
 }
 
 /**
@@ -316,10 +314,10 @@ export interface EventstatsInterface {
  * is used in {@link Database}
  */
 export interface FamelogInterface {
-   famelogid?: number;
-   characterid?: number;
-   characterid_to?: number;
-   when?: Date;
+  famelogid?: number;
+  characterid?: number;
+  characterid_to?: number;
+  when?: Date;
 }
 
 /**
@@ -327,10 +325,10 @@ export interface FamelogInterface {
  * is used in {@link Database}
  */
 export interface GmlogInterface {
-   id?: number;
-   cid?: number;
-   command?: string;
-   when?: Date;
+  id?: number;
+  cid?: number;
+  command?: string;
+  when?: Date;
 }
 
 /**
@@ -338,23 +336,23 @@ export interface GmlogInterface {
  * is used in {@link Database}
  */
 export interface GuildsInterface {
-   guildid?: number;
-   allianceId?: number;
-   leader?: number;
-   GP?: number;
-   logo?: number;
-   logoColor?: number;
-   name?: string;
-   rank1title?: string;
-   rank2title?: string;
-   rank3title?: string;
-   rank4title?: string;
-   rank5title?: string;
-   capacity?: number;
-   logoBG?: number;
-   logoBGColor?: number;
-   notice?: string;
-   signature?: number;
+  guildid?: number;
+  allianceId?: number;
+  leader?: number;
+  GP?: number;
+  logo?: number;
+  logoColor?: number;
+  name?: string;
+  rank1title?: string;
+  rank2title?: string;
+  rank3title?: string;
+  rank4title?: string;
+  rank5title?: string;
+  capacity?: number;
+  logoBG?: number;
+  logoBGColor?: number;
+  notice?: string;
+  signature?: number;
 }
 
 /**
@@ -362,29 +360,29 @@ export interface GuildsInterface {
  * is used in {@link Database}
  */
 export interface HiredmerchantInterface {
-   id?: number;
-   ownerid?: number;
-   itemid?: number;
-   quantity?: number;
-   upgradeslots?: number;
-   level?: number;
-   str?: number;
-   dex?: number;
-   int?: number;
-   luk?: number;
-   hp?: number;
-   mp?: number;
-   watk?: number;
-   matk?: number;
-   wdef?: number;
-   mdef?: number;
-   acc?: number;
-   avoid?: number;
-   hands?: number;
-   speed?: number;
-   jump?: number;
-   owner?: string;
-   type?: number;
+  id?: number;
+  ownerid?: number;
+  itemid?: number;
+  quantity?: number;
+  upgradeslots?: number;
+  level?: number;
+  str?: number;
+  dex?: number;
+  int?: number;
+  luk?: number;
+  hp?: number;
+  mp?: number;
+  watk?: number;
+  matk?: number;
+  wdef?: number;
+  mdef?: number;
+  acc?: number;
+  avoid?: number;
+  hands?: number;
+  speed?: number;
+  jump?: number;
+  owner?: string;
+  type?: number;
 }
 
 /**
@@ -392,30 +390,30 @@ export interface HiredmerchantInterface {
  * is used in {@link Database}
  */
 export interface HiredmerchanttempInterface {
-   id?: number;
-   ownerid?: number;
-   itemid?: number;
-   quantity?: number;
-   upgradeslots?: number;
-   level?: number;
-   str?: number;
-   dex?: number;
-   int?: number;
-   luk?: number;
-   hp?: number;
-   mp?: number;
-   watk?: number;
-   matk?: number;
-   wdef?: number;
-   mdef?: number;
-   acc?: number;
-   avoid?: number;
-   hands?: number;
-   speed?: number;
-   jump?: number;
-   owner?: string;
-   type?: number;
-   price?: number;
+  id?: number;
+  ownerid?: number;
+  itemid?: number;
+  quantity?: number;
+  upgradeslots?: number;
+  level?: number;
+  str?: number;
+  dex?: number;
+  int?: number;
+  luk?: number;
+  hp?: number;
+  mp?: number;
+  watk?: number;
+  matk?: number;
+  wdef?: number;
+  mdef?: number;
+  acc?: number;
+  avoid?: number;
+  hands?: number;
+  speed?: number;
+  jump?: number;
+  owner?: string;
+  type?: number;
+  price?: number;
 }
 
 /**
@@ -423,11 +421,11 @@ export interface HiredmerchanttempInterface {
  * is used in {@link Database}
  */
 export interface HtsquadsInterface {
-   id?: number;
-   channel?: number;
-   leaderid?: number;
-   status?: number;
-   members?: number;
+  id?: number;
+  channel?: number;
+  leaderid?: number;
+  status?: number;
+  members?: number;
 }
 
 /**
@@ -435,27 +433,27 @@ export interface HtsquadsInterface {
  * is used in {@link Database}
  */
 export interface InventoryequipmentInterface {
-   inventoryequipmentid?: number;
-   inventoryitemid?: number;
-   upgradeslots?: number;
-   level?: number;
-   str?: number;
-   dex?: number;
-   int?: number;
-   luk?: number;
-   hp?: number;
-   mp?: number;
-   watk?: number;
-   matk?: number;
-   wdef?: number;
-   mdef?: number;
-   acc?: number;
-   avoid?: number;
-   hands?: number;
-   speed?: number;
-   jump?: number;
-   ringid?: number;
-   locked?: number;
+  inventoryequipmentid?: number;
+  inventoryitemid?: number;
+  upgradeslots?: number;
+  level?: number;
+  str?: number;
+  dex?: number;
+  int?: number;
+  luk?: number;
+  hp?: number;
+  mp?: number;
+  watk?: number;
+  matk?: number;
+  wdef?: number;
+  mdef?: number;
+  acc?: number;
+  avoid?: number;
+  hands?: number;
+  speed?: number;
+  jump?: number;
+  ringid?: number;
+  locked?: number;
 }
 
 /**
@@ -463,16 +461,16 @@ export interface InventoryequipmentInterface {
  * is used in {@link Database}
  */
 export interface InventoryitemsInterface {
-   inventoryitemid?: number;
-   characterid?: number;
-   storageid?: number;
-   itemid?: number;
-   inventorytype?: number;
-   position?: number;
-   quantity?: number;
-   owner?: string;
-   petid?: number;
-   expiration?: number;
+  inventoryitemid?: number;
+  characterid?: number;
+  storageid?: number;
+  itemid?: number;
+  inventorytype?: number;
+  position?: number;
+  quantity?: number;
+  owner?: string;
+  petid?: number;
+  expiration?: number;
 }
 
 /**
@@ -480,8 +478,8 @@ export interface InventoryitemsInterface {
  * is used in {@link Database}
  */
 export interface IpbansInterface {
-   ipbanid?: number;
-   ip?: string;
+  ipbanid?: number;
+  ip?: string;
 }
 
 /**
@@ -489,10 +487,10 @@ export interface IpbansInterface {
  * is used in {@link Database}
  */
 export interface IplogInterface {
-   iplogid?: number;
-   accountid?: number;
-   ip?: string;
-   login?: Date;
+  iplogid?: number;
+  accountid?: number;
+  ip?: string;
+  login?: Date;
 }
 
 /**
@@ -500,9 +498,9 @@ export interface IplogInterface {
  * is used in {@link Database}
  */
 export interface JobchangesInterface {
-   id?: number;
-   cid?: number;
-   jobid?: number;
+  id?: number;
+  cid?: number;
+  jobid?: number;
 }
 
 /**
@@ -510,9 +508,9 @@ export interface JobchangesInterface {
  * is used in {@link Database}
  */
 export interface JobsInterface {
-   id?: number;
-   characterid?: number;
-   jobid?: number;
+  id?: number;
+  characterid?: number;
+  jobid?: number;
 }
 
 /**
@@ -520,11 +518,11 @@ export interface JobsInterface {
  * is used in {@link Database}
  */
 export interface KeymapInterface {
-   id?: number;
-   characterid?: number;
-   key?: number;
-   type?: number;
-   action?: number;
+  id?: number;
+  characterid?: number;
+  key?: number;
+  type?: number;
+  action?: number;
 }
 
 /**
@@ -532,10 +530,10 @@ export interface KeymapInterface {
  * is used in {@link Database}
  */
 export interface Library_v62Interface {
-   db_id?: number;
-   id?: number;
-   name?: string;
-   type?: string;
+  db_id?: number;
+  id?: number;
+  name?: string;
+  type?: string;
 }
 
 /**
@@ -543,9 +541,9 @@ export interface Library_v62Interface {
  * is used in {@link Database}
  */
 export interface LoginserverInterface {
-   loginserverid?: number;
-   key?: string;
-   world?: number;
+  loginserverid?: number;
+  key?: string;
+  world?: number;
 }
 
 /**
@@ -553,8 +551,8 @@ export interface LoginserverInterface {
  * is used in {@link Database}
  */
 export interface MacbansInterface {
-   macbanid?: number;
-   mac?: string;
+  macbanid?: number;
+  mac?: string;
 }
 
 /**
@@ -562,8 +560,8 @@ export interface MacbansInterface {
  * is used in {@link Database}
  */
 export interface MacfiltersInterface {
-   macfilterid?: number;
-   filter?: string;
+  macfilterid?: number;
+  filter?: string;
 }
 
 /**
@@ -571,9 +569,9 @@ export interface MacfiltersInterface {
  * is used in {@link Database}
  */
 export interface MarriagesInterface {
-   marriageid?: number;
-   husbandid?: number;
-   wifeid?: number;
+  marriageid?: number;
+  husbandid?: number;
+  wifeid?: number;
 }
 
 /**
@@ -581,9 +579,9 @@ export interface MarriagesInterface {
  * is used in {@link Database}
  */
 export interface DesignInterface {
-   ID?: number;
-   heroImage?: string;
-   logo?: string;
+  ID?: number;
+  heroImage?: string;
+  logo?: string;
 }
 
 /**
@@ -591,9 +589,9 @@ export interface DesignInterface {
  * is used in {@link Database}
  */
 export interface DownloadsInterface {
-   ID?: number;
-   name?: string;
-   url?: string;
+  ID?: number;
+  name?: string;
+  url?: string;
 }
 
 /**
@@ -601,9 +599,9 @@ export interface DownloadsInterface {
  * is used in {@link Database}
  */
 export interface LayoutInterface {
-   ID?: number;
-   name?: string;
-   json?: string;
+  ID?: number;
+  name?: string;
+  json?: string;
 }
 
 /**
@@ -611,13 +609,13 @@ export interface LayoutInterface {
  * is used in {@link Database}
  */
 export interface PalettesInterface {
-   name?: string;
-   mainColor?: string;
-   secondaryMainColor?: string;
-   fontColorLight?: string;
-   fontColorDark?: string;
-   fillColor?: string;
-   active?: number;
+  name?: string;
+  mainColor?: string;
+  secondaryMainColor?: string;
+  fontColorLight?: string;
+  fontColorDark?: string;
+  fillColor?: string;
+  active?: number;
 }
 
 /**
@@ -625,12 +623,12 @@ export interface PalettesInterface {
  * is used in {@link Database}
  */
 export interface SchemeInterface {
-   ID?: number;
-   mainColor?: number;
-   secondaryColor?: number;
-   fontColorLight?: number;
-   fontColorDark?: number;
-   highlightColor?: number;
+  ID?: number;
+  mainColor?: number;
+  secondaryColor?: number;
+  fontColorLight?: number;
+  fontColorDark?: number;
+  highlightColor?: number;
 }
 
 /**
@@ -638,15 +636,15 @@ export interface SchemeInterface {
  * is used in {@link Database}
  */
 export interface SettingsInterface {
-   ID?: number;
-   serverName?: string;
-   version?: string;
-   expRate?: string;
-   dropRate?: string;
-   mesoRate?: string;
-   nxColumn?: string;
-   vpColumn?: string;
-   gmLevel?: number;
+  ID?: number;
+  serverName?: string;
+  version?: string;
+  expRate?: string;
+  dropRate?: string;
+  mesoRate?: string;
+  nxColumn?: string;
+  vpColumn?: string;
+  gmLevel?: number;
 }
 
 /**
@@ -654,11 +652,11 @@ export interface SettingsInterface {
  * is used in {@link Database}
  */
 export interface VoteInterface {
-   ID?: number;
-   name?: string;
-   nx?: number;
-   time?: string;
-   url?: string;
+  ID?: number;
+  name?: string;
+  nx?: number;
+  time?: string;
+  url?: string;
 }
 
 /**
@@ -666,10 +664,10 @@ export interface VoteInterface {
  * is used in {@link Database}
  */
 export interface VotingInterface {
-   ID?: number;
-   accountid?: number;
-   voteid?: number;
-   date?: Date;
+  ID?: number;
+  accountid?: number;
+  voteid?: number;
+  date?: Date;
 }
 
 /**
@@ -677,10 +675,10 @@ export interface VotingInterface {
  * is used in {@link Database}
  */
 export interface MonsterdropsInterface {
-   monsterdropid?: number;
-   monsterid?: number;
-   itemid?: number;
-   chance?: number;
+  monsterdropid?: number;
+  monsterid?: number;
+  itemid?: number;
+  chance?: number;
 }
 
 /**
@@ -688,11 +686,11 @@ export interface MonsterdropsInterface {
  * is used in {@link Database}
  */
 export interface MonsterquestdropsInterface {
-   id?: number;
-   itemid?: number;
-   monsterid?: number;
-   chance?: number;
-   questid?: number;
+  id?: number;
+  itemid?: number;
+  monsterid?: number;
+  chance?: number;
+  questid?: number;
 }
 
 /**
@@ -700,9 +698,9 @@ export interface MonsterquestdropsInterface {
  * is used in {@link Database}
  */
 export interface Mts_cartInterface {
-   id?: number;
-   cid?: number;
-   itemid?: number;
+  id?: number;
+  cid?: number;
+  itemid?: number;
 }
 
 /**
@@ -710,39 +708,39 @@ export interface Mts_cartInterface {
  * is used in {@link Database}
  */
 export interface Mts_itemsInterface {
-   id?: number;
-   tab?: number;
-   type?: number;
-   itemid?: number;
-   quantity?: number;
-   seller?: number;
-   price?: number;
-   bid_incre?: number;
-   buy_now?: number;
-   position?: number;
-   upgradeslots?: number;
-   level?: number;
-   str?: number;
-   dex?: number;
-   int?: number;
-   luk?: number;
-   hp?: number;
-   mp?: number;
-   watk?: number;
-   matk?: number;
-   wdef?: number;
-   mdef?: number;
-   acc?: number;
-   avoid?: number;
-   hands?: number;
-   speed?: number;
-   jump?: number;
-   locked?: number;
-   isequip?: number;
-   owner?: string;
-   sellername?: string;
-   sell_ends?: string;
-   transfer?: number;
+  id?: number;
+  tab?: number;
+  type?: number;
+  itemid?: number;
+  quantity?: number;
+  seller?: number;
+  price?: number;
+  bid_incre?: number;
+  buy_now?: number;
+  position?: number;
+  upgradeslots?: number;
+  level?: number;
+  str?: number;
+  dex?: number;
+  int?: number;
+  luk?: number;
+  hp?: number;
+  mp?: number;
+  watk?: number;
+  matk?: number;
+  wdef?: number;
+  mdef?: number;
+  acc?: number;
+  avoid?: number;
+  hands?: number;
+  speed?: number;
+  jump?: number;
+  locked?: number;
+  isequip?: number;
+  owner?: string;
+  sellername?: string;
+  sell_ends?: string;
+  transfer?: number;
 }
 
 /**
@@ -750,11 +748,11 @@ export interface Mts_itemsInterface {
  * is used in {@link Database}
  */
 export interface NotesInterface {
-   id?: number;
-   to?: string;
-   from?: string;
-   message?: string;
-   timestamp?: number;
+  id?: number;
+  to?: string;
+  from?: string;
+  message?: string;
+  timestamp?: number;
 }
 
 /**
@@ -762,11 +760,11 @@ export interface NotesInterface {
  * is used in {@link Database}
  */
 export interface NxcodeInterface {
-   code?: string;
-   valid?: number;
-   user?: string;
-   type?: number;
-   item?: number;
+  code?: string;
+  valid?: number;
+  user?: string;
+  type?: number;
+  item?: number;
 }
 
 /**
@@ -774,9 +772,9 @@ export interface NxcodeInterface {
  * is used in {@link Database}
  */
 export interface Nxcode_trackInterface {
-   ID?: number;
-   IP?: string;
-   Day?: number;
+  ID?: number;
+  IP?: string;
+  Day?: number;
 }
 
 /**
@@ -784,11 +782,11 @@ export interface Nxcode_trackInterface {
  * is used in {@link Database}
  */
 export interface PetsInterface {
-   petid?: number;
-   name?: string;
-   level?: number;
-   closeness?: number;
-   fullness?: number;
+  petid?: number;
+  name?: string;
+  level?: number;
+  closeness?: number;
+  fullness?: number;
 }
 
 /**
@@ -796,10 +794,10 @@ export interface PetsInterface {
  * is used in {@link Database}
  */
 export interface Player_variablesInterface {
-   id?: number;
-   characterid?: number;
-   name?: string;
-   value?: string;
+  id?: number;
+  characterid?: number;
+  name?: string;
+  value?: string;
 }
 
 /**
@@ -807,21 +805,21 @@ export interface Player_variablesInterface {
  * is used in {@link Database}
  */
 export interface PlayernpcsInterface {
-   id?: number;
-   name?: string;
-   hair?: number;
-   face?: number;
-   skin?: number;
-   dir?: number;
-   x?: number;
-   y?: number;
-   cy?: number;
-   map?: number;
-   gender?: number;
-   ScriptId?: number;
-   Foothold?: number;
-   rx0?: number;
-   rx1?: number;
+  id?: number;
+  name?: string;
+  hair?: number;
+  face?: number;
+  skin?: number;
+  dir?: number;
+  x?: number;
+  y?: number;
+  cy?: number;
+  map?: number;
+  gender?: number;
+  ScriptId?: number;
+  Foothold?: number;
+  rx0?: number;
+  rx1?: number;
 }
 
 /**
@@ -829,10 +827,10 @@ export interface PlayernpcsInterface {
  * is used in {@link Database}
  */
 export interface Playernpcs_equipInterface {
-   id?: number;
-   npcid?: number;
-   equipid?: number;
-   equippos?: number;
+  id?: number;
+  npcid?: number;
+  equipid?: number;
+  equippos?: number;
 }
 
 /**
@@ -840,10 +838,10 @@ export interface Playernpcs_equipInterface {
  * is used in {@link Database}
  */
 export interface QuestactionsInterface {
-   questactionid?: number;
-   questid?: number;
-   status?: number;
-   data?: string;
+  questactionid?: number;
+  questid?: number;
+  status?: number;
+  data?: string;
 }
 
 /**
@@ -851,10 +849,10 @@ export interface QuestactionsInterface {
  * is used in {@link Database}
  */
 export interface QuestrequirementsInterface {
-   questrequirementid?: number;
-   questid?: number;
-   status?: number;
-   data?: string;
+  questrequirementid?: number;
+  questid?: number;
+  status?: number;
+  data?: string;
 }
 
 /**
@@ -862,12 +860,12 @@ export interface QuestrequirementsInterface {
  * is used in {@link Database}
  */
 export interface QueststatusInterface {
-   queststatusid?: number;
-   characterid?: number;
-   quest?: number;
-   status?: number;
-   time?: number;
-   forfeited?: number;
+  queststatusid?: number;
+  characterid?: number;
+  quest?: number;
+  status?: number;
+  time?: number;
+  forfeited?: number;
 }
 
 /**
@@ -875,10 +873,10 @@ export interface QueststatusInterface {
  * is used in {@link Database}
  */
 export interface QueststatusmobsInterface {
-   queststatusmobid?: number;
-   queststatusid?: number;
-   mob?: number;
-   count?: number;
+  queststatusmobid?: number;
+  queststatusid?: number;
+  mob?: number;
+  count?: number;
 }
 
 /**
@@ -886,11 +884,11 @@ export interface QueststatusmobsInterface {
  * is used in {@link Database}
  */
 export interface ReactordropsInterface {
-   reactordropid?: number;
-   reactorid?: number;
-   itemid?: number;
-   chance?: number;
-   questid?: number;
+  reactordropid?: number;
+  reactorid?: number;
+  itemid?: number;
+  chance?: number;
+  questid?: number;
 }
 
 /**
@@ -898,13 +896,13 @@ export interface ReactordropsInterface {
  * is used in {@link Database}
  */
 export interface ReportsInterface {
-   id?: number;
-   reporttime?: Date;
-   reporterid?: number;
-   victimid?: number;
-   reason?: number;
-   chatlog?: string;
-   status?: string;
+  id?: number;
+  reporttime?: Date;
+  reporterid?: number;
+  victimid?: number;
+  reason?: number;
+  chatlog?: string;
+  status?: string;
 }
 
 /**
@@ -912,11 +910,11 @@ export interface ReportsInterface {
  * is used in {@link Database}
  */
 export interface RingsInterface {
-   id?: number;
-   partnerRingId?: number;
-   partnerChrId?: number;
-   itemid?: number;
-   partnername?: string;
+  id?: number;
+  partnerRingId?: number;
+  partnerChrId?: number;
+  itemid?: number;
+  partnername?: string;
 }
 
 /**
@@ -924,10 +922,10 @@ export interface RingsInterface {
  * is used in {@link Database}
  */
 export interface SavedlocationsInterface {
-   id?: number;
-   characterid?: number;
-   locationtype?: string;
-   map?: number;
+  id?: number;
+  characterid?: number;
+  locationtype?: string;
+  map?: number;
 }
 
 /**
@@ -935,13 +933,13 @@ export interface SavedlocationsInterface {
  * is used in {@link Database}
  */
 export interface ShopitemsInterface {
-   shopitemid?: number;
-   shopid?: number;
-   itemid?: number;
-   price?: number;
-   position?: number;
-   refresh?: number;
-   availible?: number;
+  shopitemid?: number;
+  shopid?: number;
+  itemid?: number;
+  price?: number;
+  position?: number;
+  refresh?: number;
+  availible?: number;
 }
 
 /**
@@ -949,8 +947,8 @@ export interface ShopitemsInterface {
  * is used in {@link Database}
  */
 export interface ShopsInterface {
-   shopid?: number;
-   npcid?: number;
+  shopid?: number;
+  npcid?: number;
 }
 
 /**
@@ -958,14 +956,14 @@ export interface ShopsInterface {
  * is used in {@link Database}
  */
 export interface SkillmacrosInterface {
-   id?: number;
-   characterid?: number;
-   position?: number;
-   skill1?: number;
-   skill2?: number;
-   skill3?: number;
-   name?: string;
-   shout?: number;
+  id?: number;
+  characterid?: number;
+  position?: number;
+  skill1?: number;
+  skill2?: number;
+  skill3?: number;
+  name?: string;
+  shout?: number;
 }
 
 /**
@@ -973,11 +971,11 @@ export interface SkillmacrosInterface {
  * is used in {@link Database}
  */
 export interface SkillsInterface {
-   id?: number;
-   skillid?: number;
-   characterid?: number;
-   skilllevel?: number;
-   masterlevel?: number;
+  id?: number;
+  skillid?: number;
+  characterid?: number;
+  skilllevel?: number;
+  masterlevel?: number;
 }
 
 /**
@@ -985,18 +983,18 @@ export interface SkillsInterface {
  * is used in {@link Database}
  */
 export interface SpawnsInterface {
-   id?: number;
-   idd?: number;
-   f?: number;
-   fh?: number;
-   type?: string;
-   cy?: number;
-   rx0?: number;
-   rx1?: number;
-   x?: number;
-   y?: number;
-   mobtime?: number;
-   mid?: number;
+  id?: number;
+  idd?: number;
+  f?: number;
+  fh?: number;
+  type?: string;
+  cy?: number;
+  rx0?: number;
+  rx1?: number;
+  x?: number;
+  y?: number;
+  mobtime?: number;
+  mid?: number;
 }
 
 /**
@@ -1004,10 +1002,10 @@ export interface SpawnsInterface {
  * is used in {@link Database}
  */
 export interface StoragesInterface {
-   storageid?: number;
-   accountid?: number;
-   slots?: number;
-   meso?: number;
+  storageid?: number;
+  accountid?: number;
+  slots?: number;
+  meso?: number;
 }
 
 /**
@@ -1015,22 +1013,22 @@ export interface StoragesInterface {
  * is used in {@link Database}
  */
 export interface TradesInterface {
-   id?: number;
-   itemid?: number;
-   quantity?: number;
-   sellingPrice?: number;
-   mAtt?: number;
-   wAtt?: number;
-   Luk?: number;
-   intS?: number;
-   Str?: number;
-   Dex?: number;
-   Speed?: number;
-   Jump?: number;
-   WDef?: number;
-   MDef?: number;
-   Upgades?: number;
-   isNotEquippable?: number;
+  id?: number;
+  itemid?: number;
+  quantity?: number;
+  sellingPrice?: number;
+  mAtt?: number;
+  wAtt?: number;
+  Luk?: number;
+  intS?: number;
+  Str?: number;
+  Dex?: number;
+  Speed?: number;
+  Jump?: number;
+  WDef?: number;
+  MDef?: number;
+  Upgades?: number;
+  isNotEquippable?: number;
 }
 
 /**
@@ -1038,9 +1036,9 @@ export interface TradesInterface {
  * is used in {@link Database}
  */
 export interface TrocklocationsInterface {
-   trockid?: number;
-   characterid?: number;
-   mapid?: number;
+  trockid?: number;
+  characterid?: number;
+  mapid?: number;
 }
 
 /**
@@ -1048,10 +1046,10 @@ export interface TrocklocationsInterface {
  * is used in {@link Database}
  */
 export interface ViprockmapsInterface {
-   id?: number;
-   cid?: number;
-   mapid?: number;
-   type?: number;
+  id?: number;
+  cid?: number;
+  mapid?: number;
+  type?: number;
 }
 
 /**
@@ -1059,14 +1057,14 @@ export interface ViprockmapsInterface {
  * is used in {@link Database}
  */
 export interface Website_eventsInterface {
-   id?: number;
-   title?: string;
-   author?: string;
-   date?: string;
-   type?: string;
-   status?: string;
-   content?: string;
-   views?: number;
+  id?: number;
+  title?: string;
+  author?: string;
+  date?: string;
+  type?: string;
+  status?: string;
+  content?: string;
+  views?: number;
 }
 
 /**
@@ -1074,13 +1072,13 @@ export interface Website_eventsInterface {
  * is used in {@link Database}
  */
 export interface Website_newsInterface {
-   id?: number;
-   title?: string;
-   author?: string;
-   date?: string;
-   type?: string;
-   content?: string;
-   views?: number;
+  id?: number;
+  title?: string;
+  author?: string;
+  date?: string;
+  type?: string;
+  content?: string;
+  views?: number;
 }
 
 /**
@@ -1088,9 +1086,9 @@ export interface Website_newsInterface {
  * is used in {@link Database}
  */
 export interface WishlistInterface {
-   id?: number;
-   characterid?: number;
-   sn?: number;
+  id?: number;
+  characterid?: number;
+  sn?: number;
 }
 
 /**
@@ -1098,9 +1096,9 @@ export interface WishlistInterface {
  * is used in {@link Database}
  */
 export interface ZaksquadsInterface {
-   id?: number;
-   channel?: number;
-   leaderid?: number;
-   status?: number;
-   members?: number;
+  id?: number;
+  channel?: number;
+  leaderid?: number;
+  status?: number;
+  members?: number;
 }

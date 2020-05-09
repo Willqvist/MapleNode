@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+        <%- include('head') %>
+        <style>
+            #logoUpload,#heroUpload {
+                visibility: hidden;
+                display:none;
+            }
+            .pp2 {
+                background:black;
+                border-top-right-radius: 2em;
+                border-bottom-right-radius: 2em;
+            }
+            .pp1 {
+                background:#F3F3F3;
+                border-top-left-radius: 2em;
+                border-bottom-left-radius: 2em;
+            }
+            #prev {
+                width:100%;
+                height:12em;
+                display:flex;
+            }
+            .pp {
+                height:100%;
+                height:100%;
+                flex:1;
+                box-sizing: border-box;
+                display:flex;
+                padding:1.5em;
+
+            }
+            .pc {
+                flex:1;
+                background: url("../images/svgs/logo_single.svg") no-repeat;
+                background-size:contain;
+                background-position: center;
+            }
+            .pp3 {
+                border-radius: 2em;
+                background:#F3F3F3;
+                background: url("../images/headerImage.png") no-repeat;
+                background-size:cover;
+                background-position: center;
+            }
+            #container > p {
+                opacity:0.6;
+                margin-top:0.8em;
+                margin-top:0.8em;
+                width:100%;
+                max-width:70%;
+            }
+            .switch {
+                cursor:pointer;
+                opacity:0.7;
+            }
+            .switch:hover {
+                text-decoration: underline;
+                text-underline: #20063b;
+            }
+        </style>
+    </head>
+    <body>
+        <p id="fillField">
+            You must fill this field
+        </p>
+        <div id="wrapper">
+            <div id="container">
+                <h4>Setup <%= name %></h4>
+                <h1>Create Account</h1>
+                <p>The account that is created will be set to a web admin.</p>
+                <%- include("../imports/login",{action:""}) %>
+            </div>
+        </div>
+    </body>
+        <script>
+    </script>
+        <script>
+            let submitRegisterForm = document.getElementById("submitRegisterForm");
+            let submitLoginForm = document.getElementById("submitLoginForm");
+            let fillField = document.getElementById("fillField");
+            let size = fillField.getBoundingClientRect();
+            let middle = (size.bottom - size.top) / 2;
+
+            bindSubmitBtn(register_form,submitRegisterForm);
+            bindSubmitBtn(login_form,submitLoginForm);
+            function bindSubmitBtn(form,submitForm) {
+                let inputs = form.getElementsByTagName("input");
+                submitForm.addEventListener("click", function () {
+                    let canSend = true;
+                    for (let i = 0; i < inputs.length; i++) {
+                        if (inputs[i].value.length == 0 && inputs[i].getAttribute("required") != null) {
+                            console.log(inputs[i]);
+                            let pos = inputs[i].getBoundingClientRect();
+                            fillField.style.left = "calc(" + pos.right + "px + 2em)";
+                            fillField.style.top = pos.top - middle + ((pos.bottom - pos.top) / 2) + window.pageYOffset + "px";
+                            canSend = false;
+                            break;
+                        }
+                    }
+                    if (canSend) {
+                        form.submit();
+                    }
+                }, false);
+            }
+        </script>
+</html>

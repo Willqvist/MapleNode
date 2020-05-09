@@ -33,6 +33,7 @@ CREATE TABLE prefix_vote
 CREATE TABLE prefix_voting
 (
     ID int NOT NULL AUTO_INCREMENT,
+    ip varchar(255)
     accountid int(22),
     voteid int(22),
     date timestamp,

@@ -1,28 +1,19 @@
-<%
-
-if(!isset(typeof settings))
-{
-    settings = {};
-}
-let MENU_SITE = "HOME";
-name = settings.serverName;
-%>
 <!doctype html>
 <html>
     <head>
-    <link rel="stylesheet" type="text/css" href="CSS/status.css">  
-    <link rel="stylesheet" type="text/css" href="CSS/menu.css">           
-    <link rel="stylesheet" type="text/css" href="CSS/header.css">  
-    <link rel="stylesheet" type="text/css" href="CSS/status.css">    
+    <link rel="stylesheet" type="text/css" href="CSS/status.css">
+    <link rel="stylesheet" type="text/css" href="CSS/menu.css">
+    <link rel="stylesheet" type="text/css" href="CSS/header.css">
+    <link rel="stylesheet" type="text/css" href="CSS/status.css">
     <link rel="stylesheet" type="text/css" href="CSS/index.css">
-    <link rel="stylesheet" type="text/css" href="CSS/news.css">  
-    <link rel="stylesheet" type="text/css" href="CSS/ranking.css"> 
+    <link rel="stylesheet" type="text/css" href="CSS/news.css">
+    <link rel="stylesheet" type="text/css" href="CSS/ranking.css">
     <link rel="stylesheet" type="text/css" href="CSS/control.css">
-    <link rel="stylesheet" type="text/css" href="CSS/media.css">    
-    <% include imports/head %>
-               
+    <link rel="stylesheet" type="text/css" href="CSS/media.css">
+    <%- include('imports/head') %>
+
     <title><%= settings.serverName %></title>
-    <% include imports/menu.ejs %>
+    <%- include('imports/menu.ejs') %>
     <div class="header">
         <div class="video_bg">
             <video class="bg_video" width="1080" height="720" autoplay muted loop>
@@ -94,7 +85,7 @@ name = settings.serverName;
                     window.location.href = "/dashboard";
                 },2500);
             });
-            console.log(body); 
+            console.log(body);
         });
         */
         </script>

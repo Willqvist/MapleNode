@@ -1,8 +1,6 @@
-export default class Time
-{
-    static getTime()
-    {
-        let date = new Date();
-        return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-    }
+export default class Time {
+  static getTime() {
+    const date = new Date();
+    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  }
 }

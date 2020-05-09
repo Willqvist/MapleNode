@@ -4,7 +4,7 @@ let MENU_SITE="LOGIN";
 <!doctype html>
 <html>
     <head>
-    <% include ../imports/head %>
+        <%- include ("../imports/head") %>
     <style>
         #content{
             width:35em;
@@ -45,10 +45,9 @@ let MENU_SITE="LOGIN";
         .mr{
             right:0;
             bottom:0;
-            background:url("../images/right_bottom_monsters.png") no-repeat;
             background-size:contain;
-            background-position:100% 100%;
-        }     
+            background: url("../images/right_bottom_monsters.png") no-repeat 100% 100%;
+        }
         .btn,.btn-a a,.btn-input input {
             font-size:0.9em;
             padding-left:2em;
@@ -72,7 +71,7 @@ let MENU_SITE="LOGIN";
         .input input
         {
             margin-bottom:0.2em;
-        } 
+        }
         .input select
         {
             outline:none;
@@ -86,11 +85,11 @@ let MENU_SITE="LOGIN";
             right:0;
             top:0;
             bottom:0;
-        }  
+        }
     </style>
 
     <body>
-        <% include ../imports/menu.ejs %>
+    <%- include('../imports/menu.ejs') %>
         <div class="gradient"></div>
         <div class="m ml">
         </div>
@@ -101,7 +100,7 @@ let MENU_SITE="LOGIN";
             </div>
             <div id="control">
                 <div class="loader" id="loginLoader">
-                    <p>Loading</p>    
+                    <p>Loading</p>
                 </div>
     <form id="loginForm">
         <div class="error" id="loginError">Error</div>
@@ -143,7 +142,7 @@ let MENU_SITE="LOGIN";
         HttpHandler.postData(url,(response)=>
         {
             console.log(response);
-            
+
             loader.style.opacity="0";
             setTimeout(()=>
             {
