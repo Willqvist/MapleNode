@@ -1,0 +1,26 @@
+<%
+    function partial(page, data) {
+        %><%- include(page, data); %><%
+    }
+
+    function isset(type) {
+        return type === 'undefined';
+    }
+
+    const attribs = {
+        options,
+        partial,
+        isset,
+        loggedIn: locals.user,
+        user: locals.user
+    };
+
+    function setup() {
+        if(!options.page) {
+            print("404");
+            return;
+        }
+        partial(options.page, attribs);
+    }
+    setup();
+%>

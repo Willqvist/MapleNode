@@ -299,7 +299,7 @@ export interface Database {
    */
   rank(
     orderby: 'level' | 'fame',
-    rankby: { job?: string; search?: string },
+    rankby: { job?: number; search?: string },
     page: number,
     limit: number
   ): Promise<Rank[]>;
@@ -309,7 +309,6 @@ export interface Database {
    * @param errno the error id to print.
    */
   printError(errno: number);
-
 }
 
 /*

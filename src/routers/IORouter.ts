@@ -36,7 +36,7 @@ router.post('/login', async (req, res) => {
   } else {
     Logger.log('debug', `[${req.ip}] tried to login with username ${req.body.username}`);
   }
-  res.send(JSON.stringify(REST));
+  sendJSON(res, REST);
 });
 
 /**
@@ -165,13 +165,14 @@ router.post('/vote', async (req, res) => {
 router.post('/ranking', async (req, res) => {
   const jobs = constants.getConstant('jobs');
 
-  const { search, job, rank, page } = this.body;
+  const { search, job, rank, page } = req.body;
   const ranks = await DatabaseConnection.instance.rank(rank.toLowerCase(), { job, search }, page, 5);
   const jobNames: string[] = [];
   for (let i = 0; i < ranks.length; i++) {
     const jobName = jobs[ranks[i].job];
     jobNames.push(!jobName ? '?' : jobName);
   }
+  console.log('sending', { characters: ranks, jobNames });
   return sendJSON(res, { characters: ranks, jobNames });
 });
 

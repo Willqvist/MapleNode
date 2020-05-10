@@ -1,6 +1,6 @@
 import express from 'express';
 import DBConn from '../core/database/DatabaseConnection';
-
+import * as consts from '../core/Constants';
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -9,7 +9,8 @@ router.get('/', (req, res) => {
 });
 router.get('/ranking', (req, res) => {
   const { user } = req.session;
-  return res.render('pages/ranking', { user });
+  const jobs = consts.getConstant('jobs');
+  return res.render('pages/ranking', { user, jobs });
 });
 router.get('/login', (req, res) => {
   const { user } = req.session;

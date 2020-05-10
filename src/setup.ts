@@ -1,3 +1,4 @@
+import express from 'express';
 import DatabaseConnection from './core/database/DatabaseConnection';
 import InstallationHandler from './setup/InstallationHandler';
 import * as consts from './core/Constants';
@@ -13,6 +14,15 @@ function setConstants(settings: SettingsInterface, design: DesignInterface, pale
   consts.setConstant('palette', palette);
 }
 
+function setExpressRender() {
+  const { render } = express.response;
+  express.response.render = function (view, options?, callback?) {
+    const opt = { options: { ...options } };
+    opt.options.page = view;
+    render.call(this, 'root', opt, callback);
+  };
+}
+
 /**
  * sets up the server with constans and configs.
  * @param setupListeners callback to setup all listeners
@@ -20,6 +30,7 @@ function setConstants(settings: SettingsInterface, design: DesignInterface, pale
  */
 export default async function setup(setupListeners: () => void, setupComplete: () => void): Promise<void> {
   const installer = new InstallationHandler();
+  setExpressRender();
   setupListeners();
   let data;
   const config = await getConfig();

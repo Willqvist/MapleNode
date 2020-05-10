@@ -10,10 +10,10 @@
     <link rel="stylesheet" type="text/css" href="CSS/ranking.css">
     <link rel="stylesheet" type="text/css" href="CSS/control.css">
     <link rel="stylesheet" type="text/css" href="CSS/media.css">
-    <%- include('imports/head') %>
+    <% partial('imports/head') %>
 
     <title><%= settings.serverName %></title>
-    <%- include('imports/menu.ejs') %>
+    <% partial('imports/menu') %>
     <div class="header">
         <div class="video_bg">
             <video class="bg_video" width="1080" height="720" autoplay muted loop>
@@ -43,7 +43,7 @@
                 <div class="block_menu">
                     <h2>news</h2>
                 </div>
-                <% include panels/news.ejs %>
+                <%- include('panels/news.ejs') %>
             </div>
             <div class="block_content maxWidth news">
                 <div class="block_menu">

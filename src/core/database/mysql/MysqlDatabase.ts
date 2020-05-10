@@ -181,7 +181,7 @@ export default class MysqlDatabase implements Database {
   }
 
   async getVotes(obj?: SWO): Promise<VoteInterface[]> {
-    const [rows, err] = await this.exec<VoteInterface>(obj, 'votes', mn_voteConversion);
+    const [rows, err] = await this.exec<VoteInterface>(obj, 'vote', mn_voteConversion);
     if (err) {
       throw new DatabaseError({ errno: 0, msg: err });
     }
@@ -197,7 +197,7 @@ export default class MysqlDatabase implements Database {
       };
     }
     sqlObj.where['id'] = id;
-    const [rows, err] = await this.exec<VoteInterface>(sqlObj, 'votes', mn_voteConversion);
+    const [rows, err] = await this.exec<VoteInterface>(sqlObj, 'vote', mn_voteConversion);
     if (err) {
       throw new DatabaseError({ errno: 0, msg: err });
     }
@@ -471,13 +471,13 @@ export default class MysqlDatabase implements Database {
 
   async rank(
     orderby: 'level' | 'fame' | 'job',
-    rankby: { job?: string; search?: string },
+    rankby: { job?: number; search?: string },
     page: number,
     limit: number = 5
   ): Promise<Rank[]> {
     let where = '';
     const searches = [];
-    if (rankby.job) {
+    if (rankby.job && rankby.job !== -1) {
       searches.push(`job='${rankby.job}'`);
     }
     if (rankby.search) {
@@ -492,7 +492,7 @@ export default class MysqlDatabase implements Database {
     }
 
     const offset = Math.max(page, 0) * limit;
-
+    console.log();
     const [rows] = await this.connection.execute(
       ` 
             SELECT 
@@ -544,11 +544,11 @@ export default class MysqlDatabase implements Database {
                 ORDER BY 
                   job
               ) as J ON J._id = id 
-            ? ORDER BY ? LIMIT ? OFFSET ?
+            ${where} ORDER BY ? LIMIT ? OFFSET ?
         `,
-      [where, orderby, limit, offset]
+      [orderby, limit, offset]
     );
-    if (rows.length === 0) return null;
+    if (rows.length === 0) return [];
     const ret: Rank[] = [];
     for (let i = 0; i < rows.length; i++) {
       ret.push({

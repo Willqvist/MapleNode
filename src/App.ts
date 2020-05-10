@@ -1,4 +1,5 @@
 // libaries
+import ejs from 'ejs';
 import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
@@ -33,6 +34,14 @@ function setRunMode(mode: string) {
   } else {
     Logger.listenTo(['all']);
   }
+}
+
+function setLocals(app: express.Application) {
+  app.locals.palette = consts.getConstant('palette');
+  app.locals.heroImage = consts.getConstant('heroImage');
+  app.locals.logo = consts.getConstant('logo');
+  app.locals.settings = consts.getConstant('settings');
+  ejs.open;
 }
 
 /**
@@ -109,7 +118,7 @@ class App {
         await DatabaseConnection.createInstance(this.getDatabase(), this.getConfig().server.database.auth);
       } catch (err) {
         Logger.warn('debug', 'Could not connected to database.');
-        if (err.errno) Logger.error('error', `[${err.errno}] ${err.msg}`);
+        if (err.getErrorCode()) Logger.error('error', `[${err.getErrorCode()}] ${err.getMessage()}`);
         else Logger.error('error', err);
         return false;
       }
@@ -184,10 +193,7 @@ class App {
     // eslint-disable-next-line no-unused-expressions
     input;
     const { app } = this;
-    app.locals.palette = consts.getConstant('palette');
-    app.locals.heroImage = consts.getConstant('heroImage');
-    app.locals.logo = consts.getConstant('logo');
-    app.locals.settings = consts.getConstant('settings');
+    setLocals(app);
     Logger.log(
       'release',
       `${consts.getConstant<SettingsInterface>('settings').serverName} is Online on port ${this.appConfig.server.port}`

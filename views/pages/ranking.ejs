@@ -1,34 +1,26 @@
-<%
-let MENU_SITE = "RANKING";
-let name = "Ranking";
-%>
 <!doctype html>
 <html>
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="CSS/statusPage.css">
         <link rel="stylesheet" type="text/css" href="CSS/header.css">
-        <link rel="stylesheet" type="text/css" href="CSS/media.css">   
-        <link rel="stylesheet" type="text/css" href="CSS/menu.css"> 
-        <link rel="stylesheet" type="text/css" href="CSS/dropdown.css">    
-        <link rel="stylesheet" type="text/css" href="CSS/rankingPage.css">      
-        <% include ../imports/head %>                      
+        <link rel="stylesheet" type="text/css" href="CSS/media.css">
+        <link rel="stylesheet" type="text/css" href="CSS/menu.css">
+        <link rel="stylesheet" type="text/css" href="CSS/dropdown.css">
+        <link rel="stylesheet" type="text/css" href="CSS/rankingPage.css">
+        <% partial('imports/head') %>
         <title>Ranking</title>
-        <% include ../imports/menu.ejs %>
-        <% include ../panels/header.ejs %>
+        <% partial('imports/menu'); %>
             <section id="content" class="maxWidth">
             <div id="settings" class="tab">
                 <div id="settingsBtns">
                     <div class="dropdownBtn btn noSelect" data-dropdownContent="searchSettings"><span>&dtrif; Overall</span>
                         <ul id="searchSettings"class="noSelect dropdownContent">
-                            <%
-                            for(let key in getJobs())
-                            {
+                            <% for(const key in options.jobs) {
+                                const jobName = options.jobs[key];
                             %>
-                            <li data-id="<%=key%>" data-select="<%=getJobs()[key]%>"><%= getJobs()[key]%></li>
-                            <%
-                            }
-                            %>
+                                <li data-id="<%= key %>" data-select="<%= jobName %>"><%= jobName %></li>
+                            <%}%>
                         </ul>
                     </div>
                     <div class="dropdownBtn btn noSelect" data-dropdownContent="searchRankingSettings"><span>&dtrif; Level</span>
@@ -57,7 +49,7 @@ let name = "Ranking";
                 </ul>
                 <div id="usersWrapper" class="box_style">
                     <div class="loader" id="rankLoader">
-                        <p>Loading</p>    
+                        <p>Loading</p>
                     </div>
                     <div id="users">
 
@@ -65,12 +57,11 @@ let name = "Ranking";
                 </div>
             </div>
             <div  class="tab pageTab">
-                <div id="prev" class="btn noSelect"><span>Previous Page</span></div>  
+                <div id="prev" class="btn noSelect"><span>Previous Page</span></div>
                 <div id="pageInfo"><h3 id="pageNumber">0</h3></div>
                 <div id="next" class="btn noSelect"><span>Next Page</span></div>
-            </div>                     
+            </div>
         </section>
-        <script src="JS/HttpHandler.js"></script>
         <script src="JS/dropdown.js"></script>
         <script>
            let jobs = "-1";
@@ -116,7 +107,7 @@ let name = "Ranking";
             let prev = document.getElementById("prev");
             let userWrapper = document.getElementById("users");
             let pageNumer = document.getElementById("pageNumber");
-            
+
             let lastClickedUser = null;
 
             //userElement.setVariable({variable:"rank",data:1});
@@ -143,9 +134,9 @@ let name = "Ranking";
                 HttpHandler.postData(url,(response)=>
                 {
                     userWrapper.innerHTML = "";
-                    console.log(response);
+                    console.log("RESPONSE: ",response);
                     for(let i = 0; i < response.length; i++){
-                        let user = response[i]; 
+                        let user = response[i];
                         userElement.setVariable({variable:"placement",data:user.rank.toString()});
                         userElement.setVariable({variable:"name",data:user.name});
                         userElement.setVariable({variable:"job",data:user.job.toString()});
@@ -221,8 +212,8 @@ let name = "Ranking";
             {
                 if(!canChangePage() || page == 0)  return;
                 page --;
-                goToPage(page);  
-                prevButton();         
+                goToPage(page);
+                prevButton();
             }
             function canChangePage()
             {
@@ -234,7 +225,7 @@ let name = "Ranking";
                 goToPage(0);
             }
 
-            //##SEARCH 
+            //##SEARCH
 
             let searchBtn = document.getElementById("searchBtn");
             let searchBar = document.getElementById("searchBar");
@@ -248,7 +239,7 @@ let name = "Ranking";
                 }
                 else
                 {
-                   searchBtn.style.boxShadow = "inset 0px -0em 0 #3e78b2"; 
+                   searchBtn.style.boxShadow = "inset 0px -0em 0 #3e78b2";
                 }
             },false);
 

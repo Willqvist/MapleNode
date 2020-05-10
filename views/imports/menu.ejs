@@ -3,7 +3,7 @@
 </head>
 <body>
 <%
-let loggedIn = isset(typeof user);
+const loggedIn = locals.user;
 function isActive(type)
 {
     if(!isset(typeof MENU_SITE)) return "menu_li";
