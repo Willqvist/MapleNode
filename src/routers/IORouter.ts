@@ -36,6 +36,7 @@ router.post('/login', async (req, res) => {
   } else {
     Logger.log('debug', `[${req.ip}] tried to login with username ${req.body.username}`);
   }
+  console.log(REST);
   sendJSON(res, REST);
 });
 

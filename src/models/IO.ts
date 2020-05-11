@@ -44,6 +44,7 @@ export default class IO {
       const hour = 3600000 / 2;
       response.expire = new Date(Date.now() + hour);
       response.lifetime = hour;
+      response.REST.reason = 'Login successful!';
       this.loginUserToSession(session, account, response.expire, response.lifetime);
       return response;
     }

@@ -126,7 +126,6 @@ let MENU_SITE="LOGIN";
         </div>
     </form>
 </div>
-<script src="JS/HttpHandler.js"></script>
 <script>
     let form = new FormElement("loginForm");
     let error = new ErrorElement("loginError");
@@ -150,19 +149,13 @@ let MENU_SITE="LOGIN";
             }, 320);
             if(!response.success)
             {
-                console.log(response.http.status);
-                return;
-            }
-            else if(!response.loggedin)
-            {
                 error.showError({reason:response.reason});
                 return;
             }
             error.success({reason:response.reason});
             let site = "/dashboard";
-            <% if(isset(typeof site)) { %> site = "<% site %>" <% } %>
+            <% if(options.site) { %> site = "<% options.site %>" <% } %>
             window.location.href = site;
-            console.log(response.loggedin);
         });
     });
 </script>

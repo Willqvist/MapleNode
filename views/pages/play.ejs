@@ -1,23 +1,17 @@
-<%
-let MENU_SITE = "PLAY";
-let name = "Play";
-
-%>
 <!doctype html>
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="CSS/header.css">   
-        <link rel="stylesheet" type="text/css" href="CSS/menu.css"> 
-        <link rel="stylesheet" type="text/css" href="CSS/index.css"> 
-        <link rel="stylesheet" type="text/css" href="CSS/play.css"> 
+        <link rel="stylesheet" type="text/css" href="CSS/header.css">
+        <link rel="stylesheet" type="text/css" href="CSS/menu.css">
+        <link rel="stylesheet" type="text/css" href="CSS/index.css">
+        <link rel="stylesheet" type="text/css" href="CSS/play.css">
 
-        <% include ../imports/head %>    
+        <%- include('../imports/head') %>
         <title>Play <%= settings.serverName %></title>
-        <% include ../imports/menu.ejs %>
-        <% include ../panels/header.ejs %>
+        <%- include('../imports/menu') %>
         <section id="content" class="maxWidth box_wrapper">
         <%
-        for(let download of downloads)
+        for(let download of options.downloads)
         {
         %>
         <div class="box">
@@ -26,11 +20,11 @@ let name = "Play";
             <div class="btn-holder">
                 <div class="btn btn-a"><a href="<%= download.url %>"><span>Download</span></a></div>
             </div>
-        </div> 
+        </div>
         <%
-        
+
         }
-        %>        
+        %>
         </section>
     </body>
 </html>

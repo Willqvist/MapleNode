@@ -4,7 +4,7 @@ let MENU_SITE="SIGN UP";
 <!doctype html>
 <html>
     <head>
-        <% include ../imports/head %>        
+        <%- include('../imports/head') %>
 
         <link rel="stylesheet" type="text/css" href="../CSS/control.css">
         <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
@@ -64,11 +64,11 @@ let MENU_SITE="SIGN UP";
         .input input
         {
             margin-bottom:0.2em;
-        } 
+        }
         .input select
         {
             outline:none;
-        }    
+        }
         .input .btn
         {
             margin-right:1em;
@@ -124,11 +124,11 @@ let MENU_SITE="SIGN UP";
             right:0;
             top:0;
             bottom:0;
-        }  
+        }
 
     </style>
-        <% include ../imports/menu.ejs %>
-                <div class="gradient"></div>
+        <%- include('../imports/menu') %>
+        <div class="gradient"></div>
 
         <div class="m ml">
         </div>
@@ -139,7 +139,7 @@ let MENU_SITE="SIGN UP";
             </div>
             <div id="control">
                 <div class="loader" id="loginLoader">
-                    <p>Loading</p>    
+                    <p>Loading</p>
                 </div>
                 <form id="loginForm">
                     <div class="error" id="loginError">Error</div>
@@ -163,18 +163,18 @@ let MENU_SITE="SIGN UP";
                         <label>Date of Birth</label>
                         <div class="inputInlineHolder">
                         <select class="btn btn-blue" id="year" name="year">
-                            <% 
+                            <%
                             let year = new Date().getFullYear();
                             for(let i = 0; i < 220; i++)
                             {
                             %>
                             <option value="<%= year - i %>"><%= year - i %></option>
-                            <% 
+                            <%
                             }
                             %>
                         </select>
                         <select id="month" name="month" class="btn btn-blue">
-                            <% 
+                            <%
                             let months =
                             [
                                 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
@@ -183,29 +183,29 @@ let MENU_SITE="SIGN UP";
                             {
                             %>
                             <option value="<%= i+1 %>"><%= months[i] %></option>
-                            <% 
+                            <%
                             }
                             %>
                         </select>
                         <select id="day" name="day" class="btn btn-blue">
-                            <% 
+                            <%
                             for(let i = 31; i > 0; i--)
                             {
                             %>
                             <option value="<%= i %>"><%= i %></option>
-                            <% 
+                            <%
                             }
                             %>
-                        </select>                        
+                        </select>
                         </div>
-                    </div>         
+                    </div>
                     <div class="input inputHolder input-radio">
                         <label for="email">Terms & Conditions</label>
                         <div class="input-radio-wrapper">
                         <div class="rw"><input class="radio" type="checkbox" name="gender" value="male"></div>
                         <span>I agree to the MapleNode <a href="/">game rules and Terms & Conditions.</a></span>
                         </div>
-                    </div>                                                                          
+                    </div>
                     <div id="form-btn-holder">
                         <input name="login_submit" type="submit" class="btn btn-green" id="login" value="Register" />
                     </div>

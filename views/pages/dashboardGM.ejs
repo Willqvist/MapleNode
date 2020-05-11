@@ -1,19 +1,15 @@
-<%
-let MENU_SITE = "DASHBOARD";
-
-%>
 <!doctype html>
 <html>
     <head>
         <title>Dashboard GM</title>
-        <% include ../imports/head %>        
+        <%- include('../imports/head') %>
         <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
         <link rel="stylesheet" type="text/css" href="../CSS/dashboard.css">
     </head>
     <body>
-    
+
         <div id="infoBox">Select palette</div>
-        <% include ../imports/menu %>
+        <%- include('../imports/menu') %>
         <div class="wrapper">
             <div class="dashboard_menu">
                 <div class="sub_menu" id="dashboard_menu_id">
@@ -63,9 +59,10 @@ let MENU_SITE = "DASHBOARD";
                     </div>
                     <div class="panels">
                         <%
-                        for(var i = 0; i < downloads.length; i++)
+                        if(options.downloads)
+                        for(var i = 0; i < options.downloads.length; i++)
                         {
-                            var download = downloads[i];
+                            const download = options.downloads[i];
                         %>
                         <div class="panel" download="<%=download.ID%>">
                             <h2><%= download.name%></h2>
@@ -120,9 +117,10 @@ let MENU_SITE = "DASHBOARD";
                     </div>
                     <div class="panels">
                         <%
-                        for(var i = 0; i < votes.length; i++)
+                        if(options.votes)
+                        for(var i = 0; i < options.votes.length; i++)
                         {
-                            var vote = votes[i];
+                            const vote = options.votes[i];
                         %>
                         <div class="panel" vote="<%= vote.ID %>">
                             <h2><%= vote.name%></h2>
@@ -156,10 +154,6 @@ let MENU_SITE = "DASHBOARD";
                         %>
                     </div>
                 </div>
-
-
-
-
             </div>
         </div>
         <div class="popups">

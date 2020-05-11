@@ -72,7 +72,7 @@ export interface Database {
    * returns all the downloads.
    * @param obj extra conditions on the returned data.
    */
-  getDownloads(obj?: SWO): Promise<DownloadsInterface>;
+  getDownloads(obj?: SWO): Promise<DownloadsInterface[]>;
   getVotes(obj?: SWO): Promise<VoteInterface[]>;
 
   /**

@@ -171,13 +171,13 @@ export default class MysqlDatabase implements Database {
     return rows[0];
   }
 
-  async getDownloads(obj?: SWO): Promise<DownloadsInterface> {
+  async getDownloads(obj?: SWO): Promise<DownloadsInterface[]> {
     const [rows, err] = await this.exec<DownloadsInterface>(obj, 'downloads', mn_downloadsConversion);
     if (err) {
       throw new DatabaseError({ errno: 0, msg: err });
     }
     if (rows.length === 0) return null;
-    return rows[0];
+    return rows;
   }
 
   async getVotes(obj?: SWO): Promise<VoteInterface[]> {
