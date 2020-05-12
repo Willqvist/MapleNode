@@ -126,11 +126,14 @@ let MENU_SITE="LOGIN";
         </div>
     </form>
 </div>
-<script>
+<script type="module">
+    import Http from './JS/API/Http.js';
+    import Url from './JS/API/Url.js';
+
     let form = new FormElement("loginForm");
     let error = new ErrorElement("loginError");
     let loader = document.getElementById("loginLoader");
-    form.onSubmit({preventDefault:true,body:true},(body,e)=>
+    form.onSubmit({preventDefault:true,body:true},async (body,e)=>
     {
         loader.style.display="flex";
         setTimeout(()=>
@@ -138,25 +141,21 @@ let MENU_SITE="LOGIN";
             loader.style.opacity="1";
         }, 10);
         let url = new Url("/IO/login",{username:body.username,password:body.password});
-        HttpHandler.postData(url,(response)=>
+        const response = await Http.POST(url);
+        loader.style.opacity="0";
+        setTimeout(()=>
         {
-            console.log(response);
-
-            loader.style.opacity="0";
-            setTimeout(()=>
-            {
-                loader.style.display="none";
-            }, 320);
-            if(!response.success)
-            {
-                error.showError({reason:response.reason});
-                return;
-            }
-            error.success({reason:response.reason});
-            let site = "/dashboard";
-            <% if(options.site) { %> site = "<% options.site %>" <% } %>
-            window.location.href = site;
-        });
+            loader.style.display="none";
+        }, 320);
+        if(!response.success)
+        {
+            error.showError({reason:response.reason});
+            return;
+        }
+        error.success({reason:response.reason});
+        let site = "/dashboard";
+        <% if(options.site) { %> site = "<% options.site %>" <% } %>
+        window.location.href = site;
     });
 </script>
 </body>

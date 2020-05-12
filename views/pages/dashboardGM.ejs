@@ -286,42 +286,6 @@
             }
             */
         </script>
-        <script src="./JS/dashboardNew.js"></script>
-        <script>
-            let handler = new PanelHandler();
-            let statistics = new StatisticsPanel("statistics");
-            let votePanel = new VotePanel("vote");
-            let downloadPanel = new DownloadPanel("download");
-            votePanel.registerTriggers();
-
-            downloadPanel.registerTriggers();
-            handler.addPanel(statistics);
-            handler.addPanel(downloadPanel);
-            handler.addPanel(votePanel);
-            handler.bindMenu(document.getElementById("dashboard_menu_id"));
-            handler.goTo("vote");
-            /*
-            let dashboard = new DashboardPanel("dashboardpanel");
-            let downloads = new DownloadPanel("downloadspanel");
-            let voting = new VotePanel("votepanel");
-            let design = new DesignPanel("designpanel","<%= heroImage %>");
-            let layout = new LayoutPanel("layoutpanel","rgba(255,255,255,0.5)");
-            let handler = new PanelHandler();
-
-            handler.addPanel(dashboard);
-            handler.addPanel(downloads);
-            handler.addPanel(voting);
-            handler.addPanel(design);
-            handler.addPanel(layout);
-
-            handler.bindButton("menuDashboard",dashboard);
-            handler.bindButton("menuDownloads",downloads);
-            handler.bindButton("menuVoting",voting);
-            handler.bindButton("menuDesign",design);
-            handler.bindButton("menuLayout",layout);
-            handler.showPanel(dashboard);
-            */
-
-        </script>
+        <script type="module" src="JS/dashboard/DashboardGM.js"></script>
     </body>
 </html>

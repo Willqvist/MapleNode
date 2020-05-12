@@ -48,58 +48,58 @@
         }
         %>
         </section>
+    <script type="module">
+        import Http from './JS/API/Http.js';
+        import Url from './JS/API/Url.js';
+
         <%
         if(!loggedIn)
         {
         %>
-                <script>
-                    let input = document.getElementById("username");
-                    let p = document.getElementById("loader");
-                    let tout;
-                    let loaded = true;
-                    input.addEventListener("keyup",(e)=>
-                    {
-                        if(tout)
-                            clearTimeout(tout);
-                        if(input.value.length >= 1)
-                        loader.style.display="block";
-                        if(loaded)
-                        {
-                            loader.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`;
-                            loaded = false;
-                        }
-                        tout = setTimeout(()=>
-                        {
-                            let url = new Url("IO/vote/" + input.value);
-                            HttpHandler.getData(url,(response)=>
-                            {
-                                loader.style.color = "red";
-                                if(response.success)
-                                {
-                                    loader.style.color = "green";
-                                    validateVote(response);
-                                }
-                                loader.innerHTML = response.reason;
-                                loaded = true;
-                            });
-                        },800);
-                    });
-                </script>
+
+        let input = document.getElementById("username");
+        let p = document.getElementById("loader");
+        let tout;
+        let loaded = true;
+        input.addEventListener("keyup",(e)=>
+        {
+            if(tout)
+                clearTimeout(tout);
+            if(input.value.length >= 1)
+                loader.style.display="block";
+            if(loaded)
+            {
+                loader.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i>`;
+                loaded = false;
+            }
+            tout = setTimeout(async ()=>
+            {
+                let url = new Url("IO/vote/" + input.value);
+                const response = await Http.GET(url);
+                console.log("response: ", response);
+                loader.style.color = "red";
+                if(response.success)
+                {
+                    loader.style.color = "green";
+                    validateVote(response);
+                }
+                loader.innerHTML = response.reason;
+                loaded = true;
+            },800);
+        });
         <%
         }else{
         %>
-            <script>
-                let url = new Url("IO/vote/<%= user.name %>");
-                HttpHandler.getData(url,(response)=>
-                {
-                    validateVote(response);
-                });
-            </script>
+        let url = new Url("IO/vote/<%= user.name %>");
+        Http.GET(url,(response)=>
+        {
+            validateVote(response);
+        });
         <%
         }
         %>
-    <script>
-        let btns = document.getElementsByClassName("btn");
+
+        const btns = document.getElementsByClassName("btn");
         function validateVote(response)
         {
             console.log(response);
@@ -138,13 +138,10 @@
                 else
                 {
                     btn.className += " validBtn";
-                    btn.addEventListener("click",()=>
+                    btn.addEventListener("click",async ()=>
                     {
                         let url = new Url("IO/vote",{id:btn.getAttribute("data-vote"),accid:response.userid});
-                        HttpHandler.postData(url,(response)=>
-                        {
-
-                        });
+                        await Http.POST(url);
                     },false);
                 }
             }

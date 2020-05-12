@@ -62,32 +62,35 @@
                 <div id="next" class="btn noSelect"><span>Next Page</span></div>
             </div>
         </section>
-        <script src="JS/dropdown.js"></script>
-        <script>
-           let jobs = "-1";
-           let rank = "Level";
-           let reload = document.getElementById("reloadSearch");
-           let titles = document.getElementsByClassName("title");
-           let title =
-           {
-               ORDER:0,
-               CHARACTER:1,
-               NAME:2,
-               JOB:3,
-               RANK:4,
-           }
-           dropdownClickHandler(dropdownBtns[0],changeJob);
-           dropdownClickHandler(dropdownBtns[1],changeRank);
-           function changeJob(self,data,dataId)
-           {
-               self.firstChild.innerHTML = "&dtrif; "+data;
-               jobs = dataId;
-           }
-           function changeRank(self,data,dataId)
-           {
-               self.firstChild.innerHTML = "&dtrif; "+data;
-               rank = data;
-           }
+        <script type="module">
+            import Http from './JS/API/Http.js';
+            import Url from './JS/API/Url.js';
+            import { dropdownClickHandler } from './JS/dropdown.js';
+            let jobs = "-1";
+            let rank = "Level";
+            const reload = document.getElementById("reloadSearch");
+            const titles = document.getElementsByClassName("title");
+            const dropdownBtns = document.getElementsByClassName("dropdownBtn");
+            let title =
+                {
+                    ORDER:0,
+                    CHARACTER:1,
+                    NAME:2,
+                    JOB:3,
+                    RANK:4,
+                }
+            dropdownClickHandler(dropdownBtns[0],changeJob);
+            dropdownClickHandler(dropdownBtns[1],changeRank);
+            function changeJob(self,data,dataId)
+            {
+                self.firstChild.innerHTML = "&dtrif; "+data;
+                jobs = dataId;
+            }
+            function changeRank(self,data,dataId)
+            {
+                self.firstChild.innerHTML = "&dtrif; "+data;
+                rank = data;
+            }
             //###RELOAD####
             reload.addEventListener("click",()=>
             {
@@ -95,8 +98,7 @@
                 reloadPage();
                 //reload.childNodes[1].style.transform = "rotateZ(180deg) !important";
             },false);
-        </script>
-        <script>
+
             let loader = new Loader("rankLoader");
             let userElement = new DOMCompiler("<div class=\"user\">\r\n<h3 class=\"rank\">{{placement}}</h3>\r\n<div class=\"character\">\r\n<div class=\"characterImage\"></div>\r\n<h3>{{name}}</h3>\r\n</div>\r\n<h3 class=\"job\"><span>({{jobRank}})</span>{{job}}</h3>\r\n<h3 class=\"level\">{{rank}}</h3>\r\n</div>");
             let page = 0;
@@ -125,65 +127,63 @@
             {
                 user.style.height = "8em";
             }
-            function goToPage(page){
+            async function goToPage(page){
                 pageNumer.innerHTML = page;
                 isLoading= true;
                 loader.show();
                 console.log(jobs,rank);
                 let url = new Url("/IO/ranking",{page:page,job:jobs,rank:rank,search:search});
-                HttpHandler.postData(url,(response)=>
-                {
-                    userWrapper.innerHTML = "";
-                    console.log("RESPONSE: ",response);
-                    for(let i = 0; i < response.length; i++){
-                        let user = response[i];
-                        userElement.setVariable({variable:"placement",data:user.rank.toString()});
-                        userElement.setVariable({variable:"name",data:user.name});
-                        userElement.setVariable({variable:"job",data:user.job.toString()});
-                        userElement.setVariable({variable:"jobRank",data:user.jobRank.toString()});
-                        if(isset(user.level))
-                        {
-                            userElement.setVariable({variable:"rank",data:user.level.toString()});
-                            titles[title.RANK].innerHTML = "Level";
-                        }
-                        else if(isset(user.fame))
-                        {
-                            userElement.setVariable({variable:"rank",data:user.fame.toString()});
-                            titles[title.RANK].innerHTML = "Fame";
-                        }
-                        let element = userElement.compileDOM();
-                        let image = element.getElementsByClassName("characterImage")[0];
-                        image.style.background="url(Characters/"+user.name+".chr)";
-                        image.style.backgroundSize="14em";
-                        image.style.backgroundPosition="50% 50%";
-                        element.addEventListener(
-                            "click",
-                            (()=>
-                            {
-                                if(lastClickedUser)
-                                {
-                                    hideUser(lastClickedUser);
-                                    if(lastClickedUser == element)
-                                    {
-                                        lastClickedUser = null;
-                                        return;
-                                    }
-                                }
-                                showUser(element);
-                                lastClickedUser = element;
-                            }).bind(element),false
-                        );
-
-                        userWrapper.appendChild(element);
-                        if(response.length < length)
-                        {
-                            length = response.length;
-                            userWrapper.style.minHeight = (8 * length) + "em";
-                        }
+                const response = await Http.POST(url);
+                userWrapper.innerHTML = "";
+                console.log("RESPONSE: ",response);
+                for(let i = 0; i < response.length; i++){
+                    let user = response[i];
+                    userElement.setVariable({variable:"placement",data:user.rank.toString()});
+                    userElement.setVariable({variable:"name",data:user.name});
+                    userElement.setVariable({variable:"job",data:user.job.toString()});
+                    userElement.setVariable({variable:"jobRank",data:user.jobRank.toString()});
+                    if(isset(user.level))
+                    {
+                        userElement.setVariable({variable:"rank",data:user.level.toString()});
+                        titles[title.RANK].innerHTML = "Level";
                     }
-                    loader.hide();
-                    isLoading = false;
-                });
+                    else if(isset(user.fame))
+                    {
+                        userElement.setVariable({variable:"rank",data:user.fame.toString()});
+                        titles[title.RANK].innerHTML = "Fame";
+                    }
+                    let element = userElement.compileDOM();
+                    let image = element.getElementsByClassName("characterImage")[0];
+                    image.style.background="url(Characters/"+user.name+".chr)";
+                    image.style.backgroundSize="14em";
+                    image.style.backgroundPosition="50% 50%";
+                    element.addEventListener(
+                        "click",
+                        (()=>
+                        {
+                            if(lastClickedUser)
+                            {
+                                hideUser(lastClickedUser);
+                                if(lastClickedUser == element)
+                                {
+                                    lastClickedUser = null;
+                                    return;
+                                }
+                            }
+                            showUser(element);
+                            lastClickedUser = element;
+                        }).bind(element),false
+                    );
+
+                    userWrapper.appendChild(element);
+                    if(response.length < length)
+                    {
+                        length = response.length;
+                        userWrapper.style.minHeight = (8 * length) + "em";
+                    }
+                }
+                loader.hide();
+                isLoading = false;
             }
             console.log(usersWrapper);
             next.addEventListener("click",goNext,false);

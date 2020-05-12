@@ -103,21 +103,26 @@ router.get('/vote/:name', async (req, res) => {
   const { name } = req.params;
   const acc: AccountsInterface = await DatabaseConnection.instance.getAccount(name);
   if (!acc) return res.send(JSON.stringify({ success: false, reason: 'Could not find username' }));
-  const votes = await DatabaseConnection.instance.getAccountVote(acc.id);
-  if (votes.length >= 1) {
-    const ids = [];
-    for (let i = 1; i < votes.length; i++) {
-      ids.push(votes[i].ID);
-    }
+  try {
+    const votes = await DatabaseConnection.instance.getAccountVote(acc.id);
+    console.log(votes);
+    if (votes.length >= 1) {
+      const ids = [];
+      for (let i = 1; i < votes.length; i++) {
+        ids.push(votes[i].ID);
+      }
 
-    const voteSites = await DatabaseConnection.instance.getVotes({ where: { id: ids } });
+      const voteSites = await DatabaseConnection.instance.getVotes({ where: { id: ids } });
+      return res.send(
+        JSON.stringify({ success: true, reason: 'Found username', userid: acc.id, occupied: votes, votes: voteSites })
+      );
+    }
     return res.send(
-      JSON.stringify({ success: true, reason: 'Found username', userid: acc.id, occupied: votes, votes: voteSites })
+      JSON.stringify({ success: true, reason: 'Found username', userid: acc.id, occupied: votes, votes: [] })
     );
+  } catch (err) {
+    return res.send(err);
   }
-  return res.send(
-    JSON.stringify({ success: true, reason: 'Found username', userid: acc.id, occupied: votes, votes: [] })
-  );
 });
 
 /**

@@ -434,11 +434,11 @@ export default class MysqlDatabase implements Database {
     const sqlObj = {
       where: { accountId },
     };
-    const [rows, err] = await this.exec<VotingInterface>(sqlObj, 'voting', accountsConversion, false);
+    const [rows, err] = await this.exec<VotingInterface>(sqlObj, 'voting', accountsConversion);
     if (err) {
       throw new DatabaseError({ errno: 0, msg: err });
     }
-    if (rows.length === 0) return null;
+    if (rows.length === 0) return [];
     return rows;
   }
 
