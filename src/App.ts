@@ -165,12 +165,7 @@ class App {
     );
     app.use(express.static(`${HOME}/public`, { redirect: false }));
     app.use(UrlSlicer);
-    app.use('/setup', SetupRouter);
-    app.use('/', GlobalRouter);
-    app.use('/', PagesRouter);
-    app.use('/dashboard', DashboardRouter);
-    app.use('/IO', IORouter);
-    app.use(async () => {
+    app.use(async (req, res, next) => {
       // TODO: move to only build when changeing theme.
       const paletteInterface: PalettesInterface = {
         name: 'Happy Green',
@@ -181,7 +176,13 @@ class App {
         fillColor: '#CC3363',
       };
       await cGen.generateCSS(paletteInterface);
+      next();
     });
+    app.use('/setup', SetupRouter);
+    app.use('/', GlobalRouter);
+    app.use('/', PagesRouter);
+    app.use('/dashboard', DashboardRouter);
+    app.use('/IO', IORouter);
     app.use((req, res) => {
       Logger.log('debug', `[${req.ip}] tried to visit ${req.originalUrl}`);
       res.status(404).render('error/404');

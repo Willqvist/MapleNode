@@ -261,7 +261,7 @@ export default class MysqlDatabase implements Database {
       };
     }
     sqlObj.where['password'] = password;
-    return this.getAccount(name, obj);
+    return this.getAccount(name, sqlObj);
   }
 
   async addPalette(name, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, active) {

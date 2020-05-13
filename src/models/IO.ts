@@ -24,6 +24,7 @@ export default class IO {
     let account;
     try {
       account = await DatabaseConnection.getInstance().getAccountWithPassword(username, password);
+      console.log(account);
     } catch (err) {
       account = null;
     }

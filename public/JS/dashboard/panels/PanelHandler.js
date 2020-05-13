@@ -11,18 +11,21 @@ export default class PanelHandler {
   }
 
   goTo(id) {
+    if (this.activePanel != null && this.activePanel.id === id) return;
     if (this.menu) {
       this.menu[id].icon.className = 'fas fa-circle-notch fa-spin';
+      this.menu[id].DOM.className = 'focus';
     }
     if (this.activePanel != null) {
       this.activePanel.DOM.style.display = 'none';
       const old = this.activePanel;
+      this.menu[old.id].DOM.className = this.menu[id].domClassName;
       this.activePanel = this.panels[id];
       old.onExit().then(() => {
         this.activePanel.onFocus().then(() => {
           this.activePanel.DOM.style.display = 'flex';
           if (this.menu) {
-            this.menu[id].icon.className = this.menu[id].className;
+            this.menu[id].icon.className = this.menu[id].iconClassName;
           }
         });
       });
@@ -31,7 +34,7 @@ export default class PanelHandler {
       this.activePanel.onFocus().then(() => {
         this.activePanel.DOM.style.display = 'flex';
         if (this.menu) {
-          this.menu[id].icon.className = this.menu[id].className;
+          this.menu[id].icon.className = this.menu[id].iconClassName;
         }
       });
     }
@@ -46,7 +49,8 @@ export default class PanelHandler {
       this.menu[page] = {
         DOM: lis[i],
         icon,
-        className: icon.className,
+        iconClassName: icon.className,
+        domClassName: lis[i].className,
       };
       lis[i].addEventListener(
         'click',
