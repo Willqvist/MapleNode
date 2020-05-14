@@ -3,6 +3,7 @@ export default class PanelHandler {
     this.panels = {};
     this.activePanel = null;
     this.menu = null;
+    this.listeners = {};
   }
 
   addPanel(panel) {
@@ -16,11 +17,13 @@ export default class PanelHandler {
       this.menu[id].icon.className = 'fas fa-circle-notch fa-spin';
       this.menu[id].DOM.className = 'focus';
     }
+    this.call('pageEnter', this.panels[id], this.menu[id].DOM);
     if (this.activePanel != null) {
       this.activePanel.DOM.style.display = 'none';
       const old = this.activePanel;
       this.menu[old.id].DOM.className = this.menu[id].domClassName;
       this.activePanel = this.panels[id];
+      this.call('pageLeave', old);
       old.onExit().then(() => {
         this.activePanel.onFocus().then(() => {
           this.activePanel.DOM.style.display = 'flex';
@@ -60,5 +63,18 @@ export default class PanelHandler {
         false
       );
     }
+  }
+
+  call(name, ...attribs) {
+    if (!this.listeners[name]) return;
+    const listenerList = this.listeners[name];
+    for (let i = 0; i < listenerList.length; i++) listenerList[i](...attribs);
+  }
+
+  listen(name, clb) {
+    if (!this.listeners[name]) {
+      this.listeners[name] = [];
+    }
+    this.listeners[name].push(clb);
   }
 }

@@ -864,16 +864,57 @@ body
     color:#20063B;
 
 }
+
+#dahboard_bar::after {
+    background:#f8f8fe;
+    content: '';
+    position: absolute;
+    width:1.2em;
+    height:1.2em;
+    top:-1.2em;
+    right:0;
+    opacity: 1;
+    mask-position: bottom;
+    -webkit-mask-image: radial-gradient(circle 1.2em at 0 0, transparent 0, transparent 1.14em, #f8f8fe 1.2em);
+    transition:ease 0.2s;
+}
+
+#dahboard_bar::before {
+    background:#f8f8fe;
+    content: '';
+    position: absolute;
+    width:1.2em;
+    height:1.2em;
+    bottom:-1.2em;
+    right:0;
+    opacity: 1;
+    -webkit-mask-image: radial-gradient(circle 1.2em at 0 1.2em, transparent 0, transparent 1.14em, #f8f8fe 1.2em);
+    transition:ease 0.2s;
+}
+
+#dahboard_bar {
+    height:4.5em;
+    width:100%;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    transition:cubic-bezier(.09,.98,.47,1.23) 0.2s;
+    cursor: pointer;
+    color:#FFF;
+    background:#f8f8fe;
+    z-index:1;
+    position: absolute;
+}
+
 /* FOCUS */
 .dashboard_menu .focus {
-    background:#f8f8fe;
     font-weight:700;
     color:#000;
     opacity:1;
 }
 
 .dashboard_menu .focus i::before {
-    background: linear-gradient(204deg, #3BC7DA  0%, #64C1DA 100%);
+    background: linear-gradient(204deg, #F3CA40  0%, #F2A541 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -884,35 +925,12 @@ body
     -webkit-text-fill-color: transparent;
     transition:ease 0.2s;
 }
+
 .focus::before, .focus::after {
     opacity:1 !important;
 }
 
-.dashboard_menu li::after {
-    background:#f8f8fe;
-    content: '';
-    position: absolute;
-    width:1.2em;
-    height:1.2em;
-    top:-1.2em;
-    right:0;
-    opacity:0;
-    -webkit-mask-image: radial-gradient(circle 1.2em at 0 0, transparent 0, transparent 1.14em, #f8f8fe 1.2em);
-    transition:ease 0.2s;
-}
 
-.dashboard_menu li::before {
-    background:#f8f8fe;
-    content: '';
-    position: absolute;
-    width:1.2em;
-    height:1.2em;
-    bottom:-1.2em;
-    right:0;
-    opacity:0;
-    -webkit-mask-image: radial-gradient(circle 1.2em at 0 1.2em, transparent 0, transparent 1.14em, #f8f8fe 1.2em);
-    transition:ease 0.2s;
-}
 /* LOGO */
 #logo {
     width:4.4rem;
@@ -958,13 +976,14 @@ body
 .dashboard_menu{
     width:19em;
     background: rgb(54,195,119);
-    background: linear-gradient(204deg, rgba(54,195,119,1) 0%, rgba(74,223,143,1) 100%);
+    background: linear-gradient(204deg, #004BA8 0%, #2D6FE2 100%);
     height:100%;
     position: fixed;
     box-sizing: border-box;
 }
 .dashboard_menu li{
     list-style: none;
+    z-index:2;
     height:4.5em;
     padding-left:3.4rem;
     display:flex;
