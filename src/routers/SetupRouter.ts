@@ -84,10 +84,10 @@ router.post('/colors', async (req, res) => {
       1
     );
   } catch (err) {
-    const { message } = err.message;
+    const { message } = err.getMessage();
     return res.render('setup/error', {
       page: 'colors',
-      error: { reason: message },
+      error: { reason: err.getMessage() },
     });
   }
   return res.redirect('./template');
@@ -193,9 +193,12 @@ router.all('/:id/', async (req, res, next) => {
             await setup.connectToDatabase(auth, prefix);
             return res.redirect(`${number + 1}`);
           } catch (err) {
+            let errorMessage = app.getDatabase().printError(err.getErrorCode());
+            if (!errorMessage) errorMessage = err.getMessage();
+
             return res.render('setup/error', {
               page: number,
-              error: { reason: app.getDatabase().printError(err.getErrorCode()) },
+              error: { reason: errorMessage },
             });
           }
         }
@@ -217,8 +220,8 @@ router.all('/:id/', async (req, res, next) => {
             app.getApp().locals.heroImage = 'headerImage.png';
             app.getApp().locals.logo = 'svgs/logo.svg';
             return res.redirect('./webadmin');
-          } catch ({ message }) {
-            return res.render('setup/error', { page: number, error: { reason: message } });
+          } catch (err) {
+            return res.render('setup/error', { page: number, error: { reason: err.getMessage() } });
           }
         default:
           return res.render('error', { page: number, error: { reason: 'something went wrong' } });

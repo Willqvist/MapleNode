@@ -43,4 +43,5 @@ export const MysqlListenError = transform({
   '-3001': 'Invalid MySQL host',
   '1049': 'Unknown database',
   '1064': 'Error in mysql code...',
+  default: null,
 });

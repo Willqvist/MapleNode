@@ -314,6 +314,7 @@ export default class MysqlDatabase implements Database {
       .replace(/prefix/g, prefix)
       .replace(/\n/g, '')
       .replace(/\t/g, '')
+      .replace(/\r/g, '')
       .split(';');
     try {
       for (let i = 0; i < files.length; i++) {

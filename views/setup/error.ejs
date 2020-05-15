@@ -1,5 +1,5 @@
-<% if(!locals.page){
-    page = "";
+<% if(!options.page){
+    options.page = "";
 } %>
 <!doctype html>
 <html>
@@ -10,12 +10,12 @@
         <div id="container">
             <h4>Error</h4>
             <h1>
-            <% if(locals.error){ %>
-                <%= error.reason %>
+            <% if(options.error){ %>
+                <%= options.error.reason %>
             <% } %>
             </h1>
             <div class="btn prev-btn">
-                <a href="./<%= page %>" class="btn-wrapper">
+                <a href="./<%= options.page %>" class="btn-wrapper">
                     <div class="ip">
                         <i class="fas fa-chevron-left"></i>
                     </div>
