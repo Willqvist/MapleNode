@@ -763,6 +763,7 @@ body
 
 .popups {
     position:fixed;
+    top:0;
     width:100%;
     height:100%;
     background:rgba(0,0,0,0.3);
@@ -1007,13 +1008,10 @@ body
     flex-direction: row;
 }
 .contents {
-    position: fixed;
     top:0;
     width:100%;
     height:100%;
     margin-left:19em;
-    width:100%;
-    height:100%;
 }
 
 .btn-list {
@@ -1029,41 +1027,60 @@ body
     margin-left:4rem;
     color:var(--fontColorDark);
 }
-.contents > div > .btn-list {
+.contentPage .btn-list {
     margin-left:4rem;
     font-size:0.8em;
     flex-direction: row;
     justify-content: flex-start;
 }
-.contents > div > .btn-list > * {
+.contentPage .btn-list > * {
     margin-right:2rem;
 }
-.contents > div > h1 i{
+
+.panel .btn-list > * {
+    margin-right:0rem !important;
+}
+
+.panel .btn-list {
+    margin-right:0rem;
+    justify-content: space-between;
+    dispplay:flex;
+    width:100%;
+    margin-left:0;
+}
+
+.contentPage h1 i{
     margin-right:2rem;
 }
-.contents > div {
+.contentPage {
     display:none;
     position: relative;
-    overflow: hidden;
     width:100%;
     min-height:100%;
     background: #f8f8fe;
     flex-direction: column;
 }
+#top_menu {
+    width:100%;
+    height:5.1em;
+    background: #FFF;
+    display:inline-block;
+    top:0;
+    box-shadow:inset 0 -0.1rem 0 #e8f2ff;
+}
 .contents .panels {
     margin-top:4rem;
     padding:0em 4em;
     display:flex;
-    width:100%;
     justify-content: flex-start;
 }
 .panels .panel {
     background:#FFF;
-    padding:2rem 1.5rem 2rem 3rem;
+    padding:2rem;
     margin-right:4rem;
-    min-width:8rem;
+    min-width:12rem;
     border-radius:0.5rem;
-    box-shadow:0px 0.3rem 1rem rgba(73, 77, 94, 0.19);
+    box-shadow:inset 0 0 0 0.14rem #d3e4fa;
 }
 
 .panel ul {

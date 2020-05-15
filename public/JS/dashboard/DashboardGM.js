@@ -23,4 +23,4 @@ handler.addPanel(statistics);
 handler.addPanel(downloadPanel);
 handler.addPanel(votePanel);
 handler.bindMenu(document.getElementById('dashboard_menu_id'));
-handler.goTo('dashboard');
+handler.goTo('download');

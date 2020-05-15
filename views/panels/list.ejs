@@ -1,0 +1,41 @@
+<div class="mod_list">
+    <div class="mod_list_title">
+        <h3><%= listTitle %></h3>
+        <div class="mod_list_btn"><i class="fas fa-plus"></i></div>
+    </div>
+    <div class="mod_list_items">
+        <% for(let i = 0; i < list.length; i++ ) {
+            const item = list[i];
+        %>
+        <div class="mod_list_item">
+            <i class="fas fa-download mod_list_icon"></i>
+            <div class="mod_list_item_content">
+                <div class="mod_list_item_top">
+                    <p><%= item[title.key] %></p>
+                </div>
+                <div class="mod_list_break"></div>
+                <div class="mod_list_item_bottom">
+                    <ul>
+                        <% for(let i = 0; i < keys.length; i++ ) {
+                            const keyObj = keys[i];
+                        %>
+                        <li data-value="<%= item[keyObj.key] %>"><strong><%= keyObj.name %></strong> <%= item[keyObj.key] %></li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+            <div class="mod_list_item_btns mod_list_btn">
+                <i class="far fa-edit btn-icon info popup-trigger" trigger="downloadPopup" popup-data="
+                                <<.vote=id,
+                                #Edit Vote=title,
+                                #Name=label_1,
+                                #Url=label_2,
+                                <<>div>div>p=input_1,
+                                <<>div>div[2]>ul>li.data-value=input_2,
+                                #Edit=submit" data-info="Edit"></i>
+                <i class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="<<.vote=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"></i>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>
