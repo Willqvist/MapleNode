@@ -8,7 +8,7 @@ import { Server } from 'http';
 import * as consts from './core/Constants';
 import HOME from './Paths';
 import UrlSlicer from './Middleware';
-import setup from './setup';
+import setup, {setExpressRender} from './setup';
 import input from './In';
 import Logger from './core/logger/Logger';
 import cGen from './scripts/CSSGenerator/CSSGenerator';
@@ -36,12 +36,11 @@ function setRunMode(mode: string) {
   }
 }
 
-function setLocals(app: express.Application) {
+export function setLocals(app: express.Application) {
   app.locals.palette = consts.getConstant('palette');
   app.locals.heroImage = consts.getConstant('heroImage');
   app.locals.logo = consts.getConstant('logo');
   app.locals.settings = consts.getConstant('settings');
-  ejs.open;
 }
 
 /**
@@ -134,6 +133,7 @@ class App {
    * and {@link App.setupComplete} when setup is finished.
    */
   private async setup(): Promise<boolean> {
+    setExpressRender();
     await setup(this.setupListeners.bind(this), this.setupComplete.bind(this));
     return true;
   }

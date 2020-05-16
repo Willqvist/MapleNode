@@ -14,7 +14,7 @@ function setConstants(settings: SettingsInterface, design: DesignInterface, pale
   consts.setConstant('palette', palette);
 }
 
-function setExpressRender() {
+export function setExpressRender() {
   const { render } = express.response;
   express.response.render = function (view, options?, callback?) {
     const opt = { options: { ...options } };
@@ -30,7 +30,6 @@ function setExpressRender() {
  */
 export default async function setup(setupListeners: () => void, setupComplete: () => void): Promise<void> {
   const installer = new InstallationHandler();
-  setExpressRender();
   setupListeners();
   let data;
   const config = await getConfig();

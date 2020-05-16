@@ -23,3 +23,10 @@ export function isWebAdmin(session: Express.Session): boolean {
   if (!session) return false;
   return this.getAccount(session).webadmin >= 1;
 }
+
+export async function updateSessionUser(session: Express.Session, data: AccountsInterface) {
+  await DatabaseConnection.getInstance().updateAccount(session.user.id, data);
+  Object.keys(data).forEach(key => {
+    session.user[key] = data[key];
+  });
+}

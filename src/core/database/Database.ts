@@ -120,6 +120,13 @@ export interface Database {
   getAccountWithPassword(name: string, password: string, obj?: SWO): Promise<AccountsInterface>;
 
   /**
+   * returns the account of a given id for an account
+   * @param name the name of the account to return
+   * @param obj extra conditions on the returned data.
+   */
+  getAccountById(id: number, obj?: SWO): Promise<AccountsInterface>;
+
+  /**
    * adds a new account to the database.
    * @param name the name of the account
    * @param password the password for new new account

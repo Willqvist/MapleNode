@@ -3,14 +3,14 @@ import multer from 'multer';
 import md5 from 'md5';
 import * as constants from '../core/Constants';
 import { PalettesInterface, SettingsInterface } from '../core/Interfaces/DatabaseInterfaces';
-import app from '../App';
+import app, {setLocals} from '../App';
 import Setup from '../models/Setup';
 import { getConfig } from '../core/config/Config';
 import IO from '../models/IO';
 import DatabaseConnection from '../core/database/DatabaseConnection';
 import { DatabaseAuthInterface, File } from '../core/Interfaces/Interfaces';
-import { getAccount } from '../models/SessionHandler';
-
+import { getAccount, updateSessionUser } from '../models/SessionHandler';
+import setupFunction from '../setup'
 const router = express.Router();
 const setup = new Setup();
 const io = new IO();
@@ -58,6 +58,7 @@ router.post(
     const hero: Express.Multer.File = files['heroUpload'][0];
     const logoDest: File = { fileName: logo.filename, mimetype: logo.mimetype, destName: 'logo' };
     const heroDest: File = { fileName: hero.filename, mimetype: hero.mimetype, destName: 'heroImage' };
+    await setup.setDesign(logoDest, heroDest);
     await setup.setDesign(logoDest, heroDest);
     res.redirect('./complete');
   }
@@ -111,8 +112,10 @@ router.post('/template', async (req, res) => {
 router.get('/complete', async (req, res) => {
   const [mysql, sett] = await isAllowed(req, res);
   if (!mysql || !sett) return;
+  await setupFunction(()=>{},()=>{
+    setLocals(app.getApp());
+  });
   const settings = constants.getConstant<SettingsInterface>('settings');
-
   const { serverName } = settings;
   await setup.complete();
   res.render('setup/setup_complete', { name: serverName });
@@ -139,7 +142,7 @@ router.post('/webadmin', async (req, res) => {
   if (!mysql) return;
 
   const { form, password, confirm_password, username, email } = req.body;
-
+  const { session } = req;
   // error prevention
   if (!form || (form !== 'register' && form !== 'login')) {
     return res.render('setup/error', {
@@ -155,8 +158,15 @@ router.post('/webadmin', async (req, res) => {
         error: { reason: 'Passwords does not match!' },
       });
     }
-    const { account } = await io.register(req.session, username, md5(password), new Date(), email);
-    await DatabaseConnection.getInstance().updateAccount(account.id, { webadmin: 5 });
+    const { REST, account } = await io.register(session, username, md5(password), new Date(), email);
+    const { loggedin, reason } = REST;
+    if (!loggedin) {
+      return res.render('setup/error', {
+        page: 'webadmin',
+        error: { reason },
+      });
+    }
+    await updateSessionUser(session, { webadmin: 5 });
   } else if (form === 'login') {
     const { REST, account } = await io.login(req.session, username, md5(password));
     const { loggedin, reason } = REST;
@@ -166,7 +176,7 @@ router.post('/webadmin', async (req, res) => {
         error: { reason },
       });
     }
-    await DatabaseConnection.getInstance().updateAccount(account.id, { webadmin: 5 });
+    await updateSessionUser(session, { webadmin: 5 });
   }
   return res.redirect('./colors');
 });
@@ -216,9 +226,9 @@ router.all('/:id/', async (req, res, next) => {
               nxColumn: nx,
             };
             await setup.settings(settings, downloadSetup, downloadClient);
-            app.getApp().locals.palette = constants.getConstant<PalettesInterface>('palette');
-            app.getApp().locals.heroImage = 'headerImage.png';
-            app.getApp().locals.logo = 'svgs/logo.svg';
+            constants.setConstant('logo','svgs/logo.svg');
+            constants.setConstant('heroImage','headerImage.png');
+            setLocals(app.getApp());
             return res.redirect('./webadmin');
           } catch (err) {
             return res.render('setup/error', { page: number, error: { reason: err.getMessage() } });

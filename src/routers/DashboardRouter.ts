@@ -46,7 +46,7 @@ router.get('/', (req, res) => {
   if (!isLoggedIn(req.session)) return res.render('pages/dashboardLogin');
   const user = getAccount(req.session);
   const gm = Math.max(user.gm, user.webadmin);
-  if (gm <= 0) return renderDashboard(req, res);
+  if (gm < 3) return renderDashboard(req, res);
   if (gm >= 3) return renderGMDashboard(req, res);
 });
 

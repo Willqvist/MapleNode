@@ -253,6 +253,22 @@ export default class MysqlDatabase implements Database {
     return rows[0];
   }
 
+  async getAccountById(id: number, obj?: SWO): Promise<AccountsInterface> {
+    let sqlObj = obj;
+    if (!sqlObj) {
+      sqlObj = {
+        where: [],
+      };
+    }
+    sqlObj.where['id'] = id;
+    const [rows, err] = await this.exec<AccountsInterface>(sqlObj, 'accounts', accountsConversion, false);
+    if (err) {
+      throw new DatabaseError({ errno: 0, msg: err });
+    }
+    if (rows.length === 0) return null;
+    return rows[0];
+  }
+
   getAccountWithPassword(name: string, password: string, obj?: SWO): Promise<AccountsInterface> {
     let sqlObj = obj;
     if (!sqlObj) {

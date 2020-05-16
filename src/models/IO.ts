@@ -24,7 +24,6 @@ export default class IO {
     let account;
     try {
       account = await DatabaseConnection.getInstance().getAccountWithPassword(username, password);
-      console.log(account);
     } catch (err) {
       account = null;
     }
@@ -72,12 +71,12 @@ export default class IO {
     date: Date,
     email: string
   ): Promise<SessionInterface> {
-    let account: number;
+    let accountId: number;
+    let account: AccountsInterface;
     try {
-      console.log('IM HERE');
-      account = await DatabaseConnection.getInstance().addAccount(username, password, date, email);
+      accountId = await DatabaseConnection.getInstance().addAccount(username, password, date, email);
+      account = await DatabaseConnection.getInstance().getAccountById(accountId);
     } catch (err) {
-      console.log('IM HERE', err);
       return {
         lifetime: 0,
         expire: null,
@@ -100,19 +99,14 @@ export default class IO {
         reason: 'Wrong username or password!',
       },
     };
-    const acc: AccountsInterface = {
-      id: account,
-      name: username,
-      password,
-    };
-    if (response) {
+    if(account) {
       response.REST.success = true;
       response.REST.loggedin = true;
-      response.account = acc;
+      response.account = account;
       const hour = 3600000 / 2;
       response.expire = new Date(Date.now() + hour);
       response.lifetime = hour;
-      this.loginUserToSession(session, acc, response.expire, response.lifetime);
+      this.loginUserToSession(session, account, response.expire, response.lifetime);
     }
     return response;
   }
