@@ -403,8 +403,12 @@ export default class MysqlDatabase implements Database {
 
   async updateDownload(id: number, name: string, url: string): Promise<boolean> {
     const tableName = table('downloads');
-    const [result] = await this.connection.execute(`UPDATE ${tableName} SET name=?, url=? WHERE id=?`, [name, url, id]);
-    return result.affectedRows;
+    try {
+      const [result] = await this.connection.execute(`UPDATE ${tableName} SET name=?, url=? WHERE id=?`, [name, url, id]);
+      return result.affectedRows;
+    } catch(err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 
   async updateHeroImage(heroImage: string): Promise<boolean> {
@@ -588,13 +592,17 @@ export default class MysqlDatabase implements Database {
 
   async updateVote(id: number, name: string, url: string, nx: number, time: number): Promise<number> {
     const tableName = table('vote');
-    const [result] = await this.connection.execute(`UPDATE ${tableName} SET name=?, url=? nx=?, time=? WHERE id=?`, [
-      name,
-      url,
-      nx,
-      time,
-      id,
-    ]);
-    return result.affectedRows;
+    try {
+      const [result] = await this.connection.execute(`UPDATE ${tableName} SET name = ?, url = ?, nx = ?, time = ? WHERE id = ?`, [
+        name,
+        url,
+        nx,
+        time,
+        id,
+      ]);
+      return result.affectedRows;
+    } catch(err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 }

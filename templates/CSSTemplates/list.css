@@ -78,7 +78,10 @@
 .mod_list_item_bottom ul li strong {
     font-weight: 700;
     color:#000;
-    margin-right:0.1em;
+}
+
+.mod_list_item_bottom ul li span {
+    margin-left:0.5em;
 }
 .mod_list_item_btns {
     margin-right:1.5rem;

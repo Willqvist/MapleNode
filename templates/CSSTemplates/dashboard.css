@@ -940,7 +940,7 @@ body
 }
 /* USER */
 .dashboard_menu .user {
-    width:8rem;
+    width:90%;
     margin:auto;
     margin-top: 5rem;
     margin-bottom:5rem;
@@ -960,9 +960,11 @@ body
 }
 .dashboard_menu .user h3 {
     font-size:1.02em;
+    width:100%;
     color:#FFF;
     font-family: 'Montserrat', sans-serif;
     font-weight: normal;
+    text-align: center;
 }
 
 .dashboard_menu li:hover {

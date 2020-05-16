@@ -1,3 +1,30 @@
+<%
+const listDownload = {
+    icon:"fas fa-download",
+    name: "Downloads",
+    id:"ID",
+    list: options.downloads,
+    title: {key:"name"},
+    attribs: [{key:"url",name:"url"}],
+    editAttributes: 'class="far fa-edit btn-icon info popup-trigger" trigger="downloadPopup" popup-data="<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,#Edit=submit" data-info="Edit"',
+    addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New download" trigger="downloadPopup" popup-data="#-1=id,#Add Download=title,#Title=label_1,#Url=label_ #Name=input_1,#Url=input_2,#Add=submit"',
+    deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
+};
+
+const listVotes = {
+    icon:"fas fa-poll",
+    name: "Votes",
+    list: options.votes,
+    id:"ID",
+    title: {key:"name"},
+    attribs: [{key:"url",name:"url"},{key:"nx",name:"nx"},{key:"time",name:"cooldown"}],
+    editAttributes: 'class=" far fa-edit btn-icon info popup-trigger" trigger="votePopup" popup-data="<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,<<>div>div[2]>ul>li[1]>span=input_3,<<>div>div[2]>ul>li[2]>span=input_4,#Edit=submit" data-info="Edit"',
+    addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New vote" trigger="votePopup" popup-data="#-1=id,#Add Vote=title,#Title=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,#Name=input_1,#Url=input_2,#1000=input_3,#0=input_4,#Add=submit"',
+    deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
+};
+
+%>
+
 <!doctype html>
 <html>
     <head>
@@ -66,14 +93,9 @@
                         </div>
                     </div>
                     <div class="panels">
-                        <% if(options.downloads) %>
-                        <%- include ('../panels/list.ejs',
-                        {listTitle:"Downloads",
-                         name:"Setup Maplenode",
-                         list: options.downloads,
-                         title: {key:"name"},
-                         keys: [{key:"url",name:"url"}]
-                        }) %>
+                        <%
+                        if(options.downloads) %>
+                        <%- include ('../panels/list.ejs', listDownload) %>
                     </div>
                 </div>
 
@@ -101,42 +123,7 @@
                         </div>
                     </div>
                     <div class="panels">
-                        <%
-                        if(options.votes)
-                        for(var i = 0; i < options.votes.length; i++)
-                        {
-                            const vote = options.votes[i];
-                        %>
-                        <div class="panel" vote="<%= vote.ID %>">
-                            <h2><%= vote.name%></h2>
-                            <ul>
-                                <li data-title="Url" class="p_content"><%= vote.url%></li>
-                                <li data-title="Nx"  class="p_content"><%= vote.nx%></li>
-                                <li data-title="Time"  class="p_content"><%= vote.time%></li>
-                            </ul>
-                            <div class="btn-list">
-                                <div class="btn-icon info popup-trigger" trigger="votePopup" popup-data="
-                                <<.vote=id,
-                                #Edit Vote=title,
-                                #Name=label_1,
-                                #Url=label_2,
-                                #Nx=label_3,
-                                #Cooldown=label_4,
-                                <<>h2=input_1,
-                                <<>ul>li=input_2,
-                                <<>ul>li[1]=input_3,
-                                <<>ul>li[2]=input_4,
-                                #Edit=submit" data-info="Edit">
-                                    <i class="far fa-edit"></i>
-                                </div>
-                                <div class="btn-icon info popup-trigger remove" trigger="removePopup" popup-data="<<.vote=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove">
-                                    <i class="fas fa-trash-alt"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <%
-                        }
-                        %>
+                        <%- include ('../panels/list.ejs', listVotes) %>
                     </div>
                 </div>
             </div>

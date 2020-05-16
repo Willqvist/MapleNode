@@ -38,7 +38,7 @@ function renderDashboard(req, res) {
   res.render('pages/dashboardUser');
 }
 
-function send(res: Response, msg: any, status: number = 404) {
+function send(res: Response, msg: any, status: number = 200) {
   res.status(status).send(JSON.stringify(msg));
 }
 
@@ -64,11 +64,13 @@ router.get('*', (req, res, next) => {
 
 router.post('/vote/update', async (req, res) => {
   const { name, url, nx, time, key } = req.body;
+  console.log("IM HERE",req.body);
   try {
     await DatabaseConnection.instance.updateVote(key, name, url, nx, time);
     return send(res, { success: true });
-  } catch ({ message }) {
-    return send(res, { success: false, reason: message });
+  } catch (err) {
+    console.log(err.getErrorObject());
+    return send(res, { success: false, reason: err.getMessage() });
   }
 });
 
@@ -183,8 +185,8 @@ router.post('/download/update', async (req, res) => {
   try {
     await DatabaseConnection.instance.updateDownload(key, name, url);
     return send(res, { success: true });
-  } catch ({ message }) {
-    send(res, { success: true, reason: message });
+  } catch (err) {
+    send(res, { success: true, reason: err.getMessage() });
   }
 });
 
