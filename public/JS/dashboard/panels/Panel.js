@@ -10,10 +10,14 @@ export default class Panel {
   }
 
   registerTriggers() {
-    const cls = this.DOM.getElementsByClassName('popup-trigger');
+    this.registerTrigger(this.DOM);
+  }
+
+  registerTrigger(elem) {
+    const cls = elem.getElementsByClassName('popup-trigger');
     for (let i = 0; i < cls.length; i++) {
       const popup = PopupProvider.get(cls[i].getAttribute('trigger'));
-      popup.bindButton(cls[i], this.onPopupClick);
+      popup.bindButton(cls[i], this.onPopupClick.bind(this));
     }
   }
 

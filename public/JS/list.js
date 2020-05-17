@@ -53,6 +53,7 @@ export default class List {
             </div>
         `;
         this.items.appendChild(node);
+        return node;
     }
 
 }
