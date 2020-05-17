@@ -281,47 +281,65 @@ export default class MysqlDatabase implements Database {
   }
 
   async addPalette(name, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, active) {
-    const [rows] = await this.connection.query(`INSERT INTO ${table(
+    const insertId = await this.insert(`INSERT INTO ${table(
       'palettes',
       true
     )} (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES
-        ('${name}','${mainColor}','${secondaryMainColor}','${fontColorDark}','${fontColorLight}','${fillColor}','${active}')`);
-    return rows;
+        (?,?,?,?,?,?,?)`,
+        [
+            name,
+            mainColor,
+            secondaryMainColor,
+            fontColorDark,
+            fontColorLight,
+            fillColor,
+            active
+        ]);
+    return insertId;
+  }
+
+  private async insert(query, data) {
+    try {
+      const [rows] = await this.connection.execute(query,data);
+      return rows.insertId;
+    } catch(err) {
+      throw new DatabaseError({errno: err.errno, msg: err.message});
+    }
+  }
+
+  private async delete(query, data) {
+    try {
+      const [rows] = await this.connection.execute(query,data);
+      return rows.affectedRows;
+    } catch(err) {
+      throw new DatabaseError({errno: err.errno, msg: err.message});
+    }
   }
 
   async addDownload(name, url) {
-    const [rows] = await this.connection.query(`INSERT INTO ${table('downloads')} (name,url) VALUES
-        ('${name}','${url}')`);
-    return rows;
+    const insertId = await this.insert(`INSERT INTO ${table('downloads')} (name,url) VALUES
+    (?,?)`, [name,url]);
+    return insertId;
   }
 
-  async updateLayout(name: string, json: string): Promise<boolean> {
-    const [rows] = await this.connection.query(`INSERT INTO ${table('layout')} (name,json) VALUES
-        ('${name}','${json}')`);
-    return rows;
+  async updateLayout(name: string, json: string): Promise<number> {
+    const insertId = await this.insert(`INSERT INTO ${table('layout')} (name,json) VALUES
+        (?,?)`,[name,json]);
+    return insertId;
   }
 
-  async addDesign(heroImage, logo): Promise<boolean> {
-    const [rows] = await this.connection.query(`INSERT INTO ${table('design')} (heroImage,logo) VALUES
-        ('${heroImage}','${logo}')`);
-    return rows;
+  async addDesign(heroImage, logo): Promise<number> {
+    const insertId = await this.insert(`INSERT INTO ${table('design')} (heroImage,logo) VALUES
+        (?,?)`,[heroImage, logo]);
+    return insertId;
   }
 
   async addSettings(serverName, version, expRate, dropRate, mesoRate, nxColumn, vpColumn, gmLevel): Promise<boolean> {
-    const [rows] = await this.connection.query(`INSERT INTO ${table(
-      'settings'
-    )} (serverName,version,expRate,dropRate,mesoRate,nxColumn,vpColumn,gmLevel)
+    const insertId = await this.insert(`INSERT INTO ${table('settings')} (serverName,version,expRate,dropRate,mesoRate,nxColumn,vpColumn,gmLevel)
                 VALUES(
-                    '${serverName}',
-                    '${version}',
-                    '${expRate}',
-                    '${dropRate}',
-                    '${mesoRate}',
-                    '${nxColumn}',
-                    '${vpColumn}',
-                    '${gmLevel}'
-                )`);
-    return rows;
+                    ?,?,?,?,?,?,?,?
+                )`,[serverName, version, expRate, dropRate, mesoRate, nxColumn, vpColumn, gmLevel]);
+    return insertId;
   }
 
   async rebuildDatabase(prefix): Promise<boolean> {
@@ -347,50 +365,49 @@ export default class MysqlDatabase implements Database {
 
   async addAccount(name: string, password: string, birthday: Date, email: string): Promise<number> {
     const birth = birthday.toISOString().slice(0, 19).replace('T', ' ');
-    const [result] = await this.connection.query(
-      `INSERT INTO accounts (name,password,birthday,email,lastknownip,NomePessoal,fb,twt) VALUES('${name}','${password}','${birth}','${email}','0',' ',' ',' ')`
+    const insertId = await this.insert(
+      `INSERT INTO accounts (name,password,birthday,email,lastknownip,NomePessoal,fb,twt) VALUES(?,?,?,?,'0',' ',' ',' ')`,
+        [name, password, birth, email]
     );
-    return result.insertId;
+    return insertId;
   }
 
   async addVote(name: string, url: string, nx: number, time: number): Promise<number> {
     const tableName = table('vote');
-    const [result] = await this.connection.execute(`INSERT INTO ${tableName} (name, url, nx, time) VALUES(?,?,?,?)`, [
+    const insertId = await this.insert(`INSERT INTO ${tableName} (name, url, nx, time) VALUES(?,?,?,?)`, [
       name,
       url,
       nx,
       time,
     ]);
-    return result.insertId;
+    return insertId;
   }
 
   async setAccountVoted(accountid: number, voteid: number): Promise<number> {
     const tableName = table('voting');
-    const [
-      result,
-    ] = await this.connection.execute(`INSERT INTO ${tableName} (accountid, voteid, date) VALUES(?,?,NOW())`, [
+    const insertId = await this.insert(`INSERT INTO ${tableName} (accountid, voteid, date) VALUES(?,?,NOW())`, [
       accountid,
       voteid,
     ]);
-    return result.insertId;
+    return insertId;
   }
 
   async deleteDownload(id: number): Promise<number> {
     const tableName = table('downloads');
-    const [result] = await this.connection.execute(`DELETE FROM ${tableName} WHERE id=?`, [id]);
-    return result.affectedRows;
+    const affectedRows = await this.delete(`DELETE FROM ${tableName} WHERE id=?`, [id]);
+    return affectedRows;
   }
 
   async deletePalette(name: string): Promise<number> {
     const tableName = table('palettes');
-    const [result] = await this.connection.execute(`DELETE FROM ${tableName} WHERE name=?`, [name]);
-    return result.affectedRows;
+    const affectedRows = await this.delete(`DELETE FROM ${tableName} WHERE name=?`, [name]);
+    return affectedRows;
   }
 
   async deleteVote(id: number): Promise<number> {
     const tableName = table('vote');
-    const [result] = await this.connection.execute(`DELETE FROM ${tableName} WHERE id=?`, [id]);
-    return result.affectedRows;
+    const affectedRows = await this.delete(`DELETE FROM ${tableName} WHERE id=?`, [id]);
+    return affectedRows;
   }
 
   async enablePalette(id: number): Promise<PalettesInterface> {
@@ -413,14 +430,22 @@ export default class MysqlDatabase implements Database {
 
   async updateHeroImage(heroImage: string): Promise<boolean> {
     const tableName = table('design');
-    const [result] = await this.connection.execute(`UPDATE ${tableName} SET heroImage=?`, [heroImage]);
-    return result.affectedRows;
+    try {
+      const [result] = await this.connection.execute(`UPDATE ${tableName} SET heroImage=?`, [heroImage]);
+      return result.affectedRows;
+    } catch(err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 
   async updateLogo(logo: string): Promise<boolean> {
     const tableName = table('design');
-    const [result] = await this.connection.execute(`UPDATE ${tableName} SET logo=?`, [logo]);
-    return result.affectedRows;
+    try {
+      const [result] = await this.connection.execute(`UPDATE ${tableName} SET logo=?`, [logo]);
+      return result.affectedRows;
+    } catch(err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 
   async updatePalette(
@@ -432,23 +457,31 @@ export default class MysqlDatabase implements Database {
     fillColor: string
   ): Promise<number> {
     const tableName = table('palettes');
-    const [
-      result,
-    ] = await this.connection.execute(
-      `UPDATE ${tableName} SET mainColor=? secondaryMainColor=? fontColorDark=? fontColorLight=? fillColor=? WHERE name=?`,
-      [mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, name]
-    );
-    return result.affectedRows;
+    try {
+      const [
+        result,
+      ] = await this.connection.execute(
+          `UPDATE ${tableName} SET mainColor=? secondaryMainColor=? fontColorDark=? fontColorLight=? fillColor=? WHERE name=?`,
+          [mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, name]
+      );
+      return result.affectedRows;
+    } catch(err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 
   async getEquipment(character: number): Promise<EquipmentInterface[]> {
-    const [
-      result,
-    ] = await this.connection.execute(
-      `SELECT inventoryequipment.* FROM inventoryitems INNER JOIN inventoryequipment ON inventoryitems.inventoryitemid = inventoryequipment.inventoryitemid WHERE characterid=?`,
-      [character]
-    );
-    return result;
+    try {
+      const [
+        result,
+      ] = await this.connection.execute(
+          `SELECT inventoryequipment.* FROM inventoryitems INNER JOIN inventoryequipment ON inventoryitems.inventoryitemid = inventoryequipment.inventoryitemid WHERE characterid=?`,
+          [character]
+      );
+      return result;
+    } catch(err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 
   async getAccountVote(accountId: number): Promise<VotingInterface[]> {
@@ -515,56 +548,56 @@ export default class MysqlDatabase implements Database {
     const offset = Math.max(page, 0) * limit;
     console.log();
     const [rows] = await this.connection.execute(
-      ` 
-            SELECT 
-              id, 
-              level, 
-              global._order as global_level_order, 
+      `
+            SELECT
+              id,
+              level,
+              global._order as global_level_order,
               # what rank that character is in on level.
-              fame._order as global_fame_order, 
-              J.job_rank as job_order, 
-              job 
-            FROM 
-              characters 
+              fame._order as global_fame_order,
+              J.job_rank as job_order,
+              job
+            FROM
+              characters
               INNER JOIN (
                 #Calculates rank by level.
-                SELECT 
-                  id as _id, 
-                  @pos := @pos + 1 as _order 
-                FROM 
-                  characters 
+                SELECT
+                  id as _id,
+                  @pos := @pos + 1 as _order
+                FROM
+                  characters
                   INNER JOIN (
-                    SELECT 
+                    SELECT
                       @pos := 0
-                  ) R 
-                ORDER BY 
+                  ) R
+                ORDER BY
                   level DESC
-              ) as global ON global._id = id 
+              ) as global ON global._id = id
               INNER JOIN (
                 #Calculates rank by fame.
-                SELECT 
-                  id as _id, 
-                  @fame_pos := @fame_pos + 1 as _order 
-                FROM 
-                  characters 
+                SELECT
+                  id as _id,
+                  @fame_pos := @fame_pos + 1 as _order
+                FROM
+                  characters
                   INNER JOIN (
-                    SELECT 
+                    SELECT
                       @fame_pos := 0
-                  ) R 
-                ORDER BY 
+                  ) R
+                ORDER BY
                   fame DESC
-              ) as fame ON fame._id = id 
+              ) as fame ON fame._id = id
               INNER JOIN (
                 #Calculates rank by level grouped by job.
-                SELECT 
-                  id as _id, 
-                  @job_rank := IF(@job = job, @job_rank + 1, 1) as job_rank, 
-                  @job := job 
-                FROM 
-                  characters 
-                ORDER BY 
+                SELECT
+                  id as _id,
+                  @job_rank := IF(@job = job, @job_rank + 1, 1) as job_rank,
+                  @job := job
+                FROM
+                  characters
+                ORDER BY
                   job
-              ) as J ON J._id = id 
+              ) as J ON J._id = id
             ${where} ORDER BY ? LIMIT ? OFFSET ?
         `,
       [orderby, limit, offset]

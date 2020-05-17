@@ -210,14 +210,14 @@ export interface Database {
    * @param name the name of the download
    * @param url the url to the download file
    */
-  addDownload(name: string, url: string): Promise<boolean>;
+  addDownload(name: string, url: string): Promise<number>;
 
   /**
    * updates the layout of a given name.
    * @param name the name of the layout to update
    * @param json the new json data for the layout
    */
-  updateLayout(name: string, json: string): Promise<boolean>;
+  updateLayout(name: string, json: string): Promise<number>;
 
   updateVote(id: number, name: string, url: string, nx: number, time: number): Promise<number>;
 
