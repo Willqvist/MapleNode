@@ -6,9 +6,9 @@ const listDownload = {
     list: options.downloads,
     title: {key:"name"},
     attribs: [{key:"url",name:"url"}],
-    editAttributes: 'class="far fa-edit btn-icon info popup-trigger" trigger="downloadPopup" popup-data="<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,#Edit=submit" data-info="Edit"',
-    addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New download" trigger="downloadPopup" popup-data="#-1=id,#Add Download=title,#Title=label_1,#Url=label_ #Name=input_1,#Url=input_2,#Add=submit"',
-    deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
+    editAttributes: 'class="far fa-edit btn-icon info popup-trigger" trigger="downloadPopup" popup-data="#download=src,<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,#Edit=submit" data-info="Edit"',
+    addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New download" trigger="downloadPopup" popup-data="#download=src,#-1=id,#Add Download=title,#Title=label_1,#Url=label_ #Name=input_1,#Url=input_2,#Add=submit"',
+    deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#download=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
 };
 
 const listVotes = {
@@ -18,9 +18,9 @@ const listVotes = {
     id:"ID",
     title: {key:"name"},
     attribs: [{key:"url",name:"url"},{key:"nx",name:"nx"},{key:"time",name:"cooldown"}],
-    editAttributes: 'class=" far fa-edit btn-icon info popup-trigger" trigger="votePopup" popup-data="<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,<<>div>div[2]>ul>li[1]>span=input_3,<<>div>div[2]>ul>li[2]>span=input_4,#Edit=submit" data-info="Edit"',
-    addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New vote" trigger="votePopup" popup-data="#-1=id,#Add Vote=title,#Title=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,#Name=input_1,#Url=input_2,#1000=input_3,#0=input_4,#Add=submit"',
-    deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
+    editAttributes: 'class=" far fa-edit btn-icon info popup-trigger" trigger="votePopup" popup-data="#vote=src,<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,<<>div>div[2]>ul>li[1]>span=input_3,<<>div>div[2]>ul>li[2]>span=input_4,#Edit=submit" data-info="Edit"',
+    addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New vote" trigger="votePopup" popup-data="#vote=src,#-1=id,#Add Vote=title,#Title=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,#Name=input_1,#Url=input_2,#1000=input_3,#0=input_4,#Add=submit"',
+    deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#vote=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
 };
 
 %>
@@ -49,13 +49,12 @@ const listVotes = {
                 <div class="sub_menu" id="dashboard_menu_id">
                     <div id="dahboard_bar"></div>
                     <ul>
-                        <li page="dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></li>
-                        <li page="statistics"><i class="fas fa-chart-bar"></i><span>Statistics</span></li>
-                        <li page="download"><i class="far fa-save"></i><span>Downloads</span></li>
-                        <li page="vote"><i class="fas fa-vote-yea"></i></i><span>Vote</span></li>
-                        <li><i class="fas fa-palette"></i><span>Colors</span></li>
-                        <li id="btn"><i class="fas fa-th-list"></i><span>Home Layout</span></li>
-                        <li><i class="fas fa-bars"></i><span>Menu</span></li>
+                        <li page="dashboard"><i class="fas fa-chart-pie"></i><span>Statistics</span></li>
+                        <li page="contents"><i class="fas fa-box"></i><span>Contents</span></li>
+                        <li><i class="fas fa-paint-brush"></i><span>Designs</span></li>
+                        <li id="btn"><i class="fas fa-bars"></i><span>Layouts</span></li>
+                        <li><i class="fas fa-clipboard-list"></i><span>Logs</span></li>
+                        <li><i class="fas fa-bug"></i></i><span>Reports</span></li>
                     </ul>
                 </div>
             </div>
@@ -66,17 +65,9 @@ const listVotes = {
                     <h1><i class="fas fa-tachometer-alt"></i>Dashboard</h1>
                 </div>
 
-
-                <!-- STATISTICS -->
-                <div id="statistics" class="contentPage">
-                    <h1><i class="fas fa-chart-bar"></i>Statistics</h1>
-                </div>
-
-
-
                 <!-- DOWNLOAD -->
-                <div id="download" class="contentPage">
-                    <h1><i class="far fa-save"></i>Downloads</h1>
+                <div id="contents" class="contentPage">
+                    <h1><i class="fas fa-box"></i>Contents</h1>
                     <div class="btn-list">
                         <div class="btn_parent">
                             <div class="btn btn-span popup-trigger" trigger="downloadPopup" popup-data="
@@ -93,9 +84,10 @@ const listVotes = {
                         </div>
                     </div>
                     <div class="panels">
-                        <%
-                        if(options.downloads) %>
+                        <% if(options.downloads) %>
                         <%- include ('../panels/list.ejs', listDownload) %>
+                        <% if(options.votes) %>
+                        <%- include ('../panels/list.ejs', listVotes) %>
                     </div>
                 </div>
 
@@ -137,6 +129,7 @@ const listVotes = {
                 <form>
                     <h3 class="error_popup">Error message</h3>
                     <input class="attrib" name="id" id="test" type="hidden">
+                    <input class="attrib" name="src" type="hidden">
                     <div class="input">
                         <label for="label_1" class="attrib" name="label_1">Test</label>
                         <input class="attrib" name="input_1">
@@ -160,6 +153,7 @@ const listVotes = {
                 <form>
                     <h3 class="error_popup">Error message</h3>
                     <input class="attrib" name="id" id="test" type="hidden">
+                    <input class="attrib" name="src" type="hidden">
                     <div class="input">
                         <label for="input_1" class="attrib" name="label_1">Test</label>
                         <input class="attrib" name="input_1">
@@ -191,6 +185,7 @@ const listVotes = {
                 <h1 class="title attrib" name="title">Are you sure?</h1>
                 <form>
                     <input class="attrib" name="id" id="test" type="hidden">
+                    <input class="attrib" name="src" type="hidden">
                     <h3 class="error_popup">Error message</h3>
                     <div class="btn_parent">
                         <div class="btn btn-input">

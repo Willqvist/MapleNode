@@ -1,16 +1,8 @@
-import Panel from './Panel.js';
-import PopupProvider from '../popup/PopupProvider.js';
 import PopupForm from '../popup/PopupForm.js';
 import Http from '../../API/Http.js';
 import Url from '../../API/Url.js';
-import List from "../../list.js";
 
-export default class VotePanel extends Panel {
-  init() {
-    this.remove = PopupProvider.get('removePopup');
-    this.remove.bindButton(this.getAll('remove'), this.onRemoveVote.bind(this));
-    this.list = new List('Votes');
-  }
+export default class VotePanel {
 
   // eslint-disable-next-line class-methods-use-this
   async onRemoveVote(state, data) {
@@ -19,14 +11,13 @@ export default class VotePanel extends Panel {
       const url = new Url('./dashboard/vote/remove', {
         id: data.id,
       });
-      this.list.remove(data.id);
       const response = await Http.POST(url);
       return { error: response.reason };
     }
     return { error: false };
   }
 
-  addList(data) {
+  addList(list, data) {
     const obj = {
       icon: 'fas fa-poll',
       id: data.id,
@@ -39,7 +30,7 @@ export default class VotePanel extends Panel {
           attribs:{
             class:'btn-icon info popup-trigger',
             trigger:'votePopup',
-            'popup-data': '<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,<<>div>div[2]>ul>li[1]>span=input_3,<<>div>div[2]>ul>li[2]>span=input_4,#Edit=submit',
+            'popup-data': '#vote=src,<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,<<>div>div[2]>ul>li[1]>span=input_3,<<>div>div[2]>ul>li[2]>span=input_4,#Edit=submit',
             'data-info': 'Edit'
           }
         },
@@ -49,25 +40,24 @@ export default class VotePanel extends Panel {
           attribs:{
             class:'fa-trash-alt btn-icon info popup-trigger remove',
             trigger:'removePopup',
-            'popup-data': '<.id=id,#Are you sure?=title,#Yes remove it=submit',
+            'popup-data': '#vote=src,<.id=id,#Are you sure?=title,#Yes remove it=submit',
             'data-info': 'Remove'
           }
         },
       ]
     }
-    const node =  this.list.append(obj);
-    this.registerTrigger(node);
-    this.remove.bindButton(node.getElementsByClassName('remove'), this.onRemoveVote.bind(this));
+    const node = list.append(obj);
+    return node;
   }
 
-  async onPopupClick(state, data) {
+  async onPopupClick(state, input) {
+    const data = input;
     if (state === PopupForm.RESULT && !data.close) {
       if (data.input_1.length === 0 || data.input_2.length === 0) {
         return { error: 'Please fill in all the fields!' };
       }
       let url;
       let response;
-      console.log(data);
       if (data.id === '-1') {
         url = new Url('./dashboard/vote/add', {
           name: data.input_1,
@@ -78,7 +68,7 @@ export default class VotePanel extends Panel {
         response = await Http.POST(url);
         if(response.reason) return { error: response.reason };
         data.id = response.id;
-        this.addList(data);
+        return { response };
       } else {
         url = new Url('./dashboard/vote/update', {
           key: data.id,
@@ -89,7 +79,7 @@ export default class VotePanel extends Panel {
         });
         response = await Http.POST(url);
       }
-      return { error: response.reason };
+      return { error: response.reason, response };
     }
     return { error: false };
   }

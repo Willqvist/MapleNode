@@ -1074,7 +1074,10 @@ body
     margin-top:4rem;
     padding:0em 4em;
     display:flex;
-    justify-content: flex-start;
+    flex-direction: column;
+}
+.contents .panels > * {
+    margin-bottom:4em;
 }
 .panels .panel {
     background:#FFF;

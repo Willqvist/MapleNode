@@ -281,64 +281,70 @@ export default class MysqlDatabase implements Database {
   }
 
   async addPalette(name, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, active) {
-    const insertId = await this.insert(`INSERT INTO ${table(
-      'palettes',
-      true
-    )} (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES
+    const insertId = await this.insert(
+      `INSERT INTO ${table(
+        'palettes',
+        true
+      )} (name,mainColor,secondaryMainColor,fontColorDark,fontColorLight,fillColor,active) VALUES
         (?,?,?,?,?,?,?)`,
-        [
-            name,
-            mainColor,
-            secondaryMainColor,
-            fontColorDark,
-            fontColorLight,
-            fillColor,
-            active
-        ]);
+      [name, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, active]
+    );
     return insertId;
   }
 
   private async insert(query, data) {
     try {
-      const [rows] = await this.connection.execute(query,data);
+      const [rows] = await this.connection.execute(query, data);
       return rows.insertId;
-    } catch(err) {
-      throw new DatabaseError({errno: err.errno, msg: err.message});
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
 
   private async delete(query, data) {
     try {
-      const [rows] = await this.connection.execute(query,data);
+      const [rows] = await this.connection.execute(query, data);
       return rows.affectedRows;
-    } catch(err) {
-      throw new DatabaseError({errno: err.errno, msg: err.message});
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
 
   async addDownload(name, url) {
-    const insertId = await this.insert(`INSERT INTO ${table('downloads')} (name,url) VALUES
-    (?,?)`, [name,url]);
+    const insertId = await this.insert(
+      `INSERT INTO ${table('downloads')} (name,url) VALUES
+    (?,?)`,
+      [name, url]
+    );
     return insertId;
   }
 
   async updateLayout(name: string, json: string): Promise<number> {
-    const insertId = await this.insert(`INSERT INTO ${table('layout')} (name,json) VALUES
-        (?,?)`,[name,json]);
+    const insertId = await this.insert(
+      `INSERT INTO ${table('layout')} (name,json) VALUES
+        (?,?)`,
+      [name, json]
+    );
     return insertId;
   }
 
   async addDesign(heroImage, logo): Promise<number> {
-    const insertId = await this.insert(`INSERT INTO ${table('design')} (heroImage,logo) VALUES
-        (?,?)`,[heroImage, logo]);
+    const insertId = await this.insert(
+      `INSERT INTO ${table('design')} (heroImage,logo) VALUES
+        (?,?)`,
+      [heroImage, logo]
+    );
     return insertId;
   }
 
   async addSettings(serverName, version, expRate, dropRate, mesoRate, nxColumn, vpColumn, gmLevel): Promise<boolean> {
-    const insertId = await this.insert(`INSERT INTO ${table('settings')} (serverName,version,expRate,dropRate,mesoRate,nxColumn,vpColumn,gmLevel)
+    const insertId = await this.insert(
+      `INSERT INTO ${table('settings')} (serverName,version,expRate,dropRate,mesoRate,nxColumn,vpColumn,gmLevel)
                 VALUES(
                     ?,?,?,?,?,?,?,?
-                )`,[serverName, version, expRate, dropRate, mesoRate, nxColumn, vpColumn, gmLevel]);
+                )`,
+      [serverName, version, expRate, dropRate, mesoRate, nxColumn, vpColumn, gmLevel]
+    );
     return insertId;
   }
 
@@ -367,7 +373,7 @@ export default class MysqlDatabase implements Database {
     const birth = birthday.toISOString().slice(0, 19).replace('T', ' ');
     const insertId = await this.insert(
       `INSERT INTO accounts (name,password,birthday,email,lastknownip,NomePessoal,fb,twt) VALUES(?,?,?,?,'0',' ',' ',' ')`,
-        [name, password, birth, email]
+      [name, password, birth, email]
     );
     return insertId;
   }
@@ -421,9 +427,13 @@ export default class MysqlDatabase implements Database {
   async updateDownload(id: number, name: string, url: string): Promise<boolean> {
     const tableName = table('downloads');
     try {
-      const [result] = await this.connection.execute(`UPDATE ${tableName} SET name=?, url=? WHERE id=?`, [name, url, id]);
+      const [result] = await this.connection.execute(`UPDATE ${tableName} SET name=?, url=? WHERE id=?`, [
+        name,
+        url,
+        id,
+      ]);
       return result.affectedRows;
-    } catch(err) {
+    } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
@@ -433,7 +443,7 @@ export default class MysqlDatabase implements Database {
     try {
       const [result] = await this.connection.execute(`UPDATE ${tableName} SET heroImage=?`, [heroImage]);
       return result.affectedRows;
-    } catch(err) {
+    } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
@@ -443,7 +453,7 @@ export default class MysqlDatabase implements Database {
     try {
       const [result] = await this.connection.execute(`UPDATE ${tableName} SET logo=?`, [logo]);
       return result.affectedRows;
-    } catch(err) {
+    } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
@@ -461,11 +471,11 @@ export default class MysqlDatabase implements Database {
       const [
         result,
       ] = await this.connection.execute(
-          `UPDATE ${tableName} SET mainColor=? secondaryMainColor=? fontColorDark=? fontColorLight=? fillColor=? WHERE name=?`,
-          [mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, name]
+        `UPDATE ${tableName} SET mainColor=? secondaryMainColor=? fontColorDark=? fontColorLight=? fillColor=? WHERE name=?`,
+        [mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, name]
       );
       return result.affectedRows;
-    } catch(err) {
+    } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
@@ -475,11 +485,11 @@ export default class MysqlDatabase implements Database {
       const [
         result,
       ] = await this.connection.execute(
-          `SELECT inventoryequipment.* FROM inventoryitems INNER JOIN inventoryequipment ON inventoryitems.inventoryitemid = inventoryequipment.inventoryitemid WHERE characterid=?`,
-          [character]
+        `SELECT inventoryequipment.* FROM inventoryitems INNER JOIN inventoryequipment ON inventoryitems.inventoryitemid = inventoryequipment.inventoryitemid WHERE characterid=?`,
+        [character]
       );
       return result;
-    } catch(err) {
+    } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
@@ -626,7 +636,9 @@ export default class MysqlDatabase implements Database {
   async updateVote(id: number, name: string, url: string, nx: number, time: number): Promise<number> {
     const tableName = table('vote');
     try {
-      const [result] = await this.connection.execute(`UPDATE ${tableName} SET name = ?, url = ?, nx = ?, time = ? WHERE id = ?`, [
+      const [
+        result,
+      ] = await this.connection.execute(`UPDATE ${tableName} SET name = ?, url = ?, nx = ?, time = ? WHERE id = ?`, [
         name,
         url,
         nx,
@@ -634,7 +646,7 @@ export default class MysqlDatabase implements Database {
         id,
       ]);
       return result.affectedRows;
-    } catch(err) {
+    } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
