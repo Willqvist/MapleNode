@@ -28,7 +28,7 @@ export default class DownloadPanel {
           attribs:{
             class:'btn-icon info popup-trigger',
             trigger:'downloadPopup',
-            'popup-data': '#download=src,<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,#Edit=submit',
+            'popup-data': '#download=src,<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,<<>div>div>p=input_1,<<>div>>div[2]ul>li>span=input_2,#Edit=submit',
             'data-info': 'Edit'
           }
         },

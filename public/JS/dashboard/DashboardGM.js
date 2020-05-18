@@ -4,8 +4,9 @@ import ContentsPanel from "./panels/ContentsPanel.js";
 
 const bar = document.getElementById('dahboard_bar');
 const handler = new PanelHandler();
-const dashboard = new StatisticsPanel('dashboard');
+const statistics = new StatisticsPanel('statistics');
 const contents = new ContentsPanel('contents');
+
 handler.listen('pageEnter', (page, src) => {
   const offsetY = src.offsetTop - src.parentNode.offsetTop;
   bar.style.transform = `translate(0,${offsetY}px)`;
@@ -13,7 +14,7 @@ handler.listen('pageEnter', (page, src) => {
 });
 
 contents.registerTriggers();
-handler.addPanel(dashboard);
+handler.addPanel(statistics);
 handler.addPanel(contents);
 handler.bindMenu(document.getElementById('dashboard_menu_id'));
-handler.goTo('dashboard');
+handler.goTo('statistics');
