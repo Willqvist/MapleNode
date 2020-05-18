@@ -12,5 +12,6 @@ src/MapleCharacterGenerator/gd/
 upload/*
 upload/
 docs/
+public/CSS
 ./nodeconfig.json
 nodeconfig.json
