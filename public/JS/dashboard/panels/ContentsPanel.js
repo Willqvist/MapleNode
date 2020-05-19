@@ -1,9 +1,6 @@
 import Panel from './Panel.js';
 import List from "../../list.js";
-import Http from '../../API/Http.js';
 import PopupProvider from '../popup/PopupProvider.js';
-import PopupForm from '../popup/PopupForm.js';
-import Url from '../../API/Url.js';
 import DownloadPanel from "./DownloadPanel.js";
 import VotePanel from "./VotePanel.js";
 

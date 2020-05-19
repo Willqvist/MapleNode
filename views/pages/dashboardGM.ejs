@@ -51,16 +51,16 @@ const listVotes = {
                     <ul>
                         <li page="statistics"><i class="fas fa-chart-pie"></i><span>Statistics</span></li>
                         <li page="contents"><i class="fas fa-box"></i><span>Contents</span></li>
-                        <li><i class="fas fa-paint-brush"></i><span>Designs</span></li>
-                        <li id="btn"><i class="fas fa-bars"></i><span>Layouts</span></li>
-                        <li><i class="fas fa-clipboard-list"></i><span>Logs</span></li>
-                        <li><i class="fas fa-bug"></i></i><span>Reports</span></li>
+                        <li page="designs"><i class="fas fa-paint-brush"></i><span>Designs</span></li>
+                        <li page="layouts" id="btn"><i class="fas fa-bars"></i><span>Layouts</span></li>
+                        <li page="logs"><i class="fas fa-clipboard-list"></i><span>Logs</span></li>
+                        <li page="reports"><i class="fas fa-bug"></i></i><span>Reports</span></li>
                     </ul>
                 </div>
             </div>
             <div class="contents">
                 <div id="top_menu"></div>
-                <!-- DASHBOARD -->
+                <!-- STATISTICS -->
                 <div id="statistics" class="contentPage">
                     <h1><i class="fas fa-chart-pie"></i>Statistics</h1>
                 </div>
@@ -117,6 +117,23 @@ const listVotes = {
                     <div class="panels">
                         <%- include ('../panels/list.ejs', listVotes) %>
                     </div>
+                </div>
+
+                <!-- DESIGNS -->
+                <div id="designs" class="contentPage">
+                    <h1><i class="fas fa-paint-brush"></i>Designs</h1>
+                </div>
+                <!-- LAYOUTS -->
+                <div id="layouts" class="contentPage">
+                    <h1><i class="fas fa-bars"></i>Website Layouts</h1>
+                </div>
+                <!-- LOGS -->
+                <div id="logs" class="contentPage">
+                    <h1><i class="fas fa-clipboard-list"></i>Logs</h1>
+                </div>
+                <!-- REPORTS -->
+                <div id="reports" class="contentPage">
+                    <h1><i class="fas fa-bug"></i>Reports</h1>
                 </div>
             </div>
         </div>
