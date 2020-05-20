@@ -67,12 +67,20 @@ const listVotes = {
                     </div>
 
                     <!-- DOWNLOAD -->
-                    <div id="contents" class="contentPage">
-                        <h1><i class="fas fa-box"></i>Contents</h1>
-                        <% if(options.downloads) %>
-                        <%- include ('../panels/list.ejs', listDownload) %>
-                        <% if(options.votes) %>
-                        <%- include ('../panels/list.ejs', listVotes) %>
+                    <div id="contents" class="contentPage containsSubPages">
+                        <ul class="submenu">
+                            <li subpage-ref="downloads" class="focus"><i class="fas fa-download"></i>Downloads</li>
+                            <li><i class="fas fa-poll"></i>Votes</li>
+                        </ul>
+                        <div class="subPages">
+                            <div class="subPage" subpage="downloads">
+                                <h1><i class="fas fa-box"></i>Contents</h1>
+                                <% if(options.downloads) %>
+                                <%- include ('../panels/list.ejs', listDownload) %>
+                                <% if(options.votes) %>
+                                <%- include ('../panels/list.ejs', listVotes) %>
+                            </div>
+                        </div>
                     </div>
 
 
