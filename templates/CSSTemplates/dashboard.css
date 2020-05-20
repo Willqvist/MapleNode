@@ -2,7 +2,6 @@ body
 {
     background:#f8f8fe;
     font-family: 'Montserrat', sans-serif;
-    overflow-x:hidden;
 }
 .maxWidth
 {
@@ -895,12 +894,26 @@ body
     display:flex;
     flex-direction: row;
     align-items: center;
-    transition:cubic-bezier(.09,.98,.47,1.23) 0.2s;
+    transition:cubic-bezier(.09,.98,.47,1.23) 0.25s;
     cursor: pointer;
     color:#FFF;
     background:#f8f8fe;
     z-index:1;
     position: absolute;
+}
+
+.subPageFocus {
+    background:#FFF !important;
+}
+.subPageFocus::before {
+    background:#FFF !important;
+}
+.subPageFocus::after {
+    background:#FFF !important;
+}
+
+.dashboard_menu .sub_menu {
+    position: relative;
 }
 
 /* FOCUS */
@@ -909,11 +922,16 @@ body
     color:#000;
     opacity:1;
 }
-
+.dashboard_menu .focus i {
+    stroke: black;
+}
 .dashboard_menu .focus i::before {
     background: linear-gradient(204deg, #F3CA40  0%, #F2A541 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-width: 0.1rem;
+    -webkit-text-stroke-color: black;
+    paint-order: stroke fill;
 }
 
 .dashboard_menu i::before {
@@ -970,6 +988,9 @@ body
 .dashboard_menu li:hover {
     padding-left:4rem;
 }
+.dashboard_menu .focus:hover {
+    padding-left:3.4rem;
+}
 
 /* DASHBOARD MENU */
 .dashboard_menu{
@@ -977,8 +998,8 @@ body
     background: rgb(54,195,119);
     background: linear-gradient(204deg, #004BA8 0%, #2D6FE2 100%);
     height:100%;
-    position: fixed;
     box-sizing: border-box;
+
 }
 .dashboard_menu li{
     list-style: none;
@@ -1008,14 +1029,20 @@ body
 .wrapper {
     display:flex;
     flex-direction: row;
+    height:100vh;
 }
 .contents {
+    flex:1;
     top:0;
     width:100%;
     height:100%;
-    margin-left:19em;
+    display:flex;
+    flex-direction: column;
 }
-
+.pages {
+    flex:1;
+    background:red;
+}
 .btn-list {
     margin-top:2rem;
     display:flex;
@@ -1023,7 +1050,7 @@ body
     justify-content:space-between;
 }
 
-.contents > div > h1 {
+.contents > div > h1,.contents > div > h2 {
     margin-top:4rem;
     margin-bottom:0rem;
     margin-left:4rem;
@@ -1050,7 +1077,12 @@ body
     width:100%;
     margin-left:0;
 }
-
+/* SUBMENU */
+.contentPage .submenu {
+    width:20em;
+    height:100%;
+    background:#FFF;
+}
 .contentPage h1 i{
     margin-right:2rem;
 }
@@ -1060,7 +1092,59 @@ body
     width:100%;
     min-height:100%;
     background: #f8f8fe;
+    top:0;
+    margin-top:0;
+    box-sizing: border-box;
     flex-direction: column;
+    padding:4em;
+
+}
+.containsSubPages {
+    padding:0 !important;
+    flex-direction: row;
+    height:100%;
+}
+.subPages {
+    flex:1;
+}
+.subPage {
+    padding:4rem;
+}
+.submenu {
+    height:100%;
+    margin:0 !important;
+    box-shadow:inset -0.1rem 0 0 #e8f2ff;
+    display:flex;
+    justify-items: center;
+    flex-direction: column;
+}
+.submenu li{
+    list-style: none;
+    z-index:2;
+    height:4.5em;
+    padding-left:3.4rem;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    transition:ease 0.2s;
+    cursor: pointer;
+    color:#000;
+    opacity1;
+    position: relative;
+    box-shadow:inset 0 -0.1rem 0 #f0f6ff;
+}
+.submenu li i{
+    transition:ease 0.2s;
+    margin-right:1.5rem;
+    font-size:1.5rem;
+}
+.submenu .focus {
+    background: #2D6FE2;
+    color:#FFF;
+    font-weight:700;
+}
+.submenu li:hover {
+    padding-left:4em;
 }
 #top_menu {
     width:100%;
@@ -1068,18 +1152,13 @@ body
     background: #FFF;
     display:inline-block;
     top:0;
+    margin:0;
     box-shadow:inset 0 -0.1rem 0 #e8f2ff;
 }
-.contents .panels {
-    margin-top:4rem;
-    padding:0em 4em;
-    display:flex;
-    flex-direction: column;
+.contents .contentPage > * {
+    margin-bottom:4rem;
 }
-.contents .panels > * {
-    margin-bottom:4em;
-}
-.panels .panel {
+.contentPage .panel {
     background:#FFF;
     padding:2rem;
     margin-right:4rem;

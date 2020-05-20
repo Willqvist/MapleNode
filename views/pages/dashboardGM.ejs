@@ -60,80 +60,74 @@ const listVotes = {
             </div>
             <div class="contents">
                 <div id="top_menu"></div>
-                <!-- STATISTICS -->
-                <div id="statistics" class="contentPage">
-                    <h1><i class="fas fa-chart-pie"></i>Statistics</h1>
-                </div>
-
-                <!-- DOWNLOAD -->
-                <div id="contents" class="contentPage">
-                    <h1><i class="fas fa-box"></i>Contents</h1>
-                    <div class="btn-list">
-                        <div class="btn_parent">
-                            <div class="btn btn-span popup-trigger" trigger="downloadPopup" popup-data="
-                                #-1=id,
-                                #Add Download=title,
-                                #Title=label_1,
-                                #Url=label_2
-                                #Name=input_1,
-                                #Url=input_2,
-                                #Add=submit
-                                ">
-                                <span>Add new download</span>
-                            </div>
-                        </div>
+                <div class="pages">
+                    <!-- STATISTICS -->
+                    <div id="statistics" class="contentPage">
+                        <h1><i class="fas fa-chart-pie"></i>Statistics</h1>
                     </div>
-                    <div class="panels">
+
+                    <!-- DOWNLOAD -->
+                    <div id="contents" class="contentPage">
+                        <h1><i class="fas fa-box"></i>Contents</h1>
                         <% if(options.downloads) %>
                         <%- include ('../panels/list.ejs', listDownload) %>
                         <% if(options.votes) %>
                         <%- include ('../panels/list.ejs', listVotes) %>
                     </div>
-                </div>
 
 
-                <!-- VOTE -->
-                <div id="vote" class="contentPage">
-                    <h1><i class="fas fa-vote-yea"></i>Votes</h1>
-                    <div class="btn-list">
-                        <div class="btn_parent">
-                            <div class="btn btn-span popup-trigger" trigger="votePopup" popup-data="
-                                #-1=id,
-                                #Add Vote=title,
-                                #Title=label_1,
-                                #Url=label_2,
-                                #Nx=label_3,
-                                #Cooldown=label_4
-                                #Name=input_1,
-                                #Url=input_2,
-                                #1000=input_3,
-                                #0=input_4,
-                                #Add=submit
-                                ">
-                                <span>Add new vote</span>
+                    <!-- VOTE -->
+                    <div id="vote" class="contentPage">
+                        <h1><i class="fas fa-vote-yea"></i>Votes</h1>
+                        <div class="btn-list">
+                            <div class="btn_parent">
+                                <div class="btn btn-span popup-trigger" trigger="votePopup" popup-data="
+                                    #-1=id,
+                                    #Add Vote=title,
+                                    #Title=label_1,
+                                    #Url=label_2,
+                                    #Nx=label_3,
+                                    #Cooldown=label_4
+                                    #Name=input_1,
+                                    #Url=input_2,
+                                    #1000=input_3,
+                                    #0=input_4,
+                                    #Add=submit
+                                    ">
+                                    <span>Add new vote</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panels">
+                            <%- include ('../panels/list.ejs', listVotes) %>
+                        </div>
+                    </div>
+
+                    <!-- DESIGNS -->
+                    <div id="designs" class="contentPage containsSubPages">
+                        <ul class="submenu">
+                            <li subpage-ref="logo" class="focus"><i class="fas fa-draw-polygon"></i>Logo</li>
+                            <li><i class="far fa-bookmark"></i>Templates</li>
+                            <li><i class="far fa-images"></i>Images</li>
+                        </ul>
+                        <div class="subPages">
+                            <div class="subPage" subpage="logo">
+                                <h1><i class="fas fa-draw-polygon"></i>Logo</h1>
                             </div>
                         </div>
                     </div>
-                    <div class="panels">
-                        <%- include ('../panels/list.ejs', listVotes) %>
+                    <!-- LAYOUTS -->
+                    <div id="layouts" class="contentPage">
+                        <h1><i class="fas fa-bars"></i>Website Layouts</h1>
                     </div>
-                </div>
-
-                <!-- DESIGNS -->
-                <div id="designs" class="contentPage">
-                    <h1><i class="fas fa-paint-brush"></i>Designs</h1>
-                </div>
-                <!-- LAYOUTS -->
-                <div id="layouts" class="contentPage">
-                    <h1><i class="fas fa-bars"></i>Website Layouts</h1>
-                </div>
-                <!-- LOGS -->
-                <div id="logs" class="contentPage">
-                    <h1><i class="fas fa-clipboard-list"></i>Logs</h1>
-                </div>
-                <!-- REPORTS -->
-                <div id="reports" class="contentPage">
-                    <h1><i class="fas fa-bug"></i>Reports</h1>
+                    <!-- LOGS -->
+                    <div id="logs" class="contentPage">
+                        <h1><i class="fas fa-clipboard-list"></i>Logs</h1>
+                    </div>
+                    <!-- REPORTS -->
+                    <div id="reports" class="contentPage">
+                        <h1><i class="fas fa-bug"></i>Reports</h1>
+                    </div>
                 </div>
             </div>
         </div>

@@ -16,8 +16,14 @@ const logs = new LogsPanel('logs');
 const reports = new ReportsPanel('reports');
 
 handler.listen('pageEnter', (page, src) => {
+  console.log(page.DOM.className.includes("containsSubPages"));
   const offsetY = src.offsetTop - src.parentNode.offsetTop;
   bar.style.transform = `translate(0,${offsetY}px)`;
+  if(page.DOM.className.includes("containsSubPages")) {
+    bar.className = "subPageFocus";
+  } else {
+    bar.className = "";
+  }
   console.log('entering page:', offsetY);
 });
 
@@ -29,4 +35,4 @@ handler.addPanel(layouts);
 handler.addPanel(logs);
 handler.addPanel(reports);
 handler.bindMenu(document.getElementById('dashboard_menu_id'));
-handler.goTo('statistics');
+handler.goTo('designs');
