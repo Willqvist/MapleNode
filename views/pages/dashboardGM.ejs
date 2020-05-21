@@ -31,6 +31,7 @@ const listVotes = {
         <title>Dashboard GM</title>
         <%- include('../imports/head') %>
         <link rel="stylesheet" type="text/css" href="../CSS/list.css">
+        <link rel="stylesheet" type="text/css" href="../CSS/grid.css">
         <link rel="stylesheet" type="text/css" href="../CSS/menu.css">
         <link rel="stylesheet" type="text/css" href="../CSS/dashboard.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
@@ -123,13 +124,71 @@ const listVotes = {
                         </ul>
                         <div class="subPages">
                             <div class="subPage" id="logoPage">
-                                <h1><i class="fas fa-draw-polygon"></i>Logo</h1>
+                                <div class="subHeader">
+                                    <h1><i class="fas fa-draw-polygon"></i>Logo</h1>
+                                    <div class="btn-list">
+                                        <div class="btn_parent">
+                                            <div class="btn btn-span popup-trigger" trigger="downloadPopup" popup-data="
+                                                #-1=id,
+                                                #Add Download=title,
+                                                #Title=label_1,
+                                                #Url=label_2
+                                                #Name=input_1,
+                                                #Url=input_2,
+                                                #Add=submit
+                                                ">
+                                                <span>upload Logo</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="subPage" id="templates">
-                                <h1><i class="far fa-bookmark"></i>Templates</h1>
+                                <div class="subHeader">
+                                    <h1><i class="far fa-bookmark"></i>Templates</h1>
+                                    <div class="btn-list">
+                                        <div class="btn_parent">
+                                            <div class="btn btn-span popup-trigger" trigger="downloadPopup" popup-data="
+                                                #-1=id,
+                                                #Add Download=title,
+                                                #Title=label_1,
+                                                #Url=label_2
+                                                #Name=input_1,
+                                                #Url=input_2,
+                                                #Add=submit
+                                                ">
+                                                <span>upload template</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%- include ('../panels/grid.ejs',{items:[
+                                    {content:"<h2>Heelo</h2>",image:"orange"}
+                                ]})%>
                             </div>
                             <div class="subPage" id="images">
-                                <h1><i class="far fa-images"></i>Images</h1>
+                                <div class="subHeader">
+                                    <h1><i class="far fa-images"></i>Images</h1>
+                                    <div class="btn-list">
+                                        <div class="btn_parent">
+                                            <div class="btn btn-span popup-trigger" trigger="downloadPopup" popup-data="
+                                                #-1=id,
+                                                #Add Download=title,
+                                                #Title=label_1,
+                                                #Url=label_2
+                                                #Name=input_1,
+                                                #Url=input_2,
+                                                #Add=submit
+                                                ">
+                                                <span>Upload Image</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%= console.log(options); %>
+                                <%- include ('../panels/grid.ejs',{items:[
+                                {content:"<h2>Heelo</h2>",image:"orange"}
+                                ]})%>
                             </div>
                         </div>
                     </div>

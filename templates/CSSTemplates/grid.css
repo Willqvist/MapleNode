@@ -1,0 +1,37 @@
+.mod_grid {
+    display:grid;
+    grid-gap: 1rem;
+    grid-template-columns: auto auto auto auto;
+}
+.mod_grid_item {
+    background:#FFF;
+    min-height:5rem;
+    border-radius:1rem;
+    overflow: hidden;
+    box-shadow:0 0 0 0.12rem #e8f2ff;
+    transition:ease 0.15s;
+    cursor:pointer;
+}
+.mod_grid_item_image {
+    height:12rem;
+    background:url(https://w3layouts.com/wp-content/uploads/2020/03/captivate.jpg) no-repeat;
+    background-size: cover;
+    background-position: 50% 50%;
+}
+.mod_grid_item:hover {
+    transform: translateY(-0.5rem);
+    box-shadow:0 0rem 0 0.12rem #e8f2ff,0 0.38rem 0 0.12rem #e8f2ff;
+}
+.mod_grid_item:active {
+    transform: translateY(0rem);
+    box-shadow:0 -0rem 0 0.12rem #e8f2ff;
+}
+.mod_grid_item_content {
+    min-height:4rem;
+    display:flex;
+}
+.mod_grid_item_content h2{
+    margin:auto;
+    margin-left:1rem;
+    font-size:1rem;
+}

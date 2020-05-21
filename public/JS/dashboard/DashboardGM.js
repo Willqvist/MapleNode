@@ -44,7 +44,7 @@ const submenuDesignContents = handler.createSubMenu('designs');
 submenuDesignContents.addPanel(logo);
 submenuDesignContents.addPanel(template);
 submenuDesignContents.addPanel(image);
-submenuDesignContents.goTo('logoPage');
+submenuDesignContents.goTo('templates');
 
 handler.addPanel(statistics);
 handler.addPanel(designs);

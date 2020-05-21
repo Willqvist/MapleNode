@@ -1041,7 +1041,6 @@ body
     background:red;
 }
 .btn-list {
-    margin-top:2rem;
     display:flex;
     flex-direction: row;
     justify-content:space-between;
@@ -1054,7 +1053,6 @@ body
     color:var(--fontColorDark);
 }
 .contentPage .btn-list {
-    margin-left:4rem;
     font-size:0.8em;
     flex-direction: row;
     justify-content: flex-start;
@@ -1066,7 +1064,9 @@ body
 .panel .btn-list > * {
     margin-right:0rem !important;
 }
-
+.subPage .subHeader h1 {
+    margin-bottom:1.5rem;
+}
 .panel .btn-list {
     margin-right:0rem;
     justify-content: space-between;
