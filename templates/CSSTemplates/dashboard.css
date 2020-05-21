@@ -1106,6 +1106,8 @@ body
 }
 .subPage {
     padding:4rem;
+    display:none;
+    flex-direction: column;
 }
 .submenu {
     height:100%;
@@ -1130,14 +1132,22 @@ body
     box-shadow:inset 0 -0.1rem 0 #f0f6ff;
 }
 .submenu li i{
-    transition:ease 0.2s;
     margin-right:1.5rem;
     font-size:1.5rem;
+    color:#000;
+    transition:ease 0.2s;
 }
 .submenu .focus {
     background: #2D6FE2;
-    color:#FFF;
     font-weight:700;
+    color:#FFF;
+
+}
+.submenu .focus:hover {
+    padding-left:3.4em;
+}
+.submenu .focus i {
+    color:#FFF;
 }
 .submenu li:hover {
     padding-left:4em;
@@ -1151,7 +1161,7 @@ body
     margin:0;
     box-shadow:inset 0 -0.1rem 0 #e8f2ff;
 }
-.contents .contentPage > * {
+.contents .contentPage > *,.contents .subPage > * {
     margin-bottom:4rem;
 }
 .contentPage .panel {

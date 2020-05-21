@@ -7,7 +7,7 @@ const listDownload = {
     title: {key:"name"},
     attribs: [{key:"url",name:"url"}],
     editAttributes: 'class="far fa-edit btn-icon info popup-trigger" trigger="downloadPopup" popup-data="#download=src,<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,#Edit=submit" data-info="Edit"',
-    addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New download" trigger="downloadPopup" popup-data="#download=src,#-1=id,#Add Download=title,#Title=label_1,#Url=label_ #Name=input_1,#Url=input_2,#Add=submit"',
+    addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New download" trigger="downloadPopup" popup-data="#download=src,#-1=id,#Add Download=title,#Title=label_1,#Url=label_1 #Name=input_1,#Url=input_2,#Add=submit"',
     deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#download=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
 };
 
@@ -69,14 +69,17 @@ const listVotes = {
                     <!-- DOWNLOAD -->
                     <div id="contents" class="contentPage containsSubPages">
                         <ul class="submenu">
-                            <li subpage-ref="downloads" class="focus"><i class="fas fa-download"></i>Downloads</li>
-                            <li><i class="fas fa-poll"></i>Votes</li>
+                            <li page="downloads"><i class="fas fa-download"></i>Downloads</li>
+                            <li page="votes"><i class="fas fa-poll"></i>Votes</li>
                         </ul>
                         <div class="subPages">
-                            <div class="subPage" subpage="downloads">
-                                <h1><i class="fas fa-box"></i>Contents</h1>
+                            <div class="subPage" id="downloads">
+                                <h1><i class="fas fa-download"></i>Downloads</h1>
                                 <% if(options.downloads) %>
                                 <%- include ('../panels/list.ejs', listDownload) %>
+                            </div>
+                            <div class="subPage" id="votes">
+                                <h1><i class="fas fa-poll"></i>Votes</h1>
                                 <% if(options.votes) %>
                                 <%- include ('../panels/list.ejs', listVotes) %>
                             </div>

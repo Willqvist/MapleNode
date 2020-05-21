@@ -7,6 +7,8 @@ export default class Panel {
     this.id = id;
     this.DOM = document.getElementById(id);
     this.popups = {};
+    this.submenu = null;
+    this.subMenuMap = {};
   }
 
   registerTriggers() {
@@ -15,6 +17,7 @@ export default class Panel {
 
   registerTrigger(elem) {
     const cls = elem.getElementsByClassName('popup-trigger');
+    console.log(cls);
     for (let i = 0; i < cls.length; i++) {
       const popup = PopupProvider.get(cls[i].getAttribute('trigger'));
       popup.bindButton(cls[i], this.onPopupClick.bind(this));

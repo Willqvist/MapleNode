@@ -1,3 +1,5 @@
+import SubPanel from "./SubPanel.js";
+
 export default class PanelHandler {
   constructor() {
     this.panels = {};
@@ -77,4 +79,13 @@ export default class PanelHandler {
     }
     this.listeners[name].push(clb);
   }
+
+  createSubMenu(id) {
+    const DOM = document.getElementById(id);
+    const panelHandler = new PanelHandler();
+    this.addPanel(new SubPanel(id));
+    panelHandler.bindMenu(DOM.getElementsByClassName('submenu')[0]);
+    return panelHandler;
+  }
 }
+

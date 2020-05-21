@@ -1,8 +1,18 @@
 import PopupForm from '../popup/PopupForm.js';
 import Http from '../../API/Http.js';
 import Url from '../../API/Url.js';
+import Panel from "./Panel.js";
+import List from "../../list.js";
+import PopupProvider from "../popup/PopupProvider.js";
 
-export default class VotePanel {
+export default class VotePanel extends Panel{
+
+  init() {
+    super.init();
+    this.voteList = new List("Votes");
+    this.remove = PopupProvider.get('removePopup');
+    this.remove.bindButton(this.getAll('remove'), this.onRemoveVote.bind(this));
+  }
 
   // eslint-disable-next-line class-methods-use-this
   async onRemoveVote(state, data) {
@@ -11,6 +21,7 @@ export default class VotePanel {
       const url = new Url('./dashboard/vote/remove', {
         id: data.id,
       });
+      this.voteList.remove(data.id);
       const response = await Http.POST(url);
       return { error: response.reason };
     }
@@ -47,6 +58,8 @@ export default class VotePanel {
       ]
     }
     const node = list.append(obj);
+    this.registerTrigger(node);
+    this.remove.bindButton(node.getElementsByClassName('remove'), this.onRemoveVote.bind(this));
     return node;
   }
 
@@ -68,18 +81,18 @@ export default class VotePanel {
         response = await Http.POST(url);
         if(response.reason) return { error: response.reason };
         data.id = response.id;
+        this.addList(this.voteList,data);
         return { response };
-      } else {
-        url = new Url('./dashboard/vote/update', {
-          key: data.id,
-          name: data.input_1,
-          url: data.input_2,
-          nx: data.input_3,
-          time: data.input_4,
-        });
-        response = await Http.POST(url);
       }
-      return { error: response.reason, response };
+      url = new Url('./dashboard/vote/update', {
+        key: data.id,
+        name: data.input_1,
+        url: data.input_2,
+        nx: data.input_3,
+        time: data.input_4,
+      });
+      response = await Http.POST(url);
+      return { error: response.reason };
     }
     return { error: false };
   }
