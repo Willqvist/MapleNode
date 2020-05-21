@@ -118,31 +118,13 @@ const listVotes = {
                     <!-- DESIGNS -->
                     <div id="designs" class="contentPage containsSubPages">
                         <ul class="submenu">
-                            <li page="logoPage"><i class="fas fa-draw-polygon"></i>Logo</li>
                             <li page="templates"><i class="far fa-bookmark"></i>Templates</li>
+                            <li page="palettes"><i class="fas fa-palette"></i>Palettes</li>
                             <li page="images"><i class="far fa-images"></i>Images</li>
                         </ul>
                         <div class="subPages">
-                            <div class="subPage" id="logoPage">
-                                <div class="subHeader">
-                                    <h1><i class="fas fa-draw-polygon"></i>Logo</h1>
-                                    <div class="btn-list">
-                                        <div class="btn_parent">
-                                            <div class="btn btn-span popup-trigger" trigger="downloadPopup" popup-data="
-                                                #-1=id,
-                                                #Add Download=title,
-                                                #Title=label_1,
-                                                #Url=label_2
-                                                #Name=input_1,
-                                                #Url=input_2,
-                                                #Add=submit
-                                                ">
-                                                <span>upload Logo</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+                            <!-- SUB TEMPLATES FOR DESIGN -->
                             <div class="subPage" id="templates">
                                 <div class="subHeader">
                                     <h1><i class="far fa-bookmark"></i>Templates</h1>
@@ -166,6 +148,8 @@ const listVotes = {
                                     {content:"<h2>Heelo</h2>",image:"orange"}
                                 ]})%>
                             </div>
+
+                            <!-- SUB IMAGES FOR DESIGN -->
                             <div class="subPage" id="images">
                                 <div class="subHeader">
                                     <h1><i class="far fa-images"></i>Images</h1>
@@ -185,9 +169,33 @@ const listVotes = {
                                         </div>
                                     </div>
                                 </div>
-                                <%= console.log(options); %>
                                 <%- include ('../panels/grid.ejs',{items:[
                                 {content:"<h2>Heelo</h2>",image:"orange"}
+                                ]})%>
+                            </div>
+
+                            <!-- SUB PALETTES FOR DESIGN -->
+                            <div class="subPage" id="palettes">
+                                <div class="subHeader">
+                                    <h1><i class="fas fa-palette"></i>Palettes</h1>
+                                    <div class="btn-list">
+                                        <div class="btn_parent">
+                                            <div class="btn btn-span popup-trigger" trigger="downloadPopup" popup-data="
+                                                #-1=id,
+                                                #Add Download=title,
+                                                #Title=label_1,
+                                                #Url=label_2
+                                                #Name=input_1,
+                                                #Url=input_2,
+                                                #Add=submit
+                                                ">
+                                                <span>Add palette</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%- include ('../panels/grid.ejs',{items:[
+                                {content:"<h2>Palettename here</h2>",image:"green"}
                                 ]})%>
                             </div>
                         </div>
@@ -199,10 +207,12 @@ const listVotes = {
                     <!-- LOGS -->
                     <div id="logs" class="contentPage">
                         <h1><i class="fas fa-clipboard-list"></i>Logs</h1>
+                        <%- include ('../panels/list.ejs', listVotes) %>
                     </div>
                     <!-- REPORTS -->
                     <div id="reports" class="contentPage">
                         <h1><i class="fas fa-bug"></i>Reports</h1>
+                        <%- include ('../panels/list.ejs', listVotes) %>
                     </div>
                 </div>
             </div>

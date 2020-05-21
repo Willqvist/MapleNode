@@ -17,10 +17,9 @@ const reports = new ReportsPanel('reports');
 // Sub panels
 const download = new DownloadPanel('downloads');
 const vote = new VotePanel('votes');
-const logo = new DesignPanel('logoPage');
 const template = new DesignPanel('templates');
 const image = new DesignPanel('images');
-
+const palettes = new DesignPanel('palettes');
 handler.listen('pageEnter', (page, src) => {
   console.log(page.DOM.className.includes("containsSubPages"));
   const offsetY = src.offsetTop - src.parentNode.offsetTop;
@@ -41,9 +40,9 @@ submenuContents.addPanel(vote);
 submenuContents.goTo('downloads');
 
 const submenuDesignContents = handler.createSubMenu('designs');
-submenuDesignContents.addPanel(logo);
 submenuDesignContents.addPanel(template);
 submenuDesignContents.addPanel(image);
+submenuDesignContents.addPanel(palettes);
 submenuDesignContents.goTo('templates');
 
 handler.addPanel(statistics);
