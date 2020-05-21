@@ -13,8 +13,10 @@ import { DatabaseAuthInterface, File } from '../core/Interfaces/Interfaces';
  * @param file the file to move.
  */
 async function moveImage(file: File) {
-  const ext = mime.extension(file.mimetype);
-  await FileTools.move(`upload/${file.fileName}`, `public/upload/${file.destName}.${ext}`);
+  if(file.mimetype) {
+    const ext = mime.extension(file.mimetype);
+    await FileTools.move(`upload/${file.fileName}`, `public/upload/${file.destName}.${ext}`);
+  }
 }
 
 export default class Setup {

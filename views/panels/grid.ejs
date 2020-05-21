@@ -3,7 +3,11 @@
         const item = items[i];
     %>
     <div class="mod_grid_item">
-        <div class="mod_grid_item_image" style="background:<%= item.image %>;">
+        <div class="mod_grid_item_image">
+            <%if(!item.header) {%>
+                <div class="mod_grid_blur" style="background:<%= item.image %>;"></div>
+                <div class="mod_grid_fg" style="background:<%= item.image %>;"></div>
+            <%}%>
             <%- item.header %>
         </div>
         <div class="mod_grid_item_content">

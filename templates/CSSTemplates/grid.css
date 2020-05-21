@@ -14,9 +14,11 @@
 }
 .mod_grid_item_image {
     height:12rem;
-    background:url(https://w3layouts.com/wp-content/uploads/2020/03/captivate.jpg) no-repeat;
+    background:#FFF;
     background-size: cover;
     background-position: 50% 50%;
+    overflow: hidden;
+    position: relative;
 }
 .mod_grid_item:hover {
     transform: translateY(-0.5rem);
@@ -34,4 +36,17 @@
     margin:auto;
     margin-left:1rem;
     font-size:1rem;
+}
+.mod_grid_blur,.mod_grid_fg {
+    background:Red;
+    position: absolute;
+    left:0;
+    top:0;
+    background:Red;
+    width:100%;
+    height:100%;
+}
+.mod_grid_blur {
+    opacity:0.05;
+    background-size: cover !important;
 }

@@ -36,6 +36,6 @@ export interface EquipmentInterface {
 
 export interface File {
   fileName: string;
-  mimetype: string;
+  mimetype: string | false;
   destName: string;
 }

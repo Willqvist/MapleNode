@@ -54,16 +54,27 @@ export default class FileTools {
         const res: File[] = [];
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          const mimeType = mime.extname(file);
+          const content = mime.contentType(file);
+          const mimeType = content ? mime.extension(content) : false;
           res.push({
             fileName: file,
             mimetype: mimeType,
-            destName: dir + file,
+            destName: `${dir}/${file}`,
           });
         }
         resolve(res);
       });
     });
+  }
+
+  /**
+   * returns true if file is of type image.
+   * true on png,jpg,gif.
+   * @param file
+   */
+  public static isImage(file: File) {
+    const mime = file.mimetype;
+    return mime === 'png' || mime === 'jpg' || mime === 'gif';
   }
 
   /**

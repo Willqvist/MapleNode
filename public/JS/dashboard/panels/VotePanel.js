@@ -21,8 +21,9 @@ export default class VotePanel extends Panel{
       const url = new Url('./dashboard/vote/remove', {
         id: data.id,
       });
-      this.voteList.remove(data.id);
       const response = await Http.POST(url);
+      if(response.reason || !response.success) return { error: response.reason };
+      this.voteList.remove(data.id);
       return { error: response.reason };
     }
     return { error: false };
@@ -79,7 +80,7 @@ export default class VotePanel extends Panel{
           time: data.input_4,
         });
         response = await Http.POST(url);
-        if(response.reason) return { error: response.reason };
+        if(response.reason || !response.success) return { error: response.reason };
         data.id = response.id;
         this.addList(this.voteList,data);
         return { response };

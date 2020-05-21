@@ -16,6 +16,7 @@ async function renderGMDashboard(req, res) {
     const votes = await DatabaseConnection.instance.getVotes();
     const palettes = await DatabaseConnection.instance.getPalettes();
     const downloads = await DatabaseConnection.instance.getDownloads();
+    const images = (await FileTools.readDir('public/images')).filter((val) => FileTools.isImage(val));
     let activePalette = palettes[0];
     for (let i = 0; i < palettes.length; i++) {
       if (palettes[i].active === 1) {
@@ -28,6 +29,7 @@ async function renderGMDashboard(req, res) {
       downloads,
       palettes: { all: palettes, active: activePalette },
       user: getAccount(req.session),
+      images,
     });
   } catch ({ message }) {
     Logger.log('debug', `Error rendering gm dashboard ${message}`);
@@ -42,14 +44,6 @@ function send(res: Response, msg: any, status: number = 200) {
   res.status(status).send(JSON.stringify(msg));
 }
 
-router.get('/', (req, res) => {
-  if (!isLoggedIn(req.session)) return res.render('pages/dashboardLogin');
-  const user = getAccount(req.session);
-  const gm = Math.max(user.gm, user.webadmin);
-  if (gm < 3) return renderDashboard(req, res);
-  if (gm >= 3) return renderGMDashboard(req, res);
-});
-
 router.post('*', (req, res, next) => {
   const { session } = req;
   if (!isLoggedIn(session) || !isWebAdmin(session)) return send(res, { success: false, reason: 'access denied' }, 403);
@@ -58,13 +52,20 @@ router.post('*', (req, res, next) => {
 
 router.get('*', (req, res, next) => {
   const { session } = req;
-  if (!isLoggedIn(session) || !isWebAdmin(session)) return res.render('/dashboardLogin');
+  if (!isLoggedIn(session) || !isWebAdmin(session)) return res.render('pages/dashboardLogin');
   next();
+});
+
+router.get('/', (req, res) => {
+  const user = getAccount(req.session);
+  const gm = Math.max(user.gm, user.webadmin);
+  if (gm < 3) return renderDashboard(req, res);
+  if (gm >= 3) return renderGMDashboard(req, res);
 });
 
 router.post('/vote/update', async (req, res) => {
   const { name, url, nx, time, key } = req.body;
-  console.log("IM HERE",req.body);
+  console.log('IM HERE', req.body);
   try {
     await DatabaseConnection.instance.updateVote(key, name, url, nx, time);
     return send(res, { success: true });
@@ -115,6 +116,7 @@ router.post('/palette/add', async (req, res) => {
     send(res, { success: false, reason: message });
   }
 });
+
 router.post('/palette/select', async (req, res) => {
   const { key } = req.body;
   try {
@@ -125,6 +127,7 @@ router.post('/palette/select', async (req, res) => {
     send(res, { success: true, reason: message });
   }
 });
+
 router.post('/palette/remove', async (req, res) => {
   const { key } = req.body;
   try {
@@ -134,6 +137,7 @@ router.post('/palette/remove', async (req, res) => {
     send(res, { success: true, reason: message });
   }
 });
+
 router.post('/palette/update', async (req, res) => {
   const { key, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor } = req.body;
   try {

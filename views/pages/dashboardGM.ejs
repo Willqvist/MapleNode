@@ -169,9 +169,14 @@ const listVotes = {
                                         </div>
                                     </div>
                                 </div>
-                                <%- include ('../panels/grid.ejs',{items:[
-                                {content:"<h2>Heelo</h2>",image:"orange"}
-                                ]})%>
+                                <%
+                                    const gridList = [];
+                                for(let i = 0; i < options.images.length; i++) {
+                                    const image = options.images[i];
+                                    gridList.push({content:`<h2>${image.fileName}`,image:` center / contain no-repeat url("images/${image.fileName}")`})
+                                }
+                                %>
+                                <%- include ('../panels/grid.ejs',{items:gridList})%>
                             </div>
 
                             <!-- SUB PALETTES FOR DESIGN -->

@@ -20,8 +20,9 @@ export default class DownloadPanel extends Panel {
       const url = new Url('./dashboard/download/remove', {
         id: data.id,
       });
-      this.downloadList.remove(data.id);
       const response = await Http.POST(url);
+      if(response.reason || !response.success) return { error: response.reason };
+      this.downloadList.remove(data.id);
       return { error: response.reason };
     }
     return { error: false };
@@ -77,7 +78,7 @@ export default class DownloadPanel extends Panel {
           url: data.input_2,
         });
         response = await Http.POST(url);
-        if(response.reason) return { error: response.reason };
+        if(response.reason || !response.success) return { error: response.reason };
         data.id = response.id;
         this.addList(this.downloadList, data);
         return { response };
