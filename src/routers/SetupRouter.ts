@@ -3,14 +3,15 @@ import multer from 'multer';
 import md5 from 'md5';
 import * as constants from '../core/Constants';
 import { PalettesInterface, SettingsInterface } from '../core/Interfaces/DatabaseInterfaces';
-import app, {setLocals} from '../App';
+import app, { setLocals } from '../App';
 import Setup from '../models/Setup';
 import { getConfig } from '../core/config/Config';
 import IO from '../models/IO';
 import DatabaseConnection from '../core/database/DatabaseConnection';
 import { DatabaseAuthInterface, File } from '../core/Interfaces/Interfaces';
 import { getAccount, updateSessionUser } from '../models/SessionHandler';
-import setupFunction from '../setup'
+import setupFunction from '../setup';
+
 const router = express.Router();
 const setup = new Setup();
 const io = new IO();
@@ -87,7 +88,7 @@ router.post('/colors', async (req, res) => {
   } catch (err) {
     const { message } = err.getMessage();
     return res.render('setup/error', {
-      page: 'colors',
+      return: 'colors',
       error: { reason: err.getMessage() },
     });
   }
@@ -112,12 +113,16 @@ router.post('/template', async (req, res) => {
 router.get('/complete', async (req, res) => {
   const [mysql, sett] = await isAllowed(req, res);
   if (!mysql || !sett) return;
-  await setupFunction(()=>{},()=>{
-    setLocals(app.getApp());
-  });
+  await setup.complete();
+  await setupFunction(
+    () => {},
+    () => {
+      console.log("SETUP COMPLETE");
+      setLocals(app.getApp());
+    }
+  );
   const settings = constants.getConstant<SettingsInterface>('settings');
   const { serverName } = settings;
-  await setup.complete();
   res.render('setup/setup_complete', { name: serverName });
 });
 
@@ -146,7 +151,7 @@ router.post('/webadmin', async (req, res) => {
   // error prevention
   if (!form || (form !== 'register' && form !== 'login')) {
     return res.render('setup/error', {
-      page: 'webadmin',
+      return: 'webadmin',
       error: { reason: 'Invalid post form' },
     });
   }
@@ -154,25 +159,25 @@ router.post('/webadmin', async (req, res) => {
   if (form === 'register') {
     if (password !== confirm_password) {
       return res.render('setup/error', {
-        page: 'webadmin',
+        return: 'webadmin',
         error: { reason: 'Passwords does not match!' },
       });
     }
-    const { REST, account } = await io.register(session, username, md5(password), new Date(), email);
+    const { REST } = await io.register(session, username, md5(password), new Date(), email);
     const { loggedin, reason } = REST;
     if (!loggedin) {
       return res.render('setup/error', {
-        page: 'webadmin',
+        return: 'webadmin',
         error: { reason },
       });
     }
     await updateSessionUser(session, { webadmin: 5 });
   } else if (form === 'login') {
-    const { REST, account } = await io.login(req.session, username, md5(password));
+    const { REST } = await io.login(req.session, username, md5(password));
     const { loggedin, reason } = REST;
     if (!loggedin) {
       return res.render('setup/error', {
-        page: 'webadmin',
+        return: 'webadmin',
         error: { reason },
       });
     }
@@ -207,7 +212,7 @@ router.all('/:id/', async (req, res, next) => {
             if (!errorMessage) errorMessage = err.getMessage();
 
             return res.render('setup/error', {
-              page: number,
+              return: number,
               error: { reason: errorMessage },
             });
           }
@@ -226,12 +231,12 @@ router.all('/:id/', async (req, res, next) => {
               nxColumn: nx,
             };
             await setup.settings(settings, downloadSetup, downloadClient);
-            constants.setConstant('logo','svgs/logo.svg');
-            constants.setConstant('heroImage','headerImage.png');
+            constants.setConstant('logo', 'svgs/logo.svg');
+            constants.setConstant('heroImage', 'headerImage.png');
             setLocals(app.getApp());
             return res.redirect('./webadmin');
           } catch (err) {
-            return res.render('setup/error', { page: number, error: { reason: err.getMessage() } });
+            return res.render('setup/error', { return: number, error: { reason: err.getMessage() } });
           }
         default:
           return res.render('error', { page: number, error: { reason: 'something went wrong' } });

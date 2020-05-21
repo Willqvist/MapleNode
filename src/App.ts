@@ -41,6 +41,7 @@ export function setLocals(app: express.Application) {
   app.locals.heroImage = consts.getConstant('heroImage');
   app.locals.logo = consts.getConstant('logo');
   app.locals.settings = consts.getConstant('settings');
+  console.log("LOCALS",app.locals);
 }
 
 /**
