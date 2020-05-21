@@ -117,13 +117,19 @@ const listVotes = {
                     <!-- DESIGNS -->
                     <div id="designs" class="contentPage containsSubPages">
                         <ul class="submenu">
-                            <li subpage-ref="logo" class="focus"><i class="fas fa-draw-polygon"></i>Logo</li>
-                            <li><i class="far fa-bookmark"></i>Templates</li>
-                            <li><i class="far fa-images"></i>Images</li>
+                            <li page="logoPage"><i class="fas fa-draw-polygon"></i>Logo</li>
+                            <li page="templates"><i class="far fa-bookmark"></i>Templates</li>
+                            <li page="images"><i class="far fa-images"></i>Images</li>
                         </ul>
                         <div class="subPages">
-                            <div class="subPage" subpage="logo">
+                            <div class="subPage" id="logoPage">
                                 <h1><i class="fas fa-draw-polygon"></i>Logo</h1>
+                            </div>
+                            <div class="subPage" id="templates">
+                                <h1><i class="far fa-bookmark"></i>Templates</h1>
+                            </div>
+                            <div class="subPage" id="images">
+                                <h1><i class="far fa-images"></i>Images</h1>
                             </div>
                         </div>
                     </div>

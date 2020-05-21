@@ -17,6 +17,9 @@ const reports = new ReportsPanel('reports');
 // Sub panels
 const download = new DownloadPanel('downloads');
 const vote = new VotePanel('votes');
+const logo = new DesignPanel('logoPage');
+const template = new DesignPanel('templates');
+const image = new DesignPanel('images');
 
 handler.listen('pageEnter', (page, src) => {
   console.log(page.DOM.className.includes("containsSubPages"));
@@ -36,6 +39,13 @@ const submenuContents = handler.createSubMenu('contents');
 submenuContents.addPanel(download);
 submenuContents.addPanel(vote);
 submenuContents.goTo('downloads');
+
+const submenuDesignContents = handler.createSubMenu('designs');
+submenuDesignContents.addPanel(logo);
+submenuDesignContents.addPanel(template);
+submenuDesignContents.addPanel(image);
+submenuDesignContents.goTo('logoPage');
+
 handler.addPanel(statistics);
 handler.addPanel(designs);
 handler.addPanel(layouts);
