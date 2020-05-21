@@ -117,7 +117,6 @@ router.get('/complete', async (req, res) => {
   await setupFunction(
     () => {},
     () => {
-      console.log("SETUP COMPLETE");
       setLocals(app.getApp());
     }
   );
