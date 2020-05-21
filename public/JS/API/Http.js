@@ -15,7 +15,7 @@ export default class Http {
     http.setRequestHeader('Content-type', 'application/json');
     http.onreadystatechange = function () {
       if (http.readyState === XMLHttpRequest.DONE && http.status === 200) callback(JSON.parse(http.responseText));
-      else if (http.readyState === XMLHttpRequest.DONE && http.status === 404)
+      else if (http.readyState === XMLHttpRequest.DONE)
         callback({ success: false, http: { status: http.status } });
     };
     http.send(JSON.stringify(url.getParamters()));

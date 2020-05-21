@@ -155,6 +155,30 @@
            #saveColor:hover {
                background:#3E78B2;
            }
+
+            .colorListName {
+                list-style: none;
+                display:flex;
+                flex-direction: row;
+                font-size:0.85rem;
+                width:100%;
+                overflow: hidden;
+                display:flex;
+                position: relative;
+            }
+           .colorListName li {
+               flex:1;
+               text-align:center;
+               margin:auto;
+               padding-left:0.5rem;
+               padding-right:0.5rem;
+               text-align: center;
+               display:flex;
+               height:3em;
+           }
+           .colorListName li span {
+               margin:auto;
+           }
         </style>
     </head>
     <body>
@@ -178,6 +202,13 @@
                         <input id="fontColorDarkInput" value="#20063B" name="fontColorDark" class="hidden">
                         <input id="fontColorLightInput" value="#D3F3EE" name="fontColorLight" class="hidden">
                     </div>
+                    <ul class="colorListName">
+                        <li class="colorTitle" id="mainColorTitle"><span>Main Color</span></li>
+                        <li class="colorTitle" id="secondaryMainColorTitle"><span>Secondary Main Color</span></li>
+                        <li class="colorTitle" id="fillColorTitle"><span>Fill Color</span></li>
+                        <li class="colorTitle" id="fontColorDarkTitle"><span>Font Color Dark</span></li>
+                        <li class="colorTitle" id="fontColorLightTitle"><span>Font Color Light</span></li>
+                    </ul>
                     <div class="colors">
                         <div id="colorInput" class="colorInput inputWrapper">
                             <input id="color" name="color" placeholder="#000, rgba(0,0,0,0), black...">
@@ -242,7 +273,9 @@
             let colorInput = document.getElementById("color");
             let colorInputParent = document.getElementById("colorInput");
             let colors = document.getElementsByClassName("color");
+            let colorTitles = document.getElementsByClassName('colorTitle');
             let boundColor = null;
+            let boundColorHeader = null;
             let colorInputs = {
                 mainColor:document.getElementById("mainColorInput"),
                 secondaryMainColor:document.getElementById("secondaryMainColorInput"),
@@ -256,7 +289,6 @@
                 console.log(value,correctColor);
                 if(value.length == 0) return;
                 if(isColor(value) || isHexColor(value) || isRgbaColor(value)) {
-                    console.log("is valid color: ",value);
                     boundColor.style.background=value;
                     if(!correctColor) {
                         correctColor = true;
@@ -273,6 +305,14 @@
                 let color = colors[i];
                 let editBtn = color.getElementsByClassName("edit")[0];
                 color.addEventListener("click",async ()=> {
+                    for(let i = 0; i < colorTitles.length; i++) {
+                        colorTitles[i].style.display = "none";
+                    }
+                    const header = document.getElementById(color.id+'Title');
+
+                    header.style.display="flex";
+                    header.style.flex="content";
+                    header.style.textAlign="center";
                     colorInput.value = colorInputs[color.id].value;
                     color.style.flex = "0 0 100%";
                     editBtn.style.opacity="0";
@@ -281,6 +321,7 @@
                     colorInputParent.style.opacity="1";
                     editBtn.style.display="none";
                     boundColor = color;
+                    boundColorHeader = header;
                 },false);
             }
 
@@ -303,6 +344,9 @@
             });
 
             async function animateOut() {
+                for(let i = 0; i < colorTitles.length; i++) {
+                    colorTitles[i].style.display = "flex";
+                }
                 let editBtn = boundColor.getElementsByClassName("edit")[0];
                 editBtn.style.display="flex";
                 colorInputParent.style.opacity="0";
@@ -314,6 +358,7 @@
                 colorInput.value = "";
                 boundColor = null;
                 correctColor = true;
+                boundColorHeader= null;
                 save.innerHTML = `<i class="fas fa-check"></i>`;
             }
     </script>
