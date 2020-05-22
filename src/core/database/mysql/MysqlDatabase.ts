@@ -1,9 +1,9 @@
 import mysql from 'mysql2/promise';
+import { PathLike } from 'fs';
 import { Database, Rank, SWO } from '../Database';
 import {
   accountsConversion,
   charactersConversion,
-  mn_designConversion,
   mn_downloadsConversion,
   mn_layoutConversion,
   mn_palettesConversion,
@@ -13,7 +13,6 @@ import {
 import {
   AccountsInterface,
   CharactersInterface,
-  DesignInterface,
   DownloadsInterface,
   LayoutInterface,
   PalettesInterface,
@@ -21,8 +20,7 @@ import {
   VoteInterface,
   VotingInterface,
 } from '../../Interfaces/DatabaseInterfaces';
-import { DatabaseAuthInterface, EquipmentInterface } from '../../Interfaces/Interfaces';
-import Errno from '../../tools/Errno';
+import { DatabaseAuthInterface, EquipmentInterface, File, TaggedFile } from '../../Interfaces/Interfaces';
 
 import * as Constants from '../../Constants';
 import FileTools from '../../tools/FileTools';
@@ -139,15 +137,6 @@ export default class MysqlDatabase implements Database {
 
   async getSettings(obj: SWO): Promise<SettingsInterface> {
     const [rows, err] = await this.exec<SettingsInterface>(obj, 'settings', mn_settingsConversion);
-    if (err) {
-      throw new DatabaseError({ errno: 0, msg: err });
-    }
-    if (rows.length === 0) return null;
-    return rows[0];
-  }
-
-  async getDesign(obj?: SWO): Promise<DesignInterface> {
-    const [rows, err] = await this.exec<DesignInterface>(obj, 'design', mn_designConversion);
     if (err) {
       throw new DatabaseError({ errno: 0, msg: err });
     }
@@ -328,15 +317,6 @@ export default class MysqlDatabase implements Database {
     return insertId;
   }
 
-  async addDesign(heroImage, logo): Promise<number> {
-    const insertId = await this.insert(
-      `INSERT INTO ${table('design')} (heroImage,logo) VALUES
-        (?,?)`,
-      [heroImage, logo]
-    );
-    return insertId;
-  }
-
   async addSettings(serverName, version, expRate, dropRate, mesoRate, nxColumn, vpColumn, gmLevel): Promise<boolean> {
     const insertId = await this.insert(
       `INSERT INTO ${table('settings')} (serverName,version,expRate,dropRate,mesoRate,nxColumn,vpColumn,gmLevel)
@@ -364,6 +344,7 @@ export default class MysqlDatabase implements Database {
         }
       }
     } catch (err) {
+      console.log(err);
       throw new DatabaseError({ errno: err.errno, msg: err.sqlMessage });
     }
     return true;
@@ -432,26 +413,6 @@ export default class MysqlDatabase implements Database {
         url,
         id,
       ]);
-      return result.affectedRows;
-    } catch (err) {
-      throw new DatabaseError({ errno: err.errno, msg: err.message });
-    }
-  }
-
-  async updateHeroImage(heroImage: string): Promise<boolean> {
-    const tableName = table('design');
-    try {
-      const [result] = await this.connection.execute(`UPDATE ${tableName} SET heroImage=?`, [heroImage]);
-      return result.affectedRows;
-    } catch (err) {
-      throw new DatabaseError({ errno: err.errno, msg: err.message });
-    }
-  }
-
-  async updateLogo(logo: string): Promise<boolean> {
-    const tableName = table('design');
-    try {
-      const [result] = await this.connection.execute(`UPDATE ${tableName} SET logo=?`, [logo]);
       return result.affectedRows;
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
@@ -649,5 +610,35 @@ export default class MysqlDatabase implements Database {
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
+  }
+
+  getTaggedFiles(): Promise<TaggedFile[]> {
+    return undefined;
+  }
+
+  getTags(file: PathLike): Promise<TaggedFile> {
+    return undefined;
+  }
+
+  tagFile(file: PathLike, tag: string) {}
+
+  getFiles(): Promise<File[]> {
+    return undefined;
+  }
+
+  async getFile(tag: string): Promise<TaggedFile> {
+    const tableName = table('files');
+    const tagTableName = table('file_tags');
+    const [
+      result,
+    ] = await this.connection.execute(
+      `SELECT file FROM ${tableName} as file INNER JOIN ${tagTableName} as tag ON tag.file = file.file WHERE tag.tag = ?`,
+      [tag]
+    );
+    return result[0];
+  }
+
+  addFile(file: PathLike, tags: string[]) {
+
   }
 }

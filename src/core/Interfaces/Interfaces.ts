@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import * as fs from 'fs';
 
 export interface SetupInterface {
   mysqlSetupComplete: boolean;
@@ -41,4 +41,8 @@ export interface File {
   mimetype: string | false;
   destName: string;
   dirent?: fs.Dirent;
+}
+
+export interface TaggedFile extends File {
+  tags: string[];
 }

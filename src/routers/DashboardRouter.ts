@@ -2,18 +2,13 @@ import express, { Response } from 'express';
 import fs from 'fs';
 import Logger from '../core/logger/Logger';
 import CSSGenerator from '../scripts/CSSGenerator/CSSGenerator';
-import IO from '../models/IO';
 import DatabaseConnection from '../core/database/DatabaseConnection';
 import FileTools from '../core/tools/FileTools';
 import app from '../App';
 import { getAccount, isLoggedIn, isWebAdmin } from '../models/SessionHandler';
-import { File } from '../core/Interfaces/Interfaces';
+import { TaggedFile } from '../core/Interfaces/Interfaces';
 
 const router = express.Router();
-
-interface FileDatabase extends File {
-  active: string[];
-}
 
 // Helper methods
 async function renderGMDashboard(req, res) {
@@ -21,13 +16,12 @@ async function renderGMDashboard(req, res) {
     const votes = await DatabaseConnection.instance.getVotes();
     const palettes = await DatabaseConnection.instance.getPalettes();
     const downloads = await DatabaseConnection.instance.getDownloads();
-
+    // const imageTags = await DatabaseConnection.instance.getTaggedFiles();
     const images = (await FileTools.readDirRecursive('public/images'))
       .filter((val) => FileTools.isImage(val))
       .map((val) => {
-        if(val.fileName.includes("logo"))
-        val.active = ['logo'];
-        return <FileDatabase>val;
+        if (val.fileName.includes('logo')) val.active = ['logo'];
+        return <TaggedFile>val;
       });
 
     let activePalette = palettes[0];
@@ -175,7 +169,7 @@ router.post('/changeImage', async (req, res) => {
 router.post('/heroImage/change', async (req, res) => {
   const { file } = req.body;
   try {
-    await DatabaseConnection.instance.updateHeroImage(file);
+    await DatabaseConnection.instance.tagFile(file, 'heroImage');
     app.getApp().locals.heroImage = file;
     return send(res, { success: true });
   } catch ({ message }) {
@@ -186,7 +180,7 @@ router.post('/heroImage/change', async (req, res) => {
 router.post('/logo/change', async (req, res) => {
   const { file } = req.body;
   try {
-    await DatabaseConnection.instance.updateLogo(file);
+    await DatabaseConnection.instance.tagFile(file, 'logo');
     app.getApp().locals.logo = file;
     return send(res, { success: true });
   } catch ({ message }) {

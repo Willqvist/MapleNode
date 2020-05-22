@@ -60,7 +60,6 @@ router.post(
     const logoDest: File = { fileName: logo.filename, mimetype: logo.mimetype, destName: 'logo' };
     const heroDest: File = { fileName: hero.filename, mimetype: hero.mimetype, destName: 'heroImage' };
     await setup.setDesign(logoDest, heroDest);
-    await setup.setDesign(logoDest, heroDest);
     res.redirect('./complete');
   }
 );

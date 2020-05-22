@@ -1,3 +1,4 @@
+import { PathLike } from 'fs';
 import {
   AccountsInterface,
   CharactersInterface,
@@ -8,7 +9,7 @@ import {
   SettingsInterface,
   VoteInterface,
 } from '../Interfaces/DatabaseInterfaces';
-import { DatabaseAuthInterface, EquipmentInterface } from '../Interfaces/Interfaces';
+import { DatabaseAuthInterface, EquipmentInterface, File, TaggedFile } from '../Interfaces/Interfaces';
 
 /**
  *  SWO(select where order) Used to specify extra
@@ -55,12 +56,6 @@ export interface Database {
    * @param obj extra conditions on the returned data.
    */
   getCharacter(name: string, obj?: SWO): Promise<CharactersInterface>;
-
-  /**
-   * returns the design of the website.
-   * @param obj extra conditions on the returned data.
-   */
-  getDesign(obj?: SWO): Promise<DesignInterface>;
 
   /**
    * returns the active color palette of the website.
@@ -145,6 +140,14 @@ export interface Database {
   updateAccount(id: number, newData: AccountsInterface): Promise<AccountsInterface>;
 
   /**
+   * updates the download with a given id
+   * @param id the id of the download to update
+   * @param name new name to the download
+   * @param url new url to the download
+   */
+  updateDownload(id: number, name: string, url: string): Promise<boolean>;
+
+  /**
    * Adds new Voting istance, ex. if an account has voted.
    * @param accountid the id of the account that voted
    * @param voteid the vote id that the account voted in.
@@ -178,26 +181,6 @@ export interface Database {
    * @param name the name of the palette to remove.
    */
   deletePalette(name: string): Promise<number>;
-
-  /**
-   * updates the hero image to a new image url.
-   * @param heroImage the url of the new hero image
-   */
-  updateHeroImage(heroImage: string): Promise<boolean>;
-
-  /**
-   * updates the logo to a new logo
-   * @param logo the url of the new logo.
-   */
-  updateLogo(logo: string): Promise<boolean>;
-
-  /**
-   * updates the download with a given id
-   * @param id the id of the download to update
-   * @param name new name to the download
-   * @param url new url to the download
-   */
-  updateDownload(id: number, name: string, url: string): Promise<boolean>;
 
   /**
    * removs a download with the given id
@@ -288,8 +271,6 @@ export interface Database {
     gmLevel: number
   ): Promise<boolean>;
 
-  addDesign(heroImage: string, logo: string);
-
   /**
    * returns all what urls a account has voted
    * and when.
@@ -316,6 +297,18 @@ export interface Database {
    * @param errno the error id to print.
    */
   printError(errno: number);
+
+  tagFile(file: PathLike, tag: string);
+
+  getTaggedFiles(): Promise<TaggedFile[]>;
+
+  getFiles(): Promise<File[]>;
+
+  getTags(file: PathLike): Promise<TaggedFile>;
+
+  getFile(tag: string): Promise<TaggedFile>;
+
+  addFile(file: PathLike, tags: string[]);
 }
 
 /*

@@ -4,9 +4,10 @@ DROP TABLE IF EXISTS prefix_settings;
 DROP TABLE IF EXISTS prefix_vote;
 DROP TABLE IF EXISTS prefix_voting;
 DROP TABLE IF EXISTS prefix_palettes;
-DROP TABLE IF EXISTS prefix_design;
 DROP TABLE IF EXISTS prefix_downloads;
 DROP TABLE IF EXISTS prefix_layout;
+DROP TABLE IF EXISTS prefix_file_tags;
+DROP TABLE IF EXISTS prefix_files;
 
 CREATE TABLE prefix_settings
 (
@@ -50,12 +51,19 @@ CREATE TABLE prefix_palettes
     active INT(1),
     PRIMARY KEY(name)
 );
-CREATE TABLE prefix_design
+CREATE TABLE prefix_files
 (
-    ID INT NOT NULL AUTO_INCREMENT,
-    heroImage VARCHAR(80),
-    logo VARCHAR(80),
-    PRIMARY KEY(id)
+    file VARCHAR(180),
+    upload TIMESTAMP,
+    PRIMARY KEY(file)
+);
+CREATE TABLE prefix_file_tags
+(
+    file VARCHAR(180),
+    tag VARCHAR(80),
+    PRIMARY KEY(file, tag),
+    FOREIGN KEY (file)
+                REFERENCES prefix_files(file)
 );
 CREATE TABLE prefix_downloads
 (

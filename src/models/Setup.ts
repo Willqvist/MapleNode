@@ -12,10 +12,11 @@ import { DatabaseAuthInterface, File } from '../core/Interfaces/Interfaces';
  * moves a file from upload/ to public/upload/
  * @param file the file to move.
  */
-async function moveImage(file: File) {
-  if(file.mimetype) {
+async function moveImage(file: File, type: string) {
+  if (file.mimetype) {
     const ext = mime.extension(file.mimetype);
     await FileTools.move(`upload/${file.fileName}`, `public/upload/${file.destName}.${ext}`);
+    DBConn.instance.addFile(`upload/${file.destName}.${ext}`,[type]);
   }
 }
 
@@ -34,8 +35,8 @@ export default class Setup {
    * @param hero, the hero image
    */
   public async setDesign(logo?: File, hero?: File): Promise<void> {
-    if (logo) await moveImage(logo);
-    if (hero) await moveImage(hero);
+    if (logo) await moveImage(logo, 'logo');
+    if (hero) await moveImage(hero, 'heroImage');
   }
 
   /**

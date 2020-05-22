@@ -6,11 +6,12 @@ import Logger from './core/logger/Logger';
 import { DesignInterface, PalettesInterface, SettingsInterface } from './core/Interfaces/DatabaseInterfaces';
 import { getConfig } from './core/config/Config';
 import HOME from './Paths';
+import {TaggedFile} from "./core/Interfaces/Interfaces";
 
-function setConstants(settings: SettingsInterface, design: DesignInterface, palette: PalettesInterface) {
+function setConstants(settings: SettingsInterface, logo: TaggedFile, heroImage: TaggedFile, palette: PalettesInterface) {
   consts.setConstant('settings', settings);
-  consts.setConstant('heroImage', design.heroImage);
-  consts.setConstant('logo', design.logo);
+  consts.setConstant('heroImage', heroImage.destName);
+  consts.setConstant('logo', logo.destName);
   consts.setConstant('palette', palette);
 }
 
@@ -51,9 +52,10 @@ export default async function setup(setupListeners: () => void, setupComplete: (
     consts.setConstant('realPath', HOME);
     try {
       const settings = await DatabaseConnection.instance.getSettings();
-      const design = await DatabaseConnection.instance.getDesign({ select: ['heroImage', 'logo'] });
+      const logo = await DatabaseConnection.instance.getFile('logo');
+      const heroImage = await DatabaseConnection.instance.getFile('heroImage');
       const palette = await DatabaseConnection.instance.getActivePalette();
-      setConstants(settings, design, palette);
+      setConstants(settings, logo, heroImage, palette);
     } catch (err) {
       Logger.log('debug', err);
       return;
