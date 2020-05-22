@@ -180,11 +180,12 @@ const listVotes = {
                                     const image = options.images[i];
                                     let activeList = [];
                                     let style = '';
-                                    if(image.active) {
+                                    if(image.tags) {
                                         activeList.push(`<div class="mod_grid_actives">`);
                                         style += `padding-top:1rem;padding-bottom:1rem;`;
-                                        for (let i = 0; i < image.active.length; i++) {
-                                            activeList.push(`<div class="mod_grid_active">${icons[image.active[i]]}${image.active[i]}</div>`);
+                                        console.log("TAGS HERE !!!!!!!!!!!!!!",image.tags);
+                                        for (let i = 0; i < image.tags.length; i++) {
+                                            activeList.push(`<div class="mod_grid_active">${icons[image.tags[i]]}${image.tags[i]}</div>`);
                                         }
                                         activeList.push(`</div>`);
                                     }
@@ -197,7 +198,7 @@ const listVotes = {
 </div>
 <i class="grid_edit fas fa-ellipsis-v info" data-info="Set image as..."></i>
 `,
-                                        image:` center / contain no-repeat url("${image.destName.substring(7)}")`})
+                                        image:` center / contain no-repeat url("${image.destName}")`})
                                 }
                                 %>
                                 <%- include ('../panels/grid.ejs',{items:gridList})%>

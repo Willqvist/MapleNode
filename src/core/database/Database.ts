@@ -298,17 +298,19 @@ export interface Database {
    */
   printError(errno: number);
 
-  tagFile(file: PathLike, tag: string);
+  tagFile(file: string, tag: string): Promise<number>;
 
   getTaggedFiles(): Promise<TaggedFile[]>;
 
   getFiles(): Promise<File[]>;
 
-  getTags(file: PathLike): Promise<TaggedFile>;
+  getTags(file: string): Promise<TaggedFile>;
 
-  getFile(tag: string): Promise<TaggedFile>;
+  getFilesByTag(tag: string): Promise<TaggedFile[]>;
 
-  addFile(file: PathLike, tags: string[]);
+  addFile(file: string, tags: string[]): Promise<boolean>;
+
+  getFilesWithTag(): Promise<TaggedFile[]>;
 }
 
 /*

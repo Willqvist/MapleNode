@@ -52,10 +52,12 @@ export default async function setup(setupListeners: () => void, setupComplete: (
     consts.setConstant('realPath', HOME);
     try {
       const settings = await DatabaseConnection.instance.getSettings();
-      const logo = await DatabaseConnection.instance.getFile('logo');
-      const heroImage = await DatabaseConnection.instance.getFile('heroImage');
+      const logo = await DatabaseConnection.instance.getFilesByTag('logo');
+      const heroImage = await DatabaseConnection.instance.getFilesByTag('heroImage');
+      console.log("LOGO:",logo);
+      console.log("HERO:",heroImage);
       const palette = await DatabaseConnection.instance.getActivePalette();
-      setConstants(settings, logo, heroImage, palette);
+      setConstants(settings, logo[0], heroImage[0], palette);
     } catch (err) {
       Logger.log('debug', err);
       return;

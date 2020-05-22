@@ -1,5 +1,6 @@
 import fs, { PathLike } from 'fs';
 import mime from 'mime-types';
+import path from 'path';
 import { File } from '../Interfaces/Interfaces';
 import { pipe, fun, waitFor } from './Utils';
 /**
@@ -85,6 +86,21 @@ export default class FileTools {
         resolve(res);
       });
     });
+  }
+
+  /**
+   * transform a path string into File object
+   * @param path
+   */
+  static pathToFile(filePath: string): File {
+    const fileName = path.basename(filePath);
+    const content = mime.contentType(fileName);
+    const mimeType = content ? mime.extension(content) : false;
+    return {
+      fileName,
+      destName: filePath,
+      mimetype: mimeType,
+    };
   }
 
   /**

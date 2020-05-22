@@ -16,7 +16,7 @@ async function moveImage(file: File, type: string) {
   if (file.mimetype) {
     const ext = mime.extension(file.mimetype);
     await FileTools.move(`upload/${file.fileName}`, `public/upload/${file.destName}.${ext}`);
-    DBConn.instance.addFile(`upload/${file.destName}.${ext}`,[type]);
+    await DBConn.instance.addFile(`upload/${file.destName}.${ext}`, [type]);
   }
 }
 
@@ -59,9 +59,9 @@ export default class Setup {
    * @param setupUrl
    */
   public async settings(data: SettingsInterface, clientUrl: string, setupUrl: string) {
-    await this.installHandler.saveSettings(data, setupUrl, clientUrl, this.settingsSrc);
     constants.setConstant('setup-status', 1);
     constants.setConstant('settings', data);
+    await this.installHandler.saveSettings(data, setupUrl, clientUrl, this.settingsSrc);
   }
 
   public async setupData(): Promise<InstallerI> {

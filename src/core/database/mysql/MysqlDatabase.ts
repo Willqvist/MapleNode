@@ -1,5 +1,7 @@
 import mysql from 'mysql2/promise';
 import { PathLike } from 'fs';
+import path from 'path';
+import mime from 'mime-types';
 import { Database, Rank, SWO } from '../Database';
 import {
   accountsConversion,
@@ -616,29 +618,91 @@ export default class MysqlDatabase implements Database {
     return undefined;
   }
 
-  getTags(file: PathLike): Promise<TaggedFile> {
-    return undefined;
+  async getTags(file: string): Promise<TaggedFile> {
+    try {
+      const tagTableName = table('file_tags');
+      const [result] = await this.connection.execute(`SELECT tag FROM ${tagTableName} WHERE file = ?`, [file]);
+      const taggedFile = <TaggedFile>FileTools.pathToFile(file);
+      taggedFile.tags = result.map((res) => res.tag);
+      return taggedFile;
+    } catch (err) {
+      console.log('ERROR HERE', err);
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 
-  tagFile(file: PathLike, tag: string) {}
-
-  getFiles(): Promise<File[]> {
-    return undefined;
+  async tagFile(file: string, tag: string): Promise<number> {
+    try {
+      const tagTableName = table('file_tags');
+      return this.insert(`INSERT INTO ${tagTableName} (file,tag) VALUES(?,?)`, [file, tag]);
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 
-  async getFile(tag: string): Promise<TaggedFile> {
-    const tableName = table('files');
-    const tagTableName = table('file_tags');
-    const [
-      result,
-    ] = await this.connection.execute(
-      `SELECT file FROM ${tableName} as file INNER JOIN ${tagTableName} as tag ON tag.file = file.file WHERE tag.tag = ?`,
-      [tag]
-    );
-    return result[0];
+  async getFiles(): Promise<File[]> {
+    console.log('recieving FILES');
+    try {
+      const tableName = table('files');
+      const [result] = await this.connection.query(`SELECT file FROM ${tableName}`);
+      console.log('RESULT', result);
+      const returnList: File[] = [];
+      for (let i = 0; i < result.length; i++) {
+        returnList.push(FileTools.pathToFile(result[i].file));
+      }
+      return returnList;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 
-  addFile(file: PathLike, tags: string[]) {
+  async getFilesByTag(tag: string): Promise<TaggedFile[]> {
+    try {
+      const tagTableName = table('file_tags');
+      const [result] = await this.connection.execute(`SELECT file FROM ${tagTableName} WHERE tag=?`, [tag]);
+      const taggedFiles = await Promise.all<TaggedFile>(
+        result.map((res) => {
+          return this.getTags(res.file);
+        })
+      );
+      return taggedFiles;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
 
+  async addFile(file: string, tags: string[]): Promise<boolean> {
+    try {
+      const tableName = table('files');
+      const tagTableName = table('file_tags');
+      await this.insert(`INSERT INTO ${tableName} (file,upload) VALUES(?,NOW())`, [file]);
+      await Promise.all(
+        tags.map((tag) => {
+          return this.insert(`INSERT INTO ${tagTableName} (file,tag) VALUES(?,?)`, [file, tag]);
+        })
+      ).catch((err) => {
+        throw new DatabaseError({ errno: -1, msg: err });
+      });
+      return true;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
+
+  async getFilesWithTag(): Promise<TaggedFile[]> {
+    try {
+      const files = await this.getFiles();
+      const taggedFiles = await Promise.all(
+        files.map((file) => {
+          return this.getTags(file.destName);
+        })
+      ).catch((err) => {
+        throw new DatabaseError({ errno: -1, msg: err });
+      });
+      if (!taggedFiles) return null;
+      return taggedFiles;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 }
