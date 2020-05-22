@@ -43,7 +43,7 @@ const submenuDesignContents = handler.createSubMenu('designs');
 submenuDesignContents.addPanel(template);
 submenuDesignContents.addPanel(image);
 submenuDesignContents.addPanel(palettes);
-submenuDesignContents.goTo('templates');
+submenuDesignContents.goTo('images');
 
 handler.addPanel(statistics);
 handler.addPanel(designs);

@@ -498,6 +498,7 @@ body
     transform: translateY(-0.5em);
     box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.09), 0px 0.24em 0.4em rgba(0, 0, 0, 0.05);
     border-radius:0.5em;
+    pointer-events: none;
     transition: opacity Ease 0.2s, transform ease 0.2s;
 }
 .info

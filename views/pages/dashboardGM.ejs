@@ -170,10 +170,34 @@ const listVotes = {
                                     </div>
                                 </div>
                                 <%
+                                    const icons = {
+                                        'logo':`<i class="fas fa-draw-polygon"></i>`,
+                                        'heroImage':`<i class="fas fa-image"></i>`,
+                                        'icon':`<i class="fas fa-vector-square"></i>`
+                                    }
                                     const gridList = [];
                                 for(let i = 0; i < options.images.length; i++) {
                                     const image = options.images[i];
-                                    gridList.push({content:`<h2>${image.fileName}`,image:` center / contain no-repeat url("images/${image.fileName}")`})
+                                    let activeList = [];
+                                    let style = '';
+                                    if(image.active) {
+                                        activeList.push(`<div class="mod_grid_actives">`);
+                                        style += `padding-top:1rem;padding-bottom:1rem;`;
+                                        for (let i = 0; i < image.active.length; i++) {
+                                            activeList.push(`<div class="mod_grid_active">${icons[image.active[i]]}${image.active[i]}</div>`);
+                                        }
+                                        activeList.push(`</div>`);
+                                    }
+                                    gridList.push({
+                                        contentStyle:`flex-direction:row;${style}`,
+                                        content:`
+<div class="mod_grid_item_content">
+    <h2>${image.fileName}</h2>
+    ${activeList.join('')}
+</div>
+<i class="grid_edit fas fa-ellipsis-v info" data-info="Set image as..."></i>
+`,
+                                        image:` center / contain no-repeat url("${image.destName.substring(7)}")`})
                                 }
                                 %>
                                 <%- include ('../panels/grid.ejs',{items:gridList})%>

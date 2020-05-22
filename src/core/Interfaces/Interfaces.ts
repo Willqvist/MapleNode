@@ -1,3 +1,5 @@
+import * as fs from "fs";
+
 export interface SetupInterface {
   mysqlSetupComplete: boolean;
   prefix?: string;
@@ -38,4 +40,5 @@ export interface File {
   fileName: string;
   mimetype: string | false;
   destName: string;
+  dirent?: fs.Dirent;
 }

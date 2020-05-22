@@ -47,19 +47,39 @@ export default class FileTools {
        */
   }
 
+  /**
+   * reads files from a directory and all its subdirectories.
+   * @param dir, the starting dir.
+   */
+  public static async readDirRecursive(dir: PathLike) {
+    const firstFiles = await this.readDir(dir);
+    const files = await Promise.all(
+      firstFiles.map((file) => {
+        return file.dirent.isDirectory() ? this.readDirRecursive(file.destName) : file;
+      })
+    );
+    return Array.prototype.concat(...files);
+  }
+
+  /**
+   * reads all files inside a directory.
+   * @param dir, the dir to read files from. if mimetype in File[] is false.
+   * it is a directory.
+   */
   public static async readDir(dir: PathLike): Promise<File[]> {
     return new Promise<File[]>((resolve, reject) => {
-      fs.readdir(dir, (err, files) => {
+      fs.readdir(dir, { withFileTypes: true }, (err, files) => {
         if (err) return reject(err);
         const res: File[] = [];
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          const content = mime.contentType(file);
+          const content = mime.contentType(file.name);
           const mimeType = content ? mime.extension(content) : false;
           res.push({
-            fileName: file,
+            fileName: file.name,
             mimetype: mimeType,
-            destName: `${dir}/${file}`,
+            destName: `${dir}/${file.name}`,
+            dirent: file,
           });
         }
         resolve(res);
@@ -69,12 +89,12 @@ export default class FileTools {
 
   /**
    * returns true if file is of type image.
-   * true on png,jpg,gif.
+   * true on png,jpg,gif, svg
    * @param file
    */
   public static isImage(file: File) {
     const mime = file.mimetype;
-    return mime === 'png' || mime === 'jpg' || mime === 'gif';
+    return mime === 'png' || mime === 'jpg' || mime === 'gif' || mime === 'svg';
   }
 
   /**

@@ -7,8 +7,13 @@ import DatabaseConnection from '../core/database/DatabaseConnection';
 import FileTools from '../core/tools/FileTools';
 import app from '../App';
 import { getAccount, isLoggedIn, isWebAdmin } from '../models/SessionHandler';
+import { File } from '../core/Interfaces/Interfaces';
 
 const router = express.Router();
+
+interface FileDatabase extends File {
+  active: string[];
+}
 
 // Helper methods
 async function renderGMDashboard(req, res) {
@@ -16,7 +21,15 @@ async function renderGMDashboard(req, res) {
     const votes = await DatabaseConnection.instance.getVotes();
     const palettes = await DatabaseConnection.instance.getPalettes();
     const downloads = await DatabaseConnection.instance.getDownloads();
-    const images = (await FileTools.readDir('public/images')).filter((val) => FileTools.isImage(val));
+
+    const images = (await FileTools.readDirRecursive('public/images'))
+      .filter((val) => FileTools.isImage(val))
+      .map((val) => {
+        if(val.fileName.includes("logo"))
+        val.active = ['logo'];
+        return <FileDatabase>val;
+      });
+
     let activePalette = palettes[0];
     for (let i = 0; i < palettes.length; i++) {
       if (palettes[i].active === 1) {
