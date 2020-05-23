@@ -23,6 +23,7 @@ import GlobalRouter from './routers/GlobalRouter';
 import IORouter from './routers/IORouter';
 import PagesRouter from './routers/PagesRouter';
 import DashboardRouter from './routers/DashboardRouter';
+import FileProvider from "./models/FileProvider";
 
 /**
  * sets the log level depending on mode string
@@ -36,11 +37,11 @@ function setRunMode(mode: string) {
   }
 }
 
-export function setLocals(app: express.Application) {
+export async function setLocals(app: express.Application) {
   app.locals.palette = consts.getConstant('palette');
-  app.locals.heroImage = consts.getConstant('heroImage');
-  app.locals.logo = consts.getConstant('logo');
   app.locals.settings = consts.getConstant('settings');
+  app.locals.heroImage = (await FileProvider.getTaggedFile('heroImage')).destName;
+  app.locals.logo = (await FileProvider.getTaggedFile('logo')).destName;
 }
 
 /**
@@ -189,12 +190,12 @@ class App {
     });
   }
 
-  private setupComplete() {
+  private async setupComplete() {
     // to include In.ts file. if removed, functions will not load. fix later...
     // eslint-disable-next-line no-unused-expressions
     input;
     const { app } = this;
-    setLocals(app);
+    await setLocals(app);
     Logger.log(
       'release',
       `${consts.getConstant<SettingsInterface>('settings').serverName} is Online on port ${this.appConfig.server.port}`

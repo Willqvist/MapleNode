@@ -4,6 +4,7 @@ import DBConn from '../core/database/DatabaseConnection';
 import { PalettesInterface, SettingsInterface } from '../core/Interfaces/DatabaseInterfaces';
 import HOME from '../Paths';
 import Errno from '../core/tools/Errno';
+import FileProvider from "../models/FileProvider";
 
 export interface InstallerI {
   mysqlSetupComplete: boolean;
@@ -61,8 +62,8 @@ export default class InstallationHandler {
     constants.setConstant('prefix', userData.prefix);
     await DBConn.instance.rebuildDatabase(userData.prefix);
     await DBConn.instance.addPalette('Happy Green', '#69DC9E', '#3E78B2', '#D3F3EE', '#20063B', '#CC3363', 1);
-    await DBConn.instance.addFile('images/headerImage.png', ['heroImage']);
-    await DBConn.instance.addFile('images/svgs/logo.svg', ['logo']);
+    await FileProvider.addFile('headerImage.png', ['heroImage']);
+    await FileProvider.addFile('logo.svg', ['logo']);
     await DBConn.instance.updateLayout(
       'home',
       '{"0":{"name":"info_box","panel":"none","columns":{"pos":1,"size":7},"rows":{"pos":1,"size":6}},"1":{"name":"control_box","panel":"none","columns":{"pos":7,"size":10},"rows":{"pos":1,"size":4}},"2":{"name":"news_box","panel":"none","columns":{"pos":1,"size":7},"rows":{"pos":6,"size":8}},"3":{"name":"server_box","panel":"none","columns":{"pos":7,"size":10},"rows":{"pos":4,"size":8}},"4":{"name":"stats_box","panel":"none","columns":{"pos":1,"size":10},"rows":{"pos":8,"size":10}},"5":{"name":"ranking_box","panel":"none","columns":{"pos":1,"size":10},"rows":{"pos":10,"size":14}}}'

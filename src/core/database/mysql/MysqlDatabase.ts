@@ -671,7 +671,7 @@ export default class MysqlDatabase implements Database {
     }
   }
 
-  async addFile(file: string, tags: string[]): Promise<boolean> {
+  async addFile(file: string, tags: string[]): Promise<TaggedFile> {
     const tableName = table('files');
     const tagTableName = table('file_tags');
     await this.insert(`INSERT INTO ${tableName} (file,upload) VALUES(?,NOW())`, [file]);
@@ -682,7 +682,12 @@ export default class MysqlDatabase implements Database {
     ).catch((err) => {
       throw new DatabaseError({ errno: -1, msg: err });
     });
-    return true;
+    return {
+      fileName: path.basename(file),
+      destName: file,
+      mimetype: path.extname(file),
+      tags,
+    };
   }
 
   async getFilesWithTag(): Promise<TaggedFile[]> {
@@ -697,6 +702,15 @@ export default class MysqlDatabase implements Database {
       });
       if (!taggedFiles) return null;
       return taggedFiles;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
+
+  async deleteFile(file: string): Promise<boolean> {
+    const tableName = table('files');
+    try {
+      return this.connection.execute(`DELETE FROM ${tableName} WHERE file=?`, [file]);
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }

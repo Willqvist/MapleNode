@@ -16,8 +16,8 @@ async function moveImage(file: File, type: string) {
   if (file.mimetype) {
     const ext = mime.extension(file.mimetype);
     const fileName = `upload/${file.destName}.${ext}`;
-    await FileProvider.moveFile(`upload/${file.fileName}`, `public/upload/${fileName}`);
-    await DBConn.instance.tagFile(fileName, type);
+    await FileProvider.moveFile(`upload/${file.fileName}`, `upload/${fileName}`);
+    await FileProvider.tagFile(fileName, type);
   }
 }
 

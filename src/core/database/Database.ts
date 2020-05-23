@@ -308,7 +308,9 @@ export interface Database {
 
   getFilesByTag(tag: string): Promise<TaggedFile[]>;
 
-  addFile(file: string, tags: string[]): Promise<boolean>;
+  addFile(file: string, tags: string[]): Promise<TaggedFile>;
+
+  deleteFile(file: string): Promise<boolean>;
 
   getFilesWithTag(): Promise<TaggedFile[]>;
 }

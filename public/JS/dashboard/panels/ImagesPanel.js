@@ -3,12 +3,25 @@ import Http from "../../API/Http.js";
 import Url from "../../API/Url.js";
 import PopupForm from "../popup/PopupForm.js";
 import Grid from "../../grid.js";
+import PopupProvider from "../popup/PopupProvider.js";
 
 export default class ImagesPanel extends Panel {
     init() {
         super.init();
         this.registerTriggers();
+        this.remove = PopupProvider.get('removePopup');
+        this.remove.bindButton(this.getAll('remove'), this.onRemoveFile.bind(this));
         this.grid = new Grid('images');
+    }
+
+    async onRemoveFile(state, data, popup) {
+        if(state === PopupForm.RESULT && !data.close) {
+            const url = new Url('./dashboard/file', {file: data.id});
+            const response = await Http.DELETE(url);
+            console.log(response);
+            return {error: response.reason}
+        }
+        return {error: false};
     }
 
     appendGrid(file) {

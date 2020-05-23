@@ -18,7 +18,8 @@ async function renderGMDashboard(req, res) {
     const votes = await DatabaseConnection.instance.getVotes();
     const palettes = await DatabaseConnection.instance.getPalettes();
     const downloads = await DatabaseConnection.instance.getDownloads();
-    const imageTags = await DatabaseConnection.instance.getFilesWithTag();
+    const imageTags = await FileProvider.getTaggedFiles();
+    console.log(imageTags);
     const images = imageTags.filter((val) => FileTools.isImage(val));
     let activePalette = palettes[0];
     for (let i = 0; i < palettes.length; i++) {
@@ -47,15 +48,15 @@ function send(res: Response, msg: any, status: number = 200) {
   res.status(status).send(JSON.stringify(msg));
 }
 
-router.post('*', (req, res, next) => {
-  const { session } = req;
-  if (!isLoggedIn(session) || !isWebAdmin(session)) return send(res, { success: false, reason: 'access denied' }, 403);
-  next();
-});
-
 router.get('*', (req, res, next) => {
   const { session } = req;
   if (!isLoggedIn(session) || !isWebAdmin(session)) return res.render('pages/dashboardLogin');
+  next();
+});
+
+router.all('*', (req, res, next) => {
+  const { session } = req;
+  if (!isLoggedIn(session) || !isWebAdmin(session)) return send(res, { success: false, reason: 'access denied' }, 403);
   next();
 });
 
@@ -176,7 +177,7 @@ router.put('/heroImage', async (req, res) => {
 router.put('/file', upload.single('file'), async (req, res) => {
   const { file } = req;
   try {
-    await FileProvider.moveFile(file.path, `upload/${file.originalname}`);
+    await FileProvider.moveFile(file.path, file.originalname);
   } catch (err) {
     let msg = err.getMessage();
     if(err.getErrorCode() === 1062)
@@ -188,6 +189,12 @@ router.put('/file', upload.single('file'), async (req, res) => {
 
 router.delete('/file', async (req, res) => {
   const { file } = req.body;
+  try {
+    await FileProvider.deleteFile(file);
+  } catch(err) {
+    console.log(err);
+    return send(res, { success: true, reason: err.getMessage() });
+  }
   send(res, { success: true });
 });
 

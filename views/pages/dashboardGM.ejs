@@ -191,9 +191,9 @@ const listVotes = {
     <h2>${image.fileName}</h2>
     ${activeList.join('')}
 </div>
-<div class="grid_icons">
+<div class="grid_icons" id="${image.fileName}">
     <i class="grid_edit fas fa-ellipsis-v info" data-info="Set image as..."></i>
-    <i class="grid_edit fas fa-trash-alt info" data-info="Delete Image"></i>
+    <i class="grid_edit fas fa-trash-alt info remove" popup-data="<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Delete Image"></i>
 </div>
 `,
                                         image:` center / contain no-repeat url("${image.destName}")`})

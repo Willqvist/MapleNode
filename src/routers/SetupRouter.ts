@@ -108,22 +108,6 @@ router.post('/template', async (req, res) => {
   // TODO: implemented code...
 });
 
-// COMPLETE
-router.get('/complete', async (req, res) => {
-  const [mysql, sett] = await isAllowed(req, res);
-  if (!mysql || !sett) return;
-  await setup.complete();
-  await setupFunction(
-    () => {},
-    () => {
-      setLocals(app.getApp());
-    }
-  );
-  const settings = constants.getConstant<SettingsInterface>('settings');
-  const { serverName } = settings;
-  res.render('setup/setup_complete', { name: serverName });
-});
-
 // LOGIN WEBADMIN
 router.get('/webadmin', async (req, res) => {
   const [mysql] = await isAllowed(req, res);
@@ -229,9 +213,6 @@ router.all('/:id/', async (req, res, next) => {
               nxColumn: nx,
             };
             await setup.settings(settings, downloadSetup, downloadClient);
-            constants.setConstant('logo', 'svgs/logo.svg');
-            constants.setConstant('heroImage', 'headerImage.png');
-            setLocals(app.getApp());
             return res.redirect('./webadmin');
           } catch (err) {
             return res.render('setup/error', { return: number, error: { reason: err.getMessage() } });
@@ -259,4 +240,21 @@ router.all('/:id/', async (req, res, next) => {
     return res.redirect('/');
   }
 });
+
+// COMPLETE
+router.get('/complete', async (req, res) => {
+  const [mysql, sett] = await isAllowed(req, res);
+  if (!mysql || !sett) return;
+  await setup.complete();
+  await setupFunction(
+    () => {},
+    async () => {
+      await setLocals(app.getApp());
+    }
+  );
+  const settings = constants.getConstant<SettingsInterface>('settings');
+  const { serverName } = settings;
+  res.render('setup/setup_complete', { name: serverName });
+});
+
 export default router;
