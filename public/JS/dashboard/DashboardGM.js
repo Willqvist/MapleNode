@@ -6,6 +6,7 @@ import DesignPanel from "./panels/DesignPanel.js";
 import LayoutPanel from "./panels/LayoutPanel.js";
 import DownloadPanel from "./panels/DownloadPanel.js";
 import VotePanel from "./panels/VotePanel.js";
+import ImagesPanel from "./panels/ImagesPanel.js";
 
 const bar = document.getElementById('dahboard_bar');
 const handler = new PanelHandler();
@@ -14,12 +15,14 @@ const designs = new DesignPanel('designs');
 const layouts = new LayoutPanel('layouts');
 const logs = new LogsPanel('logs');
 const reports = new ReportsPanel('reports');
+
 // Sub panels
 const download = new DownloadPanel('downloads');
 const vote = new VotePanel('votes');
 const template = new DesignPanel('templates');
-const image = new DesignPanel('images');
+const image = new ImagesPanel('images');
 const palettes = new DesignPanel('palettes');
+
 handler.listen('pageEnter', (page, src) => {
   console.log(page.DOM.className.includes("containsSubPages"));
   const offsetY = src.offsetTop - src.parentNode.offsetTop;

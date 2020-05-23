@@ -168,7 +168,6 @@ export default class PopupForm {
   bindEventListener(elem, clb) {
     if (elem.hasAttribute('popup-data')) {
       const bind = AttributeParser.parse(elem, elem.getAttribute('popup-data'));
-      console.log(bind);
       elem.setAttribute('popup-id', bind.id);
       this.parsedData[bind.id] = bind.data;
     }
@@ -176,7 +175,7 @@ export default class PopupForm {
     elem.addEventListener(
       'click',
       (e) => {
-        clb(PopupForm.CLICK, e).then((res) => {
+        clb(PopupForm.CLICK, e, this).then((res) => {
           if (res.error) {
             this.showError(res.error);
           }

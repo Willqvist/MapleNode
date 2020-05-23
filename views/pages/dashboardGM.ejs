@@ -22,9 +22,7 @@ const listVotes = {
     addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New vote" trigger="votePopup" popup-data="#vote=src,#-1=id,#Add Vote=title,#Title=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,#Name=input_1,#Url=input_2,#1000=input_3,#0=input_4,#Add=submit"',
     deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#vote=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
 };
-
 %>
-
 <!doctype html>
 <html>
     <head>
@@ -155,14 +153,11 @@ const listVotes = {
                                     <h1><i class="far fa-images"></i>Images</h1>
                                     <div class="btn-list">
                                         <div class="btn_parent">
-                                            <div class="btn btn-span popup-trigger" trigger="downloadPopup" popup-data="
+                                            <div class="btn btn-span popup-trigger" trigger="uploadFilePopup" popup-data="
                                                 #-1=id,
-                                                #Add Download=title,
-                                                #Title=label_1,
-                                                #Url=label_2
-                                                #Name=input_1,
-                                                #Url=input_2,
-                                                #Add=submit
+                                                #Upload file=title,
+                                                #Select file=label_1,
+                                                #Upload=submit
                                                 ">
                                                 <span>Upload Image</span>
                                             </div>
@@ -210,14 +205,11 @@ const listVotes = {
                                     <h1><i class="fas fa-palette"></i>Palettes</h1>
                                     <div class="btn-list">
                                         <div class="btn_parent">
-                                            <div class="btn btn-span popup-trigger" trigger="downloadPopup" popup-data="
+                                            <div class="btn btn-span popup-trigger" trigger="uploadFilePopup" popup-data="
                                                 #-1=id,
-                                                #Add Download=title,
-                                                #Title=label_1,
-                                                #Url=label_2
-                                                #Name=input_1,
-                                                #Url=input_2,
-                                                #Add=submit
+                                                #Upload file=title,
+                                                #Select file=label_1,
+                                                #Upload=submit
                                                 ">
                                                 <span>Add palette</span>
                                             </div>
@@ -310,6 +302,7 @@ const listVotes = {
             <div id="removePopup" class="popup">
                 <div class="close"><i class="fas fa-times"></i></div>
                 <h1 class="title attrib" name="title">Are you sure?</h1>
+                <div class="file_upload_progress"></div>
                 <form>
                     <input class="attrib" name="id" id="test" type="hidden">
                     <input class="attrib" name="src" type="hidden">
@@ -317,6 +310,26 @@ const listVotes = {
                     <div class="btn_parent">
                         <div class="btn btn-input">
                             <input type="submit" name="submit" class="child attrib submit" id="login" value="Yes" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- VOTE POPUP -->
+            <div id="uploadFilePopup" class="popup">
+                <div class="close"><i class="fas fa-times"></i></div>
+                <h1 class="title attrib" name="title">hello there!</h1>
+                <form enctype="multipart/form-data">
+                    <h3 class="error_popup">Error message</h3>
+                    <input class="attrib" name="id" id="test" type="hidden">
+                    <input class="attrib" name="src" type="hidden">
+                    <div class="input">
+                        <label for="input_1" class="attrib" name="label_1">Download</label>
+                        <input type="file" class="attrib" name="input_1">
+                    </div>
+                    <div class="btn_parent">
+                        <div class="btn btn-input">
+                            <input type="submit" name="submit" class="child attrib submit" id="login" value="Upload" />
                         </div>
                     </div>
                 </form>

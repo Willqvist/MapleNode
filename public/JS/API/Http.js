@@ -1,3 +1,22 @@
+const FETCH_DATA = {
+  method: 'POST',
+  mode: 'cors',
+  cache: 'no-cache',
+  credentials: 'same-origin',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  redirect: 'follow',
+  referrerPolicy: 'no-referrer',
+};
+
+function handleJsonFetch(response) {
+  if(response.ok) {
+    return response.json();
+  }
+  throw new Error(`Access denied: ${response.statusText}`);
+}
+
 export default class Http {
   static POST(url, callback) {
     if (!callback) return new Promise((resolve) => Http.request(url, 'POST', resolve));
@@ -9,15 +28,31 @@ export default class Http {
     return Http.request(url, 'GET', callback);
   }
 
+  static async UPLOAD(url, file, observer) {
+    return new Promise((resolve) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      const xhr = new XMLHttpRequest();
+      xhr.addEventListener('load',observer.done, false);
+      xhr.addEventListener('progress', (ev) => {
+        if(ev.lengthComputable) {
+          return observer.progress(ev.loaded/ev.total);
+        }
+        return observer.progress(-1);
+      }, false);
+      xhr.addEventListener('loadstart',observer.begin, false);
+      xhr.open("PUT", url.getFullUrl(), true);
+      xhr.setRequestHeader("Content-type", 'PUT');
+      xhr.setRequestHeader("X_FILE_NAME", file.name);
+      xhr.post(formData);
+    })
+  }
+
   static request(url, type, callback) {
-    const http = new XMLHttpRequest();
-    http.open(type, url.getFullUrl(), true);
-    http.setRequestHeader('Content-type', 'application/json');
-    http.onreadystatechange = function () {
-      if (http.readyState === XMLHttpRequest.DONE && http.status === 200) callback(JSON.parse(http.responseText));
-      else if (http.readyState === XMLHttpRequest.DONE)
-        callback({ success: false, reason: `Access denied, status ${http.status}` });
-    };
-    http.send(JSON.stringify(url.getParamters()));
+    FETCH_DATA.method = type;
+    FETCH_DATA.body = JSON.stringify(url.getParamters());
+    fetch(url.getFullUrl(),FETCH_DATA).then((response) => handleJsonFetch(response)).then(callback).catch((err)=>{
+      callback({error:true, reason: err});
+    });
   }
 }

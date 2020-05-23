@@ -28,7 +28,7 @@ export default class Panel {
     return this.DOM.getElementsByClassName(cls);
   }
 
-  async onPopupClick(state, data) {
+  async onPopupClick(state, data, popup) {
     return {error:null};
   }
 
