@@ -33,18 +33,17 @@ export default class Http {
       const formData = new FormData();
       formData.append('file', file);
       const xhr = new XMLHttpRequest();
-      xhr.addEventListener('load',observer.done, false);
-      xhr.addEventListener('progress', (ev) => {
+      xhr.upload.onloadend = function(av) {observer.done();};
+      xhr.upload.onprogress =  function(ev) {
+        console.log(ev.loaded, ev.total);
         if(ev.lengthComputable) {
           return observer.progress(ev.loaded/ev.total);
         }
         return observer.progress(-1);
-      }, false);
-      xhr.addEventListener('loadstart',observer.begin, false);
+      };
+      xhr.upload.onloadstart = function(av) {observer.begin();};
       xhr.open("PUT", url.getFullUrl(), true);
-      xhr.setRequestHeader("Content-type", 'PUT');
-      xhr.setRequestHeader("X_FILE_NAME", file.name);
-      xhr.post(formData);
+      xhr.send(formData);
     })
   }
 

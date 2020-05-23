@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import md5 from 'md5';
 import * as constants from '../core/Constants';
-import { PalettesInterface, SettingsInterface } from '../core/Interfaces/DatabaseInterfaces';
+import { SettingsInterface } from '../core/Interfaces/DatabaseInterfaces';
 import app, { setLocals } from '../App';
 import Setup from '../models/Setup';
 import { getConfig } from '../core/config/Config';

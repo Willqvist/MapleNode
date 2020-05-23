@@ -4,7 +4,11 @@ import AttributeParser from '../tools/AttributeParser.js';
 async function parseData(data) {
   const obj = {};
   for (let i = 0; i < data.length; i++) {
-    obj[data[i].getAttribute('name')] = data[i].value;
+    if(data[i].getAttribute('type') === 'file') {
+      obj[data[i].getAttribute('name')] = data[i].files[0];
+    } else {
+      obj[data[i].getAttribute('name')] = data[i].value;
+    }
   }
   return obj;
 }
@@ -90,7 +94,7 @@ export default class PopupForm {
       parsed.close = data.close;
     }
 
-    const res = await clb(PopupForm.RESULT, parsed);
+    const res = await clb(PopupForm.RESULT, parsed, this);
     this.title.innerHTML = submitText;
     if (res.error) {
       this.showError(res.error);

@@ -1,5 +1,6 @@
 import express, { Response } from 'express';
 import fs from 'fs';
+import multer from 'multer';
 import Logger from '../core/logger/Logger';
 import CSSGenerator from '../scripts/CSSGenerator/CSSGenerator';
 import DatabaseConnection from '../core/database/DatabaseConnection';
@@ -8,6 +9,7 @@ import app from '../App';
 import { getAccount, isLoggedIn, isWebAdmin } from '../models/SessionHandler';
 
 const router = express.Router();
+const upload = multer({ dest: 'upload/' });
 
 // Helper methods
 async function renderGMDashboard(req, res) {
@@ -168,6 +170,13 @@ router.post('/heroImage/change', async (req, res) => {
   } catch ({ message }) {
     send(res, { success: true, reason: message });
   }
+});
+
+router.put('/file/upload', upload.single('file'), async (req, res) => {
+  const { file } = req;
+  console.log(req.body);
+  console.log(file);
+  send(res, { success: true, reason: 'worked!!' });
 });
 
 router.post('/logo/change', async (req, res) => {

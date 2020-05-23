@@ -791,7 +791,6 @@ body
 .popup .error_popup {
     font-size:0.8em;
     width:100%;
-    background:Red;
     box-sizing: border-box;
     padding:1rem 1rem;
     margin-bottom:2rem;
@@ -809,13 +808,11 @@ body
     content: "";
     height:100%;
     position: absolute;
-    background:Red;
     z-index:2;
 }
 .popup .title {
     font-size:1.2em;
     width:100%;
-    background:Red;
     box-sizing: border-box;
     padding:1.5rem 3rem;
     padding-right:5rem;
@@ -1228,4 +1225,18 @@ body
 
 .panel .btn-icon i {
     margin:auto;
+}
+
+#file_progress {
+    width:100%;
+    height:1rem;
+    border-radius:5rem;
+    background:#d3e4fa;
+    margin-bottom:2rem;
+}
+#file_progress_bar {
+    background:#2D6FE2;
+    border-radius:5rem;
+    width:0%;
+    height:100%;
 }
