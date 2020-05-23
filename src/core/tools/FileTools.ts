@@ -27,14 +27,15 @@ export default class FileTools {
       }
       return true;
     };
-
+    /*
     await pipe(
       fun(fs.mkdir).props(dir, { recursive: true }, waitFor(errCallback)).stopOnError(),
       fun(fs.copyFile).props(src, dest, waitFor(errCallback)).stopOnError(),
       fun(fs.unlink).props(src, waitFor(complete)).stopOnError()
     );
     return true;
-    /*
+    */
+    return new Promise((resolve, reject) => {
       fs.mkdir(dir, { recursive: true }, (err) => {
         if (err) reject(err);
         fs.copyFile(src, dest, (errCopy) => {
@@ -45,7 +46,7 @@ export default class FileTools {
           });
         });
       });
-       */
+    });
   }
 
   /**
@@ -109,8 +110,9 @@ export default class FileTools {
    * @param file
    */
   public static isImage(file: File) {
-    const mime = file.mimetype;
-    return mime === 'png' || mime === 'jpg' || mime === 'gif' || mime === 'svg';
+    const mimeType = file.mimetype;
+    console.log(file);
+    return mimeType === 'png' || mimeType === 'jpg' || mimeType === 'gif' || mimeType === 'svg' || mimeType === 'jpeg';
   }
 
   /**

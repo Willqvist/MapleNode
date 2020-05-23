@@ -1,12 +1,12 @@
 import mime from 'mime-types';
 import InstallationHandler, { InstallerI } from '../setup/InstallationHandler';
-import FileTools from '../core/tools/FileTools';
 import DBConn from '../core/database/DatabaseConnection';
 import app from '../App';
 import { SettingsInterface } from '../core/Interfaces/DatabaseInterfaces';
 import * as constants from '../core/Constants';
 import { openConfig } from '../core/config/Config';
 import { DatabaseAuthInterface, File } from '../core/Interfaces/Interfaces';
+import FileProvider from './FileProvider';
 
 /**
  * moves a file from upload/ to public/upload/
@@ -15,8 +15,9 @@ import { DatabaseAuthInterface, File } from '../core/Interfaces/Interfaces';
 async function moveImage(file: File, type: string) {
   if (file.mimetype) {
     const ext = mime.extension(file.mimetype);
-    await FileTools.move(`upload/${file.fileName}`, `public/upload/${file.destName}.${ext}`);
-    await DBConn.instance.addFile(`upload/${file.destName}.${ext}`, [type]);
+    const fileName = `upload/${file.destName}.${ext}`;
+    await FileProvider.moveFile(`upload/${file.fileName}`, `public/upload/${fileName}`);
+    await DBConn.instance.tagFile(fileName, type);
   }
 }
 

@@ -5,11 +5,11 @@ export default class List {
     }
 
     findByListId(id) {
-        const children = this.items.children;
+        const { children } = this.items;
         console.log(children);
         for(let i = 0; i < children.length; i++) {
             const child = children[i];
-            if(child.getAttribute("list-id") == id) return child;
+            if(child.getAttribute("list-id") === id) return child;
         }
         return null;
     }

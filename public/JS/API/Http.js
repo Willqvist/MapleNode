@@ -28,12 +28,25 @@ export default class Http {
     return Http.request(url, 'GET', callback);
   }
 
+  static DELETE(url, callback) {
+    if (!callback) return new Promise((resolve) => Http.request(url, 'DELETE', resolve));
+    return Http.request(url, 'DELETE', callback);
+  }
+
+  static PUT(url, callback) {
+    if (!callback) return new Promise((resolve) => Http.request(url, 'PUT', resolve));
+    return Http.request(url, 'PUT', callback);
+  }
+
+  static UPDATE(url, callback) {
+    return this.PUT(url, callback);
+  }
+
   static async UPLOAD(url, file, observer) {
     return new Promise((resolve) => {
       const formData = new FormData();
       formData.append('file', file);
       const xhr = new XMLHttpRequest();
-      xhr.upload.onloadend = function(av) {observer.done();};
       xhr.upload.onprogress =  function(ev) {
         console.log(ev.loaded, ev.total);
         if(ev.lengthComputable) {
@@ -42,6 +55,11 @@ export default class Http {
         return observer.progress(-1);
       };
       xhr.upload.onloadstart = function(av) {observer.begin();};
+      xhr.onreadystatechange = function(e ) {
+        if(xhr.readyState === XMLHttpRequest.DONE) {
+          observer.done(JSON.parse(xhr.responseText));
+        }
+      }
       xhr.open("PUT", url.getFullUrl(), true);
       xhr.send(formData);
     })

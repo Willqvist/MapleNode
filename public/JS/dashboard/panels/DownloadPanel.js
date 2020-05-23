@@ -17,10 +17,10 @@ export default class DownloadPanel extends Panel {
   // eslint-disable-next-line class-methods-use-this
   async onRemoveDownload(state, data) {
     if (state === PopupForm.RESULT && !data.close) {
-      const url = new Url('./dashboard/download/remove', {
+      const url = new Url('./dashboard/download', {
         id: data.id,
       });
-      const response = await Http.POST(url);
+      const response = await Http.DELETE(url);
       if(response.reason || !response.success) return { error: response.reason };
       this.downloadList.remove(data.id);
       return { error: response.reason };
@@ -73,7 +73,7 @@ export default class DownloadPanel extends Panel {
       let response;
       let url;
       if (data.id === '-1') {
-        url = new Url('./dashboard/download/add', {
+        url = new Url('./dashboard/download', {
           name: data.input_1,
           url: data.input_2,
         });
@@ -83,12 +83,12 @@ export default class DownloadPanel extends Panel {
         this.addList(this.downloadList, data);
         return { response };
       }
-      url = new Url('./dashboard/download/update', {
+      url = new Url('./dashboard/download', {
         key: data.id,
         name: data.input_1,
         url: data.input_2,
       });
-      response = await Http.POST(url);
+      response = await Http.UPDATE(url);
       return { error: response.reason };
     }
     return { error: false };

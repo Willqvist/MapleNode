@@ -3,6 +3,7 @@
     grid-gap: 1rem;
     grid-template-columns: auto auto auto auto;
 }
+
 .mod_grid_item {
     background:#FFF;
     min-height:5rem;
@@ -14,6 +15,7 @@
     flex-direction: column;
     cursor:pointer;
 }
+
 .mod_grid_item_image {
     height:12rem;
     background: #edffff;
@@ -23,14 +25,12 @@
     position: relative;
     box-sizing: border-box;
 }
+
 .mod_grid_item:hover {
     transform: translateY(-0.5rem);
     box-shadow:0 0rem 0 0.12rem #e8f2ff,0 0.38rem 0 0.12rem #e8f2ff;
 }
-.mod_grid_item:active {
-    transform: translateY(0rem);
-    box-shadow:0 -0rem 0 0.12rem #e8f2ff;
-}
+
 .mod_grid_item_content {
     min-height:4rem;
     flex:1;
@@ -38,11 +38,13 @@
     padding-left:1rem;
     padding-right:1rem;
 }
+
 .mod_grid_item_content h2{
     margin:auto;
     margin-left:0;
     font-size:1rem;
 }
+
 .mod_grid_blur,.mod_grid_fg {
     background:Red;
     position: absolute;
@@ -52,21 +54,25 @@
     width:100%;
     height:100%;
 }
+
 .mod_grid_fg {
 
     left:0;right:0;top:0;bottom:0;
     margin:auto;
 }
+
 .mod_grid_blur {
     opacity:0.05;
     background-size: cover !important;
 }
+
 .mod_grid_actives {
     display:flex;
     flex-display: row;
     flex-wrap: wrap;
     align-content: flex-start;
 }
+
 .mod_grid_active {
     margin-left:0;
     margin-right:1rem;
@@ -77,6 +83,7 @@
     margin-top:0.5rem;
     box-shadow:0 0 0 0.1rem #e8f2ff;
 }
+
 .mod_grid_active i {
     border-radius:3rem;
     padding:0.5rem;
@@ -84,10 +91,12 @@
     background:#2D6FE2;
     color:#FFF;
 }
+
 .mod_grid_item_content {
     flex-direction: column;
     display:flex;
 }
+
 .grid_edit {
     margin:auto;
     width:1rem;
@@ -98,6 +107,19 @@
     box-shadow:0 0 0 0.1rem #e8f2ff;
     trasnsition:ease 0.2s;
 }
+
 .grid_edit:hover {
     background:#e8f2ff;
+}
+
+.grid_icons {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.grid_icons > * {
+    margin-bottom:0.5rem;
+}
+.grid_icons > *:last-child {
+    margin-bottom:0rem;
 }

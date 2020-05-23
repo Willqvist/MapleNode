@@ -7,6 +7,7 @@ import DatabaseConnection from '../core/database/DatabaseConnection';
 import FileTools from '../core/tools/FileTools';
 import app from '../App';
 import { getAccount, isLoggedIn, isWebAdmin } from '../models/SessionHandler';
+import FileProvider from '../models/FileProvider';
 
 const router = express.Router();
 const upload = multer({ dest: 'upload/' });
@@ -65,7 +66,7 @@ router.get('/', (req, res) => {
   if (gm >= 3) return renderGMDashboard(req, res);
 });
 
-router.post('/vote/update', async (req, res) => {
+router.put('/vote', async (req, res) => {
   const { name, url, nx, time, key } = req.body;
   console.log('IM HERE', req.body);
   try {
@@ -77,7 +78,7 @@ router.post('/vote/update', async (req, res) => {
   }
 });
 
-router.post('/vote/add', async (req, res) => {
+router.post('/vote', async (req, res) => {
   const { name, nx, time, url } = req.body;
 
   if (!name || !nx || !time || name.length === 0 || url.length === 0 || nx.length === 0 || time.length === 0)
@@ -91,7 +92,7 @@ router.post('/vote/add', async (req, res) => {
   }
 });
 
-router.post('/vote/remove', async (req, res) => {
+router.delete('/vote', async (req, res) => {
   try {
     const { id } = req.body;
     await DatabaseConnection.instance.deleteVote(id);
@@ -101,7 +102,7 @@ router.post('/vote/remove', async (req, res) => {
   }
 });
 
-router.post('/palette/add', async (req, res) => {
+router.post('/palette', async (req, res) => {
   const { name, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor } = req.body;
   try {
     const paletteId = await DatabaseConnection.instance.addPalette(
@@ -130,7 +131,7 @@ router.post('/palette/select', async (req, res) => {
   }
 });
 
-router.post('/palette/remove', async (req, res) => {
+router.delete('/palette', async (req, res) => {
   const { key } = req.body;
   try {
     await DatabaseConnection.instance.deletePalette(key);
@@ -140,7 +141,7 @@ router.post('/palette/remove', async (req, res) => {
   }
 });
 
-router.post('/palette/update', async (req, res) => {
+router.put('/palette', async (req, res) => {
   const { key, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor } = req.body;
   try {
     await DatabaseConnection.instance.updatePalette(
@@ -161,7 +162,7 @@ router.post('/changeImage', async (req, res) => {
   return res.send(JSON.stringify({ success: true, files: filePaths }));
 });
 
-router.post('/heroImage/change', async (req, res) => {
+router.put('/heroImage', async (req, res) => {
   const { file } = req.body;
   try {
     await DatabaseConnection.instance.tagFile(file, 'heroImage');
@@ -172,11 +173,22 @@ router.post('/heroImage/change', async (req, res) => {
   }
 });
 
-router.put('/file/upload', upload.single('file'), async (req, res) => {
+router.put('/file', upload.single('file'), async (req, res) => {
   const { file } = req;
-  console.log(req.body);
-  console.log(file);
-  send(res, { success: true, reason: 'worked!!' });
+  try {
+    await FileProvider.moveFile(file.path, `upload/${file.originalname}`);
+  } catch (err) {
+    let msg = err.getMessage();
+    if(err.getErrorCode() === 1062)
+      msg = `${file.originalname} already exists!`;
+    return send(res, { success: true, reason: msg });
+  }
+  send(res, { success: true });
+});
+
+router.delete('/file', async (req, res) => {
+  const { file } = req.body;
+  send(res, { success: true });
 });
 
 router.post('/logo/change', async (req, res) => {
@@ -190,7 +202,7 @@ router.post('/logo/change', async (req, res) => {
   }
 });
 
-router.post('/download/update', async (req, res) => {
+router.put('/download', async (req, res) => {
   const { name, url, key } = req.body;
   if (!name || !url || name.length === 0 || url.length === 0)
     return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
@@ -203,7 +215,7 @@ router.post('/download/update', async (req, res) => {
   }
 });
 
-router.post('/download/remove', async (req, res) => {
+router.delete('/download', async (req, res) => {
   const { id } = req.body;
   if (!id) return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
 
@@ -215,7 +227,7 @@ router.post('/download/remove', async (req, res) => {
   }
 });
 
-router.post('/download/add', async (req, res) => {
+router.post('/download', async (req, res) => {
   const { name, url } = req.body;
   if (!name || !url || name.length === 0 || url.length === 0)
     return send(res, { success: false, reason: 'Input may not be empty!' }, 406);

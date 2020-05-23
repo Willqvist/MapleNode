@@ -18,10 +18,10 @@ export default class VotePanel extends Panel{
   async onRemoveVote(state, data) {
     if (state === PopupForm.RESULT && !data.close) {
       console.log('remove data: ', data);
-      const url = new Url('./dashboard/vote/remove', {
+      const url = new Url('./dashboard/vote', {
         id: data.id,
       });
-      const response = await Http.POST(url);
+      const response = await Http.DELETE(url);
       if(response.reason || !response.success) return { error: response.reason };
       this.voteList.remove(data.id);
       return { error: response.reason };
@@ -73,7 +73,7 @@ export default class VotePanel extends Panel{
       let url;
       let response;
       if (data.id === '-1') {
-        url = new Url('./dashboard/vote/add', {
+        url = new Url('./dashboard/vote', {
           name: data.input_1,
           url: data.input_2,
           nx: data.input_3,
@@ -85,14 +85,14 @@ export default class VotePanel extends Panel{
         this.addList(this.voteList,data);
         return { response };
       }
-      url = new Url('./dashboard/vote/update', {
+      url = new Url('./dashboard/vote', {
         key: data.id,
         name: data.input_1,
         url: data.input_2,
         nx: data.input_3,
         time: data.input_4,
       });
-      response = await Http.POST(url);
+      response = await Http.UPDATE(url);
       return { error: response.reason };
     }
     return { error: false };

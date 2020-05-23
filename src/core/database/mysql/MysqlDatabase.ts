@@ -672,21 +672,17 @@ export default class MysqlDatabase implements Database {
   }
 
   async addFile(file: string, tags: string[]): Promise<boolean> {
-    try {
-      const tableName = table('files');
-      const tagTableName = table('file_tags');
-      await this.insert(`INSERT INTO ${tableName} (file,upload) VALUES(?,NOW())`, [file]);
-      await Promise.all(
-        tags.map((tag) => {
-          return this.insert(`INSERT INTO ${tagTableName} (file,tag) VALUES(?,?)`, [file, tag]);
-        })
-      ).catch((err) => {
-        throw new DatabaseError({ errno: -1, msg: err });
-      });
-      return true;
-    } catch (err) {
-      throw new DatabaseError({ errno: err.errno, msg: err.message });
-    }
+    const tableName = table('files');
+    const tagTableName = table('file_tags');
+    await this.insert(`INSERT INTO ${tableName} (file,upload) VALUES(?,NOW())`, [file]);
+    await Promise.all(
+      tags.map((tag) => {
+        return this.insert(`INSERT INTO ${tagTableName} (file,tag) VALUES(?,?)`, [file, tag]);
+      })
+    ).catch((err) => {
+      throw new DatabaseError({ errno: -1, msg: err });
+    });
+    return true;
   }
 
   async getFilesWithTag(): Promise<TaggedFile[]> {

@@ -8,7 +8,7 @@ export default class FileUploadPopupForm extends PopupForm {
     }
 
     beginUpload() {
-
+        this.progressBar.parentNode.style.display="block";
     }
 
     showProgress(percent) {
@@ -17,6 +17,6 @@ export default class FileUploadPopupForm extends PopupForm {
     }
 
     doneUpload() {
-
+        this.progressBar.parentNode.style.display="none";
     }
 }

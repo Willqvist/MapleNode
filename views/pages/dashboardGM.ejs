@@ -142,7 +142,7 @@ const listVotes = {
                                         </div>
                                     </div>
                                 </div>
-                                <%- include ('../panels/grid.ejs',{items:[
+                                <%- include ('../panels/grid.ejs',{id:'templates',items:[
                                     {content:"<h2>Heelo</h2>",image:"orange"}
                                 ]})%>
                             </div>
@@ -191,12 +191,15 @@ const listVotes = {
     <h2>${image.fileName}</h2>
     ${activeList.join('')}
 </div>
-<i class="grid_edit fas fa-ellipsis-v info" data-info="Set image as..."></i>
+<div class="grid_icons">
+    <i class="grid_edit fas fa-ellipsis-v info" data-info="Set image as..."></i>
+    <i class="grid_edit fas fa-trash-alt info" data-info="Delete Image"></i>
+</div>
 `,
                                         image:` center / contain no-repeat url("${image.destName}")`})
                                 }
                                 %>
-                                <%- include ('../panels/grid.ejs',{items:gridList})%>
+                                <%- include ('../panels/grid.ejs',{id:'images',items:gridList})%>
                             </div>
 
                             <!-- SUB PALETTES FOR DESIGN -->
@@ -208,7 +211,8 @@ const listVotes = {
                                             <div class="btn btn-span popup-trigger" trigger="uploadFilePopup" popup-data="
                                                 #-1=id,
                                                 #Upload file=title,
-                                                #Select file=file,
+                                                #Select file=file_label,
+                                                #Rename=name_label,
                                                 #Upload=submit
                                                 ">
                                                 <span>Add palette</span>
@@ -216,7 +220,7 @@ const listVotes = {
                                         </div>
                                     </div>
                                 </div>
-                                <%- include ('../panels/grid.ejs',{items:[
+                                <%- include ('../panels/grid.ejs',{id:'palettes',items:[
                                 {content:"<h2>Palettename here</h2>",image:"green"}
                                 ]})%>
                             </div>
@@ -325,8 +329,12 @@ const listVotes = {
                     <input class="attrib" name="id" id="test" type="hidden">
                     <input class="attrib" name="src" type="hidden">
                     <div class="input">
-                        <label for="file" class="attrib" name="file">Download</label>
+                        <label for="file" class="attrib" name="file_label">File</label>
                         <input type="file" class="attrib" name="file">
+                    </div>
+                    <div class="input">
+                        <label for="name" class="attrib" name="name_label">Rename file</label>
+                        <input class="attrib" name="name">
                     </div>
                     <div class="btn_parent">
                         <div class="btn btn-input">
