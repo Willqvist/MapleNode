@@ -11,6 +11,9 @@ export default class ImagesPanel extends Panel {
         this.registerTriggers();
         this.remove = PopupProvider.get('removePopup');
         this.remove.bindButton(this.getAll('remove'), this.onRemoveFile.bind(this));
+
+        this.listPopup = PopupProvider.get('listPopup');
+        this.listPopup.bindButton(this.getAll('trigger-list'), this.onTagChange.bind(this));
         this.grid = new Grid('images');
     }
 
@@ -24,6 +27,19 @@ export default class ImagesPanel extends Panel {
         return {error: false};
     }
 
+    async onTagChange(state, data, popup) {
+        if(state === PopupForm.CLICK) {
+            popup.asList(window.tags);
+        }
+        if(state === PopupForm.RESULT && !data.close) {
+            console.log(data);
+            const url = new Url('./dashboard/file/tag', {tag: data.tag, file: data.id});
+            const response = await Http.UPDATE(url);
+            return {error: response.reason};
+        }
+        return {error: false};
+    }
+
     appendGrid(file) {
         const data = {
             id: 'images',
@@ -32,13 +48,21 @@ export default class ImagesPanel extends Panel {
             content: `
             <div class="mod_grid_item_content">
                 <h2>${file.name}</h2>
+                <div class="mod_grid_actives">
+                    <div class="mod_grid_active info" data-info="Add tag"><i class="fas fa-plus"></i></div>
+                </div>
             </div>
-            <div class="grid_icons">
-                <i class="grid_edit fas fa-ellipsis-v info" data-info="Set image as..."></i>
-                <i class="grid_edit fas fa-trash-alt info" data-info="Delete Image"></i>
+            <div class="grid_icons" id="${file.name}">
+                <i class="grid_edit fas fa-trash-alt info remove" popup-data="<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Delete Image"></i>
             </div>`
         };
-        this.grid.append(data);
+        const node = this.grid.append(data);
+        this.registerTrigger(node);
+        this.remove.bindButton(node.getElementsByClassName('remove'), this.onRemoveFile.bind(this));
+        this.listPopup.bindButton(node.getElementsByClassName('trigger-list'), this.onTagChange.bind(this));
+        const infos = node.getElementsByClassName('info');
+        for(let i = 0; i < infos.length; i++)
+            window.registerInfo(infos[i]);
     }
 
     doneUpload(err, file, resolve) {
@@ -49,7 +73,6 @@ export default class ImagesPanel extends Panel {
     }
 
     async onPopupClick(state, data, popup) {
-        console.log(data);
         popup.doneUpload();
         popup.showProgress(0);
         if(state === PopupForm.RESULT && !data.close) {

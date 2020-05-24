@@ -628,6 +628,7 @@ export default class MysqlDatabase implements Database {
   async tagFile(file: string, tag: string): Promise<number> {
     try {
       const tagTableName = table('file_tags');
+      console.log(file, tag, tagTableName);
       return this.insert(`INSERT INTO ${tagTableName} (file,tag) VALUES(?,?)`, [file, tag]);
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });

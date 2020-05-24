@@ -1,9 +1,12 @@
 import PopupForm from './PopupForm.js';
 import FileUploadPopupForm from "./FileUploadPopupForm.js";
+import ListPopupForm from "./ListPopup.js";
 
 function createPopup(id) {
+  console.log(id);
   switch(id) {
     case 'uploadFilePopup': return new FileUploadPopupForm(id);
+    case 'listPopup': return new ListPopupForm(id);
     default: return new PopupForm(id);
   }
 }

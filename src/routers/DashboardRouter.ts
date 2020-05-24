@@ -35,7 +35,7 @@ async function renderGMDashboard(req, res) {
       palettes: { all: palettes, active: activePalette },
       user: getAccount(req.session),
       images,
-      tags
+      tags,
     });
   } catch ({ message }) {
     Logger.log('debug', `Error rendering gm dashboard ${message}`);
@@ -182,9 +182,21 @@ router.put('/file', upload.single('file'), async (req, res) => {
     await FileProvider.moveFile(file.path, file.originalname);
   } catch (err) {
     let msg = err.getMessage();
-    if(err.getErrorCode() === 1062)
-      msg = `${file.originalname} already exists!`;
+    if (err.getErrorCode() === 1062) msg = `${file.originalname} already exists!`;
     return send(res, { success: true, reason: msg });
+  }
+  send(res, { success: true });
+});
+
+router.put('/file/tag', upload.single('file'), async (req, res) => {
+  const { file, tag } = req.body;
+  if (!file || !tag) {
+    return send(res, { success: true, reason: 'tag or file may not be empty' });
+  }
+  try {
+    await FileProvider.tagFile(file, tag);
+  } catch (err) {
+    return send(res, { success: true, reason: err.getMessage() });
   }
   send(res, { success: true });
 });
@@ -193,7 +205,7 @@ router.delete('/file', async (req, res) => {
   const { file } = req.body;
   try {
     await FileProvider.deleteFile(file);
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     return send(res, { success: true, reason: err.getMessage() });
   }
