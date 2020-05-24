@@ -18,6 +18,7 @@ async function renderGMDashboard(req, res) {
     const votes = await DatabaseConnection.instance.getVotes();
     const palettes = await DatabaseConnection.instance.getPalettes();
     const downloads = await DatabaseConnection.instance.getDownloads();
+    const tags = await FileProvider.getAllTags();
     const imageTags = await FileProvider.getTaggedFiles();
     console.log(imageTags);
     const images = imageTags.filter((val) => FileTools.isImage(val));
@@ -34,6 +35,7 @@ async function renderGMDashboard(req, res) {
       palettes: { all: palettes, active: activePalette },
       user: getAccount(req.session),
       images,
+      tags
     });
   } catch ({ message }) {
     Logger.log('debug', `Error rendering gm dashboard ${message}`);

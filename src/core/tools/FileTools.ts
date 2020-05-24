@@ -14,27 +14,6 @@ export default class FileTools {
    */
   public static async move(src: string, dest: string): Promise<boolean> {
     const dir = this.removeLastDirectory(dest);
-    const errCallback = (err) => {
-      if (err) {
-        throw err;
-      }
-      return true;
-    };
-
-    const complete = (err) => {
-      if (err) {
-        throw err;
-      }
-      return true;
-    };
-    /*
-    await pipe(
-      fun(fs.mkdir).props(dir, { recursive: true }, waitFor(errCallback)).stopOnError(),
-      fun(fs.copyFile).props(src, dest, waitFor(errCallback)).stopOnError(),
-      fun(fs.unlink).props(src, waitFor(complete)).stopOnError()
-    );
-    return true;
-    */
     return new Promise((resolve, reject) => {
       fs.mkdir(dir, { recursive: true }, (err) => {
         if (err) reject(err);
@@ -44,6 +23,19 @@ export default class FileTools {
             if (err) reject(err);
             resolve(true);
           });
+        });
+      });
+    });
+  }
+
+  public static async copy(src: string, dest: string): Promise<boolean> {
+    const dir = this.removeLastDirectory(dest);
+    return new Promise((resolve, reject) => {
+      fs.mkdir(dir, { recursive: true }, (err) => {
+        if (err) reject(err);
+        fs.copyFile(src, dest, (errCopy) => {
+          if (errCopy) reject(errCopy);
+          resolve(true);
         });
       });
     });

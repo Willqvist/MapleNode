@@ -300,8 +300,6 @@ export interface Database {
 
   tagFile(file: string, tag: string): Promise<number>;
 
-  getTaggedFiles(): Promise<TaggedFile[]>;
-
   getFiles(): Promise<File[]>;
 
   getTags(file: string): Promise<TaggedFile>;
@@ -313,6 +311,10 @@ export interface Database {
   deleteFile(file: string): Promise<boolean>;
 
   getFilesWithTag(): Promise<TaggedFile[]>;
+
+  getAllTags(): Promise<string[]>;
+
+  addTag(tag: string): Promise<boolean>;
 }
 
 /*

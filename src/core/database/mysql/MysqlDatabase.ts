@@ -1,7 +1,5 @@
 import mysql from 'mysql2/promise';
-import { PathLike } from 'fs';
 import path from 'path';
-import mime from 'mime-types';
 import { Database, Rank, SWO } from '../Database';
 import {
   accountsConversion,
@@ -614,10 +612,6 @@ export default class MysqlDatabase implements Database {
     }
   }
 
-  getTaggedFiles(): Promise<TaggedFile[]> {
-    return undefined;
-  }
-
   async getTags(file: string): Promise<TaggedFile> {
     try {
       const tagTableName = table('file_tags');
@@ -711,6 +705,26 @@ export default class MysqlDatabase implements Database {
     const tableName = table('files');
     try {
       return this.connection.execute(`DELETE FROM ${tableName} WHERE file=?`, [file]);
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
+
+  async getAllTags(): Promise<string[]> {
+    const tableName = table('tags');
+    try {
+      const [tags] = await this.connection.execute(`SELECT * FROM ${tableName}`);
+      return tags;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
+
+  async addTag(tag: string): Promise<boolean> {
+    const tableName = table('tags');
+    try {
+      await this.connection.execute(`INSERT INTO  ${tableName} (tag) VALUES(?)`,[tag]);
+      return true;
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }

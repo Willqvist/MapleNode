@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS prefix_palettes;
 DROP TABLE IF EXISTS prefix_downloads;
 DROP TABLE IF EXISTS prefix_layout;
 DROP TABLE IF EXISTS prefix_file_tags;
+DROP TABLE IF EXISTS prefix_tags;
 DROP TABLE IF EXISTS prefix_files;
 
 CREATE TABLE prefix_settings
@@ -53,17 +54,22 @@ CREATE TABLE prefix_palettes
 );
 CREATE TABLE prefix_files
 (
-    file VARCHAR(180),
+    file VARCHAR(180) NOT NULL,
     upload TIMESTAMP,
     PRIMARY KEY(file)
 );
+CREATE TABLE prefix_tags
+(
+    tag VARCHAR(80) NOT NULL,
+    PRIMARY KEY(tag)
+);
 CREATE TABLE prefix_file_tags
 (
-    file VARCHAR(180),
-    tag VARCHAR(80),
+    file VARCHAR(180) NOT NULL,
+    tag VARCHAR(80) NOT NULL,
     PRIMARY KEY(file, tag),
-    FOREIGN KEY (file)
-                REFERENCES prefix_files(file)
+    FOREIGN KEY (file) REFERENCES prefix_files(file) ON DELETE CASCADE,
+    FOREIGN KEY (tag) REFERENCES prefix_tags(tag) ON DELETE CASCADE
 );
 CREATE TABLE prefix_downloads
 (

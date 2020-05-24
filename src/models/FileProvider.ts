@@ -15,6 +15,8 @@ export default class FileProvider {
 
   private static files: TaggedFile[] = null;
 
+  private static tags: string[] = null;
+
   static async moveFile(src: string, dest: string) {
     await FileTools.move(src, path(dest));
     await this.addFile(dest, []);
@@ -56,6 +58,7 @@ export default class FileProvider {
 
   static async addFile(file: string, tags: string[]) {
     const res = await DBConn.instance.addFile(file, tags);
+    res.destName = PUBLIC_ROOT+res.fileName;
     this.cache[file] = res;
     this.files = null;
     for (let i = 0; i < res.tags.length; i++) {
@@ -65,10 +68,19 @@ export default class FileProvider {
   }
 
   static async getTaggedFile(tag: string): Promise<TaggedFile> {
-    console.log(tag);
+    console.log("TAG: ",tag, "CACHE:",this.cache[this.tagCache[tag]]);
     if (this.tagCache[tag]) return this.cache[this.tagCache[tag]];
-    const file = (await DBConn.instance.getFilesByTag(tag))[0];
-    file.destName = PUBLIC_ROOT + file.fileName;
+    let file = (await DBConn.instance.getFilesByTag(tag))[0];
+    if (!file) {
+      file = {
+        fileName: 'none.png',
+        destName: 'images/none.png',
+        mimetype: '.png',
+        tags: [tag],
+      };
+    } else {
+      file.destName = PUBLIC_ROOT + file.fileName;
+    }
     console.log(file);
     this.cache[file.fileName] = file;
     this.tagCache[tag] = file.fileName;
@@ -76,8 +88,21 @@ export default class FileProvider {
   }
 
   static async getTaggedFiles() {
-    if(this.files) return this.files;
-    this.files = (await DBConn.instance.getFilesWithTag()).filter((file) => file.destName = PUBLIC_ROOT+file.fileName);
+    if (this.files) return this.files;
+    this.files = (await DBConn.instance.getFilesWithTag()).filter(
+      (file) => (file.destName = PUBLIC_ROOT + file.fileName)
+    );
     return this.files;
+  }
+
+  static async addTag(tag: string) {
+    this.tags = null;
+    await DBConn.instance.addTag(tag);
+  }
+
+  static async getAllTags(): Promise<string[]> {
+    if (this.tags) return this.tags;
+    this.tags = await DBConn.instance.getAllTags();
+    return this.tags;
   }
 }
