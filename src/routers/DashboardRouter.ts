@@ -195,6 +195,21 @@ router.put('/file/tag', upload.single('file'), async (req, res) => {
   }
   try {
     await FileProvider.tagFile(file, tag);
+    app.getApp().locals[tag] = (await FileProvider.getTaggedFile(tag)).destName;
+  } catch (err) {
+    return send(res, { success: true, reason: err.getMessage() });
+  }
+  send(res, { success: true });
+});
+
+router.delete('/file/tag', upload.single('file'), async (req, res) => {
+  const { file, tag } = req.body;
+  if (!file || !tag) {
+    return send(res, { success: true, reason: 'tag or file may not be empty' });
+  }
+  try {
+    await FileProvider.removeTag(file, tag);
+    app.getApp().locals[tag] = (await FileProvider.getTaggedFile(tag)).destName;
   } catch (err) {
     return send(res, { success: true, reason: err.getMessage() });
   }

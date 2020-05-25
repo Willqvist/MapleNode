@@ -58,7 +58,7 @@ export default class FileProvider {
 
   static async addFile(file: string, tags: string[]) {
     const res = await DBConn.instance.addFile(file, tags);
-    res.destName = PUBLIC_ROOT+res.fileName;
+    res.destName = PUBLIC_ROOT + res.fileName;
     this.cache[file] = res;
     this.files = null;
     for (let i = 0; i < res.tags.length; i++) {
@@ -68,7 +68,6 @@ export default class FileProvider {
   }
 
   static async getTaggedFile(tag: string): Promise<TaggedFile> {
-    console.log("TAG: ",tag, "CACHE:",this.cache[this.tagCache[tag]]);
     if (this.tagCache[tag]) return this.cache[this.tagCache[tag]];
     let file = (await DBConn.instance.getFilesByTag(tag))[0];
     if (!file) {
@@ -88,6 +87,7 @@ export default class FileProvider {
   }
 
   static async getTaggedFiles() {
+    console.log(this.files);
     if (this.files) return this.files;
     this.files = (await DBConn.instance.getFilesWithTag()).filter(
       (file) => (file.destName = PUBLIC_ROOT + file.fileName)
@@ -104,5 +104,20 @@ export default class FileProvider {
     if (this.tags) return this.tags;
     this.tags = await DBConn.instance.getAllTags();
     return this.tags;
+  }
+
+  static async removeTag(file: string, tag: string) {
+    this.tagCache[tag] = null;
+
+    for (let i = 0; i < this.files.length; i++) {
+      const f = this.files[i];
+      if (f.fileName !== file) continue;
+      const index = f.tags.indexOf(tag);
+      if (index !== -1) {
+        f.tags.splice(index);
+      }
+    }
+
+    await DBConn.instance.removeTag(file, tag);
   }
 }

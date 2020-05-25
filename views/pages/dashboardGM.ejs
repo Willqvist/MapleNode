@@ -181,10 +181,10 @@ const listVotes = {
                                         style += `padding-top:1rem;padding-bottom:1rem;`;
                                         console.log("TAGS HERE !!!!!!!!!!!!!!",image.tags);
                                         for (let i = 0; i < image.tags.length; i++) {
-                                            activeList.push(`<div class="mod_grid_active info" data-info="Remove tag"><i class="fas fa-tag"></i><span>${image.tags[i]}</span></div>`);
+                                            activeList.push(`<div tag-id="${image.tags[i]}" file-id="${image.fileName}" class="mod_grid_active info remove" popup-data=".tag-id=src,.file-id=id,#Remove ${image.tags[i]} from file?=title,#Yes remove it=submit" data-info="Remove tag"><i class="fas fa-tag"></i><span>${image.tags[i]}</span></div>`);
                                         }
                                     }
-                                    activeList.push(`<div class="mod_grid_active info" data-info="Add tag"><i class="fas fa-plus"></i></div>`);
+                                    activeList.push(`<div file-id="${image.fileName}" class="mod_grid_active info trigger-list" data-info="Add tag" popup-data=".file-id=id,#Add tag to file=title"><i class="fas fa-plus"></i></div>`);
                                     activeList.push(`</div>`);
                                     gridList.push({
                                         contentStyle:`flex-direction:row;${style}`,
@@ -194,7 +194,7 @@ const listVotes = {
     ${activeList.join('')}
 </div>
 <div class="grid_icons" id="${image.fileName}">
-    <i class="grid_edit fas fa-trash-alt info remove" popup-data="<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Delete Image"></i>
+    <i class="grid_edit fas fa-trash-alt info remove" popup-data="#file=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Delete Image"></i>
 </div>
 `,
                                         image:` center / contain no-repeat url("${image.destName}")`})
@@ -322,9 +322,10 @@ const listVotes = {
 
             <div id="listPopup" class="popup">
                 <div class="close"><i class="fas fa-times"></i></div>
-                <h1 class="title attrib" name="title">Are you sure?</h1>
+                <h1 class="title attrib" name="title">Add item</h1>
                 <div class="file_upload_progress"></div>
                 <form>
+                    <h3 class="error_popup">Error message</h3>
                     <input class="attrib" name="id" id="test" type="hidden">
                     <div class="input">
                         <label for="tag" class="attrib" name="file_label">File</label>
@@ -332,7 +333,6 @@ const listVotes = {
                             <option>Select option</option>
                         </select>
                     </div>
-                    <h3 class="error_popup">Error message</h3>
                     <div class="btn_parent">
                         <div class="btn btn-input">
                             <input type="submit" name="submit" class="child attrib submit" id="login" value="Select" />

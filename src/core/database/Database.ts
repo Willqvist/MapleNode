@@ -315,6 +315,8 @@ export interface Database {
   getAllTags(): Promise<string[]>;
 
   addTag(tag: string): Promise<boolean>;
+
+  removeTag(file: string, tag: string): Promise<boolean>;
 }
 
 /*

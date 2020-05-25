@@ -724,7 +724,18 @@ export default class MysqlDatabase implements Database {
   async addTag(tag: string): Promise<boolean> {
     const tableName = table('tags');
     try {
-      await this.connection.execute(`INSERT INTO  ${tableName} (tag) VALUES(?)`,[tag]);
+      await this.connection.execute(`INSERT INTO  ${tableName} (tag) VALUES(?)`, [tag]);
+      return true;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
+
+  async removeTag(file: any, tag: any): Promise<boolean> {
+    const tableName = table('file_tags');
+    try {
+      const [res] = await this.connection.execute(`DELETE FROM ${tableName} where file = ? AND tag = ?`, [file, tag]);
+      console.log(res);
       return true;
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });

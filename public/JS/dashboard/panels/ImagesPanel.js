@@ -18,12 +18,21 @@ export default class ImagesPanel extends Panel {
     }
 
     async onRemoveFile(state, data, popup) {
-        if(state === PopupForm.RESULT && !data.close) {
+        if(state === PopupForm.RESULT && !data.close && data.tag === 'file') {
             const url = new Url('./dashboard/file', {file: data.id});
             const response = await Http.DELETE(url);
+            this.grid.remove(data.id);
             console.log(response);
             return {error: response.reason}
         }
+
+        if(state === PopupForm.RESULT && !data.close && data.tag !== 'file') {
+            console.log("removing tag: ",data);
+            const url = new Url('./dashboard/file/tag', {tag: data.src, file:data.id});
+            const response = await Http.DELETE(url);
+            return {error: response.reason}
+        }
+
         return {error: false};
     }
 
