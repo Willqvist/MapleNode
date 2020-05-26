@@ -187,6 +187,7 @@ const listVotes = {
                                     activeList.push(`<div file-id="${image.fileName}" class="mod_grid_active info trigger-list" data-info="Add tag" popup-data=".file-id=id,#Add tag to file=title"><i class="fas fa-plus"></i></div>`);
                                     activeList.push(`</div>`);
                                     gridList.push({
+                                        id:image.fileName,
                                         contentStyle:`flex-direction:row;${style}`,
                                         content:`
 <div class="mod_grid_item_content">

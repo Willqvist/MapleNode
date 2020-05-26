@@ -16,6 +16,7 @@ export default class Panel {
   }
 
   registerTrigger(elem) {
+    this.registerInfo(elem);
     const cls = elem.getElementsByClassName('popup-trigger');
     console.log(cls);
     for (let i = 0; i < cls.length; i++) {
@@ -30,6 +31,15 @@ export default class Panel {
 
   async onPopupClick(state, data, popup) {
     return {error:null};
+  }
+
+  registerInfo(elem) {
+    const infos = [...elem.getElementsByClassName('info')];
+    if(elem.className.includes('info'))
+      infos.push(elem);
+
+    for(let i = 0; i < infos.length; i++)
+      window.registerInfo(infos[i]);
   }
 
   init() {}

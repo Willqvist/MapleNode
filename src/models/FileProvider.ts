@@ -108,15 +108,15 @@ export default class FileProvider {
 
   static async removeTag(file: string, tag: string) {
     this.tagCache[tag] = null;
-
-    for (let i = 0; i < this.files.length; i++) {
-      const f = this.files[i];
-      if (f.fileName !== file) continue;
-      const index = f.tags.indexOf(tag);
-      if (index !== -1) {
-        f.tags.splice(index);
+    if (this.files)
+      for (let i = 0; i < this.files.length; i++) {
+        const f = this.files[i];
+        if (f.fileName !== file) continue;
+        const index = f.tags.indexOf(tag);
+        if (index !== -1) {
+          f.tags.splice(index);
+        }
       }
-    }
 
     await DBConn.instance.removeTag(file, tag);
   }

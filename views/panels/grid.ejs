@@ -2,7 +2,7 @@
     <% for(let i = 0; i < items.length; i++) {
         const item = items[i];
     %>
-    <div class="mod_grid_item">
+    <div class="mod_grid_item" id="grid_item_<%= item.id %>">
         <div class="mod_grid_item_image">
             <%if(!item.header) {%>
                 <div class="mod_grid_blur" style="background:<%= item.image %>;"></div>

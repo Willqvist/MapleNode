@@ -4,11 +4,11 @@ export default class Grid {
     }
 
     findByGridId(id) {
-        const { children } = this.items;
+        const { children } = this.grid;
         console.log(children);
         for(let i = 0; i < children.length; i++) {
             const child = children[i];
-            if(child.getAttribute("grid-id") === id) return child;
+            if(child.id === `grid_item_${id}`) return child;
         }
         return null;
     }
@@ -21,11 +21,11 @@ export default class Grid {
     }
 
     append(values) {
-        const { id, header, content, image, contentStyle } = values;
+        const { id, header, content, image, contentStyle, itemId } = values;
         const node = document.createElement("div");
         node.className = "mod_grid_item";
-        node.setAttribute("grid-id", id);
-
+        node.setAttribute("grid-id", itemId);
+        node.id=`grid_item_${itemId}`
         const headerContent = !header ? `
         <div class="mod_grid_blur" style="background:${image};"></div>
         <div class="mod_grid_fg" style="background:${image};"></div>
