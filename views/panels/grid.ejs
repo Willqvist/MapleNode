@@ -1,4 +1,4 @@
-<div class="mod_grid" id="grid_<%= id %>">
+<div class="mod_grid" id="grid_<%= id %>" <%if(locals.gridSize){%> style="grid-template-columns:<%= gridSize %>" <%}%>>
     <% for(let i = 0; i < items.length; i++) {
         const item = items[i];
     %>

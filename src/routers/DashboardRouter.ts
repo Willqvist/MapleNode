@@ -22,10 +22,10 @@ async function renderGMDashboard(req, res) {
     const imageTags = await FileProvider.getTaggedFiles();
     console.log(imageTags);
     const images = imageTags.filter((val) => FileTools.isImage(val));
-    let activePalette = palettes[0];
+    let activePalette = palettes[0].name;
     for (let i = 0; i < palettes.length; i++) {
       if (palettes[i].active === 1) {
-        activePalette = palettes[i];
+        activePalette = palettes[i].name;
         break;
       }
     }

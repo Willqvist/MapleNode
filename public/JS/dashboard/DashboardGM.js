@@ -2,7 +2,7 @@ import PanelHandler from './panels/PanelHandler.js';
 import StatisticsPanel from './panels/StatisticsPanel.js';
 import LogsPanel from "./panels/LogsPanel.js";
 import ReportsPanel from "./panels/ReportsPanel.js";
-import DesignPanel from "./panels/DesignPanel.js";
+import PalettePanel from "./panels/PalettePanel.js";
 import LayoutPanel from "./panels/LayoutPanel.js";
 import DownloadPanel from "./panels/DownloadPanel.js";
 import VotePanel from "./panels/VotePanel.js";
@@ -11,7 +11,7 @@ import ImagesPanel from "./panels/ImagesPanel.js";
 const bar = document.getElementById('dahboard_bar');
 const handler = new PanelHandler();
 const statistics = new StatisticsPanel('statistics');
-const designs = new DesignPanel('designs');
+const designs = new PalettePanel('designs');
 const layouts = new LayoutPanel('layouts');
 const logs = new LogsPanel('logs');
 const reports = new ReportsPanel('reports');
@@ -19,9 +19,9 @@ const reports = new ReportsPanel('reports');
 // Sub panels
 const download = new DownloadPanel('downloads');
 const vote = new VotePanel('votes');
-const template = new DesignPanel('templates');
+const template = new PalettePanel('templates');
 const image = new ImagesPanel('images');
-const palettes = new DesignPanel('palettes');
+const palettes = new PalettePanel('palettes');
 
 handler.listen('pageEnter', (page, src) => {
   console.log(page.DOM.className.includes("containsSubPages"));
@@ -46,7 +46,7 @@ const submenuDesignContents = handler.createSubMenu('designs');
 submenuDesignContents.addPanel(template);
 submenuDesignContents.addPanel(image);
 submenuDesignContents.addPanel(palettes);
-submenuDesignContents.goTo('images');
+submenuDesignContents.goTo('palettes');
 
 handler.addPanel(statistics);
 handler.addPanel(designs);

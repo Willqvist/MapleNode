@@ -210,21 +210,44 @@ const listVotes = {
                                     <h1><i class="fas fa-palette"></i>Palettes</h1>
                                     <div class="btn-list">
                                         <div class="btn_parent">
-                                            <div class="btn btn-span popup-trigger" trigger="uploadFilePopup" popup-data="
+                                            <div class="btn btn-span popup-trigger" trigger="palettePopup" popup-data="
                                                 #-1=id,
-                                                #Upload file=title,
-                                                #Select file=file_label,
-                                                #Rename=name_label,
-                                                #Upload=submit
+                                                #Add palette=title,
                                                 ">
                                                 <span>Add palette</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <%- include ('../panels/grid.ejs',{id:'palettes',items:[
-                                {content:"<h2>Palettename here</h2>",image:"green"}
-                                ]})%>
+                                <%
+                                console.log(options.palettes);
+                                const paletteContent = [];
+                                for(let i = 0; i < options.palettes.all.length; i++) {
+                                    const palette = options.palettes.all[i];
+                                    paletteContent.push({
+                                        id:palette.name,
+                                        contentStyle:`flex-direction:row;`,
+                                        content:`
+<div class="mod_grid_item_content">
+    <h2>${palette.name}</h2>
+</div>
+<div class="grid_icons grid_icons_row" id="${palette.name}" style="flex-direction: row; align-items: center">
+    <i class="grid_edit fas fa-edit info popup-trigger" trigger="palettePopup" popup-data="<.id=id,#Edit palette=title" data-info="Edit"></i>
+    <i class="grid_edit fas fa-trash-alt info remove" popup-data="#palette=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"></i>
+</div>
+                                        `,
+                                        header:`
+<div class="grid_header_colors">
+   <div class="grid_header_color" style="background:${palette.mainColor}; color:${palette.fontColorDark}">Main color</div>
+    <div class="grid_header_color" style="background:${palette.secondaryMainColor}; color:${palette.fontColorDark}">Secondary main color</div>
+    <div class="grid_header_color" style="background:${palette.fontColorLight}; color:${palette.fontColorDark}">Font color light</div>
+    <div class="grid_header_color" style="background:${palette.fontColorDark}; color:${palette.fontColorLight}">Font color dark</div>
+    <div class="grid_header_color" style="background:${palette.fillColor}; color:${palette.fontColorDark}">Fill color</div>
+</div>
+                                    `})
+                                }
+                                %>
+                                <%- include ('../panels/grid.ejs',{gridSize:'auto', id:'palettes',items:paletteContent})%>
                             </div>
                         </div>
                     </div>
@@ -302,6 +325,47 @@ const listVotes = {
                     </div>
                 </form>
             </div>
+
+            <!-- PALETTE POPUP -->
+            <div id="palettePopup" class="popup">
+                <div class="close"><i class="fas fa-times"></i></div>
+                <h1 class="title attrib" name="title">Palette</h1>
+                <form>
+                    <h3 class="error_popup">Error message</h3>
+                    <input class="attrib" name="id" id="test" type="hidden">
+                    <input class="attrib" name="src" type="hidden">
+                    <div class="input">
+                        <label for="input_1" class="attrib" name="label_1">name</label>
+                        <input class="attrib" name="input_1">
+                    </div>
+                    <div class="input">
+                        <label for="input_2"class="attrib" name="label_2">Main color</label>
+                        <input class="attrib" name="input_2">
+                    </div>
+                    <div class="input">
+                        <label for="input_3"class="attrib" name="label_3">Secondary main color</label>
+                        <input class="attrib" name="input_3">
+                    </div>
+                    <div class="input">
+                        <label for="input_4"class="attrib" name="label_4">Font color dark</label>
+                        <input class="attrib" name="input_4">
+                    </div>
+                    <div class="input">
+                        <label for="input_5"class="attrib" name="label_5">Font color light</label>
+                        <input class="attrib" name="input_5">
+                    </div>
+                    <div class="input">
+                        <label for="input_6"class="attrib" name="label_6">Fill color</label>
+                        <input class="attrib" name="input_6">
+                    </div>
+                    <div class="btn_parent">
+                        <div class="btn btn-input">
+                            <input type="submit" name="submit" class="child attrib submit" id="login" value="Submit" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
 
 
             <!-- REMOVE POPUP -->
