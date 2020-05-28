@@ -432,7 +432,7 @@ export default class MysqlDatabase implements Database {
       const [
         result,
       ] = await this.connection.execute(
-        `UPDATE ${tableName} SET mainColor=? secondaryMainColor=? fontColorDark=? fontColorLight=? fillColor=? WHERE name=?`,
+        `UPDATE ${tableName} SET mainColor=?, secondaryMainColor=?, fontColorDark=?, fontColorLight=?, fillColor=? WHERE name=?`,
         [mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor, name]
       );
       return result.affectedRows;

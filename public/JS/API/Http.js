@@ -48,7 +48,6 @@ export default class Http {
       formData.append('file', file);
       const xhr = new XMLHttpRequest();
       xhr.upload.onprogress =  function(ev) {
-        console.log(ev.loaded, ev.total);
         if(ev.lengthComputable) {
           return observer.progress(ev.loaded/ev.total);
         }

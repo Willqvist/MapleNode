@@ -223,26 +223,31 @@ const listVotes = {
                                 console.log(options.palettes);
                                 const paletteContent = [];
                                 for(let i = 0; i < options.palettes.all.length; i++) {
+
                                     const palette = options.palettes.all[i];
+                                    let contentsTag = `<div class="mod_grid_actives">`;
+                                    contentsTag += palette.active === 1 ? `<div class="mod_grid_actives"><div class="mod_grid_active"><i class="fas fa-check"></i><span>Active</span></div></div>` : `<div class="mod_grid_active info" data-info="Set as active palette"><i class="fas fa-ellipsis-v"></i></div>`;
+                                    contentsTag += `</div>`;
                                     paletteContent.push({
                                         id:palette.name,
-                                        contentStyle:`flex-direction:row;`,
+                                        contentStyle:`flex-direction:row;padding-top:1rem;padding-bottom:1rem;`,
                                         content:`
 <div class="mod_grid_item_content">
     <h2>${palette.name}</h2>
+    ${contentsTag}
 </div>
 <div class="grid_icons grid_icons_row" id="${palette.name}" style="flex-direction: row; align-items: center">
-    <i class="grid_edit fas fa-edit info popup-trigger" trigger="palettePopup" popup-data="<.id=id,#Edit palette=title" data-info="Edit"></i>
+    <i class="grid_edit fas fa-edit info popup-trigger" trigger="palettePopup" popup-data="<.id=id,#Edit palette=title,<.id=src,<.id=input_1,<<<>div>div>div.color=input_2,<<<>div>div>div[1].color=input_3,<<<>div>div>div[2].color=input_4,<<<>div>div>div[3].color=input_5,<<<>div>div>div[4].color=input_6" data-info="Edit"></i>
     <i class="grid_edit fas fa-trash-alt info remove" popup-data="#palette=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"></i>
 </div>
                                         `,
                                         header:`
 <div class="grid_header_colors">
-   <div class="grid_header_color" style="background:${palette.mainColor}; color:${palette.fontColorDark}">Main color</div>
-    <div class="grid_header_color" style="background:${palette.secondaryMainColor}; color:${palette.fontColorDark}">Secondary main color</div>
-    <div class="grid_header_color" style="background:${palette.fontColorLight}; color:${palette.fontColorDark}">Font color light</div>
-    <div class="grid_header_color" style="background:${palette.fontColorDark}; color:${palette.fontColorLight}">Font color dark</div>
-    <div class="grid_header_color" style="background:${palette.fillColor}; color:${palette.fontColorDark}">Fill color</div>
+   <div class="grid_header_color" color="${palette.mainColor}" style="background:${palette.mainColor}; color:${palette.fontColorDark}">Main color</div>
+    <div class="grid_header_color" color="${palette.secondaryMainColor}" style="background:${palette.secondaryMainColor}; color:${palette.fontColorDark}">Secondary main color</div>
+    <div class="grid_header_color" color="${palette.fontColorLight}" style="background:${palette.fontColorLight}; color:${palette.fontColorDark}">Font color light</div>
+    <div class="grid_header_color" color="${palette.fontColorDark}" style="background:${palette.fontColorDark}; color:${palette.fontColorLight}">Font color dark</div>
+    <div class="grid_header_color" color="${palette.fillColor}" style="background:${palette.fillColor}; color:${palette.fontColorDark}">Fill color</div>
 </div>
                                     `})
                                 }

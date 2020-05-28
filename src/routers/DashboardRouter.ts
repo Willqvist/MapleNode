@@ -107,6 +107,10 @@ router.delete('/vote', async (req, res) => {
 
 router.post('/palette', async (req, res) => {
   const { name, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor } = req.body;
+  if (!name || !mainColor || !secondaryMainColor || !fontColorLight || !fontColorDark || !fillColor) {
+    return send(res, { success: false, reason: 'Input may not be empty!' });
+  }
+
   try {
     const paletteId = await DatabaseConnection.instance.addPalette(
       name,
@@ -136,6 +140,9 @@ router.post('/palette/select', async (req, res) => {
 
 router.delete('/palette', async (req, res) => {
   const { key } = req.body;
+  if (!key) {
+    return send(res, { success: false, reason: 'Key may not be empty!' });
+  }
   try {
     await DatabaseConnection.instance.deletePalette(key);
     return send(res, { success: true });
@@ -146,6 +153,10 @@ router.delete('/palette', async (req, res) => {
 
 router.put('/palette', async (req, res) => {
   const { key, mainColor, secondaryMainColor, fontColorDark, fontColorLight, fillColor } = req.body;
+  if (!key || !mainColor || !secondaryMainColor || !fontColorLight || !fontColorDark || !fillColor) {
+    return send(res, { success: false, reason: 'Input may not be empty!' });
+  }
+
   try {
     await DatabaseConnection.instance.updatePalette(
       key,
@@ -156,23 +167,9 @@ router.put('/palette', async (req, res) => {
       fillColor
     );
     return send(res, { success: true });
-  } catch ({ message }) {
-    send(res, { success: false, reason: message });
-  }
-});
-router.post('/changeImage', async (req, res) => {
-  const filePaths = (await FileTools.readDir('./public/images/')).map((file) => `./public/images/${file.fileName}`);
-  return res.send(JSON.stringify({ success: true, files: filePaths }));
-});
-
-router.put('/heroImage', async (req, res) => {
-  const { file } = req.body;
-  try {
-    await DatabaseConnection.instance.tagFile(file, 'heroImage');
-    app.getApp().locals.heroImage = file;
-    return send(res, { success: true });
-  } catch ({ message }) {
-    send(res, { success: true, reason: message });
+  } catch (err) {
+    console.log(err);
+    send(res, { success: false, reason: err.getMessage() });
   }
 });
 
