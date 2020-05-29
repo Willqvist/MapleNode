@@ -226,13 +226,13 @@ const listVotes = {
 
                                     const palette = options.palettes.all[i];
                                     let contentsTag = `<div class="mod_grid_actives">`;
-                                    contentsTag += palette.active === 1 ? `<div class="mod_grid_actives"><div class="mod_grid_active"><i class="fas fa-check"></i><span>Active</span></div></div>` : `<div class="mod_grid_active info" data-info="Set as active palette"><i class="fas fa-ellipsis-v"></i></div>`;
+                                    contentsTag += palette.active === 1 ? `<div class="mod_grid_actives active-palette" palette-key="${palette.name}"><div class="mod_grid_active"><i class="fas fa-check"></i><span>Active</span></div></div>` : `<div class="mod_grid_active info panel-bind" palette-key="${palette.name}" event="click" method="activeSet" data-info="Set as active palette"><i class="fas fa-ellipsis-v"></i></div>`;
                                     contentsTag += `</div>`;
                                     paletteContent.push({
                                         id:palette.name,
                                         contentStyle:`flex-direction:row;padding-top:1rem;padding-bottom:1rem;`,
                                         content:`
-<div class="mod_grid_item_content">
+<div class="mod_grid_item_content" id="palette_${palette.name}">
     <h2>${palette.name}</h2>
     ${contentsTag}
 </div>

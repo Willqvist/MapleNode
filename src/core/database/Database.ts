@@ -174,7 +174,7 @@ export interface Database {
    * sets the id of the palette to active.
    * @param id the id of the palette
    */
-  enablePalette(id: number): Promise<PalettesInterface>;
+  enablePalette(id: string): Promise<PalettesInterface>;
 
   /**
    * removes a palette from the database.

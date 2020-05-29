@@ -12,6 +12,31 @@ export default class PalettePanel extends Panel {
         this.remove.bindButton(this.getAll('remove'), this.onRemovePalette.bind(this));
         this.grid = new Grid('palettes');
         this.registerTriggers();
+        this.bindPanels();
+    }
+
+    async activeSet(elem) {
+        const element = elem;
+        const url = new Url('./dashboard/palette/select',
+            {
+                key: element.getAttribute('palette-key')
+            });
+        const response = await Http.POST(url);
+        if(!response.reason) {
+            const active = this.DOM.getElementsByClassName('active-palette')[0];
+            if(active) {
+                active.className = 'mod_grid_active info panel-bind';
+                active.setAttribute('event', 'click');
+                active.setAttribute('method', 'activeSet');
+                active.setAttribute('data-info', 'Set as active palette');
+                active.innerHTML = `<i class="fas fa-ellipsis-v"></i>`;
+                this.bindPanel(active);
+                window.registerInfo(active);
+            }
+            element.className = 'mod_grid_actives active-palette';
+            element.innerHTML = `<div class="mod_grid_active"><i class="fas fa-check"></i><span>Active</span></div>`
+            element.parentElement.replaceChild(element.cloneNode(true),element);
+        }
     }
 
     async onRemovePalette(state, data, popup) {
@@ -23,8 +48,13 @@ export default class PalettePanel extends Panel {
                 });
             const response = await Http.DELETE(url);
             if (response.reason) return {error: response.reason};
+            this.grid.remove(data.id);
         }
         return {error: false};
+    }
+
+    appendGrid() {
+
     }
 
     async onPopupClick(state, data, popup) {
@@ -42,6 +72,7 @@ export default class PalettePanel extends Panel {
                     });
                 const response = await Http.POST(url);
                 if(response.reason) return {error:response.reason};
+                this.appendGrid(data);
             } else {
                 console.log(data);
                 const url = new Url('./dashboard/palette',

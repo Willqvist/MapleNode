@@ -19,9 +19,9 @@ const reports = new ReportsPanel('reports');
 // Sub panels
 const download = new DownloadPanel('downloads');
 const vote = new VotePanel('votes');
-const template = new PalettePanel('templates');
+const template = new ImagesPanel('templates');
 const image = new ImagesPanel('images');
-const palettes = new PalettePanel('palettes');
+const palettes = new ImagesPanel('palettes');
 
 handler.listen('pageEnter', (page, src) => {
   console.log(page.DOM.className.includes("containsSubPages"));
@@ -32,7 +32,6 @@ handler.listen('pageEnter', (page, src) => {
   } else {
     bar.className = "";
   }
-  console.log('entering page:', offsetY);
 });
 
 download.registerTriggers();

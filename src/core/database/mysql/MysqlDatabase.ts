@@ -397,12 +397,16 @@ export default class MysqlDatabase implements Database {
     return affectedRows;
   }
 
-  async enablePalette(id: number): Promise<PalettesInterface> {
+  async enablePalette(id: string): Promise<PalettesInterface> {
     const tableName = table('palettes');
-    await this.connection.query(`UPDATE ${tableName} SET active=0 WHERE active=1`);
-    await this.connection.execute(`UPDATE ${tableName} SET active=1 WHERE id=?`, [id]);
-    const [result] = await this.connection.execute(`SELECT ${tableName} WHERE id=?`, [id]);
-    return result[0];
+    try {
+      await this.connection.query(`UPDATE ${tableName} SET active=0 WHERE active=1`);
+      await this.connection.execute(`UPDATE ${tableName} SET active=1 WHERE name=?`, [id]);
+      const [result] = await this.connection.execute(`SELECT ${tableName} WHERE name=?`, [id]);
+      return result[0];
+    } catch(err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 
   async updateDownload(id: number, name: string, url: string): Promise<boolean> {

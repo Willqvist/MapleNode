@@ -9,6 +9,7 @@ export default class Panel {
     this.popups = {};
     this.submenu = null;
     this.subMenuMap = {};
+    this.eventFuncs = {};
   }
 
   registerTriggers() {
@@ -18,11 +19,26 @@ export default class Panel {
   registerTrigger(elem) {
     this.registerInfo(elem);
     const cls = elem.getElementsByClassName('popup-trigger');
-    console.log(cls);
     for (let i = 0; i < cls.length; i++) {
       const popup = PopupProvider.get(cls[i].getAttribute('trigger'));
       popup.bindButton(cls[i], this.onPopupClick.bind(this));
     }
+  }
+
+  bindPanels() {
+    const elems = this.getAll('panel-bind');
+    for(let i = 0; i < elems.length; i++) {
+      this.bindPanel(elems[i]);
+    }
+  }
+
+  bindPanel(elem) {
+    const method = elem.getAttribute('method');
+    const event = elem.getAttribute('event');
+    this.eventFuncs[elem] = () => {
+      this[method](elem);
+    };
+    elem.addEventListener(event,this.eventFuncs[elem],false);
   }
 
   getAll(cls) {
