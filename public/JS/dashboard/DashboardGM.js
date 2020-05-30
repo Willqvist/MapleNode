@@ -11,7 +11,6 @@ import ImagesPanel from "./panels/ImagesPanel.js";
 const bar = document.getElementById('dahboard_bar');
 const handler = new PanelHandler();
 const statistics = new StatisticsPanel('statistics');
-const designs = new PalettePanel('designs');
 const layouts = new LayoutPanel('layouts');
 const logs = new LogsPanel('logs');
 const reports = new ReportsPanel('reports');
@@ -19,9 +18,9 @@ const reports = new ReportsPanel('reports');
 // Sub panels
 const download = new DownloadPanel('downloads');
 const vote = new VotePanel('votes');
-const template = new ImagesPanel('templates');
+const template = new StatisticsPanel('templates');
 const image = new ImagesPanel('images');
-const palettes = new ImagesPanel('palettes');
+const palettes = new PalettePanel('palettes');
 
 handler.listen('pageEnter', (page, src) => {
   console.log(page.DOM.className.includes("containsSubPages"));
@@ -48,7 +47,6 @@ submenuDesignContents.addPanel(palettes);
 submenuDesignContents.goTo('palettes');
 
 handler.addPanel(statistics);
-handler.addPanel(designs);
 handler.addPanel(layouts);
 handler.addPanel(logs);
 handler.addPanel(reports);

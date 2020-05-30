@@ -176,7 +176,7 @@ class App {
         fontColorDark: '#20063B',
         fillColor: '#CC3363',
       };
-      await cGen.generateCSS(paletteInterface);
+      //await cGen.generateCSS(paletteInterface);
       next();
     });
     app.use('/setup', SetupRouter);

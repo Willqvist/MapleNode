@@ -402,7 +402,7 @@ export default class MysqlDatabase implements Database {
     try {
       await this.connection.query(`UPDATE ${tableName} SET active=0 WHERE active=1`);
       await this.connection.execute(`UPDATE ${tableName} SET active=1 WHERE name=?`, [id]);
-      const [result] = await this.connection.execute(`SELECT ${tableName} WHERE name=?`, [id]);
+      const [result] = await this.connection.execute(`SELECT * FROM ${tableName} WHERE name=?`, [id]);
       return result[0];
     } catch(err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });

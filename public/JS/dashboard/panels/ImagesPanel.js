@@ -7,11 +7,12 @@ import PopupProvider from "../popup/PopupProvider.js";
 
 export default class ImagesPanel extends Panel {
     init() {
+        console.log("INIT IMAGES");
+
         super.init();
         this.registerTriggers();
         this.remove = PopupProvider.get('removePopup');
         this.remove.bindButton(this.getAll('remove'), this.onRemoveFile.bind(this));
-
         this.listPopup = PopupProvider.get('listPopup');
         this.listPopup.bindButton(this.getAll('trigger-list'), this.onTagChange.bind(this));
         this.grid = new Grid('images');

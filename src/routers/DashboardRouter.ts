@@ -122,8 +122,8 @@ router.post('/palette', async (req, res) => {
       0
     );
     return send(res, { success: true, key: paletteId });
-  } catch ({ message }) {
-    send(res, { success: false, reason: message });
+  } catch (err) {
+    send(res, { success: false, reason: err.getMessage() });
   }
 });
 
@@ -132,9 +132,9 @@ router.post('/palette/select', async (req, res) => {
   try {
     const palette = await DatabaseConnection.instance.enablePalette(key);
     await CSSGenerator.generateCSS(palette);
-    return res.send(JSON.stringify({ success: true }));
-  } catch ({ message }) {
-    send(res, { success: true, reason: message });
+    send(res, { success: true });
+  } catch (err) {
+    send(res, { success: true, reason: err.getMessage() });
   }
 });
 
