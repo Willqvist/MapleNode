@@ -1240,3 +1240,74 @@ body
     width:0%;
     height:100%;
 }
+@media only screen and (max-width: 100em) {
+    .submenu {
+        width:5em !important;
+    }
+    .submenu li {
+        padding:0;
+    }
+    .submenu li i {
+        margin:auto;
+    }
+    .submenu li span {
+        display:none;
+    }
+    .submenu li:hover, .focus:hover {
+        padding-left:0rem !important;
+    }
+    .submenu li:hover i {
+        transform:scale(1.3);
+    }
+    .focus:hover {
+
+    }
+    .dashboard_menu {
+        width:15rem;
+    }
+    .dashboard_menu ul li {
+        padding-left:2rem;
+    }
+    .dashboard_menu ul li:hover {
+        padding-left:3rem;
+    }
+    .dashboard_menu .focus:hover {
+        padding-left:2rem !important;
+    }
+}
+@media only screen and (max-width: 60em) {
+    .dashboard_menu {
+        width:5rem;
+    }
+    .dashboard_menu li span {
+        display:none;
+    }
+    .dashboard_menu li {
+        padding:0 !important;
+    }
+    .dashboard_menu li:hover i {
+        transform:scale(1.3);
+    }
+    .dashboard_menu .focus:hover {
+        padding-left:0rem !important;
+    }
+    .dashboard_menu li i {
+        margin:auto;
+    }
+    #logo, .user_icon {
+        width:3rem !important;
+        height:3rem !important;
+    }
+    .user_icon {
+        border-radius:20rem !important;
+    }
+    .user h3 {
+        font-size:0.7rem !important;
+    }
+    #logo, .dashboard_menu .user {
+        margin-top:2rem;
+        margin-bottom:2rem;
+    }
+
+
+}

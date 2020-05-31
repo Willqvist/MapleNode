@@ -8,7 +8,7 @@ import { Server } from 'http';
 import * as consts from './core/Constants';
 import HOME from './Paths';
 import UrlSlicer from './Middleware';
-import setup, {setExpressRender} from './setup';
+import setup, { setExpressRender } from './setup';
 import input from './In';
 import Logger from './core/logger/Logger';
 import cGen from './scripts/CSSGenerator/CSSGenerator';
@@ -23,7 +23,7 @@ import GlobalRouter from './routers/GlobalRouter';
 import IORouter from './routers/IORouter';
 import PagesRouter from './routers/PagesRouter';
 import DashboardRouter from './routers/DashboardRouter';
-import FileProvider from "./models/FileProvider";
+import FileProvider from './models/FileProvider';
 
 /**
  * sets the log level depending on mode string
@@ -176,7 +176,7 @@ class App {
         fontColorDark: '#20063B',
         fillColor: '#CC3363',
       };
-      //await cGen.generateCSS(paletteInterface);
+      await cGen.generateCSS(paletteInterface);
       next();
     });
     app.use('/setup', SetupRouter);
