@@ -22,6 +22,18 @@ const listVotes = {
     addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New vote" trigger="votePopup" popup-data="#vote=src,#-1=id,#Add Vote=title,#Title=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,#Name=input_1,#Url=input_2,#1000=input_3,#0=input_4,#Add=submit"',
     deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#vote=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
 };
+// panel-bind" palette-key="${palette.name}" event="click" method="activeSet"
+const listLogs = {
+    icon:"fab fa-readme",
+    name: "Logs",
+    list: options.votes,
+    id:"ID",
+    title: {key:"name"},
+    attribs: [{key:"url",name:"url"},{key:"nx",name:"nx"},{key:"time",name:"cooldown"}],
+    editAttributes: 'class=" fas fa-book btn-icon info panel-bind" event="click" method="readLog" popup-data="#vote=src,<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,<<>div>div[2]>ul>li[1]>span=input_3,<<>div>div[2]>ul>li[2]>span=input_4,#Edit=submit" data-info="Read more"',
+    addAttributes: 'class="fas fa-dumpster popup-trigger info" data-info="Delete all" trigger="votePopup" popup-data="#vote=src,#-1=id,#Add Vote=title,#Title=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,#Name=input_1,#Url=input_2,#1000=input_3,#0=input_4,#Add=submit"',
+    deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#vote=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
+};
 %>
 <!doctype html>
 <html>
@@ -263,7 +275,7 @@ const listVotes = {
                     <!-- LOGS -->
                     <div id="logs" class="contentPage">
                         <h1><i class="fas fa-clipboard-list"></i>Logs</h1>
-                        <%- include ('../panels/list.ejs', listVotes) %>
+                        <%- include ('../panels/list.ejs', listLogs) %>
                     </div>
                     <!-- REPORTS -->
                     <div id="reports" class="contentPage">

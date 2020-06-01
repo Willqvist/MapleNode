@@ -12,6 +12,7 @@ export default class DownloadPanel extends Panel {
     this.remove = PopupProvider.get('removePopup');
     this.remove.bindButton(this.getAll('remove'), this.onRemoveDownload.bind(this));
     this.downloadList = new List("Downloads");
+    this.downloadList.extendOnClick();
   }
 
   // eslint-disable-next-line class-methods-use-this

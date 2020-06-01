@@ -10,25 +10,30 @@
             const item = list[i];
         %>
         <div class="mod_list_item" list-id="<%= item[id] %>">
-            <i class="<%= icon %> mod_list_icon"></i>
-            <div class="mod_list_item_content">
-                <div class="mod_list_item_top">
-                    <p><%= item[title.key] %></p>
+            <div class="mod_list_main">
+                <i class="<%= icon %> mod_list_icon"></i>
+                <div class="mod_list_item_content">
+                    <div class="mod_list_item_top">
+                        <p><%= item[title.key] %></p>
+                    </div>
+                    <div class="mod_list_break"></div>
+                    <div class="mod_list_item_bottom">
+                        <ul>
+                            <% for(let i = 0; i < attribs.length; i++ ) {
+                                const keyObj = attribs[i];
+                            %>
+                            <li><strong><%= keyObj.name %></strong><span><%= item[keyObj.key] %></span></li>
+                            <% } %>
+                        </ul>
+                    </div>
                 </div>
-                <div class="mod_list_break"></div>
-                <div class="mod_list_item_bottom">
-                    <ul>
-                        <% for(let i = 0; i < attribs.length; i++ ) {
-                            const keyObj = attribs[i];
-                        %>
-                        <li><strong><%= keyObj.name %></strong><span><%= item[keyObj.key] %></span></li>
-                        <% } %>
-                    </ul>
+                <div class="mod_list_item_btns mod_list_btn" id="<%= item[id] %>">
+                    <i  <%- editAttributes %>></i>
+                    <i  <%- deleteAttributes %>></i>
                 </div>
             </div>
-            <div class="mod_list_item_btns mod_list_btn" id="<%= item[id] %>">
-                <i  <%- editAttributes %>></i>
-                <i  <%- deleteAttributes %>></i>
+            <div class="mod_list_extended">
+
             </div>
         </div>
         <% } %>
