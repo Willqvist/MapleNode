@@ -7,7 +7,7 @@ import helmet from 'helmet';
 import { Server } from 'http';
 import * as consts from './core/Constants';
 import HOME from './Paths';
-import UrlSlicer from './Middleware';
+import { UrlSlicer } from './Middleware';
 import setup, { setExpressRender } from './setup';
 import input from './In';
 import Logger from './core/logger/Logger';

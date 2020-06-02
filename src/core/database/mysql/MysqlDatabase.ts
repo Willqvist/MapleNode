@@ -47,6 +47,7 @@ function convert(rows: any[], conversions: any): any[] {
 }
 
 export default class MysqlDatabase implements Database {
+
   connection: any;
 
   async onInstansiate(data: DatabaseAuthInterface): Promise<boolean> {
@@ -404,7 +405,7 @@ export default class MysqlDatabase implements Database {
       await this.connection.execute(`UPDATE ${tableName} SET active=1 WHERE name=?`, [id]);
       const [result] = await this.connection.execute(`SELECT * FROM ${tableName} WHERE name=?`, [id]);
       return result[0];
-    } catch(err) {
+    } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
@@ -745,4 +746,35 @@ export default class MysqlDatabase implements Database {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
+
+  async getLogs(): Promise<any> {
+    const tableName = table('logs');
+    try {
+      const [res] = await this.connection.execute(`SELECT * FROM ${tableName}`);
+      return res;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
+
+  async removeLog(id: string): Promise<boolean> {
+    const tableName = table('logs');
+    try {
+      const [res] = await this.connection.execute(`DELETE * FROM ${tableName} WHERE id=?`,[id]);
+      return true;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
+
+  async removeAllLogs(): Promise<any> {
+    const tableName = table('logs');
+    try {
+      const [res] = await this.connection.execute(`DELETE * FROM ${tableName}`);
+      return true;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
+
 }

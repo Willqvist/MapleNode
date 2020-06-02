@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS prefix_layout;
 DROP TABLE IF EXISTS prefix_file_tags;
 DROP TABLE IF EXISTS prefix_tags;
 DROP TABLE IF EXISTS prefix_files;
+DROP TABLE IF EXISTS prefix_logs;
 
 CREATE TABLE prefix_settings
 (
@@ -56,6 +57,12 @@ CREATE TABLE prefix_files
 (
     file VARCHAR(180) NOT NULL,
     upload TIMESTAMP,
+    PRIMARY KEY(file)
+);
+CREATE TABLE prefix_logs
+(
+    id INT PRIMARY KEY,
+    time TIMESTAMP,
     PRIMARY KEY(file)
 );
 CREATE TABLE prefix_tags

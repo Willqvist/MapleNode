@@ -11,24 +11,33 @@ export default class List {
         this.extendHeight = height;
         this.list.className += " mod_list_hover";
         this.extOnClick = true;
+        this.applyClickOnChildren(height);
+    }
+
+    applyClickOnChildren(height) {
         const { children } = this.items;
         for(let i = 0; i < children.length; i++) {
-            this.appendExtendOnClick(children[i]);
+            this.appendExtendOnClick(children[i], height);
         }
     }
 
-    appendExtendOnClick(elem) {
+    appendExtendOnClick(elem, height) {
         elem.addEventListener("click",()=> {
-            this.openExtend(elem.getAttribute("list-id"));
+            this.openExtend(elem.getAttribute("list-id"), height);
         },false);
     }
 
-    openExtend(id) {
+    removeAll() {
+        this.items.innerHTML = "";
+    }
+
+    openExtend(id, height) {
         const item = this.findByListId(id);
         if(!item) return;
         const bottom = item.getElementsByClassName('mod_list_extended')[0];
         const ext = this.extended[id];
-        bottom.style.height = `${!ext?this.extendHeight:0}rem`;
+        bottom.style.maxHeight = `${!ext?height:0}rem`;
+        bottom.style.opacity = `${!ext?1:0}`;
         this.extended[id] = !ext;
     }
 

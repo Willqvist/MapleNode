@@ -317,6 +317,12 @@ export interface Database {
   addTag(tag: string): Promise<boolean>;
 
   removeTag(file: string, tag: string): Promise<boolean>;
+
+  getLogs(): Promise<any>;
+
+  removeLog(id: string): Promise<boolean>;
+
+  removeAllLogs(): Promise<any>;
 }
 
 /*

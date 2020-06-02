@@ -97,7 +97,15 @@
     background: #dbffed;
 }
 .mod_list_extended {
-    height:0rem;
-    transition: ease 0.2s;
-    background: #f9f9f9;
+    height:auto;
+    transition: ease-in-out 0.2s;
+    background: #fcfcfc;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow: 0 -0.1rem rgba(211, 228, 250, 0.33);
+    max-height: 0;
+    opacity:0;
+}
+.mod_list_extended > * {
+    padding:1.5rem;
 }

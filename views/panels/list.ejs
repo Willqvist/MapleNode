@@ -33,7 +33,9 @@
                 </div>
             </div>
             <div class="mod_list_extended">
-
+                <%if(typeof readMoreContent !== 'undefined') {%>
+                    <%- readMoreContent %>
+                <%}%>
             </div>
         </div>
         <% } %>

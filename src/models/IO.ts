@@ -51,6 +51,18 @@ export default class IO {
     return response;
   }
 
+  async getLogs() {
+    return DatabaseConnection.instance.getLogs();
+  }
+
+  async removeLog(id: string) {
+    return DatabaseConnection.instance.removeLog(id);
+  }
+
+  async removeAllLogs() {
+    return DatabaseConnection.instance.removeAllLogs();
+  }
+
   private loginUserToSession(session: Express.Session, account: AccountsInterface, expire: Date, maxAge: number) {
     session.user = account;
     session.cookie.expires = expire;
@@ -99,7 +111,7 @@ export default class IO {
         reason: 'Wrong username or password!',
       },
     };
-    if(account) {
+    if (account) {
       response.REST.success = true;
       response.REST.loggedin = true;
       response.account = account;
