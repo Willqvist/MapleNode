@@ -5,7 +5,7 @@ import {
   DesignInterface,
   DownloadsInterface,
   LayoutInterface,
-  PalettesInterface,
+  PalettesInterface, ReportsInterface,
   SettingsInterface,
   VoteInterface,
 } from '../Interfaces/DatabaseInterfaces';
@@ -323,15 +323,11 @@ export interface Database {
   removeLog(id: string): Promise<boolean>;
 
   removeAllLogs(): Promise<any>;
-}
 
-/*
-json layout
-{
-    select:[]
-    where:{a:2}
-    order:{a:asc}
- */
+  getReports(): Promise<ReportsInterface[]>;
+
+  removeReports(victimid: number): Promise<boolean>;
+}
 
 /**
  * enum used in creating rank query to the database.
@@ -340,13 +336,6 @@ json layout
 export enum RANK {
   JOB = 1,
   NAME,
-}
-
-/**
- * @internal
- */
-export enum ACCOUNT_FLAGS {
-  voting = 1,
 }
 
 export interface Rank {

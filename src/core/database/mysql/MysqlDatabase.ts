@@ -9,6 +9,7 @@ import {
   mn_palettesConversion,
   mn_settingsConversion,
   mn_voteConversion,
+  reportsConversion,
 } from './MysqlConversions';
 import {
   AccountsInterface,
@@ -16,6 +17,7 @@ import {
   DownloadsInterface,
   LayoutInterface,
   PalettesInterface,
+  ReportsInterface,
   SettingsInterface,
   VoteInterface,
   VotingInterface,
@@ -47,7 +49,6 @@ function convert(rows: any[], conversions: any): any[] {
 }
 
 export default class MysqlDatabase implements Database {
-
   connection: any;
 
   async onInstansiate(data: DatabaseAuthInterface): Promise<boolean> {
@@ -748,19 +749,19 @@ export default class MysqlDatabase implements Database {
   }
 
   async getLogs(): Promise<any> {
-    const tableName = table('logs');
-    try {
-      const [res] = await this.connection.execute(`SELECT * FROM ${tableName}`);
-      return res;
-    } catch (err) {
-      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    const [rows, err] = await this.exec<CharactersInterface>({}, 'logs');
+    console.log(rows, err);
+
+    if (err) {
+      throw new DatabaseError({ errno: 0, msg: err });
     }
+    return rows;
   }
 
   async removeLog(id: string): Promise<boolean> {
     const tableName = table('logs');
     try {
-      const [res] = await this.connection.execute(`DELETE * FROM ${tableName} WHERE id=?`,[id]);
+      await this.connection.execute(`DELETE FROM ${tableName} WHERE id=?`, [id]);
       return true;
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
@@ -770,11 +771,32 @@ export default class MysqlDatabase implements Database {
   async removeAllLogs(): Promise<any> {
     const tableName = table('logs');
     try {
-      const [res] = await this.connection.execute(`DELETE * FROM ${tableName}`);
+      await this.connection.execute(`DELETE FROM ${tableName}`);
       return true;
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
 
+  async getReports(): Promise<ReportsInterface[]> {
+    try {
+      const [rows] = await this.connection.execute(
+        `SELECT reports.*, accounts.name as victimName FROM reports INNER JOIN accounts ON accounts.id = reports.victimid; `
+      );
+      console.log("REPORT FILES:", rows);
+      return rows;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
+
+  async removeReports(victimid: number) {
+    try {
+      await this.connection.execute(`DELETE FROM reports WHERE victimid=?`, [victimid]);
+      return true;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+    return false;
+  }
 }

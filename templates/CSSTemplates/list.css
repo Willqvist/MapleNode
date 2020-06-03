@@ -109,3 +109,22 @@
 .mod_list_extended > * {
     padding:1.5rem;
 }
+.mod_list_extended .chatlog {
+    padding-top:0;
+}
+.mod_list_extended ul {
+    padding-top:0.5rem;
+}
+.mod_list_extended li {
+    list-style:none;
+    font-size:0.7rem;
+    padding:0.5rem 0rem;
+    box-shadow:0 0.05rem 0 rgba(0,0,0,0.1);
+    display:flex;
+    flex-direction: column;
+    font-weight:700;
+}
+.mod_list_extended li span {
+    font-size:0.6rem;
+    font-weight:500;
+}

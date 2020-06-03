@@ -62,8 +62,10 @@ CREATE TABLE prefix_files
 CREATE TABLE prefix_logs
 (
     id INT PRIMARY KEY,
-    time TIMESTAMP,
-    PRIMARY KEY(file)
+    type VARCHAR(120),
+    creation TIMESTAMP,
+    body VARCHAR(255),
+    PRIMARY KEY(id)
 );
 CREATE TABLE prefix_tags
 (

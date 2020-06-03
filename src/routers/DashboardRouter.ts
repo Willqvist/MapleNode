@@ -18,6 +18,8 @@ async function renderGMDashboard(req, res) {
     const votes = await DatabaseConnection.instance.getVotes();
     const palettes = await DatabaseConnection.instance.getPalettes();
     const downloads = await DatabaseConnection.instance.getDownloads();
+    const reports = await DatabaseConnection.instance.getReports();
+    const logs = await DatabaseConnection.instance.getLogs();
     const tags = await FileProvider.getAllTags();
     const imageTags = await FileProvider.getTaggedFiles();
     console.log(imageTags);
@@ -36,9 +38,12 @@ async function renderGMDashboard(req, res) {
       user: getAccount(req.session),
       images,
       tags,
+      reports,
+      logs,
     });
-  } catch ({ message }) {
-    Logger.log('debug', `Error rendering gm dashboard ${message}`);
+  } catch (err) {
+    console.log(err);
+    Logger.log('debug', `Error rendering gm dashboard ${err}`);
   }
 }
 

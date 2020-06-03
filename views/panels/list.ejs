@@ -36,6 +36,9 @@
                 <%if(typeof readMoreContent !== 'undefined') {%>
                     <%- readMoreContent %>
                 <%}%>
+                    <%if(typeof content !== 'undefined') {%>
+                        <%- content[i] %>
+                    <%}%>
             </div>
         </div>
         <% } %>

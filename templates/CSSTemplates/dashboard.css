@@ -860,6 +860,10 @@ body
     color:var(--fontColorDark);
 
 }
+.btn_parent i {
+    font-size:1rem;
+    margin-right:1rem;
+}
 
 #dahboard_bar::after {
     background:#f8f8fe;
