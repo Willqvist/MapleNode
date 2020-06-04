@@ -5,7 +5,8 @@
         <link rel="stylesheet" type="text/css" href="CSS/menu.css">
         <link rel="stylesheet" type="text/css" href="CSS/index.css">
         <link rel="stylesheet" type="text/css" href="CSS/play.css">
-        <% partial('imports/head') %>
+        <%- include('../imports/head'); %>
+
         <title>Vote <%= settings.serverName %></title>
         <style>
             .box
@@ -13,7 +14,8 @@
                 height:20em;
             }
         </style>
-        <% partial('imports/menu.ejs') %>
+
+        <%- include('../imports/menu'); %>
         <section class="maxWidth">
         <%
         if(!loggedIn)

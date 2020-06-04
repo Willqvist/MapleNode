@@ -10,10 +10,10 @@
     <link rel="stylesheet" type="text/css" href="CSS/ranking.css">
     <link rel="stylesheet" type="text/css" href="CSS/control.css">
     <link rel="stylesheet" type="text/css" href="CSS/media.css">
-    <% partial('imports/head') %>
+    <%- include('./imports/head'); %>
 
     <title><%= settings.serverName %></title>
-    <% partial('imports/menu') %>
+    <%- include('./imports/menu'); %>
     <div class="header">
         <div class="video_bg">
             <video class="bg_video" width="1080" height="720" autoplay muted loop>

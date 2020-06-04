@@ -6,11 +6,12 @@
         <link rel="stylesheet" type="text/css" href="CSS/index.css">
         <link rel="stylesheet" type="text/css" href="CSS/play.css">
 
-        <%- include('../imports/head') %>
+        <%- include('../imports/head.ejs') %>
         <title>Play <%= settings.serverName %></title>
-        <%- include('../imports/menu') %>
+        <%- include('../imports/menu.ejs') %>
         <section id="content" class="maxWidth box_wrapper">
         <%
+        if(options.downloads)
         for(let download of options.downloads)
         {
         %>

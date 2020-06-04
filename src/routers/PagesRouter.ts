@@ -4,8 +4,8 @@ import * as consts from '../core/Constants';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  console.log('IM HERE');
-  return res.render('index');
+  const { user } = req.session;
+  return res.render('index',{user});
 });
 router.get('/ranking', (req, res) => {
   const { user } = req.session;

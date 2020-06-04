@@ -3,7 +3,7 @@
 </head>
 <body>
 <%
-const loggedIn = locals.user;
+const loggedIn = options.user;
 function isActive(type)
 {
     if(!isset(typeof MENU_SITE)) return "menu_li";
@@ -20,18 +20,18 @@ function isActive(type)
         <p id="activeUsers">2000 Online</p>
         <div class="seperator"></div>
         <ul>
-            <li><a class="underline" href=""><span>home</span></a></li>
-            <li><a class="underline" href=""><span>forum</span></a></li>
-            <li><a class="underline" href=""><span>vote</span></a></li>
-            <li><a class="underline" href=""><span>play</span></a></li>
-            <li><a class="underline" href=""><span>ranking</span></a></li>
+            <li><a class="underline" href="./"><span>home</span></a></li>
+            <li><a class="underline" href="./"><span>forum</span></a></li>
+            <li><a class="underline" href="./vote"><span>vote</span></a></li>
+            <li><a class="underline" href="./play"><span>play</span></a></li>
+            <li><a class="underline" href="./ranking"><span>ranking</span></a></li>
         </ul>
     </div>
     <div id="menu_right">
-        <p><a class="underline" href=""><span>sign in</span></a></p>
+        <p><a class="underline" href="./login"><span><%= loggedIn?"dashboard":"sign in" %></span></a></p>
         <div class="seperator"></div>
         <div class="btn_parent">
-            <div class="btn-a btn"><a class="child" href=""><span>PLAY <%= settings.serverName %></span></a></div>
+            <div class="btn-a btn"><a class="child" href="./download"><span>PLAY <%= settings.serverName %></span></a></div>
         </div>
     </div>
 </div>

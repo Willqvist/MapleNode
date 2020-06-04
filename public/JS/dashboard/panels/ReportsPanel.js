@@ -37,7 +37,7 @@ export default class ReportsPanel extends Panel {
             if(response.reason) return {error:response.reason};
             const items = this.list.getElementsByAttribute("victim",data.src);
             console.log(items);
-            
+
             for(let i = 0; i < items.length; i++) {
                 items[i].getElementsByClassName('mod_list_item_bottom')[0].getElementsByTagName('span')[0].innerHTML = "HANDLED"
                 items[i].getElementsByClassName('mod_list_extended')[0].getElementsByTagName('li')[4].innerHTML = `<span>Banned:</span>true`;

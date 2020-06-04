@@ -1,15 +1,10 @@
 <%
-    function partial(page, data) {
-        %><%- include(page, data); %><%
-    }
-
     function isset(type) {
         return type === 'undefined';
     }
 
     const attribs = {
         options,
-        partial,
         isset,
         loggedIn: locals.user,
         user: locals.user
@@ -20,7 +15,7 @@
             print("404");
             return;
         }
-        partial(options.page, attribs);
+        %><%- include(options.page, attribs); %><%
     }
     setup();
 %>

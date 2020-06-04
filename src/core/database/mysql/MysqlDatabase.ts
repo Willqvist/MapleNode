@@ -816,7 +816,12 @@ export default class MysqlDatabase implements Database {
     return true;
   }
 
-  removeAllReports(): Promise<boolean> {
-    return undefined;
+  async removeAllReports(): Promise<boolean> {
+    try {
+      await this.connection.execute(`DELETE FROM reports`);
+      return true;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 }
