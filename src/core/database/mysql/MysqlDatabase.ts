@@ -9,7 +9,6 @@ import {
   mn_palettesConversion,
   mn_settingsConversion,
   mn_voteConversion,
-  reportsConversion,
 } from './MysqlConversions';
 import {
   AccountsInterface,
@@ -781,9 +780,8 @@ export default class MysqlDatabase implements Database {
   async getReports(): Promise<ReportsInterface[]> {
     try {
       const [rows] = await this.connection.execute(
-        `SELECT reports.*, accounts.name as victimName FROM reports INNER JOIN accounts ON accounts.id = reports.victimid; `
+        `SELECT reports.*, accounts.name as victimName ,accounts.banned as banned FROM reports INNER JOIN accounts ON accounts.id = reports.victimid ORDER BY reports.status DESC `
       );
-      console.log("REPORT FILES:", rows);
       return rows;
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
@@ -797,6 +795,28 @@ export default class MysqlDatabase implements Database {
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
-    return false;
+  }
+
+  async setBanned(accountid: number, banned: boolean): Promise<boolean> {
+    try {
+      await this.connection.execute(`UPDATE accounts SET banned=? WHERE id=?`, [banned ? 1 : 0, accountid]);
+      return true;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+  }
+
+  async handleReports(victimid: number, ban: boolean): Promise<boolean> {
+    try {
+      await this.connection.execute(`UPDATE reports SET status=? WHERE victimid=?`, ['HANDLED',victimid]);
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
+    await this.setBanned(victimid, ban);
+    return true;
+  }
+
+  removeAllReports(): Promise<boolean> {
+    return undefined;
   }
 }

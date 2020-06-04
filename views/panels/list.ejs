@@ -9,7 +9,12 @@
         for(let i = 0; i < list.length; i++ ) {
             const item = list[i];
         %>
-        <div class="mod_list_item" list-id="<%= item[id] %>">
+        <div class="mod_list_item" list-id="<%= item[id] %>" <%if(typeof itemAttribs !== 'undefined') {
+        for(let i = 0; i < itemAttribs.length; i++ ){
+            const attrib = itemAttribs[i];
+        %>
+        <%- attrib.name %>="<%-item[attrib.key]%>"
+        <%}}%>>
             <div class="mod_list_main">
                 <i class="<%= icon %> mod_list_icon"></i>
                 <div class="mod_list_item_content">

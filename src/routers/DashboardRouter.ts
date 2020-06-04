@@ -63,7 +63,7 @@ router.get('*', (req, res, next) => {
 
 router.all('*', (req, res, next) => {
   const { session } = req;
-  if (!isLoggedIn(session) || !isWebAdmin(session)) return send(res, { success: false, reason: 'access denied' }, 403);
+  if (!isLoggedIn(session) || !isWebAdmin(session)) return send(res, { success: false, reason: 'access denied!' }, 403);
   next();
 });
 

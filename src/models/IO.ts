@@ -63,6 +63,22 @@ export default class IO {
     return DatabaseConnection.instance.removeAllLogs();
   }
 
+  async getReports() {
+    return DatabaseConnection.instance.getLogs();
+  }
+
+  async removeReport(victimid: number) {
+    return DatabaseConnection.instance.removeReports(victimid);
+  }
+
+  async removeAllReports() {
+    return DatabaseConnection.instance.removeAllReports();
+  }
+
+  async handleReport(id: number, ban: boolean) {
+    return DatabaseConnection.instance.handleReports(id, ban);
+  }
+
   private loginUserToSession(session: Express.Session, account: AccountsInterface, expire: Date, maxAge: number) {
     session.user = account;
     session.cookie.expires = expire;

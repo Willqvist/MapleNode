@@ -327,6 +327,12 @@ export interface Database {
   getReports(): Promise<ReportsInterface[]>;
 
   removeReports(victimid: number): Promise<boolean>;
+
+  removeAllReports(): Promise<boolean>;
+
+  setBanned(accountid: number, banned: boolean): Promise<boolean>;
+
+  handleReports(id: number, ban: boolean): Promise<boolean>;
 }
 
 /**

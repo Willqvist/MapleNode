@@ -5,7 +5,7 @@ import Logger from '../core/logger/Logger';
 import DatabaseConnection from '../core/database/DatabaseConnection';
 import IO from '../models/IO';
 import { AccountsInterface } from '../core/Interfaces/DatabaseInterfaces';
-import { getAccount, isLoggedIn, isWebAdmin } from '../models/SessionHandler';
+import {getAccount, isAdmin, isLoggedIn, isWebAdmin} from '../models/SessionHandler';
 
 const router = express.Router();
 const io = new IO();
@@ -214,7 +214,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/logs', async (req, res, next) => {
+router.get('/logs', async (req, res) => {
   try {
     return res.send(JSON.stringify(await io.getLogs()));
   } catch (err) {
@@ -222,7 +222,7 @@ router.get('/logs', async (req, res, next) => {
   }
 });
 
-router.delete('/logs', async (req, res, next) => {
+router.delete('/logs', async (req, res) => {
   const { key } = req.body;
   try {
     await io.removeLog(key);
@@ -232,11 +232,56 @@ router.delete('/logs', async (req, res, next) => {
   }
 });
 
-router.delete('/logs/all', async (req, res, next) => {
+router.delete('/logs/all', async (req, res) => {
   try {
     await io.removeAllLogs();
     return res.send(JSON.stringify({ success: true }));
   } catch (err) {
+    return res.send(JSON.stringify({ success: false, error: err.getMessage() }));
+  }
+});
+router.get('/reports', async (req, res) => {
+  try {
+    return res.send(JSON.stringify(await io.getReports()));
+  } catch (err) {
+    return res.send(JSON.stringify({ success: false, error: err.getMessage() }));
+  }
+});
+
+router.delete('/reports', async (req, res) => {
+  const { key } = req.body;
+  try {
+    await io.removeReport(key);
+    return res.send(JSON.stringify({ success: true }));
+  } catch (err) {
+    return res.send(JSON.stringify({ success: false, error: err.getMessage() }));
+  }
+});
+
+router.delete('/reports/all', async (req, res) => {
+  try {
+    await io.removeAllReports();
+    return res.send(JSON.stringify({ success: true }));
+  } catch (err) {
+    return res.send(JSON.stringify({ success: false, error: err.getMessage() }));
+  }
+});
+
+router.use((req, res, next) => {
+  const { session } = req;
+  if (!isAdmin(session))
+    return res.send(JSON.stringify({ error: 'Access denied', success: false }));
+  next();
+});
+
+router.post('/reports/ban', async (req, res) => {
+  const { victimid, ban } = req.body;
+
+  try {
+    await io.handleReport(victimid, ban);
+    return res.send(JSON.stringify({ success: true }));
+  } catch (err) {
+    console.log(err);
     return res.send(JSON.stringify({ success: false, error: err.getMessage() }));
   }
 });

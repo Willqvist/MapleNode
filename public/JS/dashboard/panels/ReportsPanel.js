@@ -12,33 +12,52 @@ export default class ReportsPanel extends Panel {
         super.init();
         this.remove = PopupProvider.get('removePopup');
         this.remove.bindButton(this.getAll('remove'), this.onRemoveReport.bind(this));
-        this.logsList = new List("Reports");
+
+        this.remove = PopupProvider.get('removePopup');
+        this.remove.bindButton(this.getAll('ban'), this.onBan.bind(this));
+
+        this.list = new List("Reports");
         this.bindPanels();
     }
 
     async onRemoveReport(status,data,popup) {
         if(status === PopupForm.RESULT && !data.close) {
-            console.log("HERE");
-            const url = new Url('./IO/report', {key: data.id});
+            const url = new Url('./IO/reports', {key: data.id});
             const response = await Http.DELETE(url);
             if(response.reason) return {error:response.reason};
-            this.logsList.remove(data.id);
+            this.list.remove(data.id);
+        }
+        return {error: false};
+    }
+
+    async onBan(status,data,popup) {
+        if(status === PopupForm.RESULT && !data.close) {
+            const url = new Url('./IO/reports/ban', {victimid: data.src, ban: true});
+            const response = await Http.POST(url);
+            if(response.reason) return {error:response.reason};
+            const items = this.list.getElementsByAttribute("victim",data.src);
+            console.log(items);
+            
+            for(let i = 0; i < items.length; i++) {
+                items[i].getElementsByClassName('mod_list_item_bottom')[0].getElementsByTagName('span')[0].innerHTML = "HANDLED"
+                items[i].getElementsByClassName('mod_list_extended')[0].getElementsByTagName('li')[4].innerHTML = `<span>Banned:</span>true`;
+            }
+
         }
         return {error: false};
     }
 
     async removeAll(elem) {
-        console.log("HERE");
-        const url = new Url('./IO/report/all');
+        const url = new Url('./IO/reports/all');
         const response = await Http.DELETE(url);
         if(response.reason) return {error:response.reason};
-        this.logsList.removeAll();
+        this.list.removeAll();
         return {error: false};
     }
 
     readLog(elem) {
         const id = elem.parentNode.parentNode.parentNode.getAttribute("list-id");
-        this.logsList.openExtend(id, 20);
+        this.list.openExtend(id, 25);
     }
 
 }

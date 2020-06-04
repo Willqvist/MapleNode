@@ -41,11 +41,14 @@ const listReports = {
     name: "Reports",
     list: options.reports,
     id:"id",
+    itemAttribs: [{
+        key:"victimid",name:"victim"
+    }],
     title: {key:"victimName"},
     attribs: [{key:"status",name:"Status"}],
     editAttributes: 'class=" fas fa-book btn-icon info panel-bind" event="click" method="readLog" data-info="Read report"',
     addAttributes: 'class="fas fa-dumpster info panel-bind" data-info="Delete all" event="click" method="removeAll"',
-    deleteAttributes: 'class="fas fa-reply btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#vote=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Handle"',
+    deleteAttributes: 'class="fas fa-gavel btn-icon info popup-trigger ban" popup-data="<<<.victim=src,<.id=id,#Ban account?=title,#Yes ban it!=submit" data-info="Ban"',
 };
 %>
 <!doctype html>
@@ -173,9 +176,7 @@ const listReports = {
                                         </div>
                                     </div>
                                 </div>
-                                <%- include ('../panels/grid.ejs',{id:'templates',items:[
-                                    {content:"<h2>Heelo</h2>",image:"orange"}
-                                ]})%>
+                                <h3>Coming soon!</h3>
                             </div>
 
                             <!-- SUB IMAGES FOR DESIGN -->
@@ -284,6 +285,7 @@ const listReports = {
                     <!-- LAYOUTS -->
                     <div id="layouts" class="contentPage">
                         <h1><i class="fas fa-bars"></i>Website Layouts</h1>
+                        <h3>Coming soon!</h3>
                     </div>
                     <!-- LOGS -->
                     <div id="logs" class="contentPage">
@@ -315,6 +317,7 @@ const listReports = {
 <li><span>Date:</span> ${report.reporttime}</li>
 <li><span>Reason:</span> ${report.reason}</li>
 <li><span>status:</span> ${report.status}</li>
+<li><span>Banned:</span> ${report.banned?"true":"false"}</li>
 </ul>
 <p class="chatlog" >Chatlog: ${report.chatlog}</p>
 

@@ -101,4 +101,14 @@ export default class List {
         return node;
     }
 
+    getElementsByAttribute(name, src) {
+        const { children } = this.items;
+        const list = [];
+        for(let i = 0; i < children.length; i++) {
+            if(children[i].getAttribute(name) === src) {
+                list.push(children[i]);
+            }
+        }
+        return list;
+    }
 }

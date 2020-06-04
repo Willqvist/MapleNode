@@ -28,7 +28,7 @@ export default class LogsPanel extends Panel {
 
     async removeAll(elem) {
             console.log("HERE");
-            const url = new Url('./IO/logs/all');
+            const url = new Url('./IO/logs/all', {});
             const response = await Http.DELETE(url);
             if(response.reason) return {error:response.reason};
             this.logsList.removeAll();
