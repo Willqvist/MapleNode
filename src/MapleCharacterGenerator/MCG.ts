@@ -6,7 +6,7 @@ import ItemBuilderXml from './ItemBuilderXml';
 import ItemBuilderJson from './ItemBuilderJson';
 import * as Constants from '../core/Constants';
 import DatabaseConnection from '../core/database/DatabaseConnection';
-import FileTools from "../core/tools/FileTools";
+import FileTools from '../core/tools/FileTools';
 
 export interface Player {
   parts: PartsInterface;
@@ -37,7 +37,7 @@ export default class MapleCharacterGenerator {
   private builder: any;
 
   constructor(cooldown: number) {
-    this.cooldown = cooldown * 0;
+    this.cooldown = cooldown;
     this.parts = {};
     this.que = [];
     this.generators = {
@@ -81,32 +81,27 @@ export default class MapleCharacterGenerator {
   async generatePlayer(callback: (a: any) => any, name: string) {
     if (!this.builder) this.builder = this.generators[Constants.getConstant<string>('MCG')];
     const player: Player = { parts: {}, name, callback, items: [] };
-    if (await FileTools.exists(`../../Characters/${name}.png`)) {
-      const stat = await this.stats(`${__dirname}/Characters/${name}.png`);
+    if (await FileTools.exists(`characters/${name}.png`)) {
+      const stat = await this.stats(`characters/${name}.png`);
       const date = new Date(util.inspect(stat.mtime));
       const dateNow = new Date();
-      if ((dateNow.getMinutes() - date.getMinutes()) / 1000 < this.cooldown) return callback({ success: true });
+      if ((dateNow.getSeconds() - date.getSeconds()) < this.cooldown) return callback({ success: true });
     }
-    try {
-      const result = await DatabaseConnection.instance.getCharacter(name, { select: ['face', 'hair', 'skincolor'] });
-      if (!result)
-        return { success: false, errorID: GENERATOR_ERROR.INVALID_PLAYER, reason: `cant find player: ${name}` };
-      player.parts.face = result.face;
-      player.parts.hair = result.hair;
-      player.parts.skincolor = result.skincolor;
-      const results = await DatabaseConnection.instance.getEquipment(result.id);
-      player.items = results;
-      this.addToQueue(player);
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+    const result = await DatabaseConnection.instance.getCharacter(name, { select: ['face', 'hair', 'skincolor'] });
+    if (!result)
+      return { success: false, errorID: GENERATOR_ERROR.INVALID_PLAYER, reason: `cant find player: ${name}` };
+    player.parts.face = result.face;
+    player.parts.hair = result.hair;
+    player.parts.skincolor = result.skincolor;
+    const results = await DatabaseConnection.instance.getEquipment(result.id);
+    player.items = results;
+    this.addToQueue(player);
   }
- // SL HERE: SELECT inventoryitems.itemid, inventoryitems.position FROM inventoryequipment INNER JOIN inventoryitems ON inventoryequipment.inventoryitemid = inventoryitems.inventoryitemid WHERE inventoryitems.characterid = ? AND inventoryitems.inventorytype = '-1'
+
   buildPlayer(player: Player) {
     const results = player.items;
+    player.parts.stand = 1;
     for (let i = 0; i < results.length; i++) {
-      console.log(results[i]);
       switch (results[i].position) {
         case -1:
         case -101:
@@ -158,11 +153,10 @@ export default class MapleCharacterGenerator {
           break;
       }
     }
+    this.builder.parts = player.parts;
     if (player.parts.coat == null) player.parts.coat = 1040006;
     // 1062051
     // 1060002
-    console.log(player.parts);
-    this.builder.parts = player.parts;
     this.builder.equipItems(
       player,
       [
@@ -201,7 +195,7 @@ export default class MapleCharacterGenerator {
         { method: this.builder.setGloves, parameters: { id: player.parts.glove, z: 'gloveOverHair' } },
       ],
       (player: Player) => {
-        this.builder.outputImage(this.builder.canvas, `${__dirname}/Characters/${player.name}.png`, () => {
+        this.builder.outputImage(this.builder.canvas, `characters/${player.name}.png`, () => {
           player.callback({ success: true });
           this.goToNextInQueue();
         });

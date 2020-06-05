@@ -22,7 +22,6 @@ async function renderGMDashboard(req, res) {
     const logs = await DatabaseConnection.instance.getLogs();
     const tags = await FileProvider.getAllTags();
     const imageTags = await FileProvider.getTaggedFiles();
-    console.log(imageTags);
     const images = imageTags.filter((val) => FileTools.isImage(val));
     let activePalette = palettes[0].name;
     for (let i = 0; i < palettes.length; i++) {
@@ -42,7 +41,6 @@ async function renderGMDashboard(req, res) {
       logs,
     });
   } catch (err) {
-    console.log(err);
     Logger.log('debug', `Error rendering gm dashboard ${err}`);
   }
 }
@@ -76,12 +74,10 @@ router.get('/', (req, res) => {
 
 router.put('/vote', async (req, res) => {
   const { name, url, nx, time, key } = req.body;
-  console.log('IM HERE', req.body);
   try {
     await DatabaseConnection.instance.updateVote(key, name, url, nx, time);
     return send(res, { success: true });
   } catch (err) {
-    console.log(err.getErrorObject());
     return send(res, { success: false, reason: err.getMessage() });
   }
 });
@@ -173,7 +169,6 @@ router.put('/palette', async (req, res) => {
     );
     return send(res, { success: true });
   } catch (err) {
-    console.log(err);
     send(res, { success: false, reason: err.getMessage() });
   }
 });
@@ -223,7 +218,6 @@ router.delete('/file', async (req, res) => {
   try {
     await FileProvider.deleteFile(file);
   } catch (err) {
-    console.log(err);
     return send(res, { success: true, reason: err.getMessage() });
   }
   send(res, { success: true });

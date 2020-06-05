@@ -127,9 +127,10 @@ export default class MysqlDatabase implements Database {
       };
     }
     if(!sqlObj.where) sqlObj.where = {};
+    if(!sqlObj.select) sqlObj.select = [];
     sqlObj.where['name'] = name;
     sqlObj.select.push('id');
-    const [rows, err] = await this.exec<CharactersInterface>(sqlObj, 'characters', charactersConversion, false);
+    const [rows, err] = await this.exec<CharactersInterface>(sqlObj, 'characters', null, false);
     if (err) {
       throw new DatabaseError({ errno: 0, msg: err });
     }
@@ -346,7 +347,6 @@ export default class MysqlDatabase implements Database {
         }
       }
     } catch (err) {
-      console.log(err);
       throw new DatabaseError({ errno: err.errno, msg: err.sqlMessage });
     }
     return true;
@@ -452,7 +452,8 @@ export default class MysqlDatabase implements Database {
       const [
         result,
       ] = await this.connection.execute(
-        `SELECT inventoryequipment.* FROM inventoryitems INNER JOIN inventoryequipment ON inventoryitems.inventoryitemid = inventoryequipment.inventoryitemid WHERE characterid=?`,
+        `
+        SELECT inventoryitems.itemid, inventoryitems.position FROM inventoryequipment INNER JOIN inventoryitems ON inventoryequipment.inventoryitemid = inventoryitems.inventoryitemid WHERE inventoryitems.characterid = ? AND inventoryitems.inventorytype = '-1'`,
         [character]
       );
       return result;
@@ -627,7 +628,6 @@ export default class MysqlDatabase implements Database {
       taggedFile.tags = result.map((res) => res.tag);
       return taggedFile;
     } catch (err) {
-      console.log('ERROR HERE', err);
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
@@ -635,7 +635,6 @@ export default class MysqlDatabase implements Database {
   async tagFile(file: string, tag: string): Promise<number> {
     try {
       const tagTableName = table('file_tags');
-      console.log(file, tag, tagTableName);
       return this.insert(`INSERT INTO ${tagTableName} (file,tag) VALUES(?,?)`, [file, tag]);
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
@@ -643,11 +642,9 @@ export default class MysqlDatabase implements Database {
   }
 
   async getFiles(): Promise<File[]> {
-    console.log('recieving FILES');
     try {
       const tableName = table('files');
       const [result] = await this.connection.query(`SELECT file FROM ${tableName}`);
-      console.log('RESULT', result);
       const returnList: File[] = [];
       for (let i = 0; i < result.length; i++) {
         returnList.push(FileTools.pathToFile(result[i].file));
@@ -742,7 +739,6 @@ export default class MysqlDatabase implements Database {
     const tableName = table('file_tags');
     try {
       const [res] = await this.connection.execute(`DELETE FROM ${tableName} where file = ? AND tag = ?`, [file, tag]);
-      console.log(res);
       return true;
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
@@ -751,8 +747,6 @@ export default class MysqlDatabase implements Database {
 
   async getLogs(): Promise<any> {
     const [rows, err] = await this.exec<CharactersInterface>({}, 'logs');
-    console.log(rows, err);
-
     if (err) {
       throw new DatabaseError({ errno: 0, msg: err });
     }

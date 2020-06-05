@@ -94,7 +94,7 @@ export default class ItemBuilder extends ImageBuilder {
   }
 
   getPath(type, id) {
-    return `${__dirname}/src/gd//${type}/${`${id}`.padStart(8, '0')}.img/`;
+    return `${__dirname}/gd/${type}/${`${id}`.padStart(8, '0')}.img/`;
   }
 
   setHair(id: number, z: string, next: () => void) {
@@ -157,11 +157,10 @@ export default class ItemBuilder extends ImageBuilder {
         break;
       }
     }
-    if (zElem === null) return next();
+    if (!zElem) return next();
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
     this.loadImage(`${this.getPath('Cap', id)}default.${nodeName}.png`, (image) => {
-      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       this.canvas.drawImage(image, this.offsetX + parseInt(x), this.offsetY + parseInt(y) + this.faceOffset.y);
       next();
@@ -184,7 +183,7 @@ export default class ItemBuilder extends ImageBuilder {
         break;
       }
     }
-    if (zElem === null) return next();
+    if (!zElem) return next();
 
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
@@ -210,11 +209,10 @@ export default class ItemBuilder extends ImageBuilder {
         break;
       }
     }
-    if (zElem === null) return next();
+    if (!zElem) return next();
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
     this.loadImage(`${this.getPath(type, id)}stand${this.parts.stand}.0.${nodeName}.png`, (image) => {
-      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       this.canvas.drawImage(
         image,
@@ -245,12 +243,11 @@ export default class ItemBuilder extends ImageBuilder {
         break;
       }
     }
-    if (zElem === null) return next();
+    if (!zElem) return next();
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
     const stand = 1;
     this.loadImage(`${this.getPath('Pants', id)}stand${stand}.0.pants.png`, (image) => {
-      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       this.canvas.drawImage(
         image,
@@ -271,11 +268,10 @@ export default class ItemBuilder extends ImageBuilder {
         break;
       }
     }
-    if (zElem === null) return next();
+    if (!zElem) return next();
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
     this.loadImage(`${this.getPath('Shoes', id)}stand1.0.shoes.png`, (image) => {
-      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       this.canvas.drawImage(
         image,
@@ -307,7 +303,6 @@ export default class ItemBuilder extends ImageBuilder {
     }
     if (zElem.length === 0) return next();
     this.loadImage(`${this.getPath('Glove', id)}stand${this.parts.stand}.0.${nodeName}.png`, (image) => {
-      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       for (let i = 0; i < positions.length; i++) {
         this.canvas.drawImage(
@@ -330,13 +325,12 @@ export default class ItemBuilder extends ImageBuilder {
         break;
       }
     }
-    if (zElem === null) {
+    if (!zElem) {
       return next();
     }
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
     this.loadImage(`${this.getPath('Cape', id)}stand1.0.cape.png`, (image) => {
-      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       this.canvas.drawImage(
         image,
@@ -376,7 +370,7 @@ export default class ItemBuilder extends ImageBuilder {
         break;
       }
     }
-    if (zElem === null) return next();
+    if (!zElem) return next();
     const infoStand = file.getElementsByTagName('_info')[0].getElementsByTagName(nodeName.replace('_', ''))[0];
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
@@ -424,7 +418,7 @@ export default class ItemBuilder extends ImageBuilder {
   }
 
   setHands(id: number, z: string, next: () => void) {
-    const file = `${this.getPath('Skin', id)}/stand${this.parts.stand}.0.hand.png`;
+    const file = `${this.getPath('Skin', id)}stand${this.parts.stand}.0.hand.png`;
     if (!fs.existsSync(file)) return next();
     this.loadImage(file, (image) => {
       const { position } = this.body[`stand${this.parts.stand}`].hand;

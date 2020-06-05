@@ -58,7 +58,7 @@ function isActive(type)
             <li class="<%= isActive("PLAY") %>"><a href="play">
             <svg x="0px" y="0px"
                 width="100px" height="100px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
-            <polygon class="st0" points="88.93,11.011 74.851,11.012 31.929,57.44 24.488,50 19.778,57.067 26.184,63.478 11.071,82.266 
+            <polygon class="st0" points="88.93,11.011 74.851,11.012 31.929,57.44 24.488,50 19.778,57.067 26.184,63.478 11.071,82.266
                 14.374,85.564 17.796,88.989 36.465,73.759 42.892,80.183 50,75.512 42.497,68.011 88.928,25.088 "/>
             </svg>
             <span>PLAY</span></a>
@@ -69,7 +69,7 @@ function isActive(type)
                     height="100px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
                 <g id="Layer_1">
                     <path class="st2" d="M45.904,76.568"/>
-                    <polyline class="st0" points="45.854,56.029 45.854,76.1 32.021,76.1 32.021,91.154 50.875,91.154 50.313,91.154 69.166,91.154 
+                    <polyline class="st0" points="45.854,56.029 45.854,76.1 32.021,76.1 32.021,91.154 50.875,91.154 50.313,91.154 69.166,91.154
                         69.166,76.1 55.333,76.1 55.333,56.029 	"/>
                     <line class="st1" x1="45.854" y1="76.1" x2="55.333" y2="76.1"/>
                 </g>
@@ -82,7 +82,7 @@ function isActive(type)
                 </svg>
                 <span>RANKING</span></a>
             </li>
-            <% 
+            <%
             if(!isLoggedIn())
             {
             %>
@@ -105,7 +105,7 @@ function isActive(type)
             </svg>
             <span>LOGIN</span></a>
             </li>
-            <% 
+            <%
             }else
             {
                 var users = getUserCharacters();
@@ -113,13 +113,13 @@ function isActive(type)
                 if(users.length == 0)
                     img = "./images/mushroom.png";
                 else
-                    img = "./Characters/"+users[0].name+".chr";
+                    img = "./characters/"+users[0].name+".chr";
             %>
             <li class="<%= isActive("DASHBOARD") %>"><a href="dashboard">
             <div class="dashboardLogo <%= users.length == 0 ? "centerLogoDashboard" : "" %>"><img src="<%= img %>"></img></div>
             <span class="<%= isAdmin() ? "isAdmin" : "" %>">DASHBOARD</a>
             </li>
-            <% 
+            <%
             }
             %>
         </ul>
@@ -228,7 +228,7 @@ function isActive(type)
             }
             function playerData(item)
             {
-                return {name:item.name,imageUrl:"Characters/"+item.name+".chr",url:"/player/"+item.name};
+                return {name:item.name,imageUrl:"characters/"+item.name+".chr",url:"/player/"+item.name};
             }
             function emptyData(item)
             {
