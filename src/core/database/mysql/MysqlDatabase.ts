@@ -126,9 +126,10 @@ export default class MysqlDatabase implements Database {
         select: [],
       };
     }
+    if(!sqlObj.where) sqlObj.where = {};
     sqlObj.where['name'] = name;
     sqlObj.select.push('id');
-    const [rows, err] = await this.exec<CharactersInterface>(sqlObj, 'characters', charactersConversion);
+    const [rows, err] = await this.exec<CharactersInterface>(sqlObj, 'characters', charactersConversion, false);
     if (err) {
       throw new DatabaseError({ errno: 0, msg: err });
     }
@@ -522,11 +523,11 @@ export default class MysqlDatabase implements Database {
     }
 
     const offset = Math.max(page, 0) * limit;
-    console.log();
     const [rows] = await this.connection.execute(
       `
-            SELECT
+            SELECT 
               id,
+              name,
               level,
               global._order as global_level_order,
               # what rank that character is in on level.
@@ -583,6 +584,7 @@ export default class MysqlDatabase implements Database {
     for (let i = 0; i < rows.length; i++) {
       ret.push({
         id: rows[i].id,
+        name: rows[i].name,
         level: rows[i].level,
         fame: rows[i].level,
         globalLevelOrder: rows[i].global_level_order,

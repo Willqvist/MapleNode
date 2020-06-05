@@ -1,7 +1,10 @@
-.box_wrapper{
+.box_wrapper {
     display:flex;
-    margin-top:1.5em;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: start;
+    margin:0 !important;
+    padding:0 !important;
+    height:auto !important;
 }
 .box
 {
@@ -10,16 +13,24 @@
     background:#FFF;
     overflow:hidden;
     min-width:25em;
-    height:14em;
+    height:auto;
     display:flex;
     flex-direction: column;
+    width:100%;
+    margin-bottom:1.5rem;
+    justify-content: flex-start;
+}
+.box > * {
+    margin-bottom:1.5rem;
+}
+.box > *:last-child {
+    margin-bottom:0rem;
 }
 .box h3
 {
     position:relative;
     font-weight:bold;
     font-size:1.2em;
-    margin-top:0.8em;
     color:var(--fontColorDark);
 }
 .box h3:before
@@ -48,27 +59,55 @@
         </div>
         <div class="ranking_box box box_naked">
             <h2 class="box_title">Server stats</h2>
-        </div> 
-        */  
+        </div>
+        */
+.page_header {
+    height:12rem;
+    display:flex;
+    color:var(--fontColorLight);
+    text-shadow: 0 0.2rem 0.5rem rgba(28, 69, 101, 0.6);
+}
+.page_header > * {
+    z-index:1;
+}
+.page_header_bg {
+    position: absolute;
+    width:100%;
+    height:15rem;
+    background:var(--secondaryMainColor);
+    left:0;
+    margin-left:0;
+    z-index:0;
+}
+.page_header h1 {
+    margin:auto;
+    font-family: 'Montserrat', sans-serif;
+    font-size:2rem;
+}
 .box_title
 {
     font-weight:500;
-    font-size:1.1em;
+    font-size:1.4em !important;
     font-family: 'Montserrat', sans-serif;
     color:var(--fontColorDark);
+}
+.box_title i
+{
+    margin-right:0.8rem;
+
+}
+.sub_titles {
+    display:flex;
+    font-size:1rem;
 }
 .btn
 {
     height:3em;
     margin:auto;
 }
-.box
-{
-    justify-content: space-between;
-}
 .box p
 {
-    
+
 }
 .loginBox
 {
@@ -83,15 +122,29 @@
     padding:1.5em;
     background:#FFF;
     box-shadow:inset 0px 0px 0px 1px rgba(0,0,0,0.10);
-    margin-top:2em;
     font-family: 'Montserrat', sans-serif;
     color:var(--fontColorDark);
+    z-index:2;
+    position: relative;
+    margin-bottom:1.5rem;
 }
-.loginBox h3
+.loginBox .box_title
 {
     position:relative;
     font-weight:bold;
     font-size:1.2em;
+
+}
+.box_sub_title {
+    font-weight:500;
+    font-size:1em;
+    font-family: 'Montserrat', sans-serif;
+    color:var(--fontColorDark);
+    margin-right:2rem;
+    position:relative;
+    font-weight:normal !important;
+    font-size:1em !important;
+    margin-top:0.8em;
 }
 .loginBox input
 {
@@ -117,7 +170,7 @@
 }
 .vote_btn a
 {
-    cursor: not-allowed ;  
+    cursor: not-allowed ;
 }
 .vote_btn:hover
 {

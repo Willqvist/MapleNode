@@ -278,4 +278,16 @@ export default class DatabaseCacher implements Database {
   updateVote(id: number, name: string, url: string, nx: number, time: number): Promise<number> {
     return this.database.updateVote(id, name, url, nx, time);
   }
+
+  handleReports(id: number, ban: boolean): Promise<boolean> {
+    return undefined;
+  }
+
+  removeAllReports(): Promise<boolean> {
+    return undefined;
+  }
+
+  setBanned(accountid: number, banned: boolean): Promise<boolean> {
+    return undefined;
+  }
 }

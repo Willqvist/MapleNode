@@ -173,13 +173,12 @@ router.post('/ranking', async (req, res) => {
   const jobs = constants.getConstant('jobs');
 
   const { search, job, rank, page } = req.body;
-  const ranks = await DatabaseConnection.instance.rank(rank.toLowerCase(), { job, search }, page, 5);
+  const ranks = await DatabaseConnection.instance.rank(rank.toLowerCase(), { job: parseInt(job, 10), search }, page, 5);
   const jobNames: string[] = [];
   for (let i = 0; i < ranks.length; i++) {
     const jobName = jobs[ranks[i].job];
     jobNames.push(!jobName ? '?' : jobName);
   }
-  console.log('sending', { characters: ranks, jobNames });
   return sendJSON(res, { characters: ranks, jobNames });
 });
 

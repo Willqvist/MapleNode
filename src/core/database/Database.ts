@@ -346,6 +346,7 @@ export enum RANK {
 
 export interface Rank {
   id: number;
+  name: string;
   level: number;
   fame: number;
   globalLevelOrder: number;

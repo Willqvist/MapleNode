@@ -14,24 +14,24 @@
             <section id="content" class="maxWidth">
             <div id="settings" class="tab">
                 <div id="settingsBtns">
-                    <div class="dropdownBtn btn noSelect" data-dropdownContent="searchSettings"><span>&dtrif; Overall</span>
-                        <ul id="searchSettings"class="noSelect dropdownContent">
-                            <% for(const key in options.jobs) {
-                                const jobName = options.jobs[key];
-                            %>
-                                <li data-id="<%= key %>" data-select="<%= jobName %>"><%= jobName %></li>
-                            <%}%>
-                        </ul>
-                    </div>
-                    <div class="dropdownBtn btn noSelect" data-dropdownContent="searchRankingSettings"><span>&dtrif; Level</span>
+                        <div class="dropdownBtn rankBtn noSelect" data-dropdownContent="searchSettings"><span>&dtrif; Overall</span>
+                            <ul id="searchSettings"class="noSelect dropdownContent">
+                                <% for(const key in options.jobs) {
+                                    const jobName = options.jobs[key];
+                                %>
+                                    <li data-id="<%= key %>" data-select="<%= jobName %>"><%= jobName %></li>
+                                <%}%>
+                            </ul>
+                        </div>
+                    <div class="dropdownBtn rankBtn noSelect" data-dropdownContent="searchRankingSettings"><span>&dtrif; Level</span>
                         <ul id="searchRankingSettings" class="noSelect dropdownContent">
                             <li data-select="Level">Level</li>
                             <li data-select="Fame">Fame</li>
                         </ul>
                     </div>
                     <div id="reloadSearch">
-                    <i id="icon-search" class="fas fa-sync-alt"></i>
-                </div>
+                     <i id="icon-search" class="fas fa-sync-alt"></i>
+                    </div>
                 </div>
                 <form>
                     <input placeholder="Search..." id="searchBar" class="box_style"/>
@@ -57,9 +57,9 @@
                 </div>
             </div>
             <div  class="tab pageTab">
-                <div id="prev" class="btn noSelect"><span>Previous Page</span></div>
+                <div id="prev" class="rankBtn noSelect"><span>Previous Page</span></div>
                 <div id="pageInfo"><h3 id="pageNumber">0</h3></div>
-                <div id="next" class="btn noSelect"><span>Next Page</span></div>
+                <div id="next" class="rankBtn noSelect"><span>Next Page</span></div>
             </div>
         </section>
         <script type="module">
@@ -133,15 +133,17 @@
                 loader.show();
                 console.log(jobs,rank);
                 let url = new Url("/IO/ranking",{page:page,job:jobs,rank:rank,search:search});
-                const response = await Http.POST(url);
+                const resp = await Http.POST(url);
+                const response = resp.characters;
+                console.log(response);
                 userWrapper.innerHTML = "";
                 console.log("RESPONSE: ",response);
                 for(let i = 0; i < response.length; i++){
                     let user = response[i];
-                    userElement.setVariable({variable:"placement",data:user.rank.toString()});
+                    userElement.setVariable({variable:"placement",data:user.globalLevelOrder.toString()});
                     userElement.setVariable({variable:"name",data:user.name});
                     userElement.setVariable({variable:"job",data:user.job.toString()});
-                    userElement.setVariable({variable:"jobRank",data:user.jobRank.toString()});
+                    userElement.setVariable({variable:"jobRank",data:user.jobOrder.toString()});
                     if(isset(user.level))
                     {
                         userElement.setVariable({variable:"rank",data:user.level.toString()});

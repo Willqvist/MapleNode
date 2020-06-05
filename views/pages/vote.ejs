@@ -9,16 +9,16 @@
 
         <title>Vote <%= settings.serverName %></title>
         <style>
-            .box
-            {
-                height:20em;
-            }
         </style>
 
         <%- include('../imports/menu'); %>
         <section class="maxWidth">
+            <div class="page_header">
+                <div class="page_header_bg" style="background:url(<%= heroImage %>) no-repeat; background-size:cover;"></div>
+                <h1>Votes</h1>
+            </div>
         <%
-        if(!loggedIn)
+        if(!options.user)
         {
             %>
                 <div class="loginBox box_style big_box">
@@ -29,19 +29,20 @@
             <%
         }
         %>
-        </section>
-        <section id="content" class="maxWidth box_wrapper">
+        <section id="content" class="box_wrapper">
         <%
         if(options.votes) {
             for(let vote of options.votes)
             {
             %>
             <div class="box">
-                <h3 class="box_title" data-before="Download"> <%= vote.name %></h3>
-                <h3 class="box_title" data-before="Nx"> <%= vote.nx %></h3>
-                <h3 class="box_title" data-before="Time"> <%= vote.time %> hours</h3>
-                <h3 class="box_title" data-before="Url"> <%= vote.url %></h3>
-                <div class="btn-holder">
+                <h3 class="box_title"><i class="fas fa-poll"></i><%= vote.name %></h3>
+                <div class="sub_titles">
+                    <h3 class="box_sub_title" data-before="Nx"> <%= vote.nx %></h3>
+                    <h3 class="box_sub_title" data-before="Time"> <%= vote.time %> hours</h3>
+                    <h3 class="box_sub_title" data-before="Url"> <%= vote.url %></h3>
+                </div>
+                <div class="btn_parent">
                     <div id="vote_<%= vote.ID %>" data-vote="<%= vote.ID %>" class="vote_btn btn btn-a"><a href="<%= vote.url %>"><span>Vote</span></a></div>
                 </div>
             </div>
@@ -50,12 +51,14 @@
         }
         %>
         </section>
+
+        </section>
     <script type="module">
         import Http from './JS/API/Http.js';
         import Url from './JS/API/Url.js';
 
         <%
-        if(!loggedIn)
+        if(!options.user)
         {
         %>
 
@@ -92,7 +95,7 @@
         <%
         }else{
         %>
-        let url = new Url("IO/vote/<%= user.name %>");
+        let url = new Url("IO/vote/<%= options.user.name %>");
         Http.GET(url,(response)=>
         {
             validateVote(response);

@@ -9,23 +9,31 @@
         <%- include('../imports/head.ejs') %>
         <title>Play <%= settings.serverName %></title>
         <%- include('../imports/menu.ejs') %>
-        <section id="content" class="maxWidth box_wrapper">
-        <%
-        if(options.downloads)
-        for(let download of options.downloads)
-        {
-        %>
-        <div class="box">
-            <h3 class="box_title" data-before="Download"> <%= download.name %></h3>
-            <h3 class="box_title" data-before="Url"> <%= download.url %></h3>
-            <div class="btn-holder">
-                <div class="btn btn-a"><a href="<%= download.url %>"><span>Download</span></a></div>
+        <div class="maxWidth">
+            <div class="page_header">
+                <div class="page_header_bg" style="background:url(<%= heroImage %>) no-repeat; background-size:cover;"></div>
+                <h1>Downloads</h1>
             </div>
-        </div>
-        <%
+            <section id="content" class="box_wrapper">
+            <%
+            if(options.downloads)
+            for(let download of options.downloads)
+            {
+            %>
+            <div class="box">
+                <h3 class="box_title"><i class="fas fa-download"></i><%= download.name %></h3>
+                <div class="sub_titles">
+                    <h3 class="box_sub_title" data-before="Url"> <%= download.url %></h3>
+                </div>
+                <div class="btn_parent">
+                    <div class="btn btn-a"><a href="<%= download.url %>"><span>Download <%= download.name %></span></a></div>
+                </div>
+            </div>
+            <%
 
-        }
-        %>
-        </section>
+            }
+            %>
+            </section>
+        </div>
     </body>
 </html>

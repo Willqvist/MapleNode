@@ -98,11 +98,11 @@ export default class ItemBuilder extends ImageBuilder {
   }
 
   setHair(id: number, z: string, next: () => void) {
-    if (typeof this.parts.cap !== 'undefined' && z == 'hairOverHead') return next();
+    if (typeof this.parts.cap !== 'undefined' && z === 'hairOverHead') return next();
 
     const file = this.getParsed('Hair', id);
     const hairs = file.getElementsByTagName(`_${z}`);
-    if (hairs.length == 0) return next();
+    if (hairs.length === 0) return next();
 
     const hair = hairs[0];
     let prefix = '';
@@ -151,16 +151,17 @@ export default class ItemBuilder extends ImageBuilder {
     let nodeName;
     const elements = file.getElementsByTagName('z');
     for (let i = 0; i < elements.length; i++) {
-      if (elements[i].firstChild.data == z) {
+      if (elements[i].firstChild.data === z) {
         nodeName = elements[i].parentNode.parentNode.nodeName.replace('_', '');
         zElem = elements[i].parentNode;
         break;
       }
     }
-    if (zElem == null) return next();
+    if (zElem === null) return next();
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
     this.loadImage(`${this.getPath('Cap', id)}default.${nodeName}.png`, (image) => {
+      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       this.canvas.drawImage(image, this.offsetX + parseInt(x), this.offsetY + parseInt(y) + this.faceOffset.y);
       next();
@@ -177,13 +178,13 @@ export default class ItemBuilder extends ImageBuilder {
     const elements = file.getElementsByTagName('z');
     let nodeName;
     for (let i = 0; i < elements.length; i++) {
-      if (elements[i].firstChild.data == z) {
+      if (elements[i].firstChild.data === z) {
         nodeName = elements[i].parentNode.parentNode.nodeName.replace('_', '');
         zElem = elements[i].parentNode;
         break;
       }
     }
-    if (zElem == null) return next();
+    if (zElem === null) return next();
 
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
@@ -203,16 +204,17 @@ export default class ItemBuilder extends ImageBuilder {
     let zElem;
     let nodeName;
     for (let i = 0; i < elements.length; i++) {
-      if (elements[i].parentNode.nodeName == `stand${this.parts.stand}` && elements[i].firstChild.data == z) {
+      if (elements[i].parentNode.nodeName === `stand${this.parts.stand}` && elements[i].firstChild.data === z) {
         nodeName = elements[i].parentNode.parentNode.nodeName.replace('_', '');
         zElem = elements[i].parentNode;
         break;
       }
     }
-    if (zElem == null) return next();
+    if (zElem === null) return next();
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
     this.loadImage(`${this.getPath(type, id)}stand${this.parts.stand}.0.${nodeName}.png`, (image) => {
+      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       this.canvas.drawImage(
         image,
@@ -238,16 +240,17 @@ export default class ItemBuilder extends ImageBuilder {
     const elements = file.getElementsByTagName('z');
     let zElem;
     for (let i = 0; i < elements.length; i++) {
-      if (elements[i].parentNode.nodeName.includes(`stand${this.parts.stand}`) && elements[i].firstChild.data == z) {
+      if (elements[i].parentNode.nodeName.includes(`stand${this.parts.stand}`) && elements[i].firstChild.data === z) {
         zElem = elements[i].parentNode;
         break;
       }
     }
-    if (zElem == null) return next();
+    if (zElem === null) return next();
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
     const stand = 1;
     this.loadImage(`${this.getPath('Pants', id)}stand${stand}.0.pants.png`, (image) => {
+      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       this.canvas.drawImage(
         image,
@@ -263,15 +266,16 @@ export default class ItemBuilder extends ImageBuilder {
     const elements = file.getElementsByTagName('z');
     let zElem;
     for (let i = 0; i < elements.length; i++) {
-      if (elements[i].parentNode.nodeName.includes('stand1') && elements[i].firstChild.data == z) {
+      if (elements[i].parentNode.nodeName.includes('stand1') && elements[i].firstChild.data === z) {
         zElem = elements[i].parentNode;
         break;
       }
     }
-    if (zElem == null) return next();
+    if (zElem === null) return next();
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
     this.loadImage(`${this.getPath('Shoes', id)}stand1.0.shoes.png`, (image) => {
+      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       this.canvas.drawImage(
         image,
@@ -290,8 +294,8 @@ export default class ItemBuilder extends ImageBuilder {
     let nodeName;
     for (let i = 0; i < elements.length; i++) {
       if (
-        elements[i].parentNode.nodeName.replace('_', '') == `stand${this.parts.stand}` &&
-        elements[i].firstChild.data == z
+        elements[i].parentNode.nodeName.replace('_', '') === `stand${this.parts.stand}` &&
+        elements[i].firstChild.data === z
       ) {
         nodeName = elements[i].parentNode.parentNode.nodeName.replace('_', '');
         zElem.push(elements[i].parentNode);
@@ -301,8 +305,9 @@ export default class ItemBuilder extends ImageBuilder {
         });
       }
     }
-    if (zElem.length == 0) return next();
+    if (zElem.length === 0) return next();
     this.loadImage(`${this.getPath('Glove', id)}stand${this.parts.stand}.0.${nodeName}.png`, (image) => {
+      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       for (let i = 0; i < positions.length; i++) {
         this.canvas.drawImage(
@@ -320,22 +325,23 @@ export default class ItemBuilder extends ImageBuilder {
     const elements = file.getElementsByTagName('z');
     let zElem;
     for (let i = 0; i < elements.length; i++) {
-      if (elements[i].parentNode.nodeName.includes('stand1') && elements[i].firstChild.data == z) {
+      if (elements[i].parentNode.nodeName.includes('stand1') && elements[i].firstChild.data === z) {
         zElem = elements[i].parentNode;
         break;
       }
     }
-    if (zElem == null) {
+    if (zElem === null) {
       return next();
     }
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
     this.loadImage(`${this.getPath('Cape', id)}stand1.0.cape.png`, (image) => {
+      console.log("ubdex:",`stand${this.parts.stand}`);
       const { position } = this.body[`stand${this.parts.stand}`].body;
       this.canvas.drawImage(
         image,
-        this.clothOffset.x + this.offsetX + parseInt(x),
-        this.clothOffset.y + position.y + this.offsetY + parseInt(y)
+        this.clothOffset.x + this.offsetX + parseInt(x, 10),
+        this.clothOffset.y + position.y + this.offsetY + parseInt(y, 10)
       );
       next();
     });
@@ -364,13 +370,13 @@ export default class ItemBuilder extends ImageBuilder {
     const elements = file.getElementsByTagName('z');
     let nodeName;
     for (let i = 0; i < elements.length; i++) {
-      if (elements[i].parentNode.nodeName.includes(`stand${this.parts.stand}`) && elements[i].firstChild.data == z) {
+      if (elements[i].parentNode.nodeName.includes(`stand${this.parts.stand}`) && elements[i].firstChild.data === z) {
         nodeName = elements[i].parentNode.parentNode.nodeName.replace('_', '');
         zElem = elements[i].parentNode;
         break;
       }
     }
-    if (zElem == null) return next();
+    if (zElem === null) return next();
     const infoStand = file.getElementsByTagName('_info')[0].getElementsByTagName(nodeName.replace('_', ''))[0];
     const x = zElem.getElementsByTagName('x')[0].firstChild.data;
     const y = zElem.getElementsByTagName('y')[0].firstChild.data;
@@ -394,7 +400,7 @@ export default class ItemBuilder extends ImageBuilder {
   getZElement(dom: DOMParser, z: number) {
     const zObj = dom.getElementsByTagName('z');
     for (let i = 0; i < zObj.length; i++) {
-      if (zObj[i].firstChild.data == z) {
+      if (zObj[i].firstChild.data === z) {
         return zObj[i];
       }
     }
@@ -445,7 +451,7 @@ export default class ItemBuilder extends ImageBuilder {
     let { z } = item.parameters;
 
     if (typeof id === 'undefined') {
-      if (z == 'mailChestOverHighest' || z == 'mailChest') {
+      if (z === 'mailChestOverHighest' || z === 'mailChest') {
         id = 1040036;
         z = 'mailChest';
         item.method = this.setCoat;
