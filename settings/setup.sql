@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS prefix_file_tags;
 DROP TABLE IF EXISTS prefix_tags;
 DROP TABLE IF EXISTS prefix_files;
 DROP TABLE IF EXISTS prefix_logs;
+DROP TABLE IF EXISTS prefix_download_urls;
 
 CREATE TABLE prefix_settings
 (
@@ -61,7 +62,7 @@ CREATE TABLE prefix_files
 );
 CREATE TABLE prefix_logs
 (
-    id INT PRIMARY KEY,
+    id INT NOT NULL AUTO_INCREMENT,
     type VARCHAR(120),
     creation TIMESTAMP,
     body VARCHAR(255),
@@ -82,10 +83,19 @@ CREATE TABLE prefix_file_tags
 );
 CREATE TABLE prefix_downloads
 (
-    ID INT NOT NULL AUTO_INCREMENT,
+    id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(80),
-    url VARCHAR(80),
+    description VARCHAR(255),
+    image VARCHAR(180) NOT NULL,
+    FOREIGN KEY(image) REFERENCES prefix_files(file),
     PRIMARY KEY(id)
+);
+CREATE TABLE prefix_download_urls
+(
+    downloadId INT NOT NULL,
+    url VARCHAR(110) NOT NULL,
+    PRIMARY KEY(downloadId, url),
+    FOREIGN KEY (downloadId) REFERENCES prefix_downloads(id) ON DELETE CASCADE
 );
 CREATE TABLE prefix_layout
 (

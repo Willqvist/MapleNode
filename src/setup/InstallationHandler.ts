@@ -62,17 +62,21 @@ export default class InstallationHandler {
   async setMysqlSetupComplete(userData) {
     constants.setConstant('prefix', userData.prefix);
     await DBConn.instance.rebuildDatabase(userData.prefix);
-    await DBConn.instance.addPalette('Happy Green', '#69DC9E', '#3E78B2', '#D3F3EE', '#20063B', '#CC3363', 1);
+    await DBConn.instance.addPalette('Dark Yellow', '#EFCB68', '#98C1D9', '#211A1D', '#F4F4F4', '#111111', 1);
     await FileProvider.addTag('logo');
     await FileProvider.addTag('heroImage');
     try {
       await FileTools.copy('./public/images/headerImage.png', './public/upload/headerImage.png');
       await FileTools.copy('./public/images/svgs/logo_single.svg', './public/upload/logo.svg');
+      await FileTools.copy('./public/images/headerImage.png', './public/upload/SetupImage.png');
+      await FileTools.copy('./public/images/headerImage.png', './public/upload/ClientImage.png');
     } catch (err) {
       console.log(err);
     }
     await FileProvider.addFile('headerImage.png', ['heroImage']);
     await FileProvider.addFile('logo.svg', ['logo']);
+    await FileProvider.addFile('SetupImage.png', []);
+    await FileProvider.addFile('ClientImage.png', []);
 
     await DBConn.instance.updateLayout(
       'home',
@@ -104,8 +108,10 @@ export default class InstallationHandler {
         settings.vpColumn,
         settings.gmLevel
       );
-      await DBConn.instance.addDownload('Setup', setup);
-      await DBConn.instance.addDownload('Client', client);
+      const setupId = await DBConn.instance.addDownload('Setup', 'SetupImage.png');
+      const clientId = await DBConn.instance.addDownload('Client', 'ClientImage.png');
+      await DBConn.instance.addDownloadMirror(setupId, setup);
+      await DBConn.instance.addDownloadMirror(clientId, client);
 
       const data: InstallerI = await this.getInstallerObject(src);
       data.settingsComplete = true;

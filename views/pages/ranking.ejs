@@ -134,15 +134,15 @@
                 console.log(jobs,rank);
                 let url = new Url("/IO/ranking",{page:page,job:jobs,rank:rank,search:search});
                 const resp = await Http.POST(url);
+                console.log(resp);
                 const response = resp.characters;
                 console.log(response);
                 userWrapper.innerHTML = "";
-                console.log("RESPONSE: ",response);
                 for(let i = 0; i < response.length; i++){
                     let user = response[i];
                     userElement.setVariable({variable:"placement",data:user.globalLevelOrder.toString()});
                     userElement.setVariable({variable:"name",data:user.name});
-                    userElement.setVariable({variable:"job",data:user.job.toString()});
+                    userElement.setVariable({variable:"job",data:resp.jobNames[user.job].toString()});
                     userElement.setVariable({variable:"jobRank",data:user.jobOrder.toString()});
                     if(isset(user.level))
                     {

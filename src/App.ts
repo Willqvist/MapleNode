@@ -40,6 +40,7 @@ function setRunMode(mode: string) {
 export async function setLocals(app: express.Application) {
   app.locals.palette = consts.getConstant('palette');
   app.locals.settings = consts.getConstant('settings');
+  console.log((await FileProvider.getTaggedFile('heroImage')).destName);
   app.locals.heroImage = (await FileProvider.getTaggedFile('heroImage')).destName;
   app.locals.logo = (await FileProvider.getTaggedFile('logo')).destName;
 }
@@ -170,11 +171,11 @@ class App {
       // TODO: move to only build when changeing theme.
       const paletteInterface: PalettesInterface = {
         name: 'Happy Green',
-        mainColor: '#69DC9E',
-        secondaryMainColor: '#3E78B2',
-        fontColorLight: '#D3F3EE',
-        fontColorDark: '#20063B',
-        fillColor: '#CC3363',
+        mainColor: '#EFCB68',
+        secondaryMainColor: '#98C1D9',
+        fontColorLight: '#F4F4F4',
+        fontColorDark: '#211A1D',
+        fillColor: '#111111',
       };
       await cGen.generateCSS(paletteInterface);
       next();

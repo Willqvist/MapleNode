@@ -3,7 +3,6 @@ import path from 'path';
 import { Database, Rank, SWO } from '../Database';
 import {
   accountsConversion,
-  charactersConversion,
   mn_downloadsConversion,
   mn_layoutConversion,
   mn_palettesConversion,
@@ -27,6 +26,7 @@ import * as Constants from '../../Constants';
 import FileTools from '../../tools/FileTools';
 import { MysqlListenError } from '../../tools/ErrnoConversion';
 import DatabaseError from './DatabaseError';
+import FileProvider from "../../../models/FileProvider";
 
 // Helper methods
 function table(name: string, usePrefix: boolean = true): string {
@@ -126,8 +126,8 @@ export default class MysqlDatabase implements Database {
         select: [],
       };
     }
-    if(!sqlObj.where) sqlObj.where = {};
-    if(!sqlObj.select) sqlObj.select = [];
+    if (!sqlObj.where) sqlObj.where = {};
+    if (!sqlObj.select) sqlObj.select = [];
     sqlObj.where['name'] = name;
     sqlObj.select.push('id');
     const [rows, err] = await this.exec<CharactersInterface>(sqlObj, 'characters', null, false);
@@ -164,7 +164,15 @@ export default class MysqlDatabase implements Database {
   }
 
   async getDownloads(obj?: SWO): Promise<DownloadsInterface[]> {
-    const [rows, err] = await this.exec<DownloadsInterface>(obj, 'downloads', mn_downloadsConversion);
+    const [rows, err] = await this.exec<DownloadsInterface>(obj, 'downloads');
+    console.log(rows);
+    for (let i = 0; i < rows.length; i++) {
+      const download = rows[i];
+      if (!download.id) continue;
+      const urlTable = table('download_urls');
+      const [urls] = await this.connection.execute(`SELECT url FROM ${urlTable} WHERE downloadId=?`, [download.id]);
+      download.urls = urls;
+    }
     if (err) {
       throw new DatabaseError({ errno: 0, msg: err });
     }
@@ -302,11 +310,11 @@ export default class MysqlDatabase implements Database {
     }
   }
 
-  async addDownload(name, url) {
+  async addDownload(name, image) {
     const insertId = await this.insert(
-      `INSERT INTO ${table('downloads')} (name,url) VALUES
+      `INSERT INTO ${table('downloads')} (name,image) VALUES
     (?,?)`,
-      [name, url]
+      [name, image]
     );
     return insertId;
   }
@@ -449,9 +457,7 @@ export default class MysqlDatabase implements Database {
 
   async getEquipment(character: number): Promise<EquipmentInterface[]> {
     try {
-      const [
-        result,
-      ] = await this.connection.execute(
+      const [result] = await this.connection.execute(
         `
         SELECT inventoryitems.itemid, inventoryitems.position FROM inventoryequipment INNER JOIN inventoryitems ON inventoryequipment.inventoryitemid = inventoryitems.inventoryitemid WHERE inventoryitems.characterid = ? AND inventoryitems.inventorytype = '-1'`,
         [character]
@@ -804,7 +810,7 @@ export default class MysqlDatabase implements Database {
 
   async handleReports(victimid: number, ban: boolean): Promise<boolean> {
     try {
-      await this.connection.execute(`UPDATE reports SET status=? WHERE victimid=?`, ['HANDLED',victimid]);
+      await this.connection.execute(`UPDATE reports SET status=? WHERE victimid=?`, ['HANDLED', victimid]);
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
@@ -819,5 +825,10 @@ export default class MysqlDatabase implements Database {
     } catch (err) {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
+  }
+
+  async addDownloadMirror(name: number, url: string): Promise<number> {
+    const tableName = table('download_urls');
+    return this.insert(`INSERT INTO ${tableName} (downloadId,url) VALUES(?,?)`, [name, url]);
   }
 }

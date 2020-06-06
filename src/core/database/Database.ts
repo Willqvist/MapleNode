@@ -5,7 +5,8 @@ import {
   DesignInterface,
   DownloadsInterface,
   LayoutInterface,
-  PalettesInterface, ReportsInterface,
+  PalettesInterface,
+  ReportsInterface,
   SettingsInterface,
   VoteInterface,
 } from '../Interfaces/DatabaseInterfaces';
@@ -193,7 +194,9 @@ export interface Database {
    * @param name the name of the download
    * @param url the url to the download file
    */
-  addDownload(name: string, url: string): Promise<number>;
+  addDownload(name: string, image: string): Promise<number>;
+
+  addDownloadMirror(name: number, url: string): Promise<number>;
 
   /**
    * updates the layout of a given name.

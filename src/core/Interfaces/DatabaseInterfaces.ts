@@ -589,9 +589,10 @@ export interface DesignInterface {
  * is used in {@link Database}
  */
 export interface DownloadsInterface {
-  ID?: number;
+  id?: number;
   name?: string;
-  url?: string;
+  image?: string;
+  urls: string[];
 }
 
 /**

@@ -190,3 +190,21 @@
 {
     background:var(--secondaryMainColor);
 }
+.box .btn_parent {
+    width:7rem;
+    font-size:0.7rem;
+}
+.box .btn_parent .btn {
+    width:auto;
+    text-align:center;
+}
+@keyframes animateIn {
+    0% {
+        transform: translateY(1rem);
+        opacity:0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity:1;
+    }
+}

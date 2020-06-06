@@ -540,9 +540,10 @@ export const mn_designConversion = {
  * @ignore
  */
 export const mn_downloadsConversion = {
-  ID: NUMBER,
+  id: NUMBER,
   name: STRING,
-  url: STRING,
+  description: STRING,
+  image: STRING,
 };
 /**
  * @ignore

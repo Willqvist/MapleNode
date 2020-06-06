@@ -8,6 +8,57 @@
 
         <%- include('../imports/head.ejs') %>
         <title>Play <%= settings.serverName %></title>
+        <style>
+            .box {
+                flex-direction: row;
+                padding:0;
+            }
+            .box > * {
+                margin:0;
+            }
+            .image {
+                flex:1;
+                background:red;
+                background:url(https://nxcache.nexon.net/all/v1.5.2/img/gnt/games-dropdown/maplestory2.jpg) no-repeat;
+                background-position: 50% 50%;
+                background-size: cover;
+            }
+            .box .box_content {
+                flex:1;
+                padding:1.5rem;
+                padding-bottom: 0;
+            }
+            .box .box_content > * {
+                margin-bottom:1.5rem;
+            }
+            .box .box_content > *:last-child {
+                margin:0;
+            }
+            .box .btn_holder {
+                display:flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .box .btn_holder .btn_parent {
+                margin-right:1.5rem;
+                margin-bottom:1.5rem;
+            }
+            <%
+                let i = -1;
+            if(options.downloads)
+            for(let download of options.downloads)
+            {
+                i++;
+            %>
+            .box:nth-child(<%= i+1 %>) {
+                transform: translateY(1rem);
+                opacity:0;
+                animation: 0.5s ease 0s 1 animateIn;
+                animation-fill-mode: forwards;
+                animation-delay: <%=i*0.1 %>s;
+            }
+            <%}%>
+        </style>
         <%- include('../imports/menu.ejs') %>
         <div class="maxWidth">
             <div class="page_header">
@@ -20,13 +71,25 @@
             for(let download of options.downloads)
             {
             %>
-            <div class="box">
-                <h3 class="box_title"><i class="fas fa-download"></i><%= download.name %></h3>
-                <div class="sub_titles">
-                    <h3 class="box_sub_title" data-before="Url"> <%= download.url %></h3>
-                </div>
-                <div class="btn_parent">
-                    <div class="btn btn-a"><a href="<%= download.url %>"><span>Download <%= download.name %></span></a></div>
+            <div class="box" data-animation-offset="<%= i*0.2 %>">
+                <div class="image" style="background:url(<%= getFile(download.image) %>) bo-repeat; background-size:cover; background-position: 50% 50%;"></div>
+                <div class="box_content">
+                    <h3 class="box_title"><i class="fas fa-download"></i><%= download.name %></h3>
+                    <div class="sub_titles">
+                        <h3 class="box_sub_title" data-before="Description"> <%= download.url %></h3>
+                    </div>
+                    <div class="btn_holder">
+                        <%
+                            for(let i = 0; i < download.urls.length; i++) {
+                                const url = download.urls[i];
+                        %>
+                        <div class="btn_parent">
+                            <div class="btn btn-a"><a href="<%= url.url %>"><span><%= i==0?'download':`Mirror ${i}` %></span></a></div>
+                        </div>
+                        <%
+                        }
+                        %>
+                    </div>
                 </div>
             </div>
             <%

@@ -6,6 +6,7 @@
     const attribs = {
         options,
         isset,
+        getFile,
         loggedIn: locals.user,
         user: locals.user
     };
@@ -16,6 +17,10 @@
             return;
         }
         %><%- include(options.page, attribs); %><%
+    }
+
+    function getFile(name) {
+        return `upload/${name}`;
     }
     setup();
 %>

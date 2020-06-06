@@ -9,6 +9,21 @@
 
         <title>Vote <%= settings.serverName %></title>
         <style>
+            <%
+                let i = -1;
+            if(options.votes)
+            for(let download of options.votes)
+            {
+                i++;
+            %>
+            .box:nth-child(<%= i+1 %>) {
+                transform: translateY(1rem);
+                opacity:0;
+                animation: 0.5s ease 0s 1 animateIn;
+                animation-fill-mode: forwards;
+                animation-delay: <%=i*0.1 %>s;
+            }
+            <%}%>
         </style>
 
         <%- include('../imports/menu'); %>
