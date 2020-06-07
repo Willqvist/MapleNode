@@ -6,7 +6,7 @@ const listDownload = {
     list: options.downloads,
     title: {key:"name"},
     attribs: [],
-    editAttributes: 'class="fas fa-book btn-icon info panel-bind" event="click" method="readDownload" popup-data="#download=src,<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,#Edit=submit" data-info="More"',
+    editAttributes: 'class="fas fa-book btn-icon info panel-bind" event="click" method="readDownload" data-info="More"',
     addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New download" trigger="downloadPopup" popup-data="#download=src,#-1=id,#Add Download=title,#Title=label_1,#Url=label_1 #Name=input_1,#Url=input_2,#Add=submit"',
     deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#download=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"',
 };
@@ -18,7 +18,7 @@ const listVotes = {
     id:"id",
     title: {key:"name"},
     attribs: [{key:"url",name:"url"},{key:"nx",name:"nx"},{key:"time",name:"cooldown"}],
-    editAttributes: 'class=" far fa-edit btn-icon info popup-trigger" trigger="votePopup" data-info="Edit"',
+    editAttributes: 'class=" far fa-edit btn-icon info popup-trigger" trigger="votePopup" popup-data="#vote=src,<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,<<>div>div[2]>ul>li[1]>span=input_3,<<>div>div[2]>ul>li[2]>span=input_4,#Edit=submit" data-info="Edit"',
     addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New vote" trigger="votePopup" popup-data="#vote=src,#-1=id,#Add Vote=title,#Title=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,#Name=input_1,#Url=input_2,#1000=input_3,#0=input_4,#Add=submit"',
     deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#vote=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"'
 };
