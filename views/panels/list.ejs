@@ -21,6 +21,7 @@
                     <div class="mod_list_item_top">
                         <p><%= item[title.key] %></p>
                     </div>
+                    <% if(attribs.length > 0) {%>
                     <div class="mod_list_break"></div>
                     <div class="mod_list_item_bottom">
                         <ul>
@@ -31,6 +32,7 @@
                             <% } %>
                         </ul>
                     </div>
+                    <%}%>
                 </div>
                 <div class="mod_list_item_btns mod_list_btn" id="<%= item[id] %>">
                     <i  <%- editAttributes %>></i>

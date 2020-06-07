@@ -77,6 +77,50 @@
     color:#000;
 }
 
+.big_list_li {
+    font-size:1rem !important;
+}
+
+.content_list {
+    display:flex;
+    flex-direction: column;
+    padding:0 !important;
+    margin:0;
+}
+
+.content_list .mod_list_item_bottom ul {
+    flex-direction: row !important;
+    width:100% !important;
+    padding:0 !important;
+}
+.content_list .mod_list_main {
+    height:4rem;
+    box-shadow:inset 0 -0.01rem 0 #000;
+}
+.content_list .mod_list_main:last-child {
+    height:4rem;
+    box-shadow:inset 0 -0.0rem 0 #000;
+}
+.content_list .mod_list_item_bottom ul li {
+    flex-direction: row !important;
+    width:100% !important;
+    height:auto !important;
+    padding: 0 !important;
+    margin:0 !important;
+}
+.content_list .mod_list_item_bottom ul li span {
+    font-size:0.8rem;
+}
+
+.content_list .mod_list_item_content{
+    align-content: center;
+}
+
+.content_list > li {
+    height:3rem;
+    background:red;
+}
+
 .mod_list_item_bottom ul li span {
     margin-left:0.5em;
 }
@@ -127,4 +171,26 @@
 .mod_list_extended li span {
     font-size:0.6rem;
     font-weight:500;
+}
+
+.mod_list_download_header {
+    height:9rem;
+    width:100%;
+    background:red;
+    padding:0 !important;
+}
+.mod_list_add_mirror {
+    height:3rem;
+    padding:0 !important;
+    background: #f6f6f6;
+    box-shadow:0 0.05rem 0 rgba(0,0,0,0.1);
+    display:flex;
+    align-items: center;
+    padding-left:1.5rem !important;
+    padding-right:1.5rem !important;
+    justify-content: space-between;
+}
+.mod_list_add_mirror i {
+    padding:0;
+    cursor:pointer;
 }

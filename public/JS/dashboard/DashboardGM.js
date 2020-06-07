@@ -51,4 +51,4 @@ handler.addPanel(layouts);
 handler.addPanel(logs);
 handler.addPanel(reports);
 handler.bindMenu(document.getElementById('dashboard_menu_id'));
-handler.goTo('reports');
+handler.goTo('contents');

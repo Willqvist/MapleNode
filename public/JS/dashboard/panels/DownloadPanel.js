@@ -12,6 +12,7 @@ export default class DownloadPanel extends Panel {
     this.remove = PopupProvider.get('removePopup');
     this.remove.bindButton(this.getAll('remove'), this.onRemoveDownload.bind(this));
     this.downloadList = new List("Downloads");
+    this.bindPanels();
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -26,6 +27,16 @@ export default class DownloadPanel extends Panel {
       return { error: response.reason };
     }
     return { error: false };
+  }
+
+  readDownload(elem) {
+    const parent = elem.parentNode.parentNode.parentNode;
+    const parentHeight = parent.getElementsByClassName("heightDownloadContent")[0];
+    console.log( parent.getElementsByClassName("heightDownloadContent")[0]);
+    const height = parseInt(parentHeight.getAttribute("height"), 10)*4+15;
+    const id = parent.getAttribute("list-id");
+    console.log(elem.parentNode.parentNode.parentNode, height);
+    this.downloadList.openExtend(id, height);
   }
 
   addList(list, data) {
