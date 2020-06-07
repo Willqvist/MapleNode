@@ -13,7 +13,17 @@ async function parseData(data) {
   return obj;
 }
 
+const popupStack = [];
+popupStack.peek = function () {
+  return popupStack[popupStack.length-1];
+}
+popupStack.empty = function () {
+  return popupStack.length === 0;
+}
+
+
 export default class PopupForm {
+
   constructor(id) {
     this.id = id;
     this.visible = false;
@@ -42,13 +52,23 @@ export default class PopupForm {
     document.addEventListener(
       'keyup',
       (e) => {
-        if (e.key === 'Escape' && this.visible) {
-          this.fieldResolve({ close: true });
-          this.fieldResolve = null;
+        if (e.key === 'Escape' && this.visible && PopupForm.inFocus === this) {
+          console.log("THIS:",this);
+          if(popupStack.peek() === this) {
+            this.fieldResolve({close: true});
+            this.fieldResolve = null;
+          }
         }
       },
       false
     );
+  }
+
+  onClick(element, callback) {
+    const elem = this.DOM.getElementsByClassName(element)[0];
+    elem.addEventListener("click", async ()=> {
+      await callback(elem);
+    })
   }
 
   initAttributes() {
@@ -73,17 +93,20 @@ export default class PopupForm {
   async animateOut() {
     if (!this.visible) return;
     this.visible = false;
-    this.parent.style.opacity = '0';
+    if(popupStack.empty())
+      this.parent.style.opacity = '0';
     this.DOM.style.opacity = '0';
     this.DOM.style.transform = 'scale(0.9)';
     await sleep(220);
-    this.parent.style.display = 'none';
+    if(popupStack.empty())
+      this.parent.style.display = 'none';
     this.DOM.style.display = 'none';
     this.DOM.style.transform = 'scale(1.1)';
   }
 
   async show(elem, clb) {
-    this.animateIn();
+    popupStack.push(this);
+    await this.animateIn();
     const data = await this.getFields();
     this.fieldResolve = null;
     const submitText = this.title.textContent;
@@ -104,7 +127,8 @@ export default class PopupForm {
       this.fillBindedData(elem.getAttribute('popup-id'), this.parsedData[elem.getAttribute('popup-id')]);
     }
     this.hideError();
-    this.animateOut();
+    popupStack.pop();
+    await this.animateOut();
     return parsed;
   }
 
@@ -135,7 +159,8 @@ export default class PopupForm {
         this.close.addEventListener(
           'click',
           (e) => {
-            resolve({ close: true });
+            if(popupStack.peek() === this)
+              resolve({ close: true });
           },
           false
         );

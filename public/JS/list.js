@@ -58,11 +58,11 @@ export default class List {
     }
 
     append(values) {
-        const { name, sublist, icon, id, buttons } = values;
+        const { name, sublist, icon, id, buttons, extended } = values;
         const node = document.createElement("div");
         node.className = "mod_list_item";
         node.setAttribute("list-id", id);
-
+        const breaker = sublist ? `<div class="mod_list_break"></div>` : ``;
         node.innerHTML = `
             <div class="mod_list_main">
                 <i class="${icon} mod_list_icon"></i>
@@ -70,10 +70,10 @@ export default class List {
                     <div class="mod_list_item_top">
                         <p>${name}</p>
                     </div>
-                    <div class="mod_list_break"></div>
+                    ${breaker}
                     <div class="mod_list_item_bottom">
                         <ul>
-                            ${Object.keys(sublist).map(key => {
+                            ${Object.keys(sublist ? sublist : {}).map(key => {
                                 return `<li><strong>${key}</strong><span>${sublist[key]}</span></li>`;
                             }).join('')}
                         </ul>
@@ -90,6 +90,7 @@ export default class List {
                 </div>
             </div>
              <div class="mod_list_extended">
+                ${extended}
             </div>
         `;
         this.items.appendChild(node);

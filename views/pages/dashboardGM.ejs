@@ -7,7 +7,7 @@ const listDownload = {
     title: {key:"name"},
     attribs: [],
     editAttributes: 'class="fas fa-book btn-icon info panel-bind" event="click" method="readDownload" data-info="More"',
-    addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New download" trigger="downloadPopup" popup-data="#download=src,#-1=id,#Add Download=title,#Title=label_1,#Url=label_1 #Name=input_1,#Url=input_2,#Add=submit"',
+    addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New download" trigger="downloadPopup" popup-data="#download=src,#-1=id,#Add Download=title,#Name=label_1,#Image=label_2,#Mirror=label_3,#Name=input_1,# =input_2,#Url=input_3,#Add=submit"',
     deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#download=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"',
 };
 
@@ -143,8 +143,8 @@ const listReports = {
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div class="mod_list_item_btns mod_list_btn" id="1">
-                                                    <i class="fas fa-edit info" popup-data="#vote=src,<.id=id,#Edit Vote=title,#Name=label_1,#Url=label_2,#Nx=label_3,#Cooldown=label_4,<<>div>div>p=input_1,<<>div>div[2]>ul>li>span=input_2,<<>div>div[2]>ul>li[1]>span=input_3,<<>div>div[2]>ul>li[2]>span=input_4,#Edit=submit" data-info="Edit mirror"></i>
+                                                <div class="mod_list_item_btns mod_list_btn" id="${download.id},${mirror.url}">
+                                                    <i class="fas fa-edit info popup-trigger editMirror" trigger="onePopup" popup-data="#mirror=src,<.id=id,#Edit Mirror=title,#Name=label_1<<>div>div[2]>ul>li>span=input_1#Edit=submit" data-info="Edit mirror"></i>
                                                     <i class="fas fa-trash-alt info" data-info="Remove mirror"></i>
                                                 </div>
                                             </div>
@@ -377,6 +377,82 @@ const listReports = {
             </div>
         </div>
         <div class="popups">
+
+            <!-- ONER INPUT POPUP -->
+            <div id="onePopup" class="popup">
+                <div class="close"><i class="fas fa-times"></i></div>
+                <h1 class="title attrib" name="title">hello there!</h1>
+                <form>
+                    <h3 class="error_popup">Error message</h3>
+                    <input class="attrib" name="id" id="test" type="hidden">
+                    <input class="attrib" name="src" type="hidden">
+                    <div class="input">
+                        <label for="label_1" class="attrib" name="label_1">Test</label>
+                        <input class="attrib" name="input_1">
+                    </div>
+                    <div class="btn_parent">
+                        <div class="btn btn-input">
+                            <input type="submit" name="submit" class="child attrib submit" id="login" value="Submit" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- THREE INPUT POPUP -->
+            <div id="threePopup" class="popup">
+                <div class="close"><i class="fas fa-times"></i></div>
+                <h1 class="title attrib" name="title">hello there!</h1>
+                <form>
+                    <h3 class="error_popup">Error message</h3>
+                    <input class="attrib" name="id" id="test" type="hidden">
+                    <input class="attrib" name="src" type="hidden">
+                    <div class="input">
+                        <label for="label_1" class="attrib" name="label_1">Test</label>
+                        <input class="attrib input_1" name="input_1">
+                    </div>
+                    <div class="input">
+                        <label for="input_2" class="attrib" name="label_2">Test2</label>
+                        <input class="attrib input_2" name="input_2">
+                    </div>
+                    <div class="input">
+                        <label for="input_3" class="attrib" name="label_3">Test3</label>
+                        <input class="attrib input_3" name="input_3">
+                    </div>
+                    <div class="btn_parent">
+                        <div class="btn btn-input">
+                            <input type="submit" name="submit" class="child attrib submit" id="login" value="Submit" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- FILE SELECTOR POPUP -->
+            <div id="filePopup" class="popup">
+                <div class="close"><i class="fas fa-times"></i></div>
+                <h1 class="title attrib" name="title">hello there!</h1>
+                <form>
+                    <h3 class="error_popup">Error message</h3>
+                    <input class="attrib" name="id" id="test" type="hidden">
+                    <input class="attrib" name="src" type="hidden">
+                    <div class="input">
+                        <label for="label_1" class="attrib" name="label_1">Test</label>
+                        <input class="attrib input_1" name="input_1">
+                    </div>
+                    <div class="input">
+                        <label for="input_2" class="attrib" name="label_2">Test2</label>
+                        <input class="attrib input_2" name="input_2">
+                    </div>
+                    <div class="input">
+                        <label for="input_3" class="attrib" name="label_3">Test3</label>
+                        <input class="attrib input_3" name="input_3">
+                    </div>
+                    <div class="btn_parent">
+                        <div class="btn btn-input">
+                            <input type="submit" name="submit" class="child attrib submit" id="login" value="Submit" />
+                        </div>
+                    </div>
+                </form>
+            </div>
 
             <!-- DOWNLOAD POPUP -->
             <div id="downloadPopup" class="popup">

@@ -33,7 +33,6 @@ handler.listen('pageEnter', (page, src) => {
   }
 });
 
-download.registerTriggers();
 vote.registerTriggers();
 const submenuContents = handler.createSubMenu('contents');
 submenuContents.addPanel(download);
