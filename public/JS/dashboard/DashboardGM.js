@@ -7,6 +7,7 @@ import LayoutPanel from "./panels/LayoutPanel.js";
 import DownloadPanel from "./panels/DownloadPanel.js";
 import VotePanel from "./panels/VotePanel.js";
 import ImagesPanel from "./panels/ImagesPanel.js";
+import Grid from "../grid.js";
 
 const bar = document.getElementById('dahboard_bar');
 const handler = new PanelHandler();
@@ -22,6 +23,8 @@ const template = new StatisticsPanel('templates');
 const image = new ImagesPanel('images');
 const palettes = new PalettePanel('palettes');
 
+const grid = new Grid('images');
+image.addGrid(grid, ()=>{});
 handler.listen('pageEnter', (page, src) => {
   console.log(page.DOM.className.includes("containsSubPages"));
   const offsetY = src.offsetTop - src.parentNode.offsetTop;

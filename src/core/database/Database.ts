@@ -336,6 +336,8 @@ export interface Database {
   setBanned(accountid: number, banned: boolean): Promise<boolean>;
 
   handleReports(id: number, ban: boolean): Promise<boolean>;
+
+  setDownloadImage(id: any, image: any): Promise<boolean>;
 }
 
 /**

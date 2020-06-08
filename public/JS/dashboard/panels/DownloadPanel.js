@@ -4,6 +4,7 @@ import Url from '../../API/Url.js';
 import Panel from "./Panel.js";
 import List from "../../list.js";
 import PopupProvider from "../popup/PopupProvider.js";
+import ImagesPanel from "./ImagesPanel.js";
 
 export default class DownloadPanel extends Panel {
 
@@ -22,14 +23,41 @@ export default class DownloadPanel extends Panel {
     this.downloadList = new List("Downloads");
 
     this.filePopup = PopupProvider.get("filePopup");
+    this.filePopup.onClick('mod_grid_fg',this.onImageSelectClick.bind(this));
+    Array.from(this.three.DOM.getElementsByClassName('input_2')).forEach(inp => inp.readOnly = true);
+
+    this.filePopup.setPanel(new ImagesPanel('filePopup'),(node)=> {
+      node.getElementsByClassName('mod_grid_fg')[0].addEventListener("click",()=> {
+        this.onImageSelectClick.bind(this)(node.getElementsByClassName('mod_grid_fg')[0]);
+      }, false);
+    });
     this.bindPanels();
+  }
+
+  async onImageChange(elem) {
+    console.log(elem);
+    const { hide } = await this.filePopup.show(elem, this.onFileSelect.bind(this));
+    const url = new Url('./dashboard/download/image', {
+      image: hide,
+      id:elem.id
+    });
+    const response = await Http.PUT(url);
+    if(response.reason || !response.success) return { error: response.reason };
+    console.log(elem);
   }
 
   async onImageClick(inp) {
     const input = inp;
-    await this.filePopup.show(inp, this.onFileSelect.bind(this));
-    input.value = "hello";
+    inp.readOnly = true;
+    const {hide} = await this.filePopup.show(inp, this.onFileSelect.bind(this));
+    if(hide)
+      input.value = hide;
     return true;
+  }
+
+  async onImageSelectClick(elem) {
+    const id = elem.parentNode.parentNode.id.replace("grid_item_","");
+    this.filePopup.hide(id);
   }
 
   async onFileSelect(state, data, popup) {
@@ -37,7 +65,6 @@ export default class DownloadPanel extends Panel {
   }
 
   async onMirrorEdit(state, data, popup) {
-    console.log("ERROR: ", data);
     return {error:false};
   }
 
@@ -58,7 +85,6 @@ export default class DownloadPanel extends Panel {
   readDownload(elem) {
     const parent = elem.parentNode.parentNode.parentNode;
     const parentHeight = parent.getElementsByClassName("heightDownloadContent")[0];
-    console.log( parent.getElementsByClassName("heightDownloadContent")[0]);
     const height = parseInt(parentHeight.getAttribute("height"), 10)*4+15;
     const id = parent.getAttribute("list-id");
     console.log(elem.parentNode.parentNode.parentNode, height);
@@ -71,7 +97,7 @@ export default class DownloadPanel extends Panel {
             <span>Image</span>
             <i class="fas fa-exchange-alt mod_list_icon info" data-info="Change image"></i>
         </div>
-    <div class="mod_list_download_header" style="background:red no-repeat; background-size:cover; background-position: 50% 50%;" >
+    <div class="mod_list_download_header" style="background:url(upload/${data.input_2}) no-repeat; background-size:cover; background-position: 50% 50%;" >
     </div>
         <div class="mod_list_add_mirror">
             <span>Mirrors</span>
@@ -139,7 +165,8 @@ export default class DownloadPanel extends Panel {
   async onPopupClick(state, input) {
     const data = input;
     if (state === PopupForm.RESULT && !data.close) {
-      if (data.input_1.length === 0 || data.input_2.length === 0) {
+      console.log("LENGHT: ",data.input_2.length);
+      if (data.input_1.length === 0 || (data.input_2.length === 0 || data.input_2.charAt(0) === ' ') || data.input_3.length === 0) {
         return { error: 'Please fill in all the fields!' };
       }
       let response;
@@ -147,12 +174,12 @@ export default class DownloadPanel extends Panel {
       if (data.id === '-1') {
         url = new Url('./dashboard/download', {
           name: data.input_1,
-          url: data.input_2
+          image:data.input_2,
+          url: data.input_3
         });
-        //response = await Http.POST(url);
-        //if(response.reason || !response.success) return { error: response.reason };
-        //data.id = response.id;
-        data.id = 5;
+        response = await Http.POST(url);
+        if(response.reason || !response.success) return { error: response.reason };
+        data.id = response.id;
         this.addList(this.downloadList, data);
         return { response };
       }
@@ -168,7 +195,6 @@ export default class DownloadPanel extends Panel {
   }
 
   async onExit() {
-    // let dat = await Dialog.showYesNo("Are you sure?");
     super.onExit();
   }
 

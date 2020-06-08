@@ -247,6 +247,19 @@ router.put('/download', async (req, res) => {
   }
 });
 
+router.put('/download/image', async (req, res) => {
+  const { id, image } = req.body;
+  if (!image || image.length === 0 || !id || id.length === 0)
+    return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
+
+  try {
+    await DatabaseConnection.instance.setDownloadImage(id, image);
+    return send(res, { success: true });
+  } catch (err) {
+    send(res, { success: true, reason: err.getMessage() });
+  }
+});
+
 router.delete('/download', async (req, res) => {
   const { id } = req.body;
   if (!id) return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
@@ -260,12 +273,13 @@ router.delete('/download', async (req, res) => {
 });
 
 router.post('/download', async (req, res) => {
-  const { name, url } = req.body;
-  if (!name || !url || name.length === 0 || url.length === 0)
+  const { name, url, image } = req.body;
+  if (!name || !url || !image || image.length === 0 || name.length === 0 || url.length === 0)
     return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
 
   try {
-    const id = await DatabaseConnection.instance.addDownload(name, url);
+    const id = await DatabaseConnection.instance.addDownload(name, image);
+    await DatabaseConnection.instance.addDownloadMirror(id, url);
     return send(res, { success: true, id });
   } catch ({ message }) {
     send(res, { success: true, reason: message });

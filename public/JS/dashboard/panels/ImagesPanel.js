@@ -6,16 +6,18 @@ import Grid from "../../grid.js";
 import PopupProvider from "../popup/PopupProvider.js";
 
 export default class ImagesPanel extends Panel {
+    static grids = [];
     init() {
-        console.log("INIT IMAGES");
-
         super.init();
         this.registerTriggers();
         this.remove = PopupProvider.get('removePopup');
         this.remove.bindButton(this.getAll('remove'), this.onRemoveFile.bind(this));
         this.listPopup = PopupProvider.get('listPopup');
         this.listPopup.bindButton(this.getAll('trigger-list'), this.onTagChange.bind(this));
-        this.grid = new Grid('images');
+    }
+
+    addGrid(grid, listener) {
+        ImagesPanel.grids.push({grid,listener, panel:this});
     }
 
     async onRemoveFile(state, data, popup) {
@@ -25,7 +27,9 @@ export default class ImagesPanel extends Panel {
             const response = await Http.DELETE(url);
             if(response.reason)
                 return {error: response.reason};
-            this.grid.remove(data.id);
+
+            console.log(ImagesPanel.grids);
+            ImagesPanel.grids.forEach(grid => grid.grid.remove(data.id));
 
             return {error: false}
         }
@@ -71,7 +75,6 @@ export default class ImagesPanel extends Panel {
         return {error: false};
     }
 
-
     appendGrid(file) {
         const data = {
             id: 'images',
@@ -89,10 +92,15 @@ export default class ImagesPanel extends Panel {
                 <i class="grid_edit fas fa-trash-alt info remove" popup-data="<.id=id,#file=src,#Are you sure?=title,#Yes remove it=submit" data-info="Delete Image"></i>
             </div>`
         };
-        const node = this.grid.append(data);
-        this.registerTrigger(node);
-        this.remove.bindButton(node.getElementsByClassName('remove'), this.onRemoveFile.bind(this));
-        this.listPopup.bindButton(node.getElementsByClassName('trigger-list'), this.onTagChange.bind(this));
+        ImagesPanel.grids.forEach(grid =>
+        {
+            console.log("grid: ", grid);
+            const node = grid.grid.append(data);
+            grid.panel.registerTrigger(node);
+            grid.panel.remove.bindButton(node.getElementsByClassName('remove'), this.onRemoveFile.bind(this));
+            grid.panel.listPopup.bindButton(node.getElementsByClassName('trigger-list'), this.onTagChange.bind(this));
+            grid.listener(node);
+        });
     }
 
     doneUpload(err, file, resolve) {

@@ -3,6 +3,7 @@ import AttributeParser from '../tools/AttributeParser.js';
 
 async function parseData(data) {
   const obj = {};
+  if(!data) return {};
   for (let i = 0; i < data.length; i++) {
     if(data[i].getAttribute('type') === 'file') {
       obj[data[i].getAttribute('name')] = data[i].files[0];
@@ -65,10 +66,15 @@ export default class PopupForm {
   }
 
   onClick(element, callback) {
-    const elem = this.DOM.getElementsByClassName(element)[0];
-    elem.addEventListener("click", async ()=> {
-      await callback(elem);
-    })
+    const elems = this.DOM.getElementsByClassName(element);
+    for(let i = 0; i < elems.length; i++) {
+      const elem = elems[i];
+      const method = async ()=> {
+        await callback(elem);
+      };
+      elem.addEventListener("click", method);
+      elem.addEventListener("focus", method);
+    }
   }
 
   initAttributes() {
@@ -104,6 +110,12 @@ export default class PopupForm {
     this.DOM.style.transform = 'scale(1.1)';
   }
 
+  hide(data) {
+    if(this.fieldResolve) {
+      this.fieldResolve({error: false, hide:data});
+    }
+  }
+
   async show(elem, clb) {
     popupStack.push(this);
     await this.animateIn();
@@ -129,6 +141,7 @@ export default class PopupForm {
     this.hideError();
     popupStack.pop();
     await this.animateOut();
+    parsed.hide = data.hide;
     return parsed;
   }
 

@@ -6,6 +6,7 @@ export default class Panel {
   constructor(id) {
     this.id = id;
     this.DOM = document.getElementById(id);
+    console.log(id, this.DOM);
     this.popups = {};
     this.submenu = null;
     this.subMenuMap = {};

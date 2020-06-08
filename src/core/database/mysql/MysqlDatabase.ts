@@ -3,7 +3,6 @@ import path from 'path';
 import { Database, Rank, SWO } from '../Database';
 import {
   accountsConversion,
-  mn_downloadsConversion,
   mn_layoutConversion,
   mn_palettesConversion,
   mn_settingsConversion,
@@ -26,7 +25,6 @@ import * as Constants from '../../Constants';
 import FileTools from '../../tools/FileTools';
 import { MysqlListenError } from '../../tools/ErrnoConversion';
 import DatabaseError from './DatabaseError';
-import FileProvider from "../../../models/FileProvider";
 
 // Helper methods
 function table(name: string, usePrefix: boolean = true): string {
@@ -830,5 +828,15 @@ export default class MysqlDatabase implements Database {
   async addDownloadMirror(name: number, url: string): Promise<number> {
     const tableName = table('download_urls');
     return this.insert(`INSERT INTO ${tableName} (downloadId,url) VALUES(?,?)`, [name, url]);
+  }
+
+  async setDownloadImage(id: any, image: any): Promise<boolean> {
+    const tableName = table('downloads');
+    try {
+      await this.connection.execute(`UPDATE ${tableName} SET image=? WHERE id=?`, [image, id]);
+      return true;
+    } catch (err) {
+      throw new DatabaseError({ errno: err.errno, msg: err.message });
+    }
   }
 }

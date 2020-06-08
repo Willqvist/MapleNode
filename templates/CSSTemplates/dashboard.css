@@ -786,6 +786,7 @@ body
     transition:ease 0.2s;
     border-radius:0.5rem;
     border-radius:0.5rem;
+    box-shadow:0 0.5rem 1rem rgba(0, 0, 52, 0.3);
     overflow:hidden;
 }
 .popup .error_popup {
@@ -1243,6 +1244,10 @@ body
     width:0%;
     height:100%;
 }
+#filePopup .btn_parent {
+    margin-bottom:2rem;
+    font-size:0.8rem;
+}
 @media only screen and (max-width: 100em) {
     .submenu {
         width:5em !important;
@@ -1311,6 +1316,4 @@ body
         margin-top:2rem;
         margin-bottom:2rem;
     }
-
-
 }

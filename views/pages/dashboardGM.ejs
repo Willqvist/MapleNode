@@ -112,12 +112,11 @@ const listReports = {
                                     listDownload.content = [];
                                     for(let i = 0; i < options.downloads.length; i++ ){
                                         const download = options.downloads[i];
-                                        console.log("DOWNLOAD: " , download);
                                         let html = "";
                                         html += `
                                             <div class="mod_list_add_mirror">
                                                 <span>Image</span>
-                                                <i class="fas fa-exchange-alt mod_list_icon info" data-info="Change image"></i>
+                                                <i class="fas fa-exchange-alt mod_list_icon info panel-bind" event="click" method="onImageChange" downloadId="${download.id}" data-info="Change image"></i>
                                             </div>
                                         <div class="mod_list_download_header" style="background:url(${getFile(download.image)}) no-repeat; background-size:cover; background-position: 50% 50%;" >
                                         </div>
@@ -144,7 +143,7 @@ const listReports = {
                                                     </div>
                                                 </div>
                                                 <div class="mod_list_item_btns mod_list_btn" id="${download.id},${mirror.url}">
-                                                    <i class="fas fa-edit info popup-trigger editMirror" trigger="onePopup" popup-data="#mirror=src,<.id=id,#Edit Mirror=title,#Name=label_1<<>div>div[2]>ul>li>span=input_1#Edit=submit" data-info="Edit mirror"></i>
+                                                    <i class="fas fa-edit info editMirror" popup-data="#mirror=src,<.id=id,#Edit Mirror=title,#Name=label_1<<>div>div[2]>ul>li>span=input_1#Edit=submit" data-info="Edit mirror"></i>
                                                     <i class="fas fa-trash-alt info" data-info="Remove mirror"></i>
                                                 </div>
                                             </div>
@@ -292,7 +291,6 @@ const listReports = {
                                     </div>
                                 </div>
                                 <%
-                                console.log(options.palettes);
                                 const paletteContent = [];
                                 for(let i = 0; i < options.palettes.all.length; i++) {
 
@@ -429,29 +427,42 @@ const listReports = {
             <!-- FILE SELECTOR POPUP -->
             <div id="filePopup" class="popup">
                 <div class="close"><i class="fas fa-times"></i></div>
-                <h1 class="title attrib" name="title">hello there!</h1>
+                <h1 class="title attrib" name="title">Images</h1>
                 <form>
                     <h3 class="error_popup">Error message</h3>
-                    <input class="attrib" name="id" id="test" type="hidden">
-                    <input class="attrib" name="src" type="hidden">
-                    <div class="input">
-                        <label for="label_1" class="attrib" name="label_1">Test</label>
-                        <input class="attrib input_1" name="input_1">
-                    </div>
-                    <div class="input">
-                        <label for="input_2" class="attrib" name="label_2">Test2</label>
-                        <input class="attrib input_2" name="input_2">
-                    </div>
-                    <div class="input">
-                        <label for="input_3" class="attrib" name="label_3">Test3</label>
-                        <input class="attrib input_3" name="input_3">
-                    </div>
-                    <div class="btn_parent">
-                        <div class="btn btn-input">
-                            <input type="submit" name="submit" class="child attrib submit" id="login" value="Submit" />
+                    <div class="btn-list">
+                        <div class="btn_parent">
+                            <div class="btn btn-span popup-trigger" trigger="uploadFilePopup" popup-data="
+                                                #-1=id,
+                                                #Upload file=title,
+                                                #Select file=label_1,
+                                                #Upload=submit
+                                                ">
+                                <span>Upload Image</span>
+                            </div>
                         </div>
+                        <p>Click on the image to select it.</p>
                     </div>
+            <%
+            let gridPopupList = [];
+            for(let i = 0; i < options.images.length; i++) {
+                const image = options.images[i];
+                let activeList = [];
+                let style = '';
+                gridPopupList.push({
+                    id:image.fileName,
+                    contentStyle:`flex-direction:row;`,
+                    content:`
+<div class="mod_grid_item_content image">
+    <h2>${image.fileName}</h2>
+</div>
+`,
+                    image:` center / contain no-repeat url("${image.destName}")`})
+            }
+            %>
+            <%- include ('../panels/grid.ejs',{id:'popup-images',items:gridList})%>
                 </form>
+
             </div>
 
             <!-- DOWNLOAD POPUP -->
