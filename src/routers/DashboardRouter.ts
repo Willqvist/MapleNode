@@ -249,8 +249,9 @@ router.put('/download', async (req, res) => {
 
 router.put('/download/image', async (req, res) => {
   const { id, image } = req.body;
-  if (!image || image.length === 0 || !id || id.length === 0)
+  if (!image || image.length === 0 || !id || id.length === 0) {
     return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
+  }
 
   try {
     await DatabaseConnection.instance.setDownloadImage(id, image);

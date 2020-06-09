@@ -35,15 +35,19 @@ export default class DownloadPanel extends Panel {
   }
 
   async onImageChange(elem) {
-    console.log(elem);
+    const id = elem.parentNode.parentNode.parentNode.getAttribute("list-id");
     const { hide } = await this.filePopup.show(elem, this.onFileSelect.bind(this));
     const url = new Url('./dashboard/download/image', {
       image: hide,
-      id:elem.id
+      id
     });
     const response = await Http.PUT(url);
     if(response.reason || !response.success) return { error: response.reason };
-    console.log(elem);
+    const header = elem.parentNode.parentNode.getElementsByClassName("mod_list_download_header")[0];
+    console.log("header",header);
+    header.style.background = `url(upload/${hide}) no-repeat`;
+    header.style.backgroundSize = 'cover';
+    header.style.backgroundPosition = "50% 50%";
   }
 
   async onImageClick(inp) {
