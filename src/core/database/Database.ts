@@ -198,6 +198,8 @@ export interface Database {
 
   addDownloadMirror(name: number, url: string): Promise<number>;
 
+  removeDownloadMirror(id: any, url: any): Promise<number>;
+
   /**
    * updates the layout of a given name.
    * @param name the name of the layout to update

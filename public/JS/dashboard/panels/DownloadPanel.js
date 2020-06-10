@@ -12,9 +12,11 @@ export default class DownloadPanel extends Panel {
   init() {
     this.remove = PopupProvider.get('removePopup');
     this.remove.bindButton(this.getAll('remove'), this.onRemoveDownload.bind(this));
+    this.remove.bindButton(this.getAll('removeMirror'), this.onMirrorRemove.bind(this));
 
     this.one = PopupProvider.get('onePopup');
     this.one.bindButton(this.getAll('editMirror'), this.onMirrorEdit.bind(this));
+    this.one.bindButton(this.getAll('addMirror'), this.onMirrorAdd.bind(this));
 
     this.three = PopupProvider.get('threePopup');
     this.three.onClick('input_2',this.onImageClick.bind(this));
@@ -32,6 +34,65 @@ export default class DownloadPanel extends Panel {
       }, false);
     });
     this.bindPanels();
+  }
+
+  async onMirrorRemove(state, data, popup) {
+    if (state === PopupForm.RESULT && !data.close) {
+      const [downloadId, mirrorUrl] = data.id.split(',');
+      const url = new Url('./dashboard/download/mirror', {
+        url: mirrorUrl,
+        id: downloadId
+      });
+      const response = await Http.DELETE(url);
+      if(response.reason || !response.success) return { error: response.reason };
+      const elem = document.getElementById(`list-${data.id}`);
+      elem.parentNode.removeChild(elem);
+    }
+    return {error: false};
+  }
+
+  async onMirrorAdd(state, data, popup) {
+    if (state === PopupForm.RESULT && !data.close) {
+      if (data.input_1.length === 0) {
+        return { error: 'Please fill in all the fields!' };
+      }
+      const url = new Url('./dashboard/download/mirror', {
+        url: data.input_1,
+        id: data.id
+      });
+      const response = await Http.PUT(url);
+      if(response.reason || !response.success) return { error: response.reason };
+      const parent = this.downloadList.getElementsByAttribute('list-id',data.id)[0];
+      const content_list = parent.getElementsByClassName('content_list')[0];
+      const node = document.createElement(`div`);
+      node.className = "mod_list_main";
+      node.id = `list-${data.id},${data.input_1}`;
+      node.innerHTML = `
+        <i class="fas fa-link mod_list_icon"></i>
+        <div class="mod_list_item_content">
+            <div class="mod_list_item_top">
+                <p>Mirror ${content_list.children.length+1}</p>
+            </div>
+            <div class="mod_list_break"></div>
+            <div class="mod_list_item_bottom">
+                <ul>
+                    <li><strong>Url</strong><span>${data.input_1}</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="mod_list_item_btns mod_list_btn" id="${data.id},${data.input_1}">
+            <i class="fas fa-trash-alt info removeMirror" popup-data="#Remove mirror?=title,#Yes remove it=submit,<.id=id" data-info="Remove mirror"></i>
+        </div>
+    `;
+      Array.from(node.getElementsByClassName('info')).forEach(elem => window.registerInfo(elem));
+      const height = parseInt(content_list.getAttribute('height'),10)+1;
+      content_list.setAttribute('height',height);
+      console.log(content_list, node);
+      content_list.appendChild(node);
+      this.remove.bindButton(node.getElementsByClassName('removeMirror'), this.onMirrorRemove.bind(this));
+      this.downloadList.openExtend(data.id, height*4+15, true);
+    }
+    return {error: false};
   }
 
   async onImageChange(elem) {

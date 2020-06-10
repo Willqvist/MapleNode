@@ -287,6 +287,32 @@ router.post('/download', async (req, res) => {
   }
 });
 
+router.delete('/download/mirror', async (req, res) => {
+  const { id, url } = req.body;
+  if (!id || !url || id.length === 0 || url.length === 0)
+    return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
+
+  try {
+    await DatabaseConnection.instance.removeDownloadMirror(id, url);
+    return send(res, { success: true, id });
+  } catch ({ message }) {
+    send(res, { success: true, reason: message });
+  }
+});
+
+router.put('/download/mirror', async (req, res) => {
+  const { id, url } = req.body;
+  if (!id || !url || id.length === 0 || url.length === 0)
+    return send(res, { success: false, reason: 'Input may not be empty!' }, 406);
+
+  try {
+    await DatabaseConnection.instance.addDownloadMirror(id, url);
+    return send(res, { success: true, id });
+  } catch (err) {
+    send(res, { success: true, reason: err.getMessage() });
+  }
+});
+
 router.get('/layout/:name', async (req, res) => {
   const { name } = req.params;
 

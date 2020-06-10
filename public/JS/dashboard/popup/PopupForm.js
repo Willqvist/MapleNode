@@ -133,6 +133,7 @@ export default class PopupForm {
     this.title.innerHTML = submitText;
     if (res.error) {
       this.showError(res.error);
+      popupStack.pop();
       return this.show(elem, clb);
     }
     if (!data.close) {

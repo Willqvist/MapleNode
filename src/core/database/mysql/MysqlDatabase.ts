@@ -839,4 +839,9 @@ export default class MysqlDatabase implements Database {
       throw new DatabaseError({ errno: err.errno, msg: err.message });
     }
   }
+
+  removeDownloadMirror(id: any, url: any): Promise<number> {
+    const tableName = table('download_urls');
+    return this.delete(`DELETE FROM ${tableName} WHERE downloadId=? AND url=?`, [id, url]);
+  }
 }

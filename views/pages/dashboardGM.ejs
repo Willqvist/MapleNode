@@ -8,7 +8,7 @@ const listDownload = {
     attribs: [],
     editAttributes: 'class="fas fa-book btn-icon info panel-bind" event="click" method="readDownload" data-info="More"',
     addAttributes: 'class="fas fa-plus popup-trigger info" data-info="New download" trigger="downloadPopup" popup-data="#download=src,#-1=id,#Add Download=title,#Name=label_1,#Image=label_2,#Mirror=label_3,#Name=input_1,# =input_2,#Url=input_3,#Add=submit"',
-    deleteAttributes: 'class="fas fa-trash-alt btn-icon info popup-trigger remove" trigger="removePopup" popup-data="#download=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"',
+    deleteAttributes: 'class="fas fa-trash-alt btn-icon info remove" popup-data="#download=src,<.id=id,#Are you sure?=title,#Yes remove it=submit" data-info="Remove"',
 };
 
 const listVotes = {
@@ -122,14 +122,14 @@ const listReports = {
                                         </div>
                                             <div class="mod_list_add_mirror">
                                                 <span>Mirrors</span>
-                                                <i class="fas fa-plus mod_list_icon info" data-info="Add mirror"></i>
+                                                <i class="fas fa-plus mod_list_icon info addMirror" popup-data="#addMirror=src,<<<.list-id=id,#Add Mirror=title,#Url=label_1" data-info="Add mirror"></i>
                                             </div>
                                         `;
                                         html += `<div class="content_list heightDownloadContent" height="${download.urls.length}">`;
                                         for(let j = 0; j < download.urls.length; j++) {
                                             const mirror = download.urls[j];
                                             html += `
-                                            <div class="mod_list_main">
+                                            <div class="mod_list_main" id="list-${download.id},${mirror.url}">
                                                 <i class="fas fa-link mod_list_icon"></i>
                                                 <div class="mod_list_item_content">
                                                     <div class="mod_list_item_top">
@@ -143,8 +143,7 @@ const listReports = {
                                                     </div>
                                                 </div>
                                                 <div class="mod_list_item_btns mod_list_btn" id="${download.id},${mirror.url}">
-                                                    <i class="fas fa-edit info editMirror" popup-data="#mirror=src,<.id=id,#Edit Mirror=title,#Name=label_1<<>div>div[2]>ul>li>span=input_1#Edit=submit" data-info="Edit mirror"></i>
-                                                    <i class="fas fa-trash-alt info" data-info="Remove mirror"></i>
+                                                    <i class="fas fa-trash-alt info removeMirror" popup-data="#Remove mirror?=title,#Yes remove it=submit,<.id=id" data-info="Remove mirror"></i>
                                                 </div>
                                             </div>
                                             `;

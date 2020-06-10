@@ -31,14 +31,14 @@ export default class List {
         this.items.innerHTML = "";
     }
 
-    openExtend(id, height) {
+    openExtend(id, height, forceOpen=false) {
         const item = this.findByListId(id);
         if(!item) return;
         const bottom = item.getElementsByClassName('mod_list_extended')[0];
         const ext = this.extended[id];
-        bottom.style.maxHeight = `${!ext?height:0}rem`;
-        bottom.style.opacity = `${!ext?1:0}`;
-        this.extended[id] = !ext;
+        bottom.style.maxHeight = `${!ext||forceOpen?height:0}rem`;
+        bottom.style.opacity = `${!ext||forceOpen?1:0}`;
+        this.extended[id] = !ext||forceOpen;
     }
 
     findByListId(id) {
