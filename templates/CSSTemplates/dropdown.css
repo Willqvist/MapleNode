@@ -26,6 +26,12 @@
     color:#20063B;
     transition:Ease 0.2s;
 }
+.dropdownContent input {
+    margin:0 !important;
+    box-shadow: inset 0px 0px 0px 1px rgba(0,0,0,0.09), 0px 0.24em 0.4em rgba(0, 0, 0, 0.05) !important;
+    margin:0.5rem !important;
+    height:2.4rem !important;
+}
 .dropdownContent li:hover
 {
     background:rgb(248, 243, 252);

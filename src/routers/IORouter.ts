@@ -174,6 +174,7 @@ router.post('/ranking', async (req, res) => {
 
   const { search, job, rank, page } = req.body;
   const ranks = await DatabaseConnection.instance.rank(rank.toLowerCase(), { job: parseInt(job, 10), search }, page, 5);
+  console.log(ranks);
   const jobNames: {[key:string]:string} = {};
   for (let i = 0; i < ranks.length; i++) {
     const jobName = jobs[ranks[i].job];

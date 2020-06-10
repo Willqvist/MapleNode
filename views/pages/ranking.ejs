@@ -15,13 +15,18 @@
             <div id="settings" class="tab">
                 <div id="settingsBtns">
                         <div class="dropdownBtn rankBtn noSelect" data-dropdownContent="searchSettings"><span>&dtrif; Overall</span>
-                            <ul id="searchSettings"class="noSelect dropdownContent">
+                            <div id="searchSettings"class="noSelect dropdownContent" scroll max="6" search>
+                                <form>
+                                    <input class="searchInput" placeholder="Search..." filter="jobDropdownContent">
+                                </form>
+                                <ul id="jobDropdownContent">
                                 <% for(const key in options.jobs) {
                                     const jobName = options.jobs[key];
                                 %>
                                     <li data-id="<%= key %>" data-select="<%= jobName %>"><%= jobName %></li>
                                 <%}%>
-                            </ul>
+                                </ul>
+                            </div>
                         </div>
                     <div class="dropdownBtn rankBtn noSelect" data-dropdownContent="searchRankingSettings"><span>&dtrif; Level</span>
                         <ul id="searchRankingSettings" class="noSelect dropdownContent">
@@ -94,14 +99,13 @@
             //###RELOAD####
             reload.addEventListener("click",()=>
             {
-                console.log("wew");
                 reloadPage();
                 //reload.childNodes[1].style.transform = "rotateZ(180deg) !important";
             },false);
 
             let loader = new Loader("rankLoader");
             let userElement = new DOMCompiler("<div class=\"user\">\r\n<h3 class=\"rank\">{{placement}}</h3>\r\n<div class=\"character\">\r\n<div class=\"characterImage\"></div>\r\n<h3>{{name}}</h3>\r\n</div>\r\n<h3 class=\"job\"><span>({{jobRank}})</span>{{job}}</h3>\r\n<h3 class=\"level\">{{rank}}</h3>\r\n</div>");
-            let page = 0;
+            let pageNum = 0;
             let length = 5;
             let search;
             let isLoading = false;
@@ -109,6 +113,7 @@
             let prev = document.getElementById("prev");
             let userWrapper = document.getElementById("users");
             let pageNumer = document.getElementById("pageNumber");
+            let canGoNext = true;
 
             let lastClickedUser = null;
 
@@ -129,6 +134,7 @@
             }
             async function goToPage(page){
                 pageNumer.innerHTML = page;
+                pageNum = page;
                 isLoading= true;
                 loader.show();
                 console.log(jobs,rank);
@@ -136,6 +142,8 @@
                 const resp = await Http.POST(url);
                 console.log(resp);
                 const response = resp.characters;
+                canGoNext = response.length >= 5;
+                nextButton();
                 console.log(response);
                 userWrapper.innerHTML = "";
                 for(let i = 0; i < response.length; i++){
@@ -192,14 +200,14 @@
             prev.addEventListener("click",goPrev,false);
             function goNext()
             {
-                if(!canChangePage()) return;
-                page ++;
-                goToPage(page);
+                nextButton();
+                if(!canChangePage() || !canGoNext) return;
+                goToPage(pageNum+1);
                 prevButton();
             }
             function prevButton()
             {
-                if(page == 0)
+                if(pageNum == 0)
                 {
                     prev.style.background="#bdc0c4";
                     prev.style.cursor = "not-allowed";
@@ -210,12 +218,26 @@
                     prev.style.cursor = "pointer";
                 }
             }
+
+            function nextButton() {
+                if(!canGoNext)
+                {
+                    next.style.background="#bdc0c4";
+                    next.style.cursor = "not-allowed";
+                }
+                else
+                {
+                    next.style.background="#3e78b2";
+                    next.style.cursor = "pointer";
+                }
+            }
             function goPrev()
             {
-                if(!canChangePage() || page == 0)  return;
-                page --;
-                goToPage(page);
+                if(!canChangePage() || pageNum == 0)  return;
+                pageNum --;
+                goToPage(pageNum);
                 prevButton();
+                nextButton();
             }
             function canChangePage()
             {
