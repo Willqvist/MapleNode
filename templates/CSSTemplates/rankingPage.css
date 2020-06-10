@@ -273,3 +273,67 @@ ul.blockHeader li
     font-size:1.2em;
     margin:auto;
 }
+#pageNumber {
+    width:3rem;
+    border:none;
+    text-align:center;
+    font-size:1rem;
+    font-weight:900;
+    font-family: 'Montserrat', sans-serif;
+    padding-bottom:0.2rem;
+    box-shadow:0 0.1rem 0 rgba(0,0,0,0.1);
+}
+#userPreview {
+    width:100%;
+    height:100%;
+    position: absolute;
+    background: #fdfdfd;
+    z-index:2;
+    display:none;
+}
+
+#closePreview {
+    width:2rem;
+    height:2rem;
+    margin-top:1rem;
+    margin-left:1rem;
+    display:flex;
+    position: absolute;
+    border-radius:22rem;
+    transition: ease 0.2s;
+}
+#closePreview i {
+    color:var(--fontColorDark);
+    margin:auto;
+    font-size:1.2rem;
+    transition: ease 0.2s;
+}
+#closePreview:hover {
+    background:var(--mainColor);
+    cursor: pointer;
+}
+#closePreview:hover i {
+    color:var(--fontColorLight);
+}
+
+.userPreviewWrapper {
+    display:flex;
+    height:100%;
+    flex-direction: row;
+    flex:1;
+}
+#userPreviewImage, #userPreviewContent {
+    flex:1;
+}
+#userPreviewImage {
+    image-rendering: pixelated;
+}
+#userPreviewContent {
+    box-sizing: border-box;
+    padding:4rem;
+    padding-left:0;
+    font-family: 'Montserrat', sans-serif;
+}
+#userPreviewContent h1 {
+    font-size:2rem;
+}

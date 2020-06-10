@@ -15,7 +15,7 @@
             <div id="settings" class="tab">
                 <div id="settingsBtns">
                         <div class="dropdownBtn rankBtn noSelect" data-dropdownContent="searchSettings"><span>&dtrif; Overall</span>
-                            <div id="searchSettings"class="noSelect dropdownContent" scroll max="6" search>
+                            <div id="searchSettings"class="noSelect dropdownContent" scroll max="10" search>
                                 <form>
                                     <input class="searchInput" placeholder="Search..." filter="jobDropdownContent">
                                 </form>
@@ -53,6 +53,15 @@
                     <li class="title">Level</li>
                 </ul>
                 <div id="usersWrapper" class="box_style">
+                    <div id="userPreview">
+                        <div id="closePreview"><i class="fas fa-times"></i></div>
+                        <div class="userPreviewWrapper">
+                            <div id="userPreviewImage"></div>
+                            <div id="userPreviewContent">
+                                <h1 id="previewName">Username</h1>
+                            </div>
+                        </div>
+                    </div>
                     <div class="loader" id="rankLoader">
                         <p>Loading</p>
                     </div>
@@ -63,7 +72,7 @@
             </div>
             <div  class="tab pageTab">
                 <div id="prev" class="rankBtn noSelect"><span>Previous Page</span></div>
-                <div id="pageInfo"><h3 id="pageNumber">0</h3></div>
+                <div id="pageInfo"><input id="pageNumber" value="0"></input></div>
                 <div id="next" class="rankBtn noSelect"><span>Next Page</span></div>
             </div>
         </section>
@@ -113,29 +122,63 @@
             let prev = document.getElementById("prev");
             let userWrapper = document.getElementById("users");
             let pageNumer = document.getElementById("pageNumber");
+            const wrapper = document.getElementById('usersWrapper');
             let canGoNext = true;
 
             let lastClickedUser = null;
 
+            /* PREVIEW ELEMENTS */
+            const preview = document.getElementById('userPreview');
+            const previewName = document.getElementById('previewName');
+            const previewImage = document.getElementById('userPreviewImage');
+
+            document.getElementById('closePreview').addEventListener("click",hidePreview);
+
             //userElement.setVariable({variable:"rank",data:1});
             goToPage(0);
             prevButton();
+
+            pageNumer.addEventListener('keydown', (e)=> {
+                if(e.key === 'Enter')
+                    goToPage(pageNumer.value);
+            }, false);
+
+            function setPreviewImage(img) {
+                previewImage.style.background = `url(characters/${img}.chr)`;
+                previewImage.style.backgroundSize="contain";
+                previewImage.style.backgroundPosition="50% 50%";
+            }
+
+            function setPreviewUser(usr) {
+                setPreviewImage(usr.name);
+                previewName.innerHTML = usr.name;
+                wrapper.style.minHeight = "35rem";
+                preview.style.display="flex";
+            }
+
+            function hidePreview() {
+                wrapper.style.minHeight = "auto";
+                preview.style.display="none";
+            }
+
             function isset(variable)
             {
                 return typeof variable !== 'undefined'
             }
             function showUser(user)
             {
-                user.style.height="15em";
+                //user.style.height="15em";
+                setPreviewUser(user);
             }
             function hideUser(user)
             {
-                user.style.height = "8em";
+                //user.style.height = "8em";
             }
             async function goToPage(page){
-                pageNumer.innerHTML = page;
+                pageNumer.value = page;
                 pageNum = page;
                 isLoading= true;
+                hidePreview();
                 loader.show();
                 console.log(jobs,rank);
                 let url = new Url("/IO/ranking",{page:page,job:jobs,rank:rank,search:search});
@@ -171,17 +214,7 @@
                         "click",
                         (()=>
                         {
-                            if(lastClickedUser)
-                            {
-                                hideUser(lastClickedUser);
-                                if(lastClickedUser == element)
-                                {
-                                    lastClickedUser = null;
-                                    return;
-                                }
-                            }
-                            showUser(element);
-                            lastClickedUser = element;
+                            showUser(user);
                         }).bind(element),false
                     );
 
@@ -195,7 +228,6 @@
                 loader.hide();
                 isLoading = false;
             }
-            console.log(usersWrapper);
             next.addEventListener("click",goNext,false);
             prev.addEventListener("click",goPrev,false);
             function goNext()
