@@ -3,6 +3,7 @@ import path from 'path';
 import { Database, Rank, SWO } from '../Database';
 import {
   accountsConversion,
+  charactersConversion,
   mn_layoutConversion,
   mn_palettesConversion,
   mn_settingsConversion,
@@ -843,5 +844,13 @@ export default class MysqlDatabase implements Database {
   removeDownloadMirror(id: any, url: any): Promise<number> {
     const tableName = table('download_urls');
     return this.delete(`DELETE FROM ${tableName} WHERE downloadId=? AND url=?`, [id, url]);
+  }
+
+  async getCharacters(): Promise<CharactersInterface[]> {
+    const [rows, err] = await this.exec<CharactersInterface>({}, 'characters', charactersConversion, false);
+    if (err) {
+      throw new DatabaseError({ errno: 0, msg: err });
+    }
+    return rows;
   }
 }

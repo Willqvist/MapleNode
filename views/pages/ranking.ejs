@@ -82,6 +82,7 @@
             import { dropdownClickHandler } from './JS/dropdown.js';
             let jobs = "-1";
             let rank = "Level";
+            const charactersAmount = <%= options.charactersAmount %>;
             const reload = document.getElementById("reloadSearch");
             const titles = document.getElementsByClassName("title");
             const dropdownBtns = document.getElementsByClassName("dropdownBtn");
@@ -138,9 +139,14 @@
             goToPage(0);
             prevButton();
 
-            pageNumer.addEventListener('keydown', (e)=> {
-                if(e.key === 'Enter')
-                    goToPage(pageNumer.value);
+            pageNumer.addEventListener('keydown', async (e)=> {
+                const prevNum = pageNum;
+                if(e.key === 'Enter') {
+                    const success = await goToPage(pageNumer.value);
+                    if(!success) {
+                        await goToPage(Math.floor(charactersAmount/5));
+                    }
+                }
             }, false);
 
             function setPreviewImage(img) {
@@ -227,6 +233,7 @@
                 }
                 loader.hide();
                 isLoading = false;
+                return response.length !== 0;
             }
             next.addEventListener("click",goNext,false);
             prev.addEventListener("click",goPrev,false);

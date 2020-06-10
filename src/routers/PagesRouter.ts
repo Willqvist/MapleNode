@@ -1,16 +1,18 @@
 import express from 'express';
 import DBConn from '../core/database/DatabaseConnection';
 import * as consts from '../core/Constants';
+
 const router = express.Router();
 
 router.get('/', (req, res) => {
   const { user } = req.session;
-  return res.render('index',{user});
+  return res.render('index', { user });
 });
-router.get('/ranking', (req, res) => {
+router.get('/ranking', async (req, res) => {
   const { user } = req.session;
   const jobs = consts.getConstant('jobs');
-  return res.render('pages/ranking', { user, jobs });
+  const characters = await DBConn.instance.getCharacters();
+  return res.render('pages/ranking', { user, jobs, charactersAmount: characters.length });
 });
 router.get('/login', (req, res) => {
   const { user } = req.session;

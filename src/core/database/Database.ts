@@ -58,6 +58,8 @@ export interface Database {
    */
   getCharacter(name: string, obj?: SWO): Promise<CharactersInterface>;
 
+  getCharacters(): Promise<CharactersInterface[]>;
+
   /**
    * returns the active color palette of the website.
    * @param obj extra conditions on the returned data.
