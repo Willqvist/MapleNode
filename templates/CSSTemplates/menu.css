@@ -177,7 +177,7 @@ input
 {
     cursor:pointer;
     font-family: 'Montserrat', sans-serif;
-    font-weight:700; 
+    font-weight:700;
     transition:Ease 0.2s;
     background:var(--mainColor);
     border:none;
@@ -202,7 +202,7 @@ input
     box-shadow:inset 0px 0px 0 0.12em var(--mainColor);
 }
 .btn:hover:before {
-    
+
     background:var(--mainColor);
 }
 .btn-a a
@@ -239,7 +239,7 @@ input
     color:var(--fontColorDark);
     text-transform: uppercase;
     font-family: 'Montserrat', sans-serif;
-    font-weight:700; 
+    font-weight:700;
     transition:Ease 0.2s;
     cursor:pointer;
     color:var(--fontColorLight)
@@ -278,7 +278,7 @@ input
 .disabled-btn:hover
 {
     background:grey;
-    color:var(--fontColorDark);  
+    color:var(--fontColorDark);
     cursor: not-allowed;
 }
 .noSelect
@@ -302,7 +302,7 @@ input
     font-family: 'Montserrat', sans-serif;
     font-size:0.9em;
     display:none;
-}  
+}
 .loader
 {
     width:100%;
@@ -340,8 +340,8 @@ input
     position: relative;
     padding-top:2em;
     font-family: 'Montserrat', sans-serif;
-    color:var(--fontColorDark);  
-} 
+    color:var(--fontColorDark);
+}
 .maxWidth{
     max-width:94em;
     width:90%;
@@ -367,18 +367,18 @@ width: 10px;
 
 /* Track */
 ::-webkit-scrollbar-track {
-background: var(--fontColorLight); 
+background: var(--fontColorLight);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
 background: var(--mainColor);
-border-radius:20em; 
+border-radius:20em;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-background: var(--secondaryMainColor); 
+background: var(--secondaryMainColor);
 }
 
 

@@ -8,7 +8,8 @@
         isset,
         getFile,
         loggedIn: locals.user,
-        user: locals.user
+        user: locals.user,
+        isAdmin
     };
 
     function setup() {
@@ -17,6 +18,10 @@
             return;
         }
         %><%- include(options.page, attribs); %><%
+    }
+
+    function isAdmin(user) {
+        return user.gm >= 3 || user.webadmin >= 3;
     }
 
     function getFile(name) {

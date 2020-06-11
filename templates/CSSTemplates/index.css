@@ -4,7 +4,7 @@ body{
 }
 .header {
     width:100%;
-    height:50vh; 
+    height:50vh;
     position: relative;
     display:flex;
     min-height:30em;
@@ -65,17 +65,18 @@ body{
     height:100%;
     z-index:1;
     background: var(--fontColorDark);
-    background: linear-gradient(180deg, var(--fontColorDark) 0%, rgba(16,121,178,0) 100%);    
+    background: linear-gradient(180deg, var(--fontColorDark) 0%, rgba(16,121,178,0) 100%);
 }
 .header_content .btn{
     font-size:1em;
 }
 .header_content .header_logo {
-    width:100%;
     height:15em;
+    display:flex;
+    margin:auto;
+    align-items: center;
 }
 .header_logo img {
-    width:100%;
     height:100%;
     margin-top:auto;
     margin-bottom: auto;
@@ -83,6 +84,11 @@ body{
     margin-right:2em;
     font-size:0.8em;
     position: relative;
+}
+.header_content .header_logo h1 {
+    color:var(--fontColorLight);
+    font-size:5rem;
+    font-family: 'Montserrat', sans-serif;
 }
 .video {
     width:100%;
@@ -108,11 +114,12 @@ body{
     margin-top:0;
     padding-top:6em;
     overflow-x: hidden;
+    position: relative;
 }
 
 /* CONTENT */
 .content .block_content {
-    height:20em;
+    min-height:20em;
     position: relative;
     margin-bottom:6rem;
     margin-top:6rem;
@@ -168,20 +175,6 @@ body{
     box-shadow:0px 0px 0px rgba(0, 0, 0, 0);
     background:none;
 }
-/*
-        <div class="news_box box">
-            <h2 class="box_title">News</h2>
-        </div>
-        <div class="server_box box">
-            <h2 class="box_title">News</h2>
-        </div>
-        <div class="stats_box box box_naked">
-            <h2 class="box_title">Server stats</h2>
-        </div>
-        <div class="ranking_box box box_naked">
-            <h2 class="box_title">Server stats</h2>
-        </div> 
-        */  
 .box_title
 {
     font-weight:500;
@@ -195,7 +188,7 @@ body{
     min-height:10em;
     margin-top:2em;
     background:#fbf9fd;
-    display:flex; 
+    display:flex;
     flex-direction: column;
 }
 .smallBlock{
@@ -204,7 +197,7 @@ body{
 .halfBlock
 {
     width:49%;
-} 
+}
 .middleBlock
 {
     width:66%;
@@ -212,7 +205,7 @@ body{
 .fullBlock
 {
     width:100%;
-}              
+}
 .blockHeader{
     background:#FFF;
     width:100%;
@@ -221,11 +214,11 @@ body{
     box-sizing:border-box;
     padding-left:0.5em;
     font-weight:400;
-    font-family: 'Montserrat', sans-serif;   
+    font-family: 'Montserrat', sans-serif;
     box-shadow:inset 0px -0.15em 0 var(--mainColor);
-    color:var(--fontColorDark);  
-    display:flex;    
-}   
+    color:var(--fontColorDark);
+    display:flex;
+}
 .blockHeader svg{
     width:1.8em;
     height:1.8em;
@@ -236,4 +229,20 @@ body{
     margin-right:0.6em;
     stroke-linecap:round;
     stroke-linejoin:round;
-}            
+}
+body {
+    background:#FFF;
+}
+.top_bg {
+    position: absolute;
+    left:0;
+    right:0;
+    top:0;
+    height:30rem;
+    background-color:#F9F9F9;
+    background-image: url(https://i.pinimg.com/564x/89/d9/f4/89d9f414d9a84ce8bae08b1d91300d7e.jpg);
+    background-size: auto 100%;
+    transform: scaleY(-1);
+    opacity:0.015;
+
+}

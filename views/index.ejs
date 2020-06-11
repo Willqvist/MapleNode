@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="CSS/ranking.css">
     <link rel="stylesheet" type="text/css" href="CSS/control.css">
     <link rel="stylesheet" type="text/css" href="CSS/media.css">
+        <link rel="stylesheet" type="text/css" href="CSS/features.css">
     <%- include('./imports/head'); %>
 
     <title><%= settings.serverName %></title>
@@ -25,10 +26,11 @@
         <div class="video">
         <div class="header_content">
                 <div class="header_logo">
-                    <img src="./images/svgs/logo.svg" alt="Logo">
+                    <img src="<%= logo %>" alt="Logo">
+                    <h1><%= settings.serverName %></h1>
                 </div>
                 <div class="btn_parent">
-                    <div class="btn-a btn"><a class="child" href=""><span>PLAY <%= settings.serverName %></span></a></div>
+                    <div class="btn-a btn"><a class="child" href="play/"><span>PLAY <%= settings.serverName %></span></a></div>
                 </div>
             </div>
         <div class="gradient"></div>
@@ -39,6 +41,7 @@
         </div>
     </div>
         <div class="content">
+            <div class="top_bg"></div>
             <div class="block_content maxWidth news">
                 <div class="block_menu">
                     <h2>news</h2>
@@ -47,7 +50,25 @@
             </div>
             <div class="block_content maxWidth news">
                 <div class="block_menu">
-                    <h2>server info</h2>
+                    <h2>features</h2>
+                </div>
+                <div class="feature_items">
+                    <div class="feature_item">
+                        <h2 data-content="Free to play">Free to play</h2>
+                        <p>We have been and will always be free to play! With no subscription fees or other costs, you're free to play with all your friends as long as you like.</p>
+                    </div>
+                    <div class="feature_item">
+                        <h2 data-content="High rated server">High rated server</h2>
+                        <p>With 5x EXP and 5x MESO rates, we provide exciting yet challenging gameplay with lasting progression.</p>
+                    </div>
+                    <div class="feature_item">
+                        <h2 data-content="Newest features">Newest features</h2>
+                        <p>The Cash Shop is full of hundreds if not thousands of unique outfits to change your avatar's appearance including Surprise Style Boxes for rare outfits not available anywhere else.</p>
+                    </div>
+                    <div class="feature_item">
+                        <h2 data-content="Events">Events</h2>
+                        <p>We are always updating to the latest game version providing the newest content available for you to explore.</p>
+                    </div>
                 </div>
             </div>
             <div class="block_content maxWidth news">

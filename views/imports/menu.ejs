@@ -28,7 +28,16 @@ function isActive(type)
         </ul>
     </div>
     <div id="menu_right">
-        <p><a class="underline" href="./login"><span><%= loggedIn?"dashboard":"sign in" %></span></a></p>
+        <p>
+            <%console.log(options.user);%>
+            <a class="underline" href="./login">
+                <%if(loggedIn) {%>
+                    <span class="<%= isAdmin(options.user) ? "isAdmin" : "" %>">Dashboard</span>
+                <%} else {%>
+                        <span>sign in</span>
+                <%}%>
+            </a>
+        </p>
         <div class="seperator"></div>
         <div class="btn_parent">
             <div class="btn-a btn"><a class="child" href="./download"><span>PLAY <%= settings.serverName %></span></a></div>
